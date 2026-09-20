@@ -1,0 +1,65 @@
+name: Radar de Mercado
+
+on:
+  # Corrida completa diaria, después del cierre de NYSE (21:15 UTC ≈ 18:15 ARG)
+  schedule:
+    - cron: '15 21 * * 1-5'
+    # Corridas livianas intradiarias, cada 1h en horario de mercado (14-21 UTC ≈ 11-18 ARG)
+    - cron: '7 14-21 * * 1-5'
+
+  # Permite correrlo a mano desde la pestaña "Actions" de GitHub -- IMPORTANTE:
+  # usar esto para probar el pipeline completo antes de confiar en el cron.
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'Modo de ejecución'
+        required: true
+        default: 'test'
+        type: choice
+        options: [test, produccion]
+
+jobs:
+  correr-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Correr el radar
+        env:
+          # Los crons automáticos (schedule) corren en PRODUCCIÓN -- ya validamos
+          # el pipeline completo a mano, incluida la deduplicación de alertas.
+          # El disparo manual sigue permitiendo elegir "test" para seguir probando
+          # cambios sin mandar mensajes reales.
+          RADAR_MODO: ${{ github.event_name == 'schedule' && 'produccion' || (github.event.inputs.modo || 'test') }}
+          # Secrets -- se cargan desde GitHub Settings > Secrets, nunca hardcodeados
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/main.py
+
+      - name: Commitear el resultado actualizado
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/ultimo.json data/historial_alertas.json
+          # log_alertas.jsonl solo se crea cuando hay alertas NUEVAS que
+          # loguear (bitacora.py) -- puede no existir todavía en corridas
+          # sin novedades. Este workflow corre con "bash -e" (corta en el
+          # primer error), así que se usa un "if" explícito en vez de
+          # "[ -f ... ] && git add ..." -- esa forma con && también
+          # rompería el commit cuando el archivo no existe, porque el
+          # propio test devuelve código de salida 1.
+          if [ -f data/log_alertas.jsonl ]; then
+            git add data/log_alertas.jsonl
+          fi
+          git diff --staged --quiet || git commit -m "Actualización automática de datos [skip ci]"
+          git push
