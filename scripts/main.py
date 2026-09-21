@@ -177,6 +177,20 @@ def main():
     radar_score_por_ticker = dict(zip(df_rs["Ticker"], df_rs["Radar_Score"])) if not df_rs.empty else {}
     dist_52w_por_ticker = dict(zip(df_rs["Ticker"], df_rs["Dist_Max52w_%"])) if not df_rs.empty else {}
 
+    # Columnas nuevas del Radar Score v2 que viven en df_rs (universo
+    # completo) pero no en df_alertas -- hay que traspasarlas a mano a
+    # cada alerta para que armar_narrativa() las pueda leer.
+    columnas_extra_narrativa = [
+        "RS_Score", "VCP_valido", "Sobre_SMA50", "Dist_SMA200_%",
+        "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap", "Apoyo_AVWAP",
+        "ATR_Ratio", "ATR_Contraction", "Pendiente_OK", "Cruce_AVWAP_52w",
+    ]
+    columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
+    extras_por_ticker = (
+        df_rs.set_index("Ticker")[columnas_extra_presentes].to_dict(orient="index")
+        if not df_rs.empty and columnas_extra_presentes else {}
+    )
+
     # Variación de SPY HOY (cierre de hoy vs. cierre de ayer) -- para poder
     # comparar el movimiento de cada alerta contra el del mercado en general
     # ese mismo día, no solo contra su propio historial.
@@ -200,7 +214,7 @@ def main():
         # Narrativa de texto al pie de la tarjeta (Radar Score v2) --
         # se arma con todas las columnas ya calculadas de esta alerta,
         # sin ningún cálculo nuevo ni llamada externa.
-        fila_completa = {**fila.to_dict(), **rec}
+        fila_completa = {**fila.to_dict(), **rec, **extras_por_ticker.get(fila["Ticker"], {})}
         fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist, regimen.get("sano", True))
         recomendaciones.append(fila_completa)
 
