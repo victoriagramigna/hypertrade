@@ -1,29 +1,38 @@
 """
-Radar Score (v2): puntaje compuesto 0-100 para "¿esto es una buena
-OPORTUNIDAD DE COMPRA ahora?". Rebalanceado sobre v1 para incorporar
-AVWAP, confirmación ATR y pendiente de tendencia, sin duplicar lo que
-cada componente ya mide.
+Radar Score (v2.1): puntaje compuesto 0-100 para "¿esto es una buena
+OPORTUNIDAD DE COMPRA ahora?".
+
+CAMBIO v2.2: NI Distribution Days NI el regimen VIX multiplican ya el
+score. Los dos siguen calculandose y mostrandose como badges de
+contexto en el dashboard, pero no penalizan el puntaje de ningun
+ticker -- son informacion de contexto GLOBAL del mercado, no una
+señal del activo en si, y el VIX ya tiene su propio freno en otro
+lado del pipeline (main.py baja cualquier COMPRA a MANTENER si el
+regimen no es sano) -- aplicarlo tambien acá era penalizar dos veces
+lo mismo. El Radar Score ahora mide PURA calidad tecnica del ticker,
+sin ningun multiplicador de contexto.
 
 Componentes (0-100):
   - RS Score:                        25 pts  (RS_Score/100 * 25)
-  - Contracción (VCP + ATR):         25 pts  (20 si VCP_valido, +5 si además
+  - Contraccion (VCP + ATR):         25 pts  (20 si VCP_valido, +5 si además
                                                ATR10/ATR50 < 0.75)
-  - Volumen de confirmación:         15 pts  (sin cambios respecto a v1)
-  - Tendencia (5 sub-condiciones):   15 pts  (3 c/u -- se agregó la 5ta:
-                                               pendiente positiva de SMA50/200)
-  - Apoyo en AVWAP/SMA50:            10 pts  (NUEVO -- precio en zona de
-                                               costo institucional, ±2%)
-  - Posición en 52 semanas:          10 pts  (sin cambios)
+  - Volumen de confirmacion (RVOL):  15 pts  (escala con Vol_rel, tope en 1.5x)
+  - Tendencia (5 sub-condiciones):   15 pts  (3 c/u -- incluye pendiente
+                                               positiva de SMA50/200)
+  - Apoyo en AVWAP/SMA50:            10 pts  (precio en zona de costo
+                                               institucional, ±2%)
+  - Posicion en 52 semanas:          10 pts
 
-Fuera de los 100, con la misma filosofía que ya tenías para el VIX:
-  - Multiplicador de régimen VIX:        0.7 si el mercado está volátil
-  - Multiplicador de Distribution Days:  0.9 (4-5 días) / 0.75 (6+ días)
-    (se combinan multiplicando entre sí)
-  - Bono por cruce de AVWAP_52W_High:    +5 pts, aparte -- señal nueva,
-    todavía sin validar en la bitácora, no debe mover el ranking general
+Fuera de los 100:
+  - Bono por cruce de AVWAP_52W_High: +5 pts, aparte
 
-IMPORTANTE: como en v1, esta distribución de pesos es un punto de partida
-razonable, a ajustar con el backtest sobre la bitácora de eventos.
+El VIX y Distribution Days siguen viajando en el JSON de salida como
+datos de contexto (badges), y el VIX además sigue bajando cualquier
+COMPRA a MANTENER en la Recomendación final cuando el regimen no es
+sano -- pero ninguno de los dos toca ya el numero del Radar Score.
+
+IMPORTANTE: esta distribucion de pesos es un punto de partida
+razonable, a ajustar con el backtest sobre la bitacora de eventos.
 """
 import pandas as pd
 
@@ -48,7 +57,7 @@ def _componente_52_semanas(dist_max52w_pct):
 
 
 def _componente_tendencia(sobre_sma50, dist_sma200_pct, rs_sector, spy_sobre_sma50, pendiente_ok):
-    sub_puntos = 15 / 5  # ahora 5 sub-condiciones, 3 c/u
+    sub_puntos = 15 / 5
     total = 0
     if sobre_sma50:
         total += sub_puntos
@@ -64,13 +73,6 @@ def _componente_tendencia(sobre_sma50, dist_sma200_pct, rs_sector, spy_sobre_sma
 
 
 def _procesar_indicadores_ticker(df_ohlc: pd.DataFrame):
-    """
-    A partir del DataFrame OHLCV crudo de un ticker, calcula todo lo
-    que necesita el score nuevo: AVWAPs, SMA50 (para el apoyo en
-    soporte), ATR_Ratio, pendiente de tendencia y cruce de AVWAP_52W.
-    Devuelve un diccionario con los valores del día de hoy + los
-    booleanos de cada señal nueva.
-    """
     if df_ohlc is None or df_ohlc.empty or len(df_ohlc) < 60:
         return None
 
@@ -98,21 +100,18 @@ def calcular_radar_score(
     spy_sobre_sma50: bool,
     regimen: dict,
     precios_ohlc: dict,
-    dist_days: int = 0,
 ) -> pd.DataFrame:
     """
-    Agrega Radar_Score y las columnas nuevas (AVWAP_YTD, AVWAP_52W_High,
-    AVWAP_Ultimo_Gap, Apoyo_AVWAP, ATR_Ratio, ATR_Contraction,
-    Pendiente_OK, Cruce_AVWAP_52w) a df_rs. No modifica ninguna columna
-    existente.
+    Agrega Radar_Score y las columnas nuevas a df_rs. No modifica ninguna
+    columna existente.
 
-    precios_ohlc: el diccionario nuevo que devuelve traer_datos() en
-    datos.py v3 -- {ticker: DataFrame OHLCV}.
-    dist_days: resultado de calcular_distribution_days() sobre el
-    benchmark, calculado una sola vez antes de llamar a esta función.
+    precios_ohlc: {ticker: DataFrame OHLCV}, de traer_datos() en datos.py v3.
+
+    NOTA v2.1: ya no recibe dist_days -- Distribution Days dejo de influir
+    en el calculo del score (ver docstring del modulo). Si tu main.py
+    todavia llama a esta funcion pasando dist_days como quinto argumento,
+    hay que sacar ese argumento de la llamada (ver INTEGRACION).
     """
-    from senales_nuevas import multiplicador_distribution
-
     columnas_nuevas = [
         "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap",
         "Apoyo_AVWAP", "ATR_Ratio", "ATR_Contraction",
@@ -123,10 +122,10 @@ def calcular_radar_score(
             df_rs[c] = []
         return df_rs
 
-    multiplicador = 1.0
-    if not regimen.get("sin_datos") and not regimen.get("sano", True):
-        multiplicador = MULTIPLICADOR_VIX_VOLATIL
-    multiplicador *= multiplicador_distribution(dist_days)
+    # v2.2: ni VIX ni Distribution Days multiplican el score -- ambos
+    # quedan como badges informativos, calculados aparte en main.py.
+    # regimen se sigue recibiendo como parámetro por compatibilidad con
+    # la firma existente, pero ya no se usa acá.
 
     filas_nuevas = []
     scores = []
@@ -158,7 +157,7 @@ def calcular_radar_score(
         cruce_52w = bool(ind and ind["cruce_avwap_52w"])
         bono_cruce = 5 if cruce_52w else 0
 
-        score_final = round(min(100, bruto) * multiplicador + bono_cruce, 1)
+        score_final = round(min(100, bruto) + bono_cruce, 1)
         score_final = min(100.0, score_final)
         scores.append(score_final)
 

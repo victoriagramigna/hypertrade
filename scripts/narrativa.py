@@ -1,100 +1,171 @@
 # -*- coding: utf-8 -*-
 """
-Arma el texto explicativo al pie de cada tarjeta de alerta, a partir de
-las columnas que ya trae cada fila (df_rs + las agregadas por
-radar_score.py v2). No hace ningún cálculo nuevo -- solo interpreta lo
-que el score ya evaluó. Se llama por cada alerta, justo antes de
-guardar data/ultimo.json.
+Narrativa v2.1: cada condición técnica mencionada incluye su valor
+numérico exacto entre paréntesis (SMA50, SMA200, AVWAP, precio del
+máximo de 52 semanas, ATR_Ratio) -- no solo el nombre de la condición.
+
+CAMBIO v2.1: Distribution Days ya no se describe como "penalización"
+del score (porque dejó de serlo, ver radar_score.py) -- se menciona
+como contexto de mercado puro, informativo, independiente de si
+afecta o no el puntaje.
 """
 import pandas as pd
 
 
-def _frase_rs(fila: dict) -> str:
-    rs = fila.get("RS_Score")
-    sector = fila.get("Sector")
-    if rs is None:
+ORDEN_NARRATIVA = [
+    "rs_alto",
+    "stage2",
+    "apoyo_soporte",
+    "gap_alcista",
+    "cruce_avwap_52w",
+    "vcp",
+    "atr_contraction",
+]
+
+
+def _fmt(valor):
+    """Formatea un precio como $XX.XX, o cadena vacía si no hay dato."""
+    if valor is None or (isinstance(valor, float) and pd.isna(valor)):
         return None
-    if rs > 80:
-        return f"Lidera con fuerza relativa {rs:.0f}" + (f" (sector {sector})." if sector else ".")
-    return None
+    return f"${valor:.2f}"
 
 
-def _frase_contraccion(fila: dict) -> str:
-    vcp = fila.get("VCP_valido")
-    atr = fila.get("ATR_Contraction")
-    if vcp and atr:
-        return "Contracción de volatilidad confirmada por VCP y por ATR -- doble señal de compresión previa a ruptura."
-    if vcp:
-        return "Patrón VCP activo -- rango de precio comprimiéndose."
-    if atr:
-        return "Volatilidad reciente por debajo de su promedio (ATR) -- posible compresión previa a ruptura."
-    return None
+def _frase_rs_alto(row: pd.Series) -> str:
+    ticker = row.get("Ticker", row.get("ticker", "El ticker"))
+    rs = row.get("RS_Score", "?")
+    sector = row.get("Sector", row.get("sector", ""))
+    if sector:
+        return f"{ticker} lidera con fuerza relativa {rs} (destaca en el sector {sector})."
+    return f"{ticker} lidera con fuerza relativa {rs}."
 
 
-def _frase_tendencia(fila: dict) -> str:
-    if fila.get("Sobre_SMA50") and fila.get("Pendiente_OK"):
-        return "Tendencia alcista confirmada, con SMA50 y SMA200 en pendiente ascendente."
-    if fila.get("Sobre_SMA50"):
-        return "Precio por encima de su SMA50."
-    return None
+def _frase_stage2(row: pd.Series) -> str:
+    sma50 = _fmt(row.get("SMA50"))
+    sma200 = _fmt(row.get("SMA200"))
+    if sma50 and sma200:
+        return f"Tendencia alcista confirmada: por encima de su SMA50 ({sma50}) y su SMA200 ({sma200}), ambas con pendiente ascendente."
+    return "Tendencia alcista confirmada: SMA50 y SMA200 con pendiente ascendente."
 
 
-def _frase_avwap(fila: dict) -> str:
-    if not fila.get("Apoyo_AVWAP"):
-        return None
-    precio = fila.get("Precio")
-    candidatos = [
-        ("su AVWAP anclado al inicio del año", fila.get("AVWAP_YTD")),
-        ("su AVWAP anclado al último gap relevante", fila.get("AVWAP_Ultimo_Gap")),
-    ]
-    candidatos = [(n, v) for n, v in candidatos if v is not None and pd.notna(v)]
-    if candidatos and precio is not None:
-        nombre, valor = min(candidatos, key=lambda c: abs(precio - c[1]))
-        return f"Apoya sobre {nombre} (${valor:.2f}) -- zona de costo promedio institucional."
-    return "Apoya sobre un nivel de soporte técnico relevante (SMA50/AVWAP)."
+def _frase_apoyo_soporte(row: pd.Series) -> str:
+    close = row.get("Close", row.get("Precio"))
+    sma50 = row.get("SMA50")
+    avwap_ytd = row.get("AVWAP_YTD")
+    avwap_gap = row.get("AVWAP_Ultimo_Gap")
+
+    candidatos = []
+    if pd.notna(sma50) if sma50 is not None else False:
+        candidatos.append(("su SMA50", sma50))
+    if avwap_ytd is not None and pd.notna(avwap_ytd):
+        candidatos.append(("su AVWAP anclado al inicio del año", avwap_ytd))
+    if avwap_gap is not None and pd.notna(avwap_gap):
+        candidatos.append(("su AVWAP anclado al último gap relevante", avwap_gap))
+
+    if not candidatos or close is None:
+        return "Apoya sobre un nivel de soporte técnico relevante."
+
+    nombre, valor = min(candidatos, key=lambda c: abs(close - c[1]))
+    return f"Apoya sobre {nombre} ({_fmt(valor)}), dentro de zona de tolerancia."
 
 
-def _frase_cruce_52w(fila: dict) -> str:
-    if fila.get("Cruce_AVWAP_52w"):
-        return "Cruzó al alza su AVWAP anclado al máximo de 52 semanas -- posible absorción de vendedores atrapados en el techo."
-    return None
+def _frase_gap_alcista(row: pd.Series) -> str:
+    gap_pct = row.get("Gap_Pct", row.get("Var_dia_%"))
+    if gap_pct is not None and pd.notna(gap_pct):
+        return f"Salto de {gap_pct:.1f}% con volumen, por encima de su SMA200 -- momentum de corto plazo."
+    return "Salto alcista reciente con volumen, por encima de su SMA200 -- momentum de corto plazo."
 
 
-def _frase_52w(fila: dict) -> str:
-    dist = fila.get("Dist_Max52w_%")
-    if dist is not None and pd.notna(dist) and dist > -5:
-        return "Operando cerca de su máximo de 52 semanas."
-    return None
+def _frase_cruce_avwap_52w(row: pd.Series) -> str:
+    valor = _fmt(row.get("AVWAP_52W_High"))
+    if valor:
+        return f"Cruzó al alza su AVWAP anclado al máximo de 52 semanas ({valor}) -- posible absorción de vendedores atrapados en el techo."
+    return "Cruzó al alza su AVWAP anclado al máximo de 52 semanas -- posible absorción de vendedores atrapados en el techo."
 
 
-def _frase_contexto(dist_days: int, mult_dist: float, regimen_sano: bool) -> str:
+def _frase_vcp(row: pd.Series) -> str:
+    return "Contracción de volatilidad detectada (VCP) -- rango de precio comprimiéndose, posible preparación de ruptura."
+
+
+def _frase_atr_contraction(row: pd.Series) -> str:
+    ratio = row.get("ATR_Ratio")
+    if ratio is not None and pd.notna(ratio):
+        return f"Volatilidad relativa por debajo del promedio (ATR10/ATR50: {ratio:.2f})."
+    return "Volatilidad relativa por debajo del promedio reciente."
+
+
+_PLANTILLAS = {
+    "rs_alto": _frase_rs_alto,
+    "stage2": _frase_stage2,
+    "apoyo_soporte": _frase_apoyo_soporte,
+    "gap_alcista": _frase_gap_alcista,
+    "cruce_avwap_52w": _frase_cruce_avwap_52w,
+    "vcp": _frase_vcp,
+    "atr_contraction": _frase_atr_contraction,
+}
+
+
+def _frase_contexto_mercado(dist_days: int, regimen_sano: bool) -> str:
+    """
+    v2.1: puramente informativo -- Distribution Days ya no penaliza el
+    score, así que esta frase describe el contexto sin decir que el
+    puntaje se ajustó por esto.
+    """
     partes = []
     if not regimen_sano:
-        partes.append("⚠️ régimen de mercado volátil (VIX elevado)")
-    if mult_dist < 1.0:
-        partes.append(f"⚠️ {dist_days} días de distribución institucional en las últimas 5 semanas")
+        partes.append("régimen de mercado volátil (VIX elevado)")
+    if dist_days is not None and dist_days >= 4:
+        partes.append(f"{dist_days} días de distribución institucional en las últimas 5 semanas")
     if not partes:
         return None
     return "Contexto de mercado: " + "; ".join(partes) + "."
 
 
-_GENERADORES = [_frase_rs, _frase_tendencia, _frase_avwap, _frase_contraccion, _frase_cruce_52w, _frase_52w]
-
-
-def armar_narrativa(fila: dict, dist_days: int = 0, mult_dist: float = 1.0, regimen_sano: bool = True) -> str:
+def armar_narrativa(
+    row: pd.Series,
+    dist_days: int = 0,
+    mult_dist: float = 1.0,  # se mantiene el parámetro por compatibilidad, ya no se usa
+    regimen_sano: bool = True,
+) -> str:
     """
-    fila: el diccionario de la alerta (ya trae todas las columnas de
-    df_rs, incluidas las nuevas de radar_score.py v2 -- en main.py esto
-    es {**fila.to_dict(), **rec} dentro del loop de recomendaciones).
+    row: el diccionario de la alerta (fila.to_dict() + rec + extras_por_ticker
+    en main.py) -- ya trae todas las columnas necesarias, incluidas SMA50,
+    SMA200, AVWAP_*, ATR_Ratio, etc.
     """
-    frases = [f for f in (gen(fila) for gen in _GENERADORES) if f]
+    señales_activas = row.get("señales_activas")
+    if señales_activas is None:
+        # Reconstruye la lista de señales activas a partir de los booleanos
+        # ya presentes en la fila, por si no viene armada de antes.
+        señales_activas = []
+        if (row.get("RS_Score") or 0) > 80:
+            señales_activas.append("rs_alto")
+        if row.get("Sobre_SMA50") and row.get("Pendiente_OK"):
+            señales_activas.append("stage2")
+        if row.get("Apoyo_AVWAP"):
+            señales_activas.append("apoyo_soporte")
+        if row.get("Tipo") == "gap_alcista":
+            señales_activas.append("gap_alcista")
+        if row.get("Cruce_AVWAP_52w"):
+            señales_activas.append("cruce_avwap_52w")
+        if row.get("VCP_valido"):
+            señales_activas.append("vcp")
+        if row.get("ATR_Contraction"):
+            señales_activas.append("atr_contraction")
+
+    activas_ordenadas = [s for s in ORDEN_NARRATIVA if s in señales_activas]
+
+    frases = []
+    for señal in activas_ordenadas:
+        funcion_plantilla = _PLANTILLAS.get(señal)
+        if funcion_plantilla:
+            frases.append(funcion_plantilla(row))
+
     cuerpo = " ".join(frases) if frases else "Sin señales técnicas adicionales destacadas."
 
-    contexto = _frase_contexto(dist_days, mult_dist, regimen_sano)
-    if contexto:
-        cuerpo += " " + contexto
+    contexto_mercado = _frase_contexto_mercado(dist_days, regimen_sano)
+    if contexto_mercado:
+        cuerpo += " " + contexto_mercado
 
-    score = fila.get("Radar_Score")
+    score = row.get("Radar_Score")
     pie = f"Radar Score: {score:.0f}/100" if score is not None else ""
 
     return f"{cuerpo}\n{pie}".strip()

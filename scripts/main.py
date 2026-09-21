@@ -1,14 +1,13 @@
 """
-Punto de entrada principal del Radar de Mercado (v3 + Radar Score v2).
-Suma sobre v2: RSI/RVOL/SMA200 expuestos para todo el universo (no solo
-alertas), fix del bug de expiración de alertas (ventana de 48hs), nueva
-señal "líder apoyando en soporte", y estimación de próxima corrida (para
-que sea más fácil distinguir "no corrió todavía" de "corrió y no hubo
-novedades").
+Punto de entrada principal del Radar de Mercado / HyperTrade (v3 + Radar
+Score v2.1).
 
-CAMBIOS (Radar Score v2 -- HyperTrade): se suma AVWAP, ATR, pendiente de
-tendencia y Distribution Days al Radar Score (ahora rebalanceado 0-100),
-más una narrativa de texto por alerta explicando qué disparó cada una.
+CAMBIOS v2.1:
+- Distribution Days deja de multiplicar el Radar Score -- queda solo como
+  badge de contexto (dist_days, mult_dist_badge siguen en el JSON para el
+  dashboard, pero calcular_radar_score() ya no los usa para puntuar).
+- La narrativa ahora recibe también SMA50 y SMA200 de cada ticker, para
+  poder mostrar el valor exacto entre paréntesis en cada condición.
 """
 import json
 import logging
@@ -34,23 +33,14 @@ from bitacora import registrar_eventos
 from radar_score import calcular_radar_score
 from narrativa import armar_narrativa
 from senales_nuevas import calcular_distribution_days, multiplicador_distribution
+from cartera_seguimiento import procesar_cartera
+from seguimiento_precios import procesar_seguimiento
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
 
 
 def limpiar_para_json(obj):
-    """
-    Recorre recursivamente el resultado antes de guardarlo y convierte
-    cualquier NaN/infinito o tipo de NumPy no serializable a algo válido
-    para JSON estándar. Sin esto, un solo NaN suelto en cualquier campo
-    (por ejemplo, un indicador que no se pudo calcular para algún ticker)
-    rompe el parseo en el navegador -- JSON.parse() no acepta el literal
-    NaN, aunque Python lo escriba en el archivo sin quejarse.
-    Idea original: propuesta de Gemini, ampliada acá para cubrir también
-    infinitos y los tipos numéricos propios de NumPy/Pandas (np.float64,
-    np.int64, np.bool_), que tampoco son serializables tal cual.
-    """
     if isinstance(obj, dict):
         return {k: limpiar_para_json(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
@@ -66,7 +56,6 @@ def limpiar_para_json(obj):
 
 
 def traer_titulares_ejemplo():
-    """Placeholder -- se conecta Finnhub /news más adelante."""
     return []
 
 
@@ -77,39 +66,29 @@ def traer_vix(precios: dict):
 
 
 def estimar_proxima_corrida(ahora: datetime) -> str:
-    """
-    Estimación INFORMATIVA de la próxima corrida programada, según el cron
-    (cada hora en punto de 14 a 21 UTC, lunes a viernes). GitHub Actions
-    corre los crons en modo "best effort" -- puede demorarse minutos u
-    horas en momentos de alta demanda de su infraestructura compartida
-    gratuita, así que esto es una referencia, no una garantía exacta.
-    """
     candidato = ahora.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
-    for _ in range(24 * 8):  # tope de seguridad, no debería iterar tanto
-        es_habil = candidato.weekday() < 5  # 0=lunes ... 4=viernes
+    for _ in range(24 * 8):
+        es_habil = candidato.weekday() < 5
         en_horario = 14 <= candidato.hour <= 21
         if es_habil and en_horario:
             return candidato.isoformat()
         candidato += timedelta(hours=1)
-    return None  # no debería pasar nunca, pero mejor no romper si pasa
+    return None
 
 
 def main():
-    log.info(f"=== Radar de Mercado — corrida iniciada (modo={MODO}) ===")
+    log.info(f"=== Radar de Mercado -- corrida iniciada (modo={MODO}) ===")
     ahora = datetime.now(timezone.utc)
     timestamp = ahora.isoformat()
     fecha_hoy = ahora.strftime("%Y-%m-%d")
 
-    # 1. Datos (se pide también el VIX, sumándolo como si fuera un ticker más)
+    # 1. Datos
     tickers_a_pedir = {**TICKERS}
     precios, volumenes, precios_ohlc, fallidos = traer_datos({**tickers_a_pedir, VIX_TICKER: "Índice"}, BENCHMARK)
     if BENCHMARK not in precios:
         log.error("El benchmark no se pudo traer -- abortando la corrida")
         return
 
-    # 1b. Estado de fuentes -- ¿falló poco (normal) o falló tanto que el RS
-    # Score de esta corrida ya no es confiable (percentil sobre un universo
-    # chico y no representativo)?
     fallidos_universo = [f for f in fallidos if f["ticker"] in TICKERS]
     pct_fallidos = round(len(fallidos_universo) / len(TICKERS) * 100, 1) if TICKERS else 0
     corrida_degradada = pct_fallidos >= UMBRAL_CORRIDA_DEGRADADA_PCT
@@ -128,23 +107,24 @@ def main():
     frescura = evaluar_frescura(ultima_fecha_benchmark)
     log.info(f"Frescura del dato: {frescura}")
 
-    # 2c. Distribution Days del benchmark (contexto global, una sola vez
-    # por corrida -- NO es una señal por ticker, ver senales_nuevas.py)
+    # 2c. Distribution Days -- v2.1: SOLO informativo (badge), ya no
+    # multiplica el Radar Score (ver radar_score.py). Se sigue calculando
+    # y guardando en el JSON para que el dashboard lo muestre.
     dist_days = calcular_distribution_days(precios[BENCHMARK], volumenes[BENCHMARK])
-    mult_dist = multiplicador_distribution(dist_days)
-    log.info(f"Distribution Days (25 ruedas): {dist_days} -- multiplicador {mult_dist}")
+    mult_dist_badge = multiplicador_distribution(dist_days)  # solo para colorear el badge
+    log.info(f"Distribution Days (25 ruedas): {dist_days} -- (informativo, ya no penaliza el score)")
 
-    # 3. RS Score + indicadores completos (RSI, RVOL, SMA50/200) para TODO el universo
+    # 3. RS Score + indicadores completos
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes)
     rs_por_sector = df_rs.groupby("Sector")["RS_Score"].mean().to_dict() if not df_rs.empty else {}
     rs_por_ticker = dict(zip(df_rs["Ticker"], df_rs["RS_Score"])) if not df_rs.empty else {}
 
-    # 3a-bis. Radar Score v2 (compuesto 0-100, ahora con AVWAP + ATR +
-    # pendiente de tendencia + Distribution Days -- ver radar_score.py)
+    # 3a-bis. Radar Score v2.1 (compuesto 0-100 -- Distribution Days ya NO
+    # se pasa acá, ver nota arriba)
     bench_close = precios[BENCHMARK].dropna()
     spy_sma50 = bench_close.rolling(50).mean().iloc[-1] if len(bench_close) >= 50 else None
     spy_sobre_sma50 = bool(bench_close.iloc[-1] > spy_sma50) if spy_sma50 is not None and not math.isnan(spy_sma50) else True
-    df_rs = calcular_radar_score(df_rs, rs_por_sector, spy_sobre_sma50, regimen, precios_ohlc, dist_days)
+    df_rs = calcular_radar_score(df_rs, rs_por_sector, spy_sobre_sma50, regimen, precios_ohlc)
 
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
@@ -160,16 +140,16 @@ def main():
     # 4. Historial persistente
     historial = cargar_historial()
 
-    # 5. Alertas técnicas (v3: expiran a las 48hs, + señal "líder en soporte")
+    # 5. Alertas técnicas
     df_alertas, historial = detectar_alertas(precios, volumenes, TICKERS, BENCHMARK,
                                               rs_por_sector, rs_por_ticker, historial,
                                               fecha_hoy, timestamp)
     guardar_historial(historial)
 
     # 6. Contexto (noticias + macro-local)
-    titulares = traer_titulares_ejemplo()  # Finnhub -- pendiente de conectar
+    titulares = traer_titulares_ejemplo()
     alertas_sector = escanear_titulares(titulares)
-    riesgo_pais, riesgo_pais_ayer, brecha = traer_contexto_macro()  # ArgentinaDatos -- real
+    riesgo_pais, riesgo_pais_ayer, brecha = traer_contexto_macro()
     contexto_macro = evaluar_contexto_macro(riesgo_pais, riesgo_pais_ayer, brecha)
     log.info(f"Contexto macro-local: {contexto_macro}")
 
@@ -177,11 +157,18 @@ def main():
     radar_score_por_ticker = dict(zip(df_rs["Ticker"], df_rs["Radar_Score"])) if not df_rs.empty else {}
     dist_52w_por_ticker = dict(zip(df_rs["Ticker"], df_rs["Dist_Max52w_%"])) if not df_rs.empty else {}
 
-    # Columnas nuevas del Radar Score v2 que viven en df_rs (universo
-    # completo) pero no en df_alertas -- hay que traspasarlas a mano a
-    # cada alerta para que armar_narrativa() las pueda leer.
+    bench_close_serie = precios[BENCHMARK].dropna()
+    var_spy_dia_pct = None
+    if len(bench_close_serie) >= 2:
+        var_spy_dia_pct = round((bench_close_serie.iloc[-1] / bench_close_serie.iloc[-2] - 1) * 100, 2)
+
+    # Columnas de df_rs que hay que traspasar a cada alerta a mano (df_rs
+    # es el universo completo; df_alertas es un subconjunto sin estas
+    # columnas nuevas). v2.1: se suman SMA50 y SMA200 para que la
+    # narrativa pueda mostrar el valor exacto de cada condición.
     columnas_extra_narrativa = [
         "RS_Score", "VCP_valido", "Sobre_SMA50", "Dist_SMA200_%",
+        "SMA50", "SMA200",
         "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap", "Apoyo_AVWAP",
         "ATR_Ratio", "ATR_Contraction", "Pendiente_OK", "Cruce_AVWAP_52w",
     ]
@@ -190,14 +177,6 @@ def main():
         df_rs.set_index("Ticker")[columnas_extra_presentes].to_dict(orient="index")
         if not df_rs.empty and columnas_extra_presentes else {}
     )
-
-    # Variación de SPY HOY (cierre de hoy vs. cierre de ayer) -- para poder
-    # comparar el movimiento de cada alerta contra el del mercado en general
-    # ese mismo día, no solo contra su propio historial.
-    bench_close_serie = precios[BENCHMARK].dropna()
-    var_spy_dia_pct = None
-    if len(bench_close_serie) >= 2:
-        var_spy_dia_pct = round((bench_close_serie.iloc[-1] / bench_close_serie.iloc[-2] - 1) * 100, 2)
 
     recomendaciones = []
     for _, fila in df_alertas.iterrows():
@@ -211,18 +190,15 @@ def main():
         rec["RS_sector"] = round(rs_por_sector[fila["Sector"]], 1) if fila["Sector"] in rs_por_sector else None
         rec["Var_SPY_dia_%"] = var_spy_dia_pct
 
-        # Narrativa de texto al pie de la tarjeta (Radar Score v2) --
-        # se arma con todas las columnas ya calculadas de esta alerta,
-        # sin ningún cálculo nuevo ni llamada externa.
         fila_completa = {**fila.to_dict(), **rec, **extras_por_ticker.get(fila["Ticker"], {})}
-        fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist, regimen.get("sano", True))
+        fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist_badge, regimen.get("sano", True))
         recomendaciones.append(fila_completa)
 
     # 8. Guardar resultado para el dashboard
     salida = {
         "generado_utc": timestamp,
         "proxima_corrida_estimada_utc": estimar_proxima_corrida(ahora),
-        "tickers_ok": len(precios) - 2,  # -1 benchmark, -1 VIX
+        "tickers_ok": len(precios) - 2,
         "tickers_fallidos": fallidos,
         "pct_fallidos": pct_fallidos,
         "corrida_degradada": corrida_degradada,
@@ -235,7 +211,7 @@ def main():
         "cedears_pricing": cedears_pricing,
         "movimientos_dia": movimientos_dia,
         "distribution_days": dist_days,
-        "multiplicador_distribution": mult_dist,
+        "multiplicador_distribution": mult_dist_badge,
     }
 
     salida_limpia = limpiar_para_json(salida)
@@ -243,7 +219,7 @@ def main():
         json.dump(salida_limpia, f, ensure_ascii=False, indent=2)
     log.info("Guardado en data/ultimo.json")
 
-    # 9. Notificaciones (dedup por día+estado; "líder en soporte" no usa la escala 0-7)
+    # 9. Notificaciones
     alertas_relevantes = [
         a for a in recomendaciones
         if (a.get("Score_num") and a["Score_num"] >= SCORE_MINIMO_ALERTA) or a.get("Tipo") in ("lider_soporte", "gap_alcista")
@@ -256,18 +232,10 @@ def main():
         ya_notificado = historial["_notificaciones"].get(ticker) == clave_estado
         if not ya_notificado:
             alertas_nuevas.append(a)
-            # OJO: el marcado de "ya notificado" se hace más abajo, recién
-            # cuando efectivamente se envía (o se loguea en modo test) --
-            # no acá, para que una alerta salteada por corrida degradada
-            # pueda mandarse igual en una corrida sana posterior el mismo día.
 
     if alertas_relevantes:
         log.info(f"{len(alertas_relevantes)} alerta(s) relevante(s), {len(alertas_nuevas)} nueva(s) (no notificadas aún hoy)")
 
-    # 9b. Bitácora de eventos (para el backtest futuro) -- se saltea en
-    # corridas degradadas, por la misma razón que Telegram: el RS Score de
-    # esta corrida no es confiable, así que no vale la pena dejarlo grabado
-    # como si lo fuera.
     if alertas_nuevas and not corrida_degradada:
         registrar_eventos(alertas_nuevas, rs_por_ticker, precios_usd_actuales, timestamp,
                            radar_score_por_ticker)
@@ -276,9 +244,7 @@ def main():
 
     if alertas_nuevas and corrida_degradada:
         log.warning(f"Se salteó el envío de {len(alertas_nuevas)} alerta(s) a Telegram "
-                    f"-- corrida degradada ({pct_fallidos}% del universo falló), "
-                    f"el ranking de esta corrida no es confiable. NO se marcan como "
-                    f"notificadas, para poder reintentar en una corrida sana.")
+                    f"-- corrida degradada ({pct_fallidos}% del universo falló)")
     elif alertas_nuevas:
         for a in alertas_nuevas:
             ticker = a["Ticker"]
@@ -293,11 +259,36 @@ def main():
         else:
             log.info("MODO=test -- NO se envían notificaciones reales, solo se loguea")
             for a in alertas_nuevas:
-                log.info(f"  [TEST] {a['Ticker']}: {a['Estado']} ({a['Score']}) — {a['Recomendación final']}")
+                log.info(f"  [TEST] {a['Ticker']}: {a['Estado']} ({a['Score']}) -- {a['Recomendación final']}")
     else:
         log.info("Sin alertas nuevas para notificar en esta corrida")
 
     guardar_historial(historial)
+
+    # 9c. Seguimiento de precios de la bitácora -- para el backtest futuro
+    # (compara radar-mercado v1 vs. hypertrade v2). No depende de que
+    # haya alertas nuevas hoy, revisa TODA la bitácora acumulada cada vez.
+    try:
+        procesar_seguimiento(precios)
+    except Exception as e:
+        log.error(f"Seguimiento de precios falló, no afecta al resto de la corrida: {e}")
+
+    # 10. Mi Cartera -- seguimiento activo (trailing stop, objetivos,
+    # caída de Radar Score) + mail si hay algo nuevo para avisar. No
+    # rompe la corrida si falla (try/except propio adentro del módulo
+    # para el envío de mail; acá solo por las dudas de que falte el
+    # archivo o algo raro en el parseo).
+    try:
+        procesar_cartera(
+            df_rs,
+            fecha_hoy,
+            email_user=os.environ.get("EMAIL_USER"),
+            email_password=os.environ.get("EMAIL_PASSWORD"),
+            email_to=os.environ.get("EMAIL_TO"),
+            modo=MODO,
+        )
+    except Exception as e:
+        log.error(f"Seguimiento de cartera falló, no afecta al resto de la corrida: {e}")
 
     log.info("=== Corrida finalizada ===")
 
