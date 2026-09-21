@@ -61,6 +61,9 @@
         .tab-btn.active .tab-dot { display: inline-block; }
         body { padding-bottom: 120px; } /* deja lugar de sobra para la barra fija de abajo */
         .tab-content { padding-bottom: 24px; } /* margen extra al final de cada pestaña */
+
+        /* Badges chicos de señales nuevas (Radar Score v2) */
+        .signal-chip { font-size: 9px; padding: 2px 6px; border-radius: 2px; border: 1px solid; white-space: nowrap; }
     </style>
 </head>
 <body class="bg-base text-gray-300 font-sans p-4 md:p-8 min-h-screen relative">
@@ -85,7 +88,7 @@
     <div id="tab-inicio" class="tab-content space-y-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <!-- Botón de escaneo manual -->
-            <a href="https://github.com/victoriagramigna/radar-mercado/actions/workflows/radar.yml"
+            <a href="https://github.com/victoriagramigna/hypertrade/actions/workflows/radar.yml"
                target="_blank" rel="noopener"
                class="flex items-center gap-2 bg-accent text-base hover:bg-white transition-colors px-4 py-2 rounded-sm font-mono text-xs font-bold uppercase whitespace-nowrap">
                 🔄 Correr escaneo ahora
@@ -277,7 +280,7 @@
     </div>
 
     <script>
-        const DATA_URL = 'https://raw.githubusercontent.com/victoriagramigna/radar-mercado/main/data/ultimo.json';
+        const DATA_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/ultimo.json';
         
         let currentAutoCcl = null;
         let currentRadarData = null; // Guardamos el estado global para búsquedas
@@ -552,6 +555,14 @@
             const brecha = data?.contexto_macro?.['brecha_cambiaria_%'] ?? '—';
             badgesHtml.push(`<span class="border ${macroColor} px-2 py-1 rounded-sm bg-surface">BRECHA: ${brecha}%</span>`);
 
+            // Badge de Distribution Days (Radar Score v2) -- contexto de venta institucional
+            const distDays = data?.distribution_days;
+            if (distDays != null) {
+                const multDist = data?.multiplicador_distribution ?? 1;
+                const distColor = multDist < 1 ? 'border-neg text-neg' : 'border-pos text-pos';
+                badgesHtml.push(`<span class="border ${distColor} px-2 py-1 rounded-sm bg-surface cursor-help" title="Días con cierre a la baja y volumen mayor al día anterior, últimas 5 semanas. Penaliza el Radar Score cuando son muchos.">DIST. DAYS: ${distDays}</span>`);
+            }
+
             document.getElementById('badges').innerHTML = badgesHtml.join('');
 
             // Renderizado de Alertas
@@ -590,6 +601,7 @@
                     const rsSector = alerta?.RS_sector;
                     const varDia = alerta?.['Var_dia_%'];
                     const varSpyDia = alerta?.['Var_SPY_dia_%'];
+                    const narrativa = alerta?.Narrativa;
 
                     let stopPctStr = '';
                     if (stopSugerido != null && precioRef != null && precioRef > 0) {
@@ -628,6 +640,35 @@
                         if (recomendacion === 'MANTENER') recColor = 'bg-accent text-base border-accent';
                     }
 
+                    // Radar Score: barra de color + número, en vez de solo texto
+                    let radarScoreHtml = '';
+                    if (radarScore != null) {
+                        const rColor = radarScore >= 70 ? 'bg-pos' : (radarScore >= 45 ? 'bg-accent' : 'bg-neg');
+                        radarScoreHtml = `
+                            <div class="mt-3">
+                                <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
+                                    <span>Radar Score</span>
+                                    <span class="text-white font-bold">${radarScore.toFixed(0)} / 100</span>
+                                </div>
+                                <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
+                                    <div class="h-full ${rColor}" style="width: ${Math.min(radarScore, 100)}%"></div>
+                                </div>
+                            </div>`;
+                    }
+
+                    // Chips de señales nuevas activas (AVWAP, tendencia, contracción)
+                    const chips = [];
+                    if (alerta?.Apoyo_AVWAP) chips.push('<span class="signal-chip text-blueAlert border-blueAlert">AVWAP SOPORTE</span>');
+                    if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos">CRUCE 52W</span>');
+                    if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent">TENDENCIA+</span>');
+                    if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
+                    const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
+
+                    // Narrativa al pie -- el texto de radar_score.py/narrativa.py
+                    const narrativaHtml = narrativa
+                        ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
+                        : '';
+
                     return `
                         <div class="${bgCustom} p-4 ${containerBorder} transition-colors rounded-r-sm">
                             <div class="flex justify-between items-start mb-3">
@@ -637,11 +678,10 @@
                                 </div>
                                 <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
                             </div>
-                            <div class="flex justify-between items-center mb-3">
-                                <div class="font-mono text-sm text-gray-300">${estado}</div>
-                                ${radarScore != null ? `<div class="font-mono text-xs text-gray-500 whitespace-nowrap ml-2">RADAR SCORE <span class="text-accent font-bold">${radarScore}</span></div>` : ''}
-                            </div>
-                            <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-auto">
+                            <div class="font-mono text-sm text-gray-300">${estado}</div>
+                            ${chipsHtml}
+                            ${radarScoreHtml}
+                            <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
                                 <span>SCORE: <span class="text-white">${score}</span></span>
                                 <span>ADJ: ${ajustado}</span>
                             </div>
@@ -655,6 +695,7 @@
                             ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
                             ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
                             ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
+                            ${narrativaHtml}
                         </div>
                     `;
                 }).join('');
@@ -750,6 +791,12 @@
                         const rsColor = rsScore > 80 ? 'bg-pos' : (rsScore > 40 ? 'bg-accent' : 'bg-neg');
                         const displayPrecio = typeof precio === 'number' ? precio.toFixed(2) : '—';
                         const displayRs = typeof rsScore === 'number' ? rsScore.toFixed(0) : '—';
+
+                        // Radar Score chico, al lado del RS (si está calculado)
+                        const radarScoreTicker = ticker?.Radar_Score;
+                        const radarChip = radarScoreTicker != null
+                            ? `<span class="text-[9px] text-gray-500 ml-2">RADAR <span class="text-accent font-bold">${radarScoreTicker.toFixed(0)}</span></span>`
+                            : '';
                         
                         // Lógica Tooltip Hover
                         const s50V = ticker?.SMA50 != null ? `$${ticker.SMA50.toFixed(2)} (${ticker['Dist_SMA50_%'] > 0 ? '+' : ''}${ticker['Dist_SMA50_%'].toFixed(1)}%)` : 'sin datos';
@@ -772,6 +819,7 @@
                                             <div class="h-full ${rsColor}" style="width: ${Math.min(rsScore, 100)}%"></div>
                                         </div>
                                         <div class="w-10 text-right text-xs text-gray-500">${displayRs}</div>
+                                        ${radarChip}
                                     </div>
 
                                     <div class="w-32 text-right flex justify-end items-center gap-2 text-[10px] text-gray-400 ml-auto tracking-widest">
@@ -844,7 +892,7 @@
         }
 
         // ============ HISTORIAL (bitácora de eventos) ============
-        const LOG_URL = 'https://raw.githubusercontent.com/victoriagramigna/radar-mercado/main/data/log_alertas.jsonl';
+        const LOG_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/log_alertas.jsonl';
         let historialData = null; // null = todavía no se pidió; [] = se pidió y vino vacío/404
 
         async function fetchHistorialData() {
