@@ -4,6 +4,14 @@ más antes de darlo por perdido -- yfinance tiene fallos aleatorios y
 transitorios conocidos (le pasa hasta a tickers gigantes como AAPL a veces,
 según reportes de otros usuarios de la librería), no siempre significa que
 el ticker esté mal escrito o delistado de verdad.
+
+CAMBIO (HyperTrade): además de precios (Close) y volumenes (Volume), ahora
+también se guarda el DataFrame OHLCV completo por ticker en un tercer
+diccionario, precios_ohlc. Esto no cambia en nada lo que ya usan
+rs_score.py, alertas.py, movimientos.py, etc. -- siguen recibiendo
+exactamente las mismas Series que antes. El OHLCV completo es SOLO para
+los indicadores nuevos que lo necesitan (AVWAP, ATR), que antes no tenían
+con qué calcularse porque se descartaban Open/High/Low.
 """
 import logging
 import time
@@ -14,30 +22,37 @@ log = logging.getLogger("radar.datos")
 
 
 def _traer_uno(simbolo: str, periodo: str):
-    """Un solo intento de traer un ticker. Lanza excepción si falla."""
+    """
+    Un solo intento de traer un ticker. Lanza excepción si falla.
+    Devuelve (Close, Volume, ohlcv) -- ohlcv es el DataFrame completo
+    con solo las columnas Open/High/Low/Close/Volume (se descartan
+    Dividends y Stock Splits, que no se usan en ningún cálculo).
+    """
     hist = yf.Ticker(simbolo).history(period=periodo, auto_adjust=True)
     if hist.empty or len(hist) < 200:
         raise ValueError(f"datos insuficientes ({len(hist)} filas, se necesitan >=200)")
-    return hist["Close"], hist["Volume"]
+    ohlcv = hist[["Open", "High", "Low", "Close", "Volume"]]
+    return hist["Close"], hist["Volume"], ohlcv
 
 
 def traer_datos(tickers: dict, benchmark: str, periodo: str = "1y", reintentos: int = 1):
     """
     tickers: dict {ticker: sector}
-    Devuelve (precios, volumenes, tickers_fallidos)
-    precios/volumenes: dict {ticker: pd.Series}
+    Devuelve (precios, volumenes, precios_ohlc, tickers_fallidos)
+    precios/volumenes: dict {ticker: pd.Series}  (sin cambios respecto a v2)
+    precios_ohlc: dict {ticker: pd.DataFrame}  (NUEVO -- Open/High/Low/Close/Volume)
     tickers_fallidos: lista de tickers que no se pudieron traer (tras los
     reintentos), con el motivo del último intento
     """
     simbolos = list(tickers.keys()) + [benchmark]
-    precios, volumenes = {}, {}
+    precios, volumenes, precios_ohlc = {}, {}, {}
     fallidos_primera_pasada = {}
 
     log.info(f"Descargando {len(simbolos)} símbolos (período={periodo})...")
 
     for simbolo in simbolos:
         try:
-            precios[simbolo], volumenes[simbolo] = _traer_uno(simbolo, periodo)
+            precios[simbolo], volumenes[simbolo], precios_ohlc[simbolo] = _traer_uno(simbolo, periodo)
         except Exception as e:
             fallidos_primera_pasada[simbolo] = str(e)
 
@@ -48,7 +63,7 @@ def traer_datos(tickers: dict, benchmark: str, periodo: str = "1y", reintentos: 
         time.sleep(2)  # pequeña pausa, por si el fallo fue por límite de tasa momentáneo
         for simbolo in list(fallidos_primera_pasada.keys()):
             try:
-                precios[simbolo], volumenes[simbolo] = _traer_uno(simbolo, periodo)
+                precios[simbolo], volumenes[simbolo], precios_ohlc[simbolo] = _traer_uno(simbolo, periodo)
                 del fallidos_primera_pasada[simbolo]  # se recuperó en el reintento
                 log.info(f"  ✓ {simbolo}: se recuperó en el reintento")
             except Exception as e:
@@ -59,7 +74,7 @@ def traer_datos(tickers: dict, benchmark: str, periodo: str = "1y", reintentos: 
         log.warning(f"  ⚠ {f['ticker']}: falló tras reintento ({f['motivo']}) -- se omite de esta corrida")
 
     log.info(f"OK: {len(precios)} símbolos. Fallidos: {len(fallidos)}")
-    return precios, volumenes, fallidos
+    return precios, volumenes, precios_ohlc, fallidos
 
 
 if __name__ == "__main__":
@@ -67,6 +82,6 @@ if __name__ == "__main__":
     # en este sandbox de desarrollo está bloqueado a propósito; correr
     # este archivo directamente en GitHub Actions o en tu máquina local).
     from config import TICKERS, BENCHMARK
-    precios, volumenes, fallidos = traer_datos(TICKERS, BENCHMARK)
+    precios, volumenes, precios_ohlc, fallidos = traer_datos(TICKERS, BENCHMARK)
     print(f"Precios OK: {list(precios.keys())}")
     print(f"Fallidos: {fallidos}")
