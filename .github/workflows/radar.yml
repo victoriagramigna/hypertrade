@@ -4,8 +4,11 @@ on:
   # Corrida completa diaria, después del cierre de NYSE (21:15 UTC ≈ 18:15 ARG)
   schedule:
     - cron: '15 21 * * 1-5'
-    # Corridas livianas intradiarias, cada 1h en horario de mercado (14-21 UTC ≈ 11-18 ARG)
-    - cron: '7 14-21 * * 1-5'
+    # Corridas cada 30 minutos, apertura NYSE (10:30 ARG = 13:30 UTC) a
+    # cierre (17:00 ARG = 20:00 UTC) -- 13-20 UTC cubre de sobra, con un
+    # margen de 30 min antes/después que no molesta (repo público =
+    # minutos de Actions ilimitados, no hay costo por las corridas extra)
+    - cron: '0,30 13-20 * * 1-5'
 
   # Permite correrlo a mano desde la pestaña "Actions" de GitHub -- IMPORTANTE:
   # usar esto para probar el pipeline completo antes de confiar en el cron.
