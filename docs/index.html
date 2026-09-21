@@ -232,11 +232,33 @@
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Avisos por mail</h2>
             <div class="bg-surface p-4 rounded-sm border border-surface font-mono text-xs space-y-3">
                 <div class="text-gray-400">
-                    Para que el sistema te avise por mail (stop tocado, objetivo de ganancia, pérdida de fuerza técnica) incluso sin tener esta página abierta, exportá tu cartera y pegala en <code class="text-accent">data/mi_cartera.json</code> del repo. Solo hace falta repetirlo cuando compras o vendés algo -- el stop se va a ir actualizando solo en el repo después de cada corrida.
+                    Para que el sistema te avise por mail (stop tocado, objetivo de ganancia, pérdida de fuerza técnica) incluso sin tener esta página abierta, conectá esta cartera con GitHub -- una sola vez. Después, cada compra o venta que anotes se sincroniza sola, sin que tengas que copiar ni pegar nada.
                 </div>
-                <button id="exportar-cartera-btn" class="bg-accent text-base font-bold uppercase text-xs py-2 px-4 rounded-sm hover:bg-white transition-colors">Exportar cartera</button>
-                <textarea id="exportar-cartera-output" readonly class="hidden w-full bg-base border border-gray-700 rounded-sm p-2 text-white text-[10px] h-40" onclick="this.select()"></textarea>
-                <div id="exportar-cartera-hint" class="hidden text-gray-500 text-[10px]">Tocá el texto de arriba para seleccionarlo todo, copialo, y pegalo reemplazando el contenido de <code class="text-accent">data/mi_cartera.json</code> en el repo.</div>
+
+                <div id="sync-configurado" class="hidden space-y-2">
+                    <div class="flex items-center gap-2 text-pos font-bold">✓ Sincronización automática activada</div>
+                    <div id="sync-status" class="text-gray-500 text-[10px]"></div>
+                    <button id="sync-desconectar-btn" class="text-gray-600 hover:text-neg text-[10px] underline">Desconectar</button>
+                </div>
+
+                <div id="sync-sin-configurar" class="space-y-2">
+                    <div class="text-gray-500 text-[10px] leading-relaxed">
+                        Para conectar, necesitás un token de GitHub con permiso solo sobre este repo:
+                        <br>1. Andá a <span class="text-accent">github.com/settings/personal-access-tokens/new</span>
+                        <br>2. "Repository access" → "Only select repositories" → elegí <span class="text-accent">hypertrade</span>
+                        <br>3. En "Permissions" → "Repository permissions" → "Contents" → cambiá a "Read and write"
+                        <br>4. "Generate token" y copiá el código (empieza con <span class="text-accent">github_pat_...</span>)
+                    </div>
+                    <input type="password" id="github-token-input" placeholder="Pegá el token acá" class="w-full bg-base border border-gray-700 focus:border-accent rounded-sm px-2 py-1.5 text-white text-[10px]">
+                    <button id="github-token-guardar-btn" class="bg-accent text-base font-bold uppercase text-xs py-2 px-4 rounded-sm hover:bg-white transition-colors">Conectar</button>
+                    <div class="text-gray-600 text-[10px]">El token queda guardado solo en este navegador, igual que tu cartera -- nunca se sube al repo.</div>
+                </div>
+
+                <div class="border-t border-base pt-3 mt-3">
+                    <button id="exportar-cartera-btn" class="text-gray-500 hover:text-white text-[10px] underline">O exportar manualmente (respaldo, sin necesidad de token)</button>
+                    <textarea id="exportar-cartera-output" readonly class="hidden w-full bg-base border border-gray-700 rounded-sm p-2 text-white text-[10px] h-40 mt-2" onclick="this.select()"></textarea>
+                    <div id="exportar-cartera-hint" class="hidden text-gray-500 text-[10px] mt-1">Tocá el texto de arriba para seleccionarlo todo, copialo, y pegalo reemplazando el contenido de <code class="text-accent">data/mi_cartera.json</code> en el repo.</div>
+                </div>
             </div>
         </section>
 
@@ -980,7 +1002,123 @@
 
         function guardarCartera(posiciones) {
             localStorage.setItem('mi_cartera', JSON.stringify(posiciones));
+            sincronizarConGithub(posiciones); // fire-and-forget, no bloquea la UI
         }
+
+        // ============ SINCRONIZACIÓN AUTOMÁTICA CON GITHUB ============
+        // El token queda SOLO en este navegador (localStorage), nunca se sube
+        // al repo. Con permiso "Contents: Read and write" sobre este único
+        // repo, alcanza para leer y escribir data/mi_cartera.json vía la API
+        // de contenidos de GitHub -- no hace falta copiar/pegar nada más.
+        const GITHUB_OWNER = 'victoriagramigna';
+        const GITHUB_REPO = 'hypertrade';
+        const GITHUB_PATH_CARTERA = 'data/mi_cartera.json';
+
+        function cargarTokenGithub() {
+            return localStorage.getItem('gh_token_hypertrade');
+        }
+
+        function guardarTokenGithub(token) {
+            localStorage.setItem('gh_token_hypertrade', token);
+        }
+
+        function borrarTokenGithub() {
+            localStorage.removeItem('gh_token_hypertrade');
+        }
+
+        function _posicionesParaExportar(posiciones) {
+            return posiciones.map(p => ({
+                ticker: p.ticker,
+                precio: p.precio,
+                cantidad: p.cantidad ?? null,
+                fecha: p.fecha,
+                stopInicial: p.stopInicial ?? null,
+                stopActual: p.stopActual ?? null,
+                radarScoreCompra: p.radarScoreCompra ?? null,
+            }));
+        }
+
+        async function sincronizarConGithub(posiciones) {
+            const token = cargarTokenGithub();
+            const statusEl = document.getElementById('sync-status');
+            if (!token) return; // sin token conectado -- usar el botón de exportar manual
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH_CARTERA}`;
+
+                // 1. Traer el sha actual del archivo (si existe) -- la API de
+                // GitHub lo exige para poder actualizar un archivo existente
+                let sha = null;
+                const getResp = await fetch(apiUrl, {
+                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
+                });
+                if (getResp.ok) {
+                    const info = await getResp.json();
+                    sha = info.sha;
+                } else if (getResp.status !== 404) {
+                    throw new Error(`No se pudo leer el archivo actual (HTTP ${getResp.status})`);
+                }
+
+                // 2. Armar el contenido nuevo, codificado en base64 (lo que pide la API)
+                const contenido = JSON.stringify(_posicionesParaExportar(posiciones), null, 2);
+                const contenidoB64 = btoa(unescape(encodeURIComponent(contenido)));
+
+                const putBody = {
+                    message: `Sync cartera desde dashboard (${new Date().toISOString()})`,
+                    content: contenidoB64,
+                };
+                if (sha) putBody.sha = sha;
+
+                const putResp = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(putBody),
+                });
+
+                if (statusEl) {
+                    if (putResp.ok) {
+                        const ahora = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                        statusEl.textContent = `Última sincronización: ${ahora}`;
+                        statusEl.classList.remove('text-neg');
+                    } else {
+                        statusEl.textContent = `⚠ Error al sincronizar (HTTP ${putResp.status}) -- revisá el token`;
+                        statusEl.classList.add('text-neg');
+                    }
+                }
+            } catch (e) {
+                if (statusEl) {
+                    statusEl.textContent = '⚠ Error al sincronizar (sin conexión o token inválido)';
+                    statusEl.classList.add('text-neg');
+                }
+            }
+        }
+
+        function actualizarUIsincronizacion() {
+            const token = cargarTokenGithub();
+            document.getElementById('sync-configurado').classList.toggle('hidden', !token);
+            document.getElementById('sync-sin-configurar').classList.toggle('hidden', !!token);
+        }
+
+        document.getElementById('github-token-guardar-btn').addEventListener('click', () => {
+            const input = document.getElementById('github-token-input');
+            const token = input.value.trim();
+            if (!token) return;
+            guardarTokenGithub(token);
+            input.value = '';
+            actualizarUIsincronizacion();
+            sincronizarConGithub(cargarCartera()); // sincroniza de una lo que ya tenía cargado
+        });
+
+        document.getElementById('sync-desconectar-btn').addEventListener('click', () => {
+            borrarTokenGithub();
+            actualizarUIsincronizacion();
+        });
+
+        actualizarUIsincronizacion();
 
         // Umbrales del seguimiento activo de posiciones -- reglas clásicas
         // de swing trading (O'Neil/Minervini), ajustables acá si hace falta
