@@ -1,176 +1,100 @@
 # -*- coding: utf-8 -*-
 """
-Narrativa por tarjeta — HyperTrade
-=====================================
-
-Arma el texto explicativo que va al pie de cada tarjeta de alerta,
-usando SOLO las señales que ya calculó radar_score_v2.py — nada de
-IA ni llamadas externas, 100% determinístico y gratis.
-
-Cada plantilla recibe la fila del ticker para insertar valores
-concretos (precio, RS Score, sector, etc.) donde haga falta.
+Arma el texto explicativo al pie de cada tarjeta de alerta, a partir de
+las columnas que ya trae cada fila (df_rs + las agregadas por
+radar_score.py v2). No hace ningún cálculo nuevo -- solo interpreta lo
+que el score ya evaluó. Se llama por cada alerta, justo antes de
+guardar data/ultimo.json.
 """
-
 import pandas as pd
 
 
-# Orden de prioridad para la narrativa: de mayor a menor peso, así la
-# frase más importante siempre aparece primero
-ORDEN_NARRATIVA = [
-    "rs_alto",
-    "stage2",
-    "apoyo_soporte",
-    "gap_alcista",
-    "cruce_avwap_52w",
-    "vcp",
-    "atr_contraction",
-]
+def _frase_rs(fila: dict) -> str:
+    rs = fila.get("RS_Score")
+    sector = fila.get("Sector")
+    if rs is None:
+        return None
+    if rs > 80:
+        return f"Lidera con fuerza relativa {rs:.0f}" + (f" (sector {sector})." if sector else ".")
+    return None
 
 
-def _frase_rs_alto(row: pd.Series) -> str:
-    ticker = row.get("Ticker", row.get("ticker", "El ticker"))
-    rs = row.get("RS_Score", "?")
-    sector = row.get("Sector", row.get("sector", ""))
-    if sector:
-        return f"{ticker} lidera con fuerza relativa {rs} (destaca en el sector {sector})."
-    return f"{ticker} lidera con fuerza relativa {rs}."
+def _frase_contraccion(fila: dict) -> str:
+    vcp = fila.get("VCP_valido")
+    atr = fila.get("ATR_Contraction")
+    if vcp and atr:
+        return "Contracción de volatilidad confirmada por VCP y por ATR -- doble señal de compresión previa a ruptura."
+    if vcp:
+        return "Patrón VCP activo -- rango de precio comprimiéndose."
+    if atr:
+        return "Volatilidad reciente por debajo de su promedio (ATR) -- posible compresión previa a ruptura."
+    return None
 
 
-def _frase_stage2(row: pd.Series) -> str:
-    return "Tendencia alcista confirmada: precio por encima de SMA50 y SMA200, ambas con pendiente positiva."
+def _frase_tendencia(fila: dict) -> str:
+    if fila.get("Sobre_SMA50") and fila.get("Pendiente_OK"):
+        return "Tendencia alcista confirmada, con SMA50 y SMA200 en pendiente ascendente."
+    if fila.get("Sobre_SMA50"):
+        return "Precio por encima de su SMA50."
+    return None
 
 
-def _frase_apoyo_soporte(row: pd.Series) -> str:
-    close = row.get("Close")
-    sma50 = row.get("SMA50")
-    avwap_ytd = row.get("AVWAP_YTD")
-    avwap_gap = row.get("AVWAP_Ultimo_Gap")
-
-    # Determina cuál de los tres soportes es el más cercano al precio,
-    # para nombrarlo específicamente en la frase
-    candidatos = []
-    if pd.notna(sma50):
-        candidatos.append(("su SMA50", sma50))
-    if pd.notna(avwap_ytd):
-        candidatos.append(("su AVWAP anclado al inicio del año", avwap_ytd))
-    if pd.notna(avwap_gap):
-        candidatos.append(("su AVWAP anclado al último gap relevante", avwap_gap))
-
-    if not candidatos or pd.isna(close):
-        return "Apoya sobre un nivel de soporte técnico relevante."
-
-    nombre, valor = min(candidatos, key=lambda c: abs(close - c[1]))
-    return f"Apoya sobre {nombre} (${valor:.2f}), dentro de zona de tolerancia."
+def _frase_avwap(fila: dict) -> str:
+    if not fila.get("Apoyo_AVWAP"):
+        return None
+    precio = fila.get("Precio")
+    candidatos = [
+        ("su AVWAP anclado al inicio del año", fila.get("AVWAP_YTD")),
+        ("su AVWAP anclado al último gap relevante", fila.get("AVWAP_Ultimo_Gap")),
+    ]
+    candidatos = [(n, v) for n, v in candidatos if v is not None and pd.notna(v)]
+    if candidatos and precio is not None:
+        nombre, valor = min(candidatos, key=lambda c: abs(precio - c[1]))
+        return f"Apoya sobre {nombre} (${valor:.2f}) -- zona de costo promedio institucional."
+    return "Apoya sobre un nivel de soporte técnico relevante (SMA50/AVWAP)."
 
 
-def _frase_gap_alcista(row: pd.Series) -> str:
-    gap_pct = row.get("Gap_Pct", row.get("gap_pct"))
-    if pd.notna(gap_pct):
-        return f"Salto de {gap_pct:.1f}% con volumen, por encima de su SMA200 — momentum de corto plazo."
-    return "Salto alcista reciente con volumen, por encima de su SMA200 — momentum de corto plazo."
+def _frase_cruce_52w(fila: dict) -> str:
+    if fila.get("Cruce_AVWAP_52w"):
+        return "Cruzó al alza su AVWAP anclado al máximo de 52 semanas -- posible absorción de vendedores atrapados en el techo."
+    return None
 
 
-def _frase_cruce_avwap_52w(row: pd.Series) -> str:
-    return "Cruzó al alza su AVWAP anclado al máximo de 52 semanas — posible absorción de vendedores atrapados en el techo."
+def _frase_52w(fila: dict) -> str:
+    dist = fila.get("Dist_Max52w_%")
+    if dist is not None and pd.notna(dist) and dist > -5:
+        return "Operando cerca de su máximo de 52 semanas."
+    return None
 
 
-def _frase_vcp(row: pd.Series) -> str:
-    return "Contracción de volatilidad detectada (VCP) — rango de precio comprimiéndose, posible preparación de ruptura."
+def _frase_contexto(dist_days: int, mult_dist: float, regimen_sano: bool) -> str:
+    partes = []
+    if not regimen_sano:
+        partes.append("⚠️ régimen de mercado volátil (VIX elevado)")
+    if mult_dist < 1.0:
+        partes.append(f"⚠️ {dist_days} días de distribución institucional en las últimas 5 semanas")
+    if not partes:
+        return None
+    return "Contexto de mercado: " + "; ".join(partes) + "."
 
 
-def _frase_atr_contraction(row: pd.Series) -> str:
-    ratio = row.get("ATR_Ratio")
-    if pd.notna(ratio):
-        return f"Volatilidad relativa por debajo del promedio (ATR10/ATR50: {ratio:.2f})."
-    return "Volatilidad relativa por debajo del promedio reciente."
+_GENERADORES = [_frase_rs, _frase_tendencia, _frase_avwap, _frase_contraccion, _frase_cruce_52w, _frase_52w]
 
 
-_PLANTILLAS = {
-    "rs_alto": _frase_rs_alto,
-    "stage2": _frase_stage2,
-    "apoyo_soporte": _frase_apoyo_soporte,
-    "gap_alcista": _frase_gap_alcista,
-    "cruce_avwap_52w": _frase_cruce_avwap_52w,
-    "vcp": _frase_vcp,
-    "atr_contraction": _frase_atr_contraction,
-}
-
-
-def _frase_contexto_mercado(distribution_days: int, penalizacion_mercado: int) -> str:
-    if penalizacion_mercado == 0:
-        return ""
-    elif penalizacion_mercado == -1:
-        return f"⚠️ Contexto de mercado con presión de venta institucional inicial: {distribution_days} días de distribución en las últimas 5 semanas."
-    else:
-        return f"⚠️ Contexto de mercado adverso: {distribution_days} días de distribución institucional en las últimas 5 semanas — señal a tomar con cautela."
-
-
-def armar_narrativa(
-    row: pd.Series,
-    señales_activas: list,
-    distribution_days: int = 0,
-    penalizacion_mercado: int = 0,
-    regimen_sano: bool = True,
-    riesgo_pais: float = None,
-) -> str:
+def armar_narrativa(fila: dict, dist_days: int = 0, mult_dist: float = 1.0, regimen_sano: bool = True) -> str:
     """
-    Arma el texto completo para el pie de la tarjeta.
-
-    row: fila de hoy del ticker (para valores concretos)
-    señales_activas: la lista que devuelve calcular_score_compuesto()
-        en radar_score_v2.py
-    distribution_days, penalizacion_mercado: el contexto global de
-        esa corrida (mismos valores para todos los tickers)
-    regimen_sano: si el régimen de mercado general está sano (ya lo
-        calculás en el pipeline actual)
-    riesgo_pais: valor de riesgo país de esa corrida, si lo tenés
-        disponible a mano
-
-    Devuelve el texto final, listo para mostrar en la tarjeta.
+    fila: el diccionario de la alerta (ya trae todas las columnas de
+    df_rs, incluidas las nuevas de radar_score.py v2 -- en main.py esto
+    es {**fila.to_dict(), **rec} dentro del loop de recomendaciones).
     """
-    frases = []
+    frases = [f for f in (gen(fila) for gen in _GENERADORES) if f]
+    cuerpo = " ".join(frases) if frases else "Sin señales técnicas adicionales destacadas."
 
-    # Ordena las señales activas según la prioridad definida arriba,
-    # ignorando las que no tienen plantilla
-    activas_ordenadas = [s for s in ORDEN_NARRATIVA if s in señales_activas]
+    contexto = _frase_contexto(dist_days, mult_dist, regimen_sano)
+    if contexto:
+        cuerpo += " " + contexto
 
-    for señal in activas_ordenadas:
-        funcion_plantilla = _PLANTILLAS.get(señal)
-        if funcion_plantilla:
-            frases.append(funcion_plantilla(row))
+    score = fila.get("Radar_Score")
+    pie = f"Radar Score: {score:.0f}/100" if score is not None else ""
 
-    cuerpo = " ".join(frases) if frases else "Sin señales técnicas destacadas más allá del disparo base."
-
-    contexto_mercado = _frase_contexto_mercado(distribution_days, penalizacion_mercado)
-    if contexto_mercado:
-        cuerpo += " " + contexto_mercado
-
-    # Línea de pie con el resumen numérico
-    regimen_texto = "sano" if regimen_sano else "no sano"
-    pie = f"Régimen de mercado: {regimen_texto}"
-    if riesgo_pais is not None:
-        pie += f" · Riesgo país: {riesgo_pais:.0f}"
-
-    return f"{cuerpo}\n{pie}"
-
-
-# ---------------------------------------------------------------------------
-# EJEMPLO DE USO (después de calcular_score_compuesto en radar_score_v2.py)
-# ---------------------------------------------------------------------------
-#
-#   resultado_score = calcular_score_compuesto(fila_hoy, señales, penalizacion_mercado)
-#
-#   texto_tarjeta = armar_narrativa(
-#       row=fila_hoy,
-#       señales_activas=resultado_score["señales_activas"],
-#       distribution_days=dist_days,
-#       penalizacion_mercado=penalizacion_mercado,
-#       regimen_sano=regimen_mercado["sano"],      # ya lo tenés en el pipeline
-#       riesgo_pais=contexto_macro["riesgo_pais"], # ya lo tenés en el pipeline
-#   )
-#
-#   # texto_tarjeta va directo al JSON, en un campo nuevo como
-#   # "narrativa" dentro de cada alerta, para que el dashboard lo
-#   # muestre al pie de la tarjeta
-#
-# ---------------------------------------------------------------------------
+    return f"{cuerpo}\n{pie}".strip()
