@@ -1,10 +1,14 @@
 """
-Punto de entrada principal del Radar de Mercado (v3).
+Punto de entrada principal del Radar de Mercado (v3 + Radar Score v2).
 Suma sobre v2: RSI/RVOL/SMA200 expuestos para todo el universo (no solo
 alertas), fix del bug de expiración de alertas (ventana de 48hs), nueva
 señal "líder apoyando en soporte", y estimación de próxima corrida (para
 que sea más fácil distinguir "no corrió todavía" de "corrió y no hubo
 novedades").
+
+CAMBIOS (Radar Score v2 -- HyperTrade): se suma AVWAP, ATR, pendiente de
+tendencia y Distribution Days al Radar Score (ahora rebalanceado 0-100),
+más una narrativa de texto por alerta explicando qué disparó cada una.
 """
 import json
 import logging
@@ -28,6 +32,8 @@ from cedear_pricing import calcular_brechas_cedear
 from movimientos import detectar_movimientos_diarios
 from bitacora import registrar_eventos
 from radar_score import calcular_radar_score
+from narrativa import armar_narrativa
+from senales_nuevas import calcular_distribution_days, multiplicador_distribution
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -96,7 +102,7 @@ def main():
 
     # 1. Datos (se pide también el VIX, sumándolo como si fuera un ticker más)
     tickers_a_pedir = {**TICKERS}
-    precios, volumenes, fallidos = traer_datos({**tickers_a_pedir, VIX_TICKER: "Índice"}, BENCHMARK)
+    precios, volumenes, precios_ohlc, fallidos = traer_datos({**tickers_a_pedir, VIX_TICKER: "Índice"}, BENCHMARK)
     if BENCHMARK not in precios:
         log.error("El benchmark no se pudo traer -- abortando la corrida")
         return
@@ -122,17 +128,23 @@ def main():
     frescura = evaluar_frescura(ultima_fecha_benchmark)
     log.info(f"Frescura del dato: {frescura}")
 
+    # 2c. Distribution Days del benchmark (contexto global, una sola vez
+    # por corrida -- NO es una señal por ticker, ver senales_nuevas.py)
+    dist_days = calcular_distribution_days(precios[BENCHMARK], volumenes[BENCHMARK])
+    mult_dist = multiplicador_distribution(dist_days)
+    log.info(f"Distribution Days (25 ruedas): {dist_days} -- multiplicador {mult_dist}")
+
     # 3. RS Score + indicadores completos (RSI, RVOL, SMA50/200) para TODO el universo
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes)
     rs_por_sector = df_rs.groupby("Sector")["RS_Score"].mean().to_dict() if not df_rs.empty else {}
     rs_por_ticker = dict(zip(df_rs["Ticker"], df_rs["RS_Score"])) if not df_rs.empty else {}
 
-    # 3a-bis. Radar Score v1 (compuesto, pensado para timing de entrada --
-    # ver radar_score.py para la definición completa de cada componente)
+    # 3a-bis. Radar Score v2 (compuesto 0-100, ahora con AVWAP + ATR +
+    # pendiente de tendencia + Distribution Days -- ver radar_score.py)
     bench_close = precios[BENCHMARK].dropna()
     spy_sma50 = bench_close.rolling(50).mean().iloc[-1] if len(bench_close) >= 50 else None
     spy_sobre_sma50 = bool(bench_close.iloc[-1] > spy_sma50) if spy_sma50 is not None and not math.isnan(spy_sma50) else True
-    df_rs = calcular_radar_score(df_rs, rs_por_sector, spy_sobre_sma50, regimen)
+    df_rs = calcular_radar_score(df_rs, rs_por_sector, spy_sobre_sma50, regimen, precios_ohlc, dist_days)
 
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
@@ -184,7 +196,13 @@ def main():
         rec["Dist_Max52w_%"] = dist_52w_por_ticker.get(fila["Ticker"])
         rec["RS_sector"] = round(rs_por_sector[fila["Sector"]], 1) if fila["Sector"] in rs_por_sector else None
         rec["Var_SPY_dia_%"] = var_spy_dia_pct
-        recomendaciones.append({**fila.to_dict(), **rec})
+
+        # Narrativa de texto al pie de la tarjeta (Radar Score v2) --
+        # se arma con todas las columnas ya calculadas de esta alerta,
+        # sin ningún cálculo nuevo ni llamada externa.
+        fila_completa = {**fila.to_dict(), **rec}
+        fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist, regimen.get("sano", True))
+        recomendaciones.append(fila_completa)
 
     # 8. Guardar resultado para el dashboard
     salida = {
@@ -202,6 +220,8 @@ def main():
         "contexto_macro": contexto_macro,
         "cedears_pricing": cedears_pricing,
         "movimientos_dia": movimientos_dia,
+        "distribution_days": dist_days,
+        "multiplicador_distribution": mult_dist,
     }
 
     salida_limpia = limpiar_para_json(salida)
