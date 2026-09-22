@@ -122,6 +122,9 @@
     <div id="tab-alertas" class="tab-content hidden-tab">
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
             <section>
+                <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
+                    <input type="text" id="alertas-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Filtrar por ticker (opcional)">
+                </div>
                 <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
                     <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
                 </div>
@@ -418,7 +421,12 @@
             const rsColor = rsScore > 80 ? 'bg-pos' : (rsScore > 40 ? 'bg-accent' : 'bg-neg');
             const distMax = tickerData?.['Dist_Max52w_%'];
             const distMaxColor = (distMax != null && distMax > -3) ? 'text-pos font-bold' : 'text-gray-400';
-            const distMaxText = distMax != null ? `${distMax > 0 ? '+' : ''}${distMax.toFixed(2)}% del máx 52w` : '—';
+            // Máximo de 52w en $, derivado de la distancia % y el precio actual
+            const max52wVal = (distMax != null && tickerData?.Precio != null)
+                ? tickerData.Precio / (1 + distMax / 100)
+                : null;
+            const max52wStr = max52wVal != null ? ` ($${max52wVal.toFixed(2)})` : '';
+            const distMaxText = distMax != null ? `${distMax > 0 ? '+' : ''}${distMax.toFixed(2)}% del máx 52w${max52wStr}` : '—';
             
             const s50Text = tickerData?.SMA50 != null ? `$${tickerData.SMA50.toFixed(2)}` : 'sin datos';
             const dist50 = tickerData?.['Dist_SMA50_%'];
@@ -526,6 +534,145 @@
             }).join('');
         }
 
+        // Guarda la última lista de alertas ya ordenada, para poder
+        // filtrarla por ticker (buscador de la pestaña Alertas) sin
+        // tener que volver a pedir el JSON cada vez que se escribe.
+        let currentAlertasCompletas = [];
+
+        function filtrarAlertas() {
+            const query = (document.getElementById('alertas-search')?.value ?? '').trim().toUpperCase();
+            const alertas = query
+                ? currentAlertasCompletas.filter(a => (a?.Ticker ?? '').toUpperCase().includes(query))
+                : currentAlertasCompletas;
+
+            const alertsContainer = document.getElementById('alerts-container');
+            const totalTexto = query ? `${alertas.length} de ${currentAlertasCompletas.length}` : `${alertas.length}`;
+            document.getElementById('alert-title').textContent = `Alertas Activas (${totalTexto})`;
+
+            if (alertas.length === 0) {
+                alertsContainer.innerHTML = query
+                    ? '<div class="text-gray-500 font-mono text-sm p-4 border border-dashed border-surface rounded-sm">Sin alertas para ese ticker.</div>'
+                    : '<div class="text-gray-500 font-mono text-sm p-4 border border-dashed border-surface rounded-sm">Sin señales técnicas en las últimas 48hs.</div>';
+                return;
+            }
+
+            alertsContainer.innerHTML = alertas.map(alerta => {
+                const recomendacion = alerta?.['Recomendación final'] ?? '—';
+                const ticker = alerta?.Ticker ?? '—';
+                const sector = alerta?.Sector ?? '—';
+                const estado = alerta?.Estado ?? '—';
+                const score = alerta?.Score ?? '—';
+                const ajustado = alerta?.['Ajustado por'] ?? '—';
+                const tipo = alerta?.Tipo ?? 'tecnico';
+                const stopSugerido = alerta?.Stop_sugerido;
+                const radarScore = alerta?.Radar_Score;
+                const precioRef = alerta?.Precio;
+                const rsi = alerta?.RSI;
+                const volRel = alerta?.Vol_rel;
+                const dist52w = alerta?.['Dist_Max52w_%'];
+                const rsSector = alerta?.RS_sector;
+                const varDia = alerta?.['Var_dia_%'];
+                const varSpyDia = alerta?.['Var_SPY_dia_%'];
+                const narrativa = alerta?.Narrativa;
+
+                let stopPctStr = '';
+                if (stopSugerido != null && precioRef != null && precioRef > 0) {
+                    const stopPct = ((stopSugerido / precioRef - 1) * 100).toFixed(1);
+                    stopPctStr = ` (${stopPct}%)`;
+                }
+
+                let vsSpyStr = '';
+                if (varDia != null && varSpyDia != null) {
+                    const diff = (varDia - varSpyDia).toFixed(1);
+                    vsSpyStr = `${diff >= 0 ? '+' : ''}${diff}pp vs SPY`;
+                }
+
+                const fechaEvento = alerta?.fecha_evento;
+                let fechaEventoStr = '';
+                if (fechaEvento) {
+                    const fe = new Date(fechaEvento);
+                    const diaMes = fe.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                    const hora = fe.toLocaleTimeString('es-AR', {hour12: false, hour: '2-digit', minute: '2-digit'});
+                    fechaEventoStr = `${diaMes} · ${hora}`;
+                }
+
+                let recColor = 'text-accent border-accent';
+                let containerBorder = 'border-l-2 border-surface hover:border-l-accent';
+                let bgCustom = 'bg-surface';
+                let titleIcon = '';
+
+                if (tipo === 'lider_soporte') {
+                    recColor = 'bg-blueAlert/20 text-blueAlert border border-blueAlert';
+                    containerBorder = 'border-l-4 border-blueAlert shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]';
+                    bgCustom = 'bg-[#151b2b]';
+                    titleIcon = '🎯 ';
+                } else {
+                    if (recomendacion === 'COMPRA') recColor = 'bg-pos text-base border-pos';
+                    if (recomendacion === 'VENTA') recColor = 'bg-neg text-base border-neg';
+                    if (recomendacion === 'MANTENER') recColor = 'bg-accent text-base border-accent';
+                }
+
+                // Radar Score: barra de color + número, en vez de solo texto
+                let radarScoreHtml = '';
+                if (radarScore != null) {
+                    const rColor = radarScore >= 70 ? 'bg-pos' : (radarScore >= 45 ? 'bg-accent' : 'bg-neg');
+                    radarScoreHtml = `
+                        <div class="mt-3">
+                            <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
+                                <span>Radar Score</span>
+                                <span class="text-white font-bold">${radarScore.toFixed(0)} / 100</span>
+                            </div>
+                            <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
+                                <div class="h-full ${rColor}" style="width: ${Math.min(radarScore, 100)}%"></div>
+                            </div>
+                        </div>`;
+                }
+
+                // Chips de señales nuevas activas (AVWAP, tendencia, contracción)
+                const chips = [];
+                if (alerta?.Apoyo_AVWAP) chips.push('<span class="signal-chip text-blueAlert border-blueAlert">AVWAP SOPORTE</span>');
+                if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos">CRUCE 52W</span>');
+                if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent">TENDENCIA+</span>');
+                if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
+                const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
+
+                // Narrativa al pie -- el texto de radar_score.py/narrativa.py
+                const narrativaHtml = narrativa
+                    ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
+                    : '';
+
+                return `
+                    <div class="${bgCustom} p-4 ${containerBorder} transition-colors rounded-r-sm">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <span class="text-xl font-bold text-white">${titleIcon}${ticker}</span>
+                                <span class="text-xs font-mono text-gray-500 ml-2 uppercase">${sector}</span>
+                            </div>
+                            <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
+                        </div>
+                        <div class="font-mono text-sm text-gray-300">${estado}</div>
+                        ${chipsHtml}
+                        ${radarScoreHtml}
+                        <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
+                            <span>SCORE: <span class="text-white">${score}</span></span>
+                            <span>ADJ: ${ajustado}</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-gray-500 mt-2">
+                            <div><div class="uppercase">RSI</div><div class="text-white text-[11px]">${rsi ?? '—'}</div></div>
+                            <div><div class="uppercase">VOL</div><div class="text-white text-[11px]">${volRel != null ? volRel + 'x' : '—'}</div></div>
+                            <div><div class="uppercase">52W</div><div class="text-white text-[11px]">${dist52w != null ? dist52w + '%' : '—'}</div></div>
+                            <div><div class="uppercase">RS SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
+                        </div>
+                        ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF.: <span class="text-white">$${precioRef}</span></div>` : ''}
+                        ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
+                        ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
+                        ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
+                        ${narrativaHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
         function renderDashboard(data) {
             // Timestamp y 24hs format
             const fechaGenerado = data?.generado_utc;
@@ -599,141 +746,21 @@
 
             document.getElementById('badges').innerHTML = badgesHtml.join('');
 
-            // Renderizado de Alertas
-            const alertsContainer = document.getElementById('alerts-container');
-            const alertas = data?.alertas ?? [];
-            
-            document.getElementById('alert-title').textContent = `Alertas Activas (${alertas.length})`;
-            
-            if (alertas.length === 0) {
-                alertsContainer.innerHTML = '<div class="text-gray-500 font-mono text-sm p-4 border border-dashed border-surface rounded-sm">Sin señales técnicas en las últimas 48hs.</div>';
-            } else {
-                alertas.sort((a, b) => {
-                    const getRank = (alerta) => {
-                        const rec = alerta?.['Recomendación final'];
-                        if (rec === 'COMPRA' || alerta?.Tipo === 'lider_soporte') return 1;
-                        if (rec === 'VENTA') return 2;
-                        return 3;
-                    };
-                    return getRank(a) - getRank(b);
-                });
-
-                alertsContainer.innerHTML = alertas.map(alerta => {
-                    const recomendacion = alerta?.['Recomendación final'] ?? '—';
-                    const ticker = alerta?.Ticker ?? '—';
-                    const sector = alerta?.Sector ?? '—';
-                    const estado = alerta?.Estado ?? '—';
-                    const score = alerta?.Score ?? '—';
-                    const ajustado = alerta?.['Ajustado por'] ?? '—';
-                    const tipo = alerta?.Tipo ?? 'tecnico';
-                    const stopSugerido = alerta?.Stop_sugerido;
-                    const radarScore = alerta?.Radar_Score;
-                    const precioRef = alerta?.Precio;
-                    const rsi = alerta?.RSI;
-                    const volRel = alerta?.Vol_rel;
-                    const dist52w = alerta?.['Dist_Max52w_%'];
-                    const rsSector = alerta?.RS_sector;
-                    const varDia = alerta?.['Var_dia_%'];
-                    const varSpyDia = alerta?.['Var_SPY_dia_%'];
-                    const narrativa = alerta?.Narrativa;
-
-                    let stopPctStr = '';
-                    if (stopSugerido != null && precioRef != null && precioRef > 0) {
-                        const stopPct = ((stopSugerido / precioRef - 1) * 100).toFixed(1);
-                        stopPctStr = ` (${stopPct}%)`;
-                    }
-
-                    let vsSpyStr = '';
-                    if (varDia != null && varSpyDia != null) {
-                        const diff = (varDia - varSpyDia).toFixed(1);
-                        vsSpyStr = `${diff >= 0 ? '+' : ''}${diff}pp vs SPY`;
-                    }
-
-                    const fechaEvento = alerta?.fecha_evento;
-                    let fechaEventoStr = '';
-                    if (fechaEvento) {
-                        const fe = new Date(fechaEvento);
-                        const diaMes = fe.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit', year: 'numeric'});
-                        const hora = fe.toLocaleTimeString('es-AR', {hour12: false, hour: '2-digit', minute: '2-digit'});
-                        fechaEventoStr = `${diaMes} · ${hora}`;
-                    }
-
-                    let recColor = 'text-accent border-accent'; 
-                    let containerBorder = 'border-l-2 border-surface hover:border-l-accent';
-                    let bgCustom = 'bg-surface';
-                    let titleIcon = '';
-
-                    if (tipo === 'lider_soporte') {
-                        recColor = 'bg-blueAlert/20 text-blueAlert border border-blueAlert';
-                        containerBorder = 'border-l-4 border-blueAlert shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]';
-                        bgCustom = 'bg-[#151b2b]'; 
-                        titleIcon = '🎯 ';
-                    } else {
-                        if (recomendacion === 'COMPRA') recColor = 'bg-pos text-base border-pos';
-                        if (recomendacion === 'VENTA') recColor = 'bg-neg text-base border-neg';
-                        if (recomendacion === 'MANTENER') recColor = 'bg-accent text-base border-accent';
-                    }
-
-                    // Radar Score: barra de color + número, en vez de solo texto
-                    let radarScoreHtml = '';
-                    if (radarScore != null) {
-                        const rColor = radarScore >= 70 ? 'bg-pos' : (radarScore >= 45 ? 'bg-accent' : 'bg-neg');
-                        radarScoreHtml = `
-                            <div class="mt-3">
-                                <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
-                                    <span>Radar Score</span>
-                                    <span class="text-white font-bold">${radarScore.toFixed(0)} / 100</span>
-                                </div>
-                                <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
-                                    <div class="h-full ${rColor}" style="width: ${Math.min(radarScore, 100)}%"></div>
-                                </div>
-                            </div>`;
-                    }
-
-                    // Chips de señales nuevas activas (AVWAP, tendencia, contracción)
-                    const chips = [];
-                    if (alerta?.Apoyo_AVWAP) chips.push('<span class="signal-chip text-blueAlert border-blueAlert">AVWAP SOPORTE</span>');
-                    if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos">CRUCE 52W</span>');
-                    if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent">TENDENCIA+</span>');
-                    if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
-                    const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
-
-                    // Narrativa al pie -- el texto de radar_score.py/narrativa.py
-                    const narrativaHtml = narrativa
-                        ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
-                        : '';
-
-                    return `
-                        <div class="${bgCustom} p-4 ${containerBorder} transition-colors rounded-r-sm">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <span class="text-xl font-bold text-white">${titleIcon}${ticker}</span>
-                                    <span class="text-xs font-mono text-gray-500 ml-2 uppercase">${sector}</span>
-                                </div>
-                                <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
-                            </div>
-                            <div class="font-mono text-sm text-gray-300">${estado}</div>
-                            ${chipsHtml}
-                            ${radarScoreHtml}
-                            <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
-                                <span>SCORE: <span class="text-white">${score}</span></span>
-                                <span>ADJ: ${ajustado}</span>
-                            </div>
-                            <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-gray-500 mt-2">
-                                <div><div class="uppercase">RSI</div><div class="text-white text-[11px]">${rsi ?? '—'}</div></div>
-                                <div><div class="uppercase">VOL</div><div class="text-white text-[11px]">${volRel != null ? volRel + 'x' : '—'}</div></div>
-                                <div><div class="uppercase">52W</div><div class="text-white text-[11px]">${dist52w != null ? dist52w + '%' : '—'}</div></div>
-                                <div><div class="uppercase">RS SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
-                            </div>
-                            ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF.: <span class="text-white">$${precioRef}</span></div>` : ''}
-                            ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
-                            ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
-                            ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
-                            ${narrativaHtml}
-                        </div>
-                    `;
-                }).join('');
-            }
+            // Renderizado de Alertas -- se guarda la lista completa aparte
+            // para poder filtrarla por ticker sin volver a pedir el JSON
+            // (ver filtrarAlertas() definida fuera de esta función).
+            const alertasCompletas = data?.alertas ?? [];
+            alertasCompletas.sort((a, b) => {
+                const getRank = (alerta) => {
+                    const rec = alerta?.['Recomendación final'];
+                    if (rec === 'COMPRA' || alerta?.Tipo === 'lider_soporte') return 1;
+                    if (rec === 'VENTA') return 2;
+                    return 3;
+                };
+                return getRank(a) - getRank(b);
+            });
+            currentAlertasCompletas = alertasCompletas;
+            filtrarAlertas();
 
             const rankingArray = data?.ranking ?? [];
 
@@ -817,9 +844,14 @@
                             dot200Class = dist200 > 0 ? 'dot-pos' : 'dot-neg';
                         }
                         
-                        // Lógica Distancia Máximos 52w
+                        // Lógica Distancia Máximos 52w -- incluye el valor en $ del máximo
                         const distMax = ticker?.['Dist_Max52w_%'];
-                        const distMaxText = distMax != null ? `(${distMax > 0 ? '+' : ''}${distMax.toFixed(1)}% del máx.)` : '';
+                        const max52wVal = (distMax != null && typeof precio === 'number')
+                            ? precio / (1 + distMax / 100)
+                            : null;
+                        const distMaxText = distMax != null
+                            ? `(${distMax > 0 ? '+' : ''}${distMax.toFixed(1)}% del máx.${max52wVal != null ? ` $${max52wVal.toFixed(2)}` : ''})`
+                            : '';
                         const distMaxColor = (distMax != null && distMax > -3) ? 'text-pos font-bold' : 'text-gray-500';
 
                         const rsColor = rsScore > 80 ? 'bg-pos' : (rsScore > 40 ? 'bg-accent' : 'bg-neg');
@@ -1096,6 +1128,8 @@
                 }
             }
         }
+
+        document.getElementById('alertas-search').addEventListener('input', filtrarAlertas);
 
         function actualizarUIsincronizacion() {
             const token = cargarTokenGithub();
