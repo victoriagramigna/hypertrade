@@ -273,6 +273,22 @@ RATIOS_CEDEAR = {
     "RACE": 83, "RGTI": 2, "RIOT": 3, "RKLB": 12, "RTX": 5, "SAP": 6, "SCCO": 2, "SE": 32,
     "SONY": 8, "TM": 15, "TMO": 22, "TMUS": 33, "TRIP": 2, "TV": 3, "TWLO": 36, "UGP": 1,
     "UL": 3, "URBN": 2, "VRSN": 6, "VST": 26, "VZ": 4,
+    # --- Completado desde el PDF oficial de BYMA (mismo, actualizado 3/2/2026) ---
+    "AAL": 2, "ABNB": 15, "ADBE": 44, "AMD": 10, "AMZN": 144, "ARKK": 10,
+    "B": 2, "BBD": 1, "BBVA": 1, "BIOX": 1, "BRK-B": 22, "C": 3, "CVX": 16,
+    "DOW": 6, "EWZ": 2, "F": 1, "FSLR": 18, "GLOB": 18, "GM": 6, "GOOGL": 58,
+    "GPRK": 1, "HOOD": 29, "JNJ": 15, "JPM": 15, "KO": 5, "LAR": 1, "LLY": 56,
+    "MELI": 120, "MRK": 5, "MSFT": 30, "NFLX": 48, "NIO": 4, "NU": 2,
+    "PAGS": 3, "PEP": 18, "PFE": 4, "PLTR": 3, "PYPL": 8, "QCOM": 11, "RIO": 8,
+    "SHOP": 107, "SPGI": 45, "SPOT": 28, "SPXL": 25, "T": 3, "TEN": 1,
+    "TGT": 24, "TX": 4, "UBER": 2, "UNH": 33, "URA": 5, "V": 18, "VALE": 2,
+    "VIST": 3, "WFC": 5, "WMT": 18, "XLE": 2, "XLK": 46, "XOM": 10, "XYZ": 20,
+    "ZM": 47,
+    # --- Ratios de ADR (no CEDEAR) para acciones argentinas que cotizan
+    # directo en NYSE -- misma lógica de brecha, referencia distinta al
+    # dólar CCL en vez del panel de CEDEARs de BYMA.
+    "YPF": 1, "GGAL": 10, "BMA": 10, "BBAR": 3, "PAM": 25,
+    # SUPV, EDN, TGS: ratio de ADR sin confirmar todavía
 }
 
 # --- Casos donde el ticker real (yfinance/NYSE) difiere del código que usa
