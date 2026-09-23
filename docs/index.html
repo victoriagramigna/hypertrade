@@ -141,10 +141,10 @@
                 <button id="ticker-search-btn" class="bg-base hover:bg-accent hover:text-base text-gray-400 px-3 py-1.5 transition-colors font-mono text-xs font-bold rounded-sm border border-gray-800">BUSCAR</button>
             </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Sección Nueva: Top 10 -->
+            <!-- Sección: Top 30 -->
             <section>
-                <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 10 Fuerza Relativa</h2>
-                <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface"></div>
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 30 Fuerza Relativa</h2>
+                <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto"></div>
             </section>
             <!-- 4. Rotación Sectorial -->
             <section>
@@ -764,19 +764,19 @@
 
             const rankingArray = data?.ranking ?? [];
 
-            // Renderizado Top 10
+            // Renderizado Top 30
             const top10Container = document.getElementById('top10-container');
             if (rankingArray.length === 0) {
                 top10Container.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin datos.</div>';
             } else {
-                const top10 = [...rankingArray].sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0)).slice(0, 10);
+                const top10 = [...rankingArray].sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0)).slice(0, 30);
                 top10Container.innerHTML = top10.map((ticker, index) => {
                     const rsScore = ticker?.RS_Score ?? 0;
                     const dotClass = ticker?.Sobre_SMA50 ? 'dot-pos' : 'dot-neg';
                     return `
                         <div class="flex justify-between items-center border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
                             <div class="flex items-center gap-2">
-                                <span class="text-gray-600 font-mono text-xs w-4">${index + 1}.</span>
+                                <span class="text-gray-600 font-mono text-xs w-6 text-right">${index + 1}.</span>
                                 <span class="font-bold text-white w-14">${ticker?.Ticker ?? '—'}</span>
                                 <span class="text-[10px] uppercase text-gray-500 truncate w-24 hidden 2xl:inline-block">${ticker?.Sector ?? '—'}</span>
                             </div>
