@@ -44,6 +44,7 @@ from cartera_seguimiento import procesar_cartera
 from seguimiento_precios import procesar_seguimiento
 from evaluacion_sistema import evaluar_sistema
 from auditoria import correr_auditoria
+from regimen_score import calcular_regimen_score
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -121,6 +122,15 @@ def main():
     # y guardando en el JSON para que el dashboard lo muestre.
     dist_days = calcular_distribution_days(precios[BENCHMARK], volumenes[BENCHMARK])
     mult_dist_badge = multiplicador_distribution(dist_days)  # solo para colorear el badge
+
+    # Régimen de mercado 0-100 (clima general para comprar). NO toca el
+    # Radar Score de cada ticker -- se muestra aparte, se agrega como
+    # dato a cada alerta y se guarda en la bitácora para la Auditoría.
+    try:
+        regimen_score = calcular_regimen_score(precios, list(TICKERS), vix_actual, dist_days)
+    except Exception as e:
+        log.error(f"Régimen de mercado 0-100 falló, no afecta al resto de la corrida: {e}")
+        regimen_score = None
     log.info(f"Distribution Days (25 ruedas): {dist_days} -- (informativo, ya no penaliza el score)")
 
     # 3. RS Score + indicadores completos
@@ -198,6 +208,7 @@ def main():
         rec["Dist_Max52w_%"] = dist_52w_por_ticker.get(fila["Ticker"])
         rec["RS_sector"] = round(rs_por_sector[fila["Sector"]], 1) if fila["Sector"] in rs_por_sector else None
         rec["Var_SPY_dia_%"] = var_spy_dia_pct
+        rec["Regimen_Score"] = regimen_score["score"] if regimen_score else None
 
         fila_completa = {**fila.to_dict(), **rec, **extras_por_ticker.get(fila["Ticker"], {})}
         fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist_badge, regimen.get("sano", True))
@@ -215,6 +226,7 @@ def main():
         "ranking": df_rs.to_dict(orient="records") if not df_rs.empty else [],
         "rs_por_sector": rs_por_sector,
         "regimen_mercado": regimen,
+        "regimen_score": regimen_score,
         "alertas": recomendaciones,
         "contexto_macro": contexto_macro,
         "cedears_pricing": cedears_pricing,

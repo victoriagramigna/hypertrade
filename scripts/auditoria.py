@@ -144,6 +144,7 @@ def _evaluar_evento(ev, serie, serie_spy):
         "recomendacion": ev.get("recomendacion"),
         "precio_entrada": round(float(precio_entrada), 2),
         "radar_score": ev.get("radar_score"),
+        "regimen_score": ev.get("regimen_score"),
         "ruedas_transcurridas": int(len(posteriores)),
     }
 
@@ -274,7 +275,39 @@ def auditar_señales(precios):
         log.info(f"Auditoría: {len(nuevos_completos)} caso(s) terminados grabados en {RUTA_HISTORICO}")
 
     lista = sorted(casos.values(), key=lambda c: c["fecha"], reverse=True)
-    return _resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista)
+    return _resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista), _por_regimen(lista)
+
+
+FRANJAS_REGIMEN = [(80, "80-100 Favorable"), (60, "60-79 Aceptable"), (40, "40-59 Cauteloso"), (0, "0-39 Desfavorable")]
+
+
+def _por_regimen(casos):
+    """¿Las señales ALCISTAS aciertan más cuando el régimen está alto?
+    Solo cuenta casos que tienen el régimen grabado (desde que existe)."""
+    grupos = {nombre: [] for _, nombre in FRANJAS_REGIMEN}
+    for c in casos:
+        r = c.get("regimen_score")
+        if r is None or c.get("direccion") != "alcista":
+            continue
+        for piso, nombre in FRANJAS_REGIMEN:
+            if r >= piso:
+                grupos[nombre].append(c)
+                break
+    salida = []
+    for _, nombre in FRANJAS_REGIMEN:
+        lista = grupos[nombre]
+        fila = {"franja": nombre, "casos": len(lista)}
+        for h in HORIZONTES:
+            medibles = [c for c in lista if c.get(f"r{h}") is not None]
+            n = len(medibles)
+            datos = {"n": n}
+            if n:
+                datos["pct_aciertos"] = round(sum(1 for c in medibles if c[f"acierto{h}"]) / n * 100)
+                datos["ret_prom"] = _prom([c[f"r{h}"] for c in medibles])
+                datos["vs_spy_prom"] = _prom([c.get(f"vs_spy{h}") for c in medibles])
+            fila[str(h)] = datos
+        salida.append(fila)
+    return salida
 
 
 def _por_mes(casos):
@@ -592,7 +625,7 @@ def evaluar_mis_operaciones(precios):
 
 def correr_auditoria(precios, df_rs, universo, ahora=None):
     ahora = ahora or datetime.now(timezone.utc)
-    resumen, detalle, n_casos, por_mes = auditar_señales(precios)
+    resumen, detalle, n_casos, por_mes, por_regimen = auditar_señales(precios)
 
     fotos = guardar_foto_top30(df_rs, ahora)
     top30 = evaluar_top30_real(fotos, precios, universo)
@@ -619,6 +652,7 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         "casos_total": n_casos,
         "resumen_señales": resumen,
         "por_mes": por_mes,
+        "por_regimen": por_regimen,
         "detalle": detalle,
         "top30_semanal": top30,
         "simulacion_top30": simulacion,
