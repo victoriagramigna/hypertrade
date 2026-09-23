@@ -43,6 +43,7 @@ from senales_nuevas import calcular_distribution_days, multiplicador_distributio
 from cartera_seguimiento import procesar_cartera
 from seguimiento_precios import procesar_seguimiento
 from evaluacion_sistema import evaluar_sistema
+from auditoria import correr_auditoria
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -280,6 +281,15 @@ def main():
         procesar_seguimiento(precios)
     except Exception as e:
         log.error(f"Seguimiento de precios falló, no afecta al resto de la corrida: {e}")
+
+    # 9c-bis. Auditoría (solapa Auditoría del dashboard) -- resultados reales
+    # por señal, foto semanal del Top 30 y simulación hacia atrás. En una
+    # corrida degradada NO se guarda la foto del Top 30 (el RS no es
+    # confiable con medio universo caído), pero el resto se calcula igual.
+    try:
+        correr_auditoria(precios, None if corrida_degradada else df_rs, list(TICKERS), ahora)
+    except Exception as e:
+        log.error(f"Auditoría falló, no afecta al resto de la corrida: {e}")
 
     # 9d. Evaluación del sistema -- responde si el Radar Score y sus
     # señales individuales realmente anticipan un movimiento rentable.
