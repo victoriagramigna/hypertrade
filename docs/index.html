@@ -271,8 +271,52 @@
         </section>
     </div>
 
+    <!-- ===== SOLAPA: AUDITORÍA ===== -->
+    <div id="tab-auditoria" class="tab-content hidden-tab space-y-6">
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Auditoría</h2>
+            <p class="font-mono text-[11px] text-gray-400 leading-relaxed">
+                Cómo terminaron las señales, medido con precios reales. Una señal <span class="text-pos">alcista</span> acierta si el precio subió; una <span class="text-neg">bajista</span>, si bajó.
+                Con pocos casos los números todavía no significan nada: mirá siempre cuántos casos respaldan cada resultado.
+            </p>
+            <div class="flex items-center gap-2 mt-4 font-mono text-xs">
+                <span class="text-gray-500">Medir a:</span>
+                <div id="aud-horizontes" class="flex gap-1"></div>
+            </div>
+            <div id="aud-generado" class="font-mono text-[10px] text-gray-600 mt-2"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Resultados por señal</h2>
+            <div id="aud-senales" class="space-y-3"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Evolución mes a mes</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Todas las señales juntas, agrupadas por el mes en que se dispararon. Sirve para ver si la app acierta de forma sostenida o solo tuvo algunas semanas buenas. "A favor" cuenta como ganancia que una señal bajista haya bajado.</p>
+            <div id="aud-meses" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Top 30 de cada semana</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">El primer día de cada semana se guarda el Top 30 de Fuerza Relativa. Acá se ve si le ganó al SPY y al promedio de todo el universo.</p>
+            <div id="aud-top30" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Simulación hacia atrás <span class="text-gray-500 normal-case">(orientativa)</span></h2>
+            <div id="aud-simulacion" class="p-4 rounded-sm border border-dashed border-gray-600"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Caso por caso</h2>
+            <input type="text" id="aud-filtro" class="bg-surface border border-surface text-white px-3 py-2 rounded-sm font-mono text-sm uppercase placeholder-gray-600 w-full mb-3" placeholder="Filtrar por ticker (opcional)">
+            <div id="aud-detalle" class="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar pr-1"></div>
+        </section>
+    </div>
+
     <!-- Barra de navegación inferior fija -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-6 z-40 text-gray-500">
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-7 z-40 text-gray-500">
         
         <button class="tab-btn active flex flex-col items-center gap-1 py-2" data-tab="inicio" onclick="switchTab('inicio')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
@@ -303,6 +347,11 @@
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20v14H2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             <span class="text-[9px] font-mono uppercase">Cartera</span>
+        </button>
+        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="auditoria" onclick="switchTab('auditoria')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
+            <span class="text-[9px] font-mono uppercase">Auditoría</span>
         </button>
     </nav>
 
@@ -931,6 +980,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
+            if (name === 'auditoria') fetchAuditoria();
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
@@ -1021,6 +1071,223 @@
 
         document.getElementById('historial-filtro').addEventListener('input', () => {
             if (historialData !== null) renderHistorial();
+        });
+
+        // ============ AUDITORÍA ============
+        const AUDITORIA_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/auditoria.json';
+        let auditoriaData = null;
+        let audHorizonte = '10';
+
+        async function fetchAuditoria() {
+            const cont = document.getElementById('aud-senales');
+            if (auditoriaData === null) cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Cargando auditoría...</div>';
+            try {
+                const resp = await fetch(`${AUDITORIA_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) {
+                    auditoriaData = {};
+                } else {
+                    auditoriaData = await resp.json();
+                }
+            } catch (e) {
+                auditoriaData = auditoriaData ?? {};
+            }
+            renderAuditoria();
+        }
+
+        function audPct(v, conSigno = true) {
+            if (v == null) return '<span class="text-gray-600">—</span>';
+            const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-400');
+            return `<span class="${color}">${conSigno && v > 0 ? '+' : ''}${Number(v).toFixed(1)}%</span>`;
+        }
+
+        function renderAuditoria() {
+            const d = auditoriaData ?? {};
+            const hs = (d.horizontes ?? [5, 10, 20]).map(String);
+            if (!hs.includes(audHorizonte)) audHorizonte = hs[1] ?? hs[0];
+            const h = audHorizonte;
+
+            document.getElementById('aud-horizontes').innerHTML = hs.map(x => `
+                <button onclick="audHorizonte='${x}'; renderAuditoria()"
+                    class="px-3 py-1 rounded-sm border ${x === h ? 'border-accent text-accent bg-accent/10' : 'border-gray-700 text-gray-500'}">${x} ruedas</button>`).join('');
+
+            const gen = d.generado_utc ? new Date(d.generado_utc) : null;
+            document.getElementById('aud-generado').textContent = gen
+                ? `Actualizado: ${gen.toLocaleDateString('es-AR')} ${gen.toLocaleTimeString('es-AR', {hour12:false, hour:'2-digit', minute:'2-digit'})} · ${d.casos_total ?? 0} casos en total (una señal repetida en el mismo ticker dentro de 7 días cuenta una sola vez)`
+                : '';
+
+            const minimo = d.muestra_minima ?? 10;
+            const confiable = d.muestra_confiable ?? 30;
+            const stopPct = d.stop_pct ?? 8;
+
+            // --- Resultados por señal
+            const senales = d.resumen_señales ?? [];
+            const contSen = document.getElementById('aud-senales');
+            if (!d.generado_utc) {
+                contSen.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Todavía no hay auditoría. Se genera sola en la próxima corrida del radar.</div>';
+            } else if (senales.length === 0) {
+                contSen.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">La bitácora todavía no tiene alertas para medir.</div>';
+            } else {
+                contSen.innerHTML = senales.map(s => {
+                    const x = s.horizontes?.[h] ?? {};
+                    const n = x.n ?? 0;
+                    const dirChip = s.direccion === 'bajista'
+                        ? '<span class="signal-chip text-neg border-neg">BAJISTA</span>'
+                        : '<span class="signal-chip text-pos border-pos">ALCISTA</span>';
+                    let muestraChip;
+                    if (n === 0) muestraChip = '<span class="signal-chip text-gray-500 border-gray-700">SIN CASOS MEDIBLES AÚN</span>';
+                    else if (x.confiable) muestraChip = '<span class="signal-chip text-pos border-pos">MUESTRA CONFIABLE</span>';
+                    else muestraChip = `<span class="signal-chip text-accent border-accent">MUESTRA CHICA (${n}/${confiable})</span>`;
+
+                    const pct = x.pct_aciertos;
+                    const barColor = pct == null ? 'bg-gray-700' : (pct >= 60 ? 'bg-pos' : (pct >= 45 ? 'bg-accent' : 'bg-neg'));
+                    const promedios = n >= minimo
+                        ? `<div><div class="uppercase">Retorno prom.</div><div class="text-[12px]">${audPct(x.ret_prom)}</div></div>
+                           <div><div class="uppercase">vs SPY</div><div class="text-[12px]">${audPct(x.vs_spy_prom)}</div></div>`
+                        : `<div class="col-span-2 text-gray-600 text-[10px] self-end">Promedios desde ${minimo} casos</div>`;
+
+                    return `
+                    <div class="bg-surface p-4 rounded-sm border border-surface">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="font-bold text-white">${s.señal}</div>
+                            ${dirChip}
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-2">${muestraChip}</div>
+                        <div class="mt-3">
+                            <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
+                                <span>Aciertos a ${h} ruedas</span>
+                                <span class="text-white font-bold">${pct != null ? `${x.aciertos} de ${n} (${pct}%)` : '—'}</span>
+                            </div>
+                            <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
+                                <div class="h-full ${barColor}" style="width: ${pct ?? 0}%"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-gray-500 mt-3">
+                            ${promedios}
+                            <div><div class="uppercase">Tocó stop ${stopPct}%</div><div class="text-white text-[12px]">${n ? (x.tocaron_stop ?? 0) : '—'}</div></div>
+                            <div><div class="uppercase">Esperando</div><div class="text-white text-[12px]">${x.pendientes ?? 0}</div></div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // --- Evolución mes a mes
+            const meses = d.por_mes ?? [];
+            const contMes = document.getElementById('aud-meses');
+            if (meses.length === 0) {
+                contMes.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin datos todavía.</div>';
+            } else {
+                const nombreMes = (m) => {
+                    const [a, mm] = m.split('-');
+                    return new Date(Number(a), Number(mm) - 1, 15).toLocaleDateString('es-AR', {month: 'short', year: '2-digit'});
+                };
+                contMes.innerHTML = `
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Mes</span><span class="text-right">Aciertos</span><span class="text-right">A favor</span><span class="text-right">vs SPY</span>
+                    </div>` + meses.map(m => {
+                    const x = m[h] ?? {};
+                    if (!x.n) {
+                        return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1"><span class="text-white">${nombreMes(m.mes)}</span><span class="col-span-3 text-right text-gray-600">${m.casos} caso(s), faltan ruedas para medir a ${h}</span></div>`;
+                    }
+                    const chica = x.n < confiable ? ` <span class="text-accent text-[9px]">(${x.n})</span>` : ` <span class="text-gray-600 text-[9px]">(${x.n})</span>`;
+                    const pctColor = x.pct_aciertos >= 60 ? 'text-pos' : (x.pct_aciertos >= 45 ? 'text-accent' : 'text-neg');
+                    return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                        <span class="text-white">${nombreMes(m.mes)}</span>
+                        <span class="text-right ${pctColor} font-bold">${x.pct_aciertos}%${chica}</span>
+                        <span class="text-right">${audPct(x.ret_a_favor_prom)}</span>
+                        <span class="text-right">${audPct(x.vs_spy_prom)}</span>
+                    </div>`;
+                }).join('') + `<div class="font-mono text-[10px] text-gray-600 pt-2">Entre paréntesis, cuántos casos respaldan cada mes (en naranja si son menos de ${confiable}).</div>`;
+            }
+
+            // --- Top 30 semanal real
+            const top = d.top30_semanal ?? [];
+            const contTop = document.getElementById('aud-top30');
+            if (top.length === 0) {
+                contTop.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay fotos guardadas. La primera se guarda en la próxima corrida.</div>';
+            } else {
+                contTop.innerHTML = `
+                    <div class="grid grid-cols-5 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Semana</span><span class="text-right">Top 30</span><span class="text-right">Universo</span><span class="text-right">SPY</span><span class="text-right">En verde</span>
+                    </div>` + top.map(w => {
+                    const t = w[`top${h}`];
+                    const fecha = new Date(w.fecha + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'});
+                    if (t == null) {
+                        return `<div class="grid grid-cols-5 gap-2 font-mono text-xs py-1"><span class="text-white">${fecha}</span><span class="col-span-4 text-right text-gray-600">faltan ruedas para medir a ${h}</span></div>`;
+                    }
+                    const gano = w[`univ${h}`] != null && t > w[`univ${h}`];
+                    return `<div class="grid grid-cols-5 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                        <span class="text-white">${fecha} ${gano ? '<span class="text-pos">✓</span>' : ''}</span>
+                        <span class="text-right font-bold">${audPct(t)}</span>
+                        <span class="text-right">${audPct(w[`univ${h}`])}</span>
+                        <span class="text-right">${audPct(w[`spy${h}`])}</span>
+                        <span class="text-right text-gray-400">${w[`verdes${h}`] ?? '—'}/${w[`medidos${h}`] ?? '—'}</span>
+                    </div>`;
+                }).join('') + '<div class="font-mono text-[10px] text-gray-600 pt-2">✓ = esa semana el Top 30 le ganó al promedio del universo.</div>';
+            }
+
+            // --- Simulación
+            const sim = d.simulacion_top30;
+            const contSim = document.getElementById('aud-simulacion');
+            const sh = sim?.horizontes?.[h];
+            if (!sim || !sh) {
+                contSim.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin simulación todavía.</div>';
+            } else {
+                const f = (x) => new Date(x + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+                contSim.innerHTML = `
+                    <div class="font-mono text-[11px] text-gray-400 mb-3">Si cada lunes entre el ${f(sim.desde)} y el ${f(sim.hasta)} hubieras comprado el Top 30 de Fuerza Relativa, a ${h} ruedas en promedio:</div>
+                    <div class="grid grid-cols-3 gap-2 font-mono text-center">
+                        <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">Top 30</div><div class="text-lg font-bold">${audPct(sh.top_prom)}</div></div>
+                        <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">Universo</div><div class="text-lg">${audPct(sh.univ_prom)}</div></div>
+                        <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">SPY</div><div class="text-lg">${audPct(sh.spy_prom)}</div></div>
+                    </div>
+                    <div class="font-mono text-[11px] text-gray-400 mt-3">
+                        El Top 30 le ganó al universo en <span class="text-white font-bold">${sh.semanas_top_gana_univ} de ${sh.semanas}</span> semanas, y al SPY en <span class="text-white font-bold">${sh.semanas_top_gana_spy} de ${sh.semanas}</span>.
+                    </div>
+                    <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">⚠ ${sim.advertencia ?? ''}</div>`;
+            }
+
+            renderAuditoriaDetalle();
+        }
+
+        function renderAuditoriaDetalle() {
+            const d = auditoriaData ?? {};
+            const h = audHorizonte;
+            const filtro = document.getElementById('aud-filtro').value.trim().toUpperCase();
+            let casos = d.detalle ?? [];
+            if (filtro) casos = casos.filter(c => (c.ticker ?? '').toUpperCase().includes(filtro));
+            const cont = document.getElementById('aud-detalle');
+            if (casos.length === 0) {
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">${filtro ? 'Sin casos para ese ticker.' : 'Sin casos todavía.'}</div>`;
+                return;
+            }
+            cont.innerHTML = casos.map(c => {
+                const r = c[`r${h}`];
+                const fecha = new Date(c.fecha + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+                let resultado;
+                if (r == null) {
+                    const faltan = Math.max(0, Number(h) - (c.ruedas_transcurridas ?? 0));
+                    resultado = `<span class="text-gray-600 text-xs">faltan ${faltan} rueda(s)</span>`;
+                } else {
+                    const ok = c[`acierto${h}`];
+                    resultado = `<div class="font-bold">${audPct(r)} <span class="${ok ? 'text-pos' : 'text-neg'}">${ok ? '✓' : '✗'}</span></div>
+                        <div class="text-[10px] text-gray-500">vs SPY ${audPct(c[`vs_spy${h}`])}</div>
+                        ${c[`stop${h}`] ? '<div class="text-[10px] text-neg">tocó el stop</div>' : ''}`;
+                }
+                const dirColor = c.direccion === 'bajista' ? 'border-neg' : 'border-pos';
+                return `
+                    <div class="bg-surface p-3 rounded-sm border-l-2 ${dirColor} flex justify-between items-center gap-3 font-mono text-sm">
+                        <div class="min-w-0">
+                            <div><span class="font-bold text-white">${c.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${fecha}</span></div>
+                            <div class="text-[11px] text-gray-400 truncate">${c.señal}</div>
+                            <div class="text-[10px] text-gray-600">Entrada $${c.precio_entrada}${c.radar_score != null ? ` · Radar ${Number(c.radar_score).toFixed(0)}` : ''}</div>
+                        </div>
+                        <div class="text-right flex-shrink-0">${resultado}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        document.getElementById('aud-filtro').addEventListener('input', () => {
+            if (auditoriaData !== null) renderAuditoriaDetalle();
         });
 
         // ============ MI CARTERA ============
