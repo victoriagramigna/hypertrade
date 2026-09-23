@@ -1161,6 +1161,11 @@
         const CARTERA_GANANCIA_TRAILING_PCT = 35;    // a partir de acá, trailing más agresivo (bajo SMA50)
         const CARTERA_CAIDA_RADAR_SCORE = 15;        // puntos de caída en el Radar Score vs. la compra = alerta
         const CARTERA_AVISO_PREVIO_STOP_PCT = 1;     // avisa cuando falta esta distancia (%) para tocar el stop
+        // Mismo margen de tolerancia que usa Alertas para "apoyo en SMA50"
+        // (ver config.py: UMBRAL_LIDER_DIST_SMA50_PCT) -- así Mi Cartera no
+        // dispara "perdió el soporte" por una diferencia de centavos que en
+        // el resto de la app todavía se considera "dentro de tolerancia".
+        const SMA50_TOLERANCIA_PCT = 2;
 
         function calcularStopInicial(precioCompra, tickerData) {
             const stopPorcentual = precioCompra * (1 - CARTERA_STOP_PCT_INICIAL);
@@ -1242,8 +1247,14 @@
                         señales.push({ color: 'accent', texto: `⚠️ Perdiendo fuerza técnica -- Radar Score bajó de ${p.radarScoreCompra.toFixed(0)} a ${tickerData.Radar_Score.toFixed(0)} desde la compra` });
                     }
                 }
-                if (tickerData?.Sobre_SMA50 === false) {
-                    señales.push({ color: 'accent', texto: '⚠️ Perdió el soporte de su SMA50' });
+                // Usa el mismo margen de tolerancia que Alertas (±2%, ver
+                // SMA50_TOLERANCIA_PCT) en vez del booleano estricto
+                // Sobre_SMA50 -- antes disparaba con cualquier diferencia
+                // de centavos, aunque el resto de la app todavía considerara
+                // "apoyo válido" esa misma distancia.
+                const dist50Actual = tickerData?.['Dist_SMA50_%'];
+                if (dist50Actual != null && dist50Actual < -SMA50_TOLERANCIA_PCT) {
+                    señales.push({ color: 'accent', texto: `⚠️ Perdió el soporte de su SMA50 (${dist50Actual.toFixed(1)}%, fuera de la zona de tolerancia)` });
                 }
                 if (señales.length === 0 && precioActual != null) {
                     señales.push({ color: 'gray-500', texto: '✅ Sin señales de alerta -- tendencia técnica intacta' });
