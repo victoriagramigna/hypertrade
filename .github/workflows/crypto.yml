@@ -1,0 +1,37 @@
+name: Crypto Radar
+
+on:
+  schedule:
+    # Cada 4 horas, todos los días (cripto no tiene horario de mercado).
+    # Ajustable: cambiar "*/4" por la frecuencia que prefieras.
+    - cron: "0 */4 * * *"
+  workflow_dispatch: {}   # permite correrlo manualmente desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  run-crypto-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install yfinance pandas numpy
+
+      - name: Correr crypto_radar.py
+        run: python scripts/crypto_radar.py
+
+      - name: Commit y push de data/cripto.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/cripto.json
+          git diff --staged --quiet || git commit -m "Actualiza cripto.json [skip ci]"
+          git push
