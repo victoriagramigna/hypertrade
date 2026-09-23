@@ -53,6 +53,9 @@ def registrar_eventos(alertas_nuevas: list, rs_por_ticker: dict, precios_usd: di
             # Régimen de mercado 0-100 al momento de la alerta -- para que la
             # Auditoría compare aciertos con clima bueno vs. clima malo
             "regimen_score": a.get("Regimen_Score"),
+            # Qué puntos de cuidado tenía (lista vacía = ninguno) -- para ver
+            # si las alertas con advertencias de verdad rinden peor
+            "cuidados": a.get("Cuidados_claves"),
             # --- Nuevo: la "foto" de señales individuales, para poder
             # evaluar más adelante cuáles de verdad anticipan movimiento
             # rentable (ver evaluacion_sistema.py) -- sin esto, el backtest

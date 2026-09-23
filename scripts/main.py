@@ -45,6 +45,7 @@ from seguimiento_precios import procesar_seguimiento
 from evaluacion_sistema import evaluar_sistema
 from auditoria import correr_auditoria
 from regimen_score import calcular_regimen_score
+from cuidados import puntos_de_cuidado
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -186,7 +187,7 @@ def main():
     # columnas nuevas). v2.1: se suman SMA50 y SMA200 para que la
     # narrativa pueda mostrar el valor exacto de cada condición.
     columnas_extra_narrativa = [
-        "RS_Score", "VCP_valido", "Sobre_SMA50", "Dist_SMA200_%",
+        "RS_Score", "VCP_valido", "Sobre_SMA50", "Dist_SMA200_%", "Dist_SMA50_%",
         "SMA50", "SMA200",
         "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap", "Apoyo_AVWAP",
         "ATR_Ratio", "ATR_Contraction", "Pendiente_OK", "Cruce_AVWAP_52w",
@@ -211,7 +212,17 @@ def main():
         rec["Regimen_Score"] = regimen_score["score"] if regimen_score else None
 
         fila_completa = {**fila.to_dict(), **rec, **extras_por_ticker.get(fila["Ticker"], {})}
-        fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist_badge, regimen.get("sano", True))
+        # Puntos de cuidado: lo que está EN CONTRA de una alerta alcista
+        # (SMA50 bajando, techo en el AVWAP del máximo, extensión, etc.)
+        try:
+            cuid = puntos_de_cuidado(fila_completa, precios.get(fila["Ticker"]))
+        except Exception as e:
+            log.debug(f"Puntos de cuidado de {fila['Ticker']} fallaron: {e}")
+            cuid = []
+        fila_completa["Cuidados"] = [c["texto"] for c in cuid]
+        fila_completa["Cuidados_claves"] = [c["clave"] for c in cuid]
+        fila_completa["Narrativa"] = armar_narrativa(fila_completa, dist_days, mult_dist_badge, regimen.get("sano", True),
+                                                     regimen_score)
         recomendaciones.append(fila_completa)
 
     # 8. Guardar resultado para el dashboard

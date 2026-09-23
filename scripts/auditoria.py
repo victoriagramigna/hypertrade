@@ -145,6 +145,7 @@ def _evaluar_evento(ev, serie, serie_spy):
         "precio_entrada": round(float(precio_entrada), 2),
         "radar_score": ev.get("radar_score"),
         "regimen_score": ev.get("regimen_score"),
+        "cuidados": ev.get("cuidados"),
         "ruedas_transcurridas": int(len(posteriores)),
     }
 
@@ -275,7 +276,8 @@ def auditar_señales(precios):
         log.info(f"Auditoría: {len(nuevos_completos)} caso(s) terminados grabados en {RUTA_HISTORICO}")
 
     lista = sorted(casos.values(), key=lambda c: c["fecha"], reverse=True)
-    return _resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista), _por_regimen(lista)
+    return (_resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista),
+            _por_regimen(lista), _por_cuidados(lista))
 
 
 FRANJAS_REGIMEN = [(80, "80-100 Favorable"), (60, "60-79 Aceptable"), (40, "40-59 Cauteloso"), (0, "0-39 Desfavorable")]
@@ -297,6 +299,40 @@ def _por_regimen(casos):
     for _, nombre in FRANJAS_REGIMEN:
         lista = grupos[nombre]
         fila = {"franja": nombre, "casos": len(lista)}
+        for h in HORIZONTES:
+            medibles = [c for c in lista if c.get(f"r{h}") is not None]
+            n = len(medibles)
+            datos = {"n": n}
+            if n:
+                datos["pct_aciertos"] = round(sum(1 for c in medibles if c[f"acierto{h}"]) / n * 100)
+                datos["ret_prom"] = _prom([c[f"r{h}"] for c in medibles])
+                datos["vs_spy_prom"] = _prom([c.get(f"vs_spy{h}") for c in medibles])
+            fila[str(h)] = datos
+        salida.append(fila)
+    return salida
+
+
+NOMBRES_CUIDADOS = {
+    "sma50_bajando": "SMA50 bajando",
+    "bajo_sma200": "Debajo de SMA200",
+    "techo_avwap_volumen": "Techo AVWAP con volumen",
+    "techo_avwap": "Techo AVWAP",
+    "extendida": "Extendida sobre SMA50",
+    "rsi_alto": "RSI alto",
+}
+
+
+def _por_cuidados(casos):
+    """¿Las alertas alcistas CON puntos de cuidado rinden peor que las
+    limpias? Solo cuenta casos grabados desde que existen los cuidados."""
+    con_dato = [c for c in casos if c.get("direccion") == "alcista" and c.get("cuidados") is not None]
+    grupos = [("Sin puntos de cuidado", [c for c in con_dato if not c["cuidados"]]),
+              ("Con 1 o más", [c for c in con_dato if c["cuidados"]])]
+    for clave, nombre in NOMBRES_CUIDADOS.items():
+        grupos.append((f"· {nombre}", [c for c in con_dato if clave in c["cuidados"]]))
+    salida = []
+    for nombre, lista in grupos:
+        fila = {"grupo": nombre, "casos": len(lista)}
         for h in HORIZONTES:
             medibles = [c for c in lista if c.get(f"r{h}") is not None]
             n = len(medibles)
@@ -625,7 +661,7 @@ def evaluar_mis_operaciones(precios):
 
 def correr_auditoria(precios, df_rs, universo, ahora=None):
     ahora = ahora or datetime.now(timezone.utc)
-    resumen, detalle, n_casos, por_mes, por_regimen = auditar_señales(precios)
+    resumen, detalle, n_casos, por_mes, por_regimen, por_cuidados = auditar_señales(precios)
 
     fotos = guardar_foto_top30(df_rs, ahora)
     top30 = evaluar_top30_real(fotos, precios, universo)
@@ -653,6 +689,7 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         "resumen_señales": resumen,
         "por_mes": por_mes,
         "por_regimen": por_regimen,
+        "por_cuidados": por_cuidados,
         "detalle": detalle,
         "top30_semanal": top30,
         "simulacion_top30": simulacion,

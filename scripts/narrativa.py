@@ -104,13 +104,15 @@ _PLANTILLAS = {
 }
 
 
-def _frase_contexto_mercado(dist_days: int, regimen_sano: bool) -> str:
+def _frase_contexto_mercado(dist_days: int, regimen_sano: bool, regimen_score: dict | None = None) -> str:
     """
     v2.1: puramente informativo -- Distribution Days ya no penaliza el
     score, así que esta frase describe el contexto sin decir que el
     puntaje se ajustó por esto.
     """
     partes = []
+    if regimen_score and regimen_score.get("score") is not None and regimen_score["score"] < 60:
+        partes.append(f"régimen de mercado {regimen_score['score']}/100 ({regimen_score.get('banda', '').lower()})")
     if not regimen_sano:
         partes.append("régimen de mercado volátil (VIX elevado)")
     if dist_days is not None and dist_days >= 4:
@@ -125,6 +127,7 @@ def armar_narrativa(
     dist_days: int = 0,
     mult_dist: float = 1.0,  # se mantiene el parámetro por compatibilidad, ya no se usa
     regimen_sano: bool = True,
+    regimen_score: dict | None = None,
 ) -> str:
     """
     row: el diccionario de la alerta (fila.to_dict() + rec + extras_por_ticker
@@ -161,9 +164,14 @@ def armar_narrativa(
 
     cuerpo = " ".join(frases) if frases else "Sin señales técnicas adicionales destacadas."
 
-    contexto_mercado = _frase_contexto_mercado(dist_days, regimen_sano)
+    contexto_mercado = _frase_contexto_mercado(dist_days, regimen_sano, regimen_score)
     if contexto_mercado:
         cuerpo += " " + contexto_mercado
+
+    # Puntos de cuidado (ver cuidados.py): lo que juega en contra
+    cuidados = row.get("Cuidados") or []
+    if cuidados:
+        cuerpo += "\nPuntos de cuidado:\n" + "\n".join(f"⚠️ {c}" for c in cuidados)
 
     score = row.get("Radar_Score")
     pie = f"Radar Score: {score:.0f}/100" if score is not None else ""
