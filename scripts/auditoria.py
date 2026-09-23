@@ -39,6 +39,10 @@ RUTA_SALIDA = "data/auditoria.json"
 # no depende del año de precios que se baja en cada corrida: un caso de
 # hace 3 años sigue contando aunque su precio ya no esté en la descarga.
 RUTA_HISTORICO = "data/auditoria_resultados.jsonl"
+# Operaciones reales cerradas desde Mi Cartera (las sube el dashboard con
+# la misma sincronización de GitHub que la cartera). Es permanente: el
+# dashboard solo agrega, nunca borra.
+RUTA_OPERACIONES = "data/operaciones_cerradas.json"
 
 HORIZONTES = (5, 10, 20)
 STOP_PCT = 8                 # mismo -8% que usa Mi Cartera como techo de pérdida
@@ -479,6 +483,111 @@ def simular_top30(precios, universo):
     }
 
 
+# ------------------------------------------- 4. mis operaciones reales
+
+def _spy_en_fecha(serie_spy, fecha_iso):
+    if serie_spy is None or not fecha_iso:
+        return None
+    try:
+        fecha = datetime.fromisoformat(fecha_iso).date()
+    except ValueError:
+        return None
+    antes = serie_spy[serie_spy.index.date <= fecha]
+    if antes.empty or (fecha - antes.index[-1].date()).days > 7:
+        return None  # fuera del año descargado
+    return float(antes.iloc[-1])
+
+
+def evaluar_mis_operaciones(precios):
+    """Resultados de las compras y ventas que Victoria anotó en Mi Cartera.
+    No dice si una señal funciona, dice si la forma de operar funciona."""
+    if not os.path.exists(RUTA_OPERACIONES):
+        return None
+    try:
+        with open(RUTA_OPERACIONES, "r", encoding="utf-8") as f:
+            ops = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return None
+    if not ops:
+        return None
+
+    serie_spy = _serie_limpia(precios, "SPY")
+    filas = []
+    for op in ops:
+        pc, pv = op.get("precio"), op.get("precioVenta")
+        if not pc or not pv:
+            continue
+        ret = _ret_pct(pc, pv)
+        spy_c = op.get("spyCompra") or _spy_en_fecha(serie_spy, op.get("fecha"))
+        spy_v = op.get("spyVenta") or _spy_en_fecha(serie_spy, op.get("fechaVenta"))
+        spy_ret = _ret_pct(spy_c, spy_v) if spy_c and spy_v else None
+        dias = None
+        try:
+            dias = (datetime.fromisoformat(op["fechaVenta"]) - datetime.fromisoformat(op["fecha"])).days
+        except (KeyError, ValueError, TypeError):
+            pass
+        cantidad = op.get("cantidad")
+        try:
+            cantidad = float(cantidad) if cantidad not in (None, "") else None
+        except ValueError:
+            cantidad = None
+        # En USD por acción del subyacente; si compró CEDEARs, la cantidad
+        # es de CEDEARs y se convierte con el ratio
+        ratio = (op.get("origenArs") or {}).get("ratio")
+        acciones = (cantidad / ratio) if (cantidad and ratio) else cantidad
+        filas.append({
+            "ticker": op.get("ticker"),
+            "fecha": op.get("fecha"),
+            "fechaVenta": op.get("fechaVenta"),
+            "dias": dias,
+            "precio": pc,
+            "precioVenta": pv,
+            "ret": ret,
+            "spy_ret": spy_ret,
+            "vs_spy": round(ret - spy_ret, 2) if spy_ret is not None else None,
+            "resultado_usd": round((pv - pc) * acciones, 2) if acciones else None,
+            "motivo": op.get("motivoVenta") or "sin motivo",
+            "con_alerta": bool(op.get("alertaAlComprar")),
+            "alerta": op.get("alertaAlComprar"),
+            "radar_compra": op.get("radarScoreCompra"),
+        })
+
+    if not filas:
+        return None
+
+    def bloque(lista):
+        if not lista:
+            return {"n": 0}
+        gan = [f["ret"] for f in lista if f["ret"] > 0]
+        per = [f["ret"] for f in lista if f["ret"] <= 0]
+        usd = [f["resultado_usd"] for f in lista if f["resultado_usd"] is not None]
+        return {
+            "n": len(lista),
+            "ganadoras": len(gan),
+            "pct_ganadoras": round(len(gan) / len(lista) * 100),
+            "ganancia_prom": _prom(gan),
+            "perdida_prom": _prom(per),
+            # Lo que en promedio deja cada operación, contando ganadoras y perdedoras
+            "resultado_prom": _prom([f["ret"] for f in lista]),
+            "vs_spy_prom": _prom([f["vs_spy"] for f in lista]),
+            "dias_prom": _prom([f["dias"] for f in lista if f["dias"] is not None]),
+            "resultado_usd_total": round(sum(usd), 2) if usd else None,
+        }
+
+    motivos = {}
+    for f in filas:
+        motivos.setdefault(f["motivo"], []).append(f)
+
+    filas.sort(key=lambda f: f.get("fechaVenta") or "", reverse=True)
+    return {
+        "total": bloque(filas),
+        "con_alerta": bloque([f for f in filas if f["con_alerta"]]),
+        "sin_alerta": bloque([f for f in filas if not f["con_alerta"]]),
+        "por_motivo": {m: bloque(l) for m, l in motivos.items()},
+        "detalle": filas,
+    }
+
+
 # ----------------------------------------------------------------- general
 
 def correr_auditoria(precios, df_rs, universo, ahora=None):
@@ -494,8 +603,15 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         log.error(f"Auditoría: la simulación falló (no afecta lo demás): {e}")
         simulacion = None
 
+    try:
+        mis_ops = evaluar_mis_operaciones(precios)
+    except Exception as e:
+        log.error(f"Auditoría: no se pudieron evaluar las operaciones reales: {e}")
+        mis_ops = None
+
     salida = {
         "generado_utc": ahora.isoformat(),
+        "mis_operaciones": mis_ops,
         "muestra_minima": MUESTRA_MINIMA,
         "muestra_confiable": MUESTRA_CONFIABLE,
         "stop_pct": STOP_PCT,

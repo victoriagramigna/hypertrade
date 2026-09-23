@@ -219,6 +219,9 @@ def main():
         "contexto_macro": contexto_macro,
         "cedears_pricing": cedears_pricing,
         "movimientos_dia": movimientos_dia,
+        # Precio del SPY -- Mi Cartera lo guarda al comprar y al vender, para
+        # poder comparar cada operación real contra el mercado (Auditoría)
+        "spy_precio": round(float(precios[BENCHMARK].dropna().iloc[-1]), 2),
         "distribution_days": dist_days,
         "multiplicador_distribution": mult_dist_badge,
     }
