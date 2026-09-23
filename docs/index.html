@@ -287,6 +287,12 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Mis operaciones</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Tus compras y ventas reales, cargadas en Mi Cartera con el botón Vender. Las señales dicen si el radar acierta; esto dice si tu forma de operar gana plata.</p>
+            <div id="aud-mis-ops" class="space-y-3"></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Resultados por señal</h2>
             <div id="aud-senales" class="space-y-3"></div>
         </section>
@@ -1170,6 +1176,9 @@
                 }).join('');
             }
 
+            // --- Mis operaciones reales (no dependen del horizonte elegido)
+            renderMisOperaciones(d.mis_operaciones);
+
             // --- Evolución mes a mes
             const meses = d.por_mes ?? [];
             const contMes = document.getElementById('aud-meses');
@@ -1247,6 +1256,73 @@
             }
 
             renderAuditoriaDetalle();
+        }
+
+        function renderMisOperaciones(m) {
+            const cont = document.getElementById('aud-mis-ops');
+            const pendientesLocales = cargarOperacionesCerradas().length;
+            if (!m || !m.total?.n) {
+                const nota = pendientesLocales
+                    ? `Tenés ${pendientesLocales} venta(s) registrada(s) en este navegador. Aparecen acá después de la próxima corrida del radar${cargarTokenGithub() ? '' : ', pero primero conectá la cartera con GitHub (solapa Cartera)'}.`
+                    : 'Todavía no registraste ninguna venta. Cuando vendas algo, usá el botón Vender en Mi Cartera y va a aparecer acá.';
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">${nota}</div>`;
+                return;
+            }
+            const t = m.total;
+            const usd = (v) => v == null ? '—' : `<span class="${v >= 0 ? 'text-pos' : 'text-neg'}">${v >= 0 ? '+' : '−'}US$ ${Math.abs(v).toLocaleString('es-AR', {maximumFractionDigits: 2})}</span>`;
+            const chica = t.n < 20 ? `<div class="font-mono text-[10px] text-accent mt-2">Con ${t.n} operación(es) todavía es pronto para sacar conclusiones.</div>` : '';
+
+            const bloque = (titulo, b) => !b?.n ? '' : `
+                <div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                    <span class="text-gray-300">${titulo} <span class="text-gray-600">(${b.n})</span></span>
+                    <span class="text-right">${b.pct_ganadoras}%</span>
+                    <span class="text-right">${audPct(b.resultado_prom)}</span>
+                    <span class="text-right">${audPct(b.vs_spy_prom)}</span>
+                </div>`;
+
+            const motivos = Object.entries(m.por_motivo ?? {}).sort((a, b) => b[1].n - a[1].n)
+                .map(([k, b]) => bloque(k, b)).join('');
+
+            const ultimas = (m.detalle ?? []).slice(0, 30).map(o => {
+                const f = (x) => x ? new Date(x + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'2-digit'}) : '—';
+                return `
+                    <div class="bg-surface p-3 rounded-sm border-l-2 ${o.ret > 0 ? 'border-pos' : 'border-neg'} flex justify-between items-center gap-3 font-mono text-sm">
+                        <div class="min-w-0">
+                            <div><span class="font-bold text-white">${o.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${f(o.fecha)} → ${f(o.fechaVenta)}${o.dias != null ? ` · ${o.dias} días` : ''}</span></div>
+                            <div class="text-[10px] text-gray-500">${o.motivo}${o.con_alerta ? ' · había alerta al comprar' : ''}</div>
+                            <div class="text-[10px] text-gray-600">$${o.precio} → $${o.precioVenta}</div>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <div class="font-bold">${audPct(o.ret)}</div>
+                            <div class="text-[10px] text-gray-500">vs SPY ${audPct(o.vs_spy)}</div>
+                            ${o.resultado_usd != null ? `<div class="text-[10px]">${usd(o.resultado_usd)}</div>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            cont.innerHTML = `
+                <div class="bg-surface p-4 rounded-sm border border-surface">
+                    <div class="grid grid-cols-3 gap-2 font-mono text-center">
+                        <div><div class="text-[9px] uppercase text-gray-500">Ganadoras</div><div class="text-lg text-white font-bold">${t.ganadoras}/${t.n}</div><div class="text-[10px] text-gray-500">${t.pct_ganadoras}%</div></div>
+                        <div><div class="text-[9px] uppercase text-gray-500">Por operación</div><div class="text-lg font-bold">${audPct(t.resultado_prom)}</div><div class="text-[10px] text-gray-500">vs SPY ${audPct(t.vs_spy_prom)}</div></div>
+                        <div><div class="text-[9px] uppercase text-gray-500">Resultado</div><div class="text-sm font-bold mt-1">${usd(t.resultado_usd_total)}</div><div class="text-[10px] text-gray-500">${t.dias_prom != null ? `${Math.round(t.dias_prom)} días prom.` : ''}</div></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 font-mono text-[11px] mt-3 pt-3 border-t border-base">
+                        <div class="text-gray-500">Ganancia prom. de las ganadoras: ${audPct(t.ganancia_prom)}</div>
+                        <div class="text-gray-500 text-right">Pérdida prom. de las perdedoras: ${audPct(t.perdida_prom)}</div>
+                    </div>
+                    ${chica}
+                </div>
+                <div class="bg-surface p-4 rounded-sm border border-surface">
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Grupo</span><span class="text-right">Ganadoras</span><span class="text-right">Por op.</span><span class="text-right">vs SPY</span>
+                    </div>
+                    ${bloque('Con alerta al comprar', m.con_alerta)}
+                    ${bloque('Sin alerta', m.sin_alerta)}
+                    <div class="font-mono text-[9px] uppercase text-gray-500 pt-3 pb-1">Según por qué vendiste</div>
+                    ${motivos}
+                </div>
+                <div class="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">${ultimas}</div>`;
         }
 
         function renderAuditoriaDetalle() {
@@ -1335,6 +1411,8 @@
                 stopActual: p.stopActual ?? null,
                 radarScoreCompra: p.radarScoreCompra ?? null,
                 origenStop: p.origenStop ?? null,
+                spyCompra: p.spyCompra ?? null,
+                alertaAlComprar: p.alertaAlComprar ?? null,
             }));
         }
 
@@ -1413,6 +1491,7 @@
             input.value = '';
             actualizarUIsincronizacion();
             sincronizarConGithub(cargarCartera()); // sincroniza de una lo que ya tenía cargado
+            if (cargarOperacionesCerradas().length) sincronizarOperacionesCerradas();
         });
 
         document.getElementById('sync-desconectar-btn').addEventListener('click', () => {
@@ -1604,12 +1683,16 @@
                                 <div class="text-xs text-gray-500 mt-1">Compra: $${p.precio} (USD/acción) ${p.cantidad ? `× ${p.cantidad}` : ''} el ${p.fecha}</div>
                                 ${p.origenArs ? `<div class="text-[10px] text-gray-600 mt-0.5">CEDEAR: ARS $${p.origenArs.precioArs} · CCL ${p.origenArs.cclCompra} · ratio ${p.origenArs.ratio}:1</div>` : ''}
                             </div>
-                            <button onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-xs">✕ quitar</button>
+                            <div class="flex flex-col items-end gap-2">
+                                <button onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
+                                <button onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
+                            </div>
                         </div>
                         <div class="mt-2">${variacionHtml}</div>
                         ${stopHtml}
                         ${objetivoHtml}
                         ${señalesHtml}
+                        ${ventaAbierta === idx ? formularioVenta(p, precioActual) : ''}
                     </div>`;
             }).join('');
 
@@ -1617,10 +1700,180 @@
         }
 
         function eliminarPosicion(idx) {
+            if (!confirm('¿Borrar esta posición? Usalo solo si la cargaste por error: no queda registrada como operación. Si la vendiste, usá el botón Vender.')) return;
             const posiciones = cargarCartera();
             posiciones.splice(idx, 1);
             guardarCartera(posiciones);
             renderCartera();
+        }
+
+        // ============ VENTAS (operaciones reales para la Auditoría) ============
+        let ventaAbierta = null;
+
+        function abrirVenta(idx) {
+            ventaAbierta = ventaAbierta === idx ? null : idx;
+            renderCartera();
+        }
+
+        function formularioVenta(p, precioActual) {
+            const hoy = new Date().toISOString().slice(0, 10);
+            const esArs = !!p.origenArs;
+            return `
+                <div class="mt-3 pt-3 border-t border-gray-700 space-y-2 text-xs">
+                    <div class="text-accent font-bold uppercase text-[10px] tracking-widest">Registrar venta</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">¿Cómo vendiste?</label>
+                            <select id="venta-moneda" onchange="document.getElementById('venta-usd').classList.toggle('hidden', this.value==='ARS'); document.getElementById('venta-ars').classList.toggle('hidden', this.value!=='ARS');" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                                <option value="USD" ${esArs ? '' : 'selected'}>En dólares (precio de la acción)</option>
+                                <option value="ARS" ${esArs ? 'selected' : ''}>CEDEAR en pesos</option>
+                            </select>
+                        </div>
+                        <div id="venta-usd" class="col-span-2 ${esArs ? 'hidden' : ''}">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Precio de venta (USD, por acción)</label>
+                            <input type="number" step="0.01" id="venta-precio-usd" value="${precioActual != null ? precioActual.toFixed(2) : ''}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div id="venta-ars" class="col-span-2 grid grid-cols-2 gap-2 ${esArs ? '' : 'hidden'}">
+                            <div>
+                                <label class="text-gray-500 text-[10px] uppercase block mb-1">Precio CEDEAR (ARS)</label>
+                                <input type="number" step="0.01" id="venta-precio-ars" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                            </div>
+                            <div>
+                                <label class="text-gray-500 text-[10px] uppercase block mb-1">CCL de ese día</label>
+                                <input type="number" step="0.01" id="venta-ccl" value="${currentAutoCcl ? currentAutoCcl.toFixed(2) : ''}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Cantidad vendida</label>
+                            <input type="number" step="any" id="venta-cantidad" value="${p.cantidad ?? ''}" placeholder="todo" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div>
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Fecha de venta</label>
+                            <input type="date" id="venta-fecha" value="${hoy}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">¿Por qué vendiste?</label>
+                            <select id="venta-motivo" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                                <option>Tocó el stop</option>
+                                <option>Objetivo de ganancia</option>
+                                <option>Aviso técnico de la app</option>
+                                <option>Decisión propia</option>
+                                <option>Necesitaba la plata</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="venta-error" class="text-neg hidden"></div>
+                    <div class="flex gap-2">
+                        <button onclick="confirmarVenta(${ventaAbierta})" class="flex-1 bg-accent text-base font-bold uppercase py-2 rounded-sm hover:bg-white">Confirmar venta</button>
+                        <button onclick="abrirVenta(${ventaAbierta})" class="px-4 border border-gray-700 text-gray-400 rounded-sm">Cancelar</button>
+                    </div>
+                    ${p.cantidad ? '<div class="text-[10px] text-gray-600">Si vendés menos que el total, la posición queda abierta con el resto.</div>' : ''}
+                </div>`;
+        }
+
+        function cargarOperacionesCerradas() {
+            try { return JSON.parse(localStorage.getItem('mis_operaciones_cerradas') || '[]'); }
+            catch (e) { return []; }
+        }
+
+        function confirmarVenta(idx) {
+            const posiciones = cargarCartera();
+            const p = posiciones[idx];
+            const errorEl = document.getElementById('venta-error');
+            const mostrarError = (t) => { errorEl.textContent = t; errorEl.classList.remove('hidden'); };
+            if (!p) return;
+
+            const moneda = document.getElementById('venta-moneda').value;
+            let precioVenta, origenVentaArs = null;
+            if (moneda === 'USD') {
+                precioVenta = parseFloat(document.getElementById('venta-precio-usd').value);
+            } else {
+                const precioArs = parseFloat(document.getElementById('venta-precio-ars').value);
+                const ccl = parseFloat(document.getElementById('venta-ccl').value);
+                const ratio = p.origenArs?.ratio
+                    ?? (currentRadarData?.cedears_pricing?.cedears ?? []).find(c => c?.Ticker?.toUpperCase() === p.ticker.toUpperCase())?.Ratio;
+                if (!precioArs || !ccl) return mostrarError('Completá el precio en pesos y el CCL.');
+                if (!ratio) return mostrarError(`No tengo el ratio de ${p.ticker} para convertir a dólares -- cargala en dólares.`);
+                precioVenta = Math.round((precioArs * ratio / ccl) * 100) / 100;
+                origenVentaArs = { precioArs, ccl, ratio };
+            }
+            if (!precioVenta || precioVenta <= 0) return mostrarError('Falta el precio de venta.');
+
+            const fechaVenta = document.getElementById('venta-fecha').value;
+            if (!fechaVenta) return mostrarError('Falta la fecha de venta.');
+            if (fechaVenta < p.fecha) return mostrarError('La fecha de venta es anterior a la de compra.');
+
+            const total = p.cantidad != null && p.cantidad !== '' ? parseFloat(p.cantidad) : null;
+            let vendida = parseFloat(document.getElementById('venta-cantidad').value);
+            if (isNaN(vendida) || vendida <= 0) vendida = total;
+            if (total != null && vendida > total) return mostrarError(`No podés vender más de ${total}.`);
+
+            const esHoy = fechaVenta === new Date().toISOString().slice(0, 10);
+            const operacion = {
+                id: `${p.ticker}-${Date.now()}`,
+                ticker: p.ticker,
+                precio: p.precio,
+                fecha: p.fecha,
+                cantidad: vendida ?? null,
+                origenArs: p.origenArs ?? null,
+                radarScoreCompra: p.radarScoreCompra ?? null,
+                alertaAlComprar: p.alertaAlComprar ?? null,
+                spyCompra: p.spyCompra ?? null,
+                stopAlVender: p.stopActual ?? null,
+                precioVenta,
+                fechaVenta,
+                origenVentaArs,
+                motivoVenta: document.getElementById('venta-motivo').value,
+                spyVenta: esHoy ? (currentRadarData?.spy_precio ?? null) : null,
+            };
+
+            const cerradas = cargarOperacionesCerradas();
+            cerradas.push(operacion);
+            localStorage.setItem('mis_operaciones_cerradas', JSON.stringify(cerradas));
+            sincronizarOperacionesCerradas();
+
+            if (total != null && vendida < total) {
+                p.cantidad = Math.round((total - vendida) * 10000) / 10000; // venta parcial: queda el resto
+            } else {
+                posiciones.splice(idx, 1);
+            }
+            ventaAbierta = null;
+            guardarCartera(posiciones);
+            renderCartera();
+        }
+
+        // Sube data/operaciones_cerradas.json SUMANDO a lo que ya hay en el
+        // repo (nunca pisa): así una venta cargada desde el celular no borra
+        // otra cargada desde la compu. Cada operación tiene un id único.
+        async function sincronizarOperacionesCerradas() {
+            const token = cargarTokenGithub();
+            if (!token) return;
+            const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/operaciones_cerradas.json`;
+            const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+            try {
+                let sha = null, remotas = [];
+                const getResp = await fetch(`${apiUrl}?t=${Date.now()}`, { headers, cache: 'no-store' });
+                if (getResp.ok) {
+                    const info = await getResp.json();
+                    sha = info.sha;
+                    try { remotas = JSON.parse(decodeURIComponent(escape(atob(info.content.replace(/\n/g, ''))))); } catch (e) { remotas = []; }
+                } else if (getResp.status !== 404) {
+                    return;
+                }
+                const porId = {};
+                [...remotas, ...cargarOperacionesCerradas()].forEach(o => { if (o?.id) porId[o.id] = o; });
+                const todas = Object.values(porId).sort((a, b) => (a.fechaVenta ?? '').localeCompare(b.fechaVenta ?? ''));
+                localStorage.setItem('mis_operaciones_cerradas', JSON.stringify(todas));
+                const body = {
+                    message: `Operación cerrada desde dashboard (${new Date().toISOString()})`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(todas, null, 2)))),
+                };
+                if (sha) body.sha = sha;
+                await fetch(apiUrl, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            } catch (e) {
+                // Sin conexión: queda guardada en este navegador y se sube en la próxima venta o al reconectar
+            }
         }
 
         // Muestra los campos de USD o de ARS+CCL según lo que elija Victoria
@@ -1670,12 +1923,20 @@
             const calculoStop = calcularStopInicial(precioUsd, tickerDataCompra);
             const stopInicial = calculoStop.valor;
             const radarScoreCompra = tickerDataCompra?.Radar_Score ?? null;
+            // Para la Auditoría: precio del SPY hoy (para comparar la operación
+            // contra el mercado) y si el radar tenía una alerta activa de este
+            // ticker al momento de comprar (para ver si seguir las alertas rinde)
+            const esHoy = fecha === new Date().toISOString().slice(0, 10);
+            const spyCompra = esHoy ? (currentRadarData?.spy_precio ?? null) : null;
+            const alertaActiva = (currentRadarData?.alertas ?? []).find(a => a?.Ticker?.toUpperCase() === ticker);
+            const alertaAlComprar = alertaActiva ? `${alertaActiva.Estado ?? ''} (${alertaActiva['Recomendación final'] ?? ''})` : null;
 
             const posiciones = cargarCartera();
             posiciones.push({
                 ticker, precio: precioUsd, cantidad, fecha, origenArs,
                 stopInicial, stopActual: stopInicial, radarScoreCompra,
                 origenStop: calculoStop.origen,
+                spyCompra, alertaAlComprar,
             });
             guardarCartera(posiciones);
             renderCartera();
