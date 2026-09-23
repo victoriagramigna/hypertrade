@@ -1067,6 +1067,7 @@
                 stopInicial: p.stopInicial ?? null,
                 stopActual: p.stopActual ?? null,
                 radarScoreCompra: p.radarScoreCompra ?? null,
+                origenStop: p.origenStop ?? null,
             }));
         }
 
@@ -1172,9 +1173,12 @@
             const sma50 = tickerData?.SMA50;
             if (sma50 != null && sma50 < precioCompra) {
                 // Toma el más ajustado (más alto) de los dos, sin superar el precio de compra
-                return Math.max(stopPorcentual, sma50 * 0.98);
+                const candidatoSMA50 = sma50 * 0.98;
+                if (candidatoSMA50 > stopPorcentual) {
+                    return { valor: candidatoSMA50, origen: 'SMA50 en el momento de la compra' };
+                }
             }
-            return stopPorcentual;
+            return { valor: stopPorcentual, origen: 'techo -8% desde la compra' };
         }
 
         function renderCartera() {
@@ -1205,20 +1209,44 @@
                 // (queda grabado en la posición). Si por algún motivo una
                 // posición vieja no lo tiene, se calcula ahora como respaldo.
                 if (p.stopInicial == null) {
-                    p.stopInicial = calcularStopInicial(p.precio, tickerData);
+                    const calculo = calcularStopInicial(p.precio, tickerData);
+                    p.stopInicial = calculo.valor;
                     p.stopActual = p.stopInicial;
+                    p.origenStop = calculo.origen;
                     huboCambios = true;
                 }
                 if (p.stopActual == null) p.stopActual = p.stopInicial;
+                // Posiciones cargadas antes de este fix no tienen origen
+                // guardado. Reconstrucción best-effort comparando el STOP
+                // ACTUAL (no el inicial -- puede ya haber subido por
+                // trailing en una corrida vieja) contra los pisos que se
+                // pueden recalcular hoy: -8% puro, o el precio de compra
+                // (equilibrio). Si no coincide con ninguno, es porque en
+                // su momento lo subió una SMA50 que hoy ya no es la misma
+                // -- se etiqueta como genérico en vez de mentir "-8%".
+                if (p.origenStop == null) {
+                    const stopPctPuro = p.precio * (1 - CARTERA_STOP_PCT_INICIAL);
+                    if (Math.abs(p.stopActual - stopPctPuro) < 0.01) {
+                        p.origenStop = 'techo -8% desde la compra';
+                    } else if (Math.abs(p.stopActual - p.precio) < 0.01) {
+                        p.origenStop = 'equilibrio (+20% de ganancia)';
+                    } else {
+                        p.origenStop = 'SMA50 en una corrida anterior';
+                    }
+                    huboCambios = true;
+                }
 
                 // Trailing: el stop SOLO puede subir, nunca bajar -- asegura
                 // ganancias progresivamente, nunca afloja el piso ya ganado.
                 // El techo -8% queda fijo desde la compra (ya está en
                 // p.stopInicial); acá se compara ese piso contra los
                 // candidatos que sí se mueven con el tiempo, y gana
-                // siempre el MÁS PROTECTOR (el más alto) de todos.
+                // siempre el MÁS PROTECTOR (el más alto) de todos. El
+                // origen se PERSISTE junto con el valor -- si hoy ningún
+                // candidato supera el stop ya guardado, el label se queda
+                // con el de la última vez que sí subió (no vuelve a "-8%").
                 let stopSugerido = p.stopActual;
-                let origenStop = 'techo -8% desde la compra';
+                let origenStop = p.origenStop;
 
                 // Piso estructural: se revisa en cada corrida (no solo al
                 // llegar a +35%), así el stop puede subir apenas la SMA50
@@ -1236,11 +1264,11 @@
                         origenStop = 'equilibrio (+20% de ganancia)';
                     }
                 }
-                if (stopSugerido !== p.stopActual) {
+                if (stopSugerido !== p.stopActual || origenStop !== p.origenStop) {
                     p.stopActual = stopSugerido;
+                    p.origenStop = origenStop; // se persiste -- sobrevive aunque la condición de hoy ya no se cumpla
                     huboCambios = true;
                 }
-                p.origenStop = origenStop; // no se persiste -- solo para mostrar en esta corrida
 
                 // Señales de gestión activa -- pueden acumularse varias a la vez
                 const señales = [];
@@ -1364,13 +1392,15 @@
             // (stop inicial + Radar Score de referencia), para poder hacer
             // seguimiento activo después -- ver renderCartera().
             const tickerDataCompra = (currentRadarData?.ranking ?? []).find(t => t?.Ticker?.toUpperCase() === ticker);
-            const stopInicial = calcularStopInicial(precioUsd, tickerDataCompra);
+            const calculoStop = calcularStopInicial(precioUsd, tickerDataCompra);
+            const stopInicial = calculoStop.valor;
             const radarScoreCompra = tickerDataCompra?.Radar_Score ?? null;
 
             const posiciones = cargarCartera();
             posiciones.push({
                 ticker, precio: precioUsd, cantidad, fecha, origenArs,
                 stopInicial, stopActual: stopInicial, radarScoreCompra,
+                origenStop: calculoStop.origen,
             });
             guardarCartera(posiciones);
             renderCartera();
@@ -1394,6 +1424,7 @@
                 stopInicial: p.stopInicial ?? null,
                 stopActual: p.stopActual ?? null,
                 radarScoreCompra: p.radarScoreCompra ?? null,
+                origenStop: p.origenStop ?? null,
             }));
             const output = document.getElementById('exportar-cartera-output');
             output.value = JSON.stringify(paraExportar, null, 2);
