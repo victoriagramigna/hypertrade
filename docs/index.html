@@ -1216,19 +1216,27 @@
                     huboCambios = true;
                 }
                 if (p.stopActual == null) p.stopActual = p.stopInicial;
-                // Posiciones cargadas antes de este fix no tienen origen
-                // guardado. Reconstrucción best-effort comparando el STOP
-                // ACTUAL (no el inicial -- puede ya haber subido por
-                // trailing en una corrida vieja) contra los pisos que se
-                // pueden recalcular hoy: -8% puro, o el precio de compra
-                // (equilibrio). Si no coincide con ninguno, es porque en
-                // su momento lo subió una SMA50 que hoy ya no es la misma
-                // -- se etiqueta como genérico en vez de mentir "-8%".
-                if (p.origenStop == null) {
-                    const stopPctPuro = p.precio * (1 - CARTERA_STOP_PCT_INICIAL);
-                    if (Math.abs(p.stopActual - stopPctPuro) < 0.01) {
+                // Reconstrucción/validación del origen del stop. No alcanza
+                // con "está vacío": posiciones cargadas con el bug viejo
+                // (antes de este fix) ya tienen guardado el label por
+                // defecto incorrecto ("techo -8%"), así que hay que
+                // VALIDAR que el label guardado sea matemáticamente
+                // consistente con el stop guardado, y corregirlo si no lo
+                // es -- no solo cuando falta. "techo -8%" y "equilibrio"
+                // son verificables exactos; si dicen eso pero el número no
+                // coincide, están mintiendo. Cualquier otro label (SMA50,
+                // ya sea de hoy o "de una corrida anterior") se deja tal
+                // cual, porque no hay forma de re-verificar una SMA50 vieja.
+                const stopPctPuro = p.precio * (1 - CARTERA_STOP_PCT_INICIAL);
+                const esTecho8 = Math.abs(p.stopActual - stopPctPuro) < 0.01;
+                const esEquilibrio = Math.abs(p.stopActual - p.precio) < 0.01;
+                const labelInconsistente =
+                    (p.origenStop === 'techo -8% desde la compra' && !esTecho8) ||
+                    (p.origenStop === 'equilibrio (+20% de ganancia)' && !esEquilibrio);
+                if (p.origenStop == null || labelInconsistente) {
+                    if (esTecho8) {
                         p.origenStop = 'techo -8% desde la compra';
-                    } else if (Math.abs(p.stopActual - p.precio) < 0.01) {
+                    } else if (esEquilibrio) {
                         p.origenStop = 'equilibrio (+20% de ganancia)';
                     } else {
                         p.origenStop = 'SMA50 en una corrida anterior';
