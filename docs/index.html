@@ -1213,18 +1213,34 @@
 
                 // Trailing: el stop SOLO puede subir, nunca bajar -- asegura
                 // ganancias progresivamente, nunca afloja el piso ya ganado.
+                // El techo -8% queda fijo desde la compra (ya está en
+                // p.stopInicial); acá se compara ese piso contra los
+                // candidatos que sí se mueven con el tiempo, y gana
+                // siempre el MÁS PROTECTOR (el más alto) de todos.
                 let stopSugerido = p.stopActual;
+                let origenStop = 'techo -8% desde la compra';
+
+                // Piso estructural: se revisa en cada corrida (no solo al
+                // llegar a +35%), así el stop puede subir apenas la SMA50
+                // suba lo suficiente como para proteger más que el -8%.
+                if (tickerData?.SMA50 != null) {
+                    const candidatoSMA50 = tickerData.SMA50 * 0.98;
+                    if (candidatoSMA50 > stopSugerido) {
+                        stopSugerido = candidatoSMA50;
+                        origenStop = 'SMA50 -- más ajustado que el -8%';
+                    }
+                }
                 if (gananciaPct != null) {
-                    if (gananciaPct >= CARTERA_GANANCIA_TRAILING_PCT && tickerData?.SMA50 != null) {
-                        stopSugerido = Math.max(stopSugerido, tickerData.SMA50 * 0.98);
-                    } else if (gananciaPct >= CARTERA_GANANCIA_PARCIAL_PCT) {
-                        stopSugerido = Math.max(stopSugerido, p.precio); // mueve a punto de equilibrio
+                    if (gananciaPct >= CARTERA_GANANCIA_PARCIAL_PCT && p.precio > stopSugerido) {
+                        stopSugerido = p.precio; // mueve a punto de equilibrio
+                        origenStop = 'equilibrio (+20% de ganancia)';
                     }
                 }
                 if (stopSugerido !== p.stopActual) {
                     p.stopActual = stopSugerido;
                     huboCambios = true;
                 }
+                p.origenStop = origenStop; // no se persiste -- solo para mostrar en esta corrida
 
                 // Señales de gestión activa -- pueden acumularse varias a la vez
                 const señales = [];
@@ -1272,7 +1288,7 @@
                 ).join('');
 
                 const stopHtml = p.stopActual != null
-                    ? `<div class="text-accent text-xs mt-2">STOP ACTUAL (trailing): $${p.stopActual.toFixed(2)} ${p.stopActual > p.stopInicial ? '<span class="text-gray-500">(subido desde el inicial $' + p.stopInicial.toFixed(2) + ')</span>' : ''}</div>`
+                    ? `<div class="text-accent text-xs mt-2">STOP ACTUAL: $${p.stopActual.toFixed(2)} <span class="text-gray-500">(${p.origenStop})</span></div>`
                     : '';
 
                 const objetivoHtml = `<div class="text-gray-500 text-[10px] mt-1">Objetivo parcial (+${CARTERA_GANANCIA_PARCIAL_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_PARCIAL_PCT / 100)).toFixed(2)} · Objetivo trailing (+${CARTERA_GANANCIA_TRAILING_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_TRAILING_PCT / 100)).toFixed(2)}</div>`;
