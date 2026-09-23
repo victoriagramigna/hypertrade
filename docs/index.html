@@ -111,6 +111,12 @@
             </div>
         </div>
 
+        <!-- Régimen de mercado 0-100 -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Régimen de mercado</h2>
+            <div id="regimen-panel" class="bg-surface p-4 rounded-sm border border-surface"></div>
+        </section>
+
         <!-- Movimientos del día -->
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Movimientos del día</h2>
@@ -301,6 +307,12 @@
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Evolución mes a mes</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">Todas las señales juntas, agrupadas por el mes en que se dispararon. Sirve para ver si la app acierta de forma sostenida o solo tuvo algunas semanas buenas. "A favor" cuenta como ganancia que una señal bajista haya bajado.</p>
             <div id="aud-meses" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Según el régimen de mercado</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Señales alcistas agrupadas por el régimen que había cuando se dispararon. Si el régimen sirve, las franjas altas deberían acertar más. Cuenta desde que el régimen empezó a grabarse.</p>
+            <div id="aud-regimen" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
         </section>
 
         <section>
@@ -691,6 +703,17 @@
                 if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
 
+                // Aviso de régimen: solo en señales de compra, cuando el clima general no acompaña
+                const regAlerta = alerta?.Regimen_Score;
+                const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista';
+                let regimenAvisoHtml = '';
+                if (esCompra && regAlerta != null && regAlerta < 60) {
+                    const bajo = regAlerta < 40;
+                    regimenAvisoHtml = `<div class="mt-2 border ${bajo ? 'border-neg text-neg bg-neg/10' : 'border-accent text-accent bg-accent/10'} font-mono text-[11px] px-2 py-1.5 rounded-sm">
+                        ⚠️ Régimen de mercado ${regAlerta}/100 -- ${bajo ? 'clima desfavorable: mejor esperar' : 'clima cauteloso: posición chica y stop corto'}
+                    </div>`;
+                }
+
                 // Narrativa al pie -- el texto de radar_score.py/narrativa.py
                 const narrativaHtml = narrativa
                     ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
@@ -707,6 +730,7 @@
                         </div>
                         <div class="font-mono text-sm text-gray-300">${estado}</div>
                         ${chipsHtml}
+                        ${regimenAvisoHtml}
                         ${radarScoreHtml}
                         <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
                             <span>SCORE: <span class="text-white">${score}</span></span>
@@ -752,6 +776,7 @@
             document.getElementById('ccl-manual').dispatchEvent(new Event('input'));
             renderCedearPanel(data);
             renderMovimientosDia(data);
+            renderRegimen(data);
             renderCartera();
 
             // Banner de corrida degradada (mucho de la fuente de datos falló)
@@ -777,6 +802,13 @@
                 badgesHtml.push(`<span class="border border-accent text-accent px-2 py-1 rounded-sm bg-surface cursor-help" title="Falló: ${listaTickers}">⚠️ ${nFallidos} FUENTE(S) CON PROBLEMAS</span>`);
             }
             
+            const rScore = data?.regimen_score?.score;
+            if (rScore != null) {
+                const rc = colorRegimen(rScore);
+                const rcls = rc === 'pos' ? 'border-pos text-pos' : (rc === 'accent' ? 'border-accent text-accent' : 'border-neg text-neg');
+                badgesHtml.push(`<span class="border ${rcls} px-2 py-1 rounded-sm bg-surface cursor-pointer" onclick="switchTab('inicio')" title="Régimen de mercado 0-100 -- detalle en Inicio">RÉGIMEN: ${rScore}</span>`);
+            }
+
             const vixSano = data?.regimen_mercado?.sano ?? true;
             const vixColor = vixSano ? 'border-pos text-pos' : 'border-neg text-neg';
             const vixValue = data?.regimen_mercado?.vix ?? '—';
@@ -988,6 +1020,72 @@
             if (name === 'historial' && historialData === null) fetchHistorialData();
             if (name === 'auditoria') fetchAuditoria();
             window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // ============ RÉGIMEN DE MERCADO (Inicio) ============
+        const REGIMEN_COLORES = { pos: '#6FCF97', accent: '#E0A458', neg: '#D9694F' };
+        const REGIMEN_BANDAS = [
+            { desde: 0, hasta: 39, nombre: 'Desfavorable', guia: 'Cash es posición: mejor no abrir compras nuevas' },
+            { desde: 40, hasta: 59, nombre: 'Cauteloso', guia: '25-50%: posiciones chicas y stops cortos' },
+            { desde: 60, hasta: 79, nombre: 'Aceptable', guia: '50-75%: solo las mejores oportunidades' },
+            { desde: 80, hasta: 100, nombre: 'Favorable', guia: 'Exposición plena: se puede ser activa' },
+        ];
+
+        function colorRegimen(score) {
+            if (score >= 60) return 'pos';
+            if (score >= 40) return 'accent';
+            return 'neg';
+        }
+
+        function renderRegimen(data) {
+            const cont = document.getElementById('regimen-panel');
+            const r = data?.regimen_score;
+            if (!r || r.score == null) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin datos del régimen en esta corrida.</div>';
+                return;
+            }
+            const color = REGIMEN_COLORES[colorRegimen(r.score)];
+            // Medio círculo: largo del arco = pi * radio
+            const radio = 70, largo = Math.PI * radio;
+            const lleno = largo * Math.min(r.score, 100) / 100;
+            const gauge = `
+                <svg viewBox="0 0 180 105" class="w-48 mx-auto block">
+                    <path d="M 20 95 A 70 70 0 0 1 160 95" fill="none" stroke="#1a2233" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M 20 95 A 70 70 0 0 1 160 95" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round"
+                          stroke-dasharray="${lleno} ${largo}"/>
+                    <text x="90" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="34" font-weight="600" fill="${color}">${r.score}</text>
+                    <text x="90" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b7280">de 100</text>
+                </svg>`;
+
+            const partes = (r.partes ?? []).map(pt => {
+                const pct = pt.max ? pt.pts / pt.max * 100 : 0;
+                const c = pct >= 60 ? 'bg-pos' : (pct >= 35 ? 'bg-accent' : 'bg-neg');
+                return `
+                    <div>
+                        <div class="flex justify-between font-mono text-xs">
+                            <span class="text-gray-300">${pt.nombre}</span>
+                            <span class="text-white">${Number(pt.pts).toFixed(0)}/${pt.max}</span>
+                        </div>
+                        <div class="h-1 w-full bar-bg rounded-full overflow-hidden my-1"><div class="h-full ${c}" style="width:${pct}%"></div></div>
+                        <div class="font-mono text-[10px] text-gray-500">${pt.detalle ?? ''}</div>
+                    </div>`;
+            }).join('');
+
+            const bandas = REGIMEN_BANDAS.map(b => {
+                const activa = r.score >= b.desde && r.score <= b.hasta;
+                return `<div class="p-2 rounded-sm border ${activa ? '' : 'border-gray-800 opacity-50'}" style="${activa ? `border-color:${color}; background:${color}1a` : ''}">
+                    <div class="font-mono text-xs font-bold" style="${activa ? `color:${color}` : ''}">${b.desde}-${b.hasta}</div>
+                    <div class="text-[10px] text-gray-400 leading-snug">${b.guia}</div>
+                </div>`;
+            }).join('');
+
+            cont.innerHTML = `
+                ${gauge}
+                <div class="text-center font-bold uppercase tracking-widest text-sm mt-1" style="color:${color}">${r.banda}</div>
+                <div class="text-center font-mono text-xs text-gray-400 mt-1">${r.guia}</div>
+                <div class="space-y-3 mt-5">${partes}</div>
+                <div class="grid grid-cols-2 gap-2 mt-5">${bandas}</div>
+                <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">Mide el clima del mercado en general, no de una acción. No cambia el Radar Score: es una guía de cuánto arriesgar. Informativo, no es una recomendación.</div>`;
         }
 
         // ============ MOVIMIENTOS DEL DÍA (Inicio) ============
@@ -1206,6 +1304,29 @@
                         <span class="text-right">${audPct(x.vs_spy_prom)}</span>
                     </div>`;
                 }).join('') + `<div class="font-mono text-[10px] text-gray-600 pt-2">Entre paréntesis, cuántos casos respaldan cada mes (en naranja si son menos de ${confiable}).</div>`;
+            }
+
+            // --- Según el régimen
+            const franjas = d.por_regimen ?? [];
+            const contReg = document.getElementById('aud-regimen');
+            if (!franjas.some(f => f.casos > 0)) {
+                contReg.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay alertas con el régimen grabado. Se empiezan a juntar desde ahora.</div>';
+            } else {
+                contReg.innerHTML = `
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Régimen</span><span class="text-right">Aciertos</span><span class="text-right">Retorno</span><span class="text-right">vs SPY</span>
+                    </div>` + franjas.map(f => {
+                    const x = f[h] ?? {};
+                    if (!f.casos) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1"><span class="text-gray-400">${f.franja}</span><span class="col-span-3 text-right text-gray-600">sin casos</span></div>`;
+                    if (!x.n) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1"><span class="text-gray-400">${f.franja}</span><span class="col-span-3 text-right text-gray-600">${f.casos} esperando</span></div>`;
+                    const chica = x.n < confiable ? 'text-accent' : 'text-gray-600';
+                    return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                        <span class="text-gray-300">${f.franja}</span>
+                        <span class="text-right text-white font-bold">${x.pct_aciertos}% <span class="${chica} text-[9px]">(${x.n})</span></span>
+                        <span class="text-right">${audPct(x.ret_prom)}</span>
+                        <span class="text-right">${audPct(x.vs_spy_prom)}</span>
+                    </div>`;
+                }).join('');
             }
 
             // --- Top 30 semanal real
