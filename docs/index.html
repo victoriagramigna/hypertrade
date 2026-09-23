@@ -320,6 +320,12 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Según los puntos de cuidado</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Señales alcistas con y sin advertencias (SMA50 bajando, techo en el AVWAP, extendida, etc.). Si las advertencias sirven, las que tienen puntos de cuidado deberían rendir peor. Cuenta desde que se empezaron a grabar.</p>
+            <div id="aud-cuidados" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Top 30 de cada semana</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">El primer día de cada semana se guarda el Top 30 de Fuerza Relativa. Acá se ve si le ganó al SPY y al promedio de todo el universo.</p>
             <div id="aud-top30" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
@@ -729,6 +735,8 @@
                 if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos">CRUCE 52W</span>');
                 if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent">TENDENCIA+</span>');
                 if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
+                const nCuidados = (alerta?.Cuidados ?? []).length;
+                if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
 
                 // Aviso de régimen: solo en señales de compra, cuando el clima general no acompaña
@@ -1341,6 +1349,31 @@
                     const chica = x.n < confiable ? 'text-accent' : 'text-gray-600';
                     return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
                         <span class="text-gray-300">${f.franja}</span>
+                        <span class="text-right text-white font-bold">${x.pct_aciertos}% <span class="${chica} text-[9px]">(${x.n})</span></span>
+                        <span class="text-right">${audPct(x.ret_prom)}</span>
+                        <span class="text-right">${audPct(x.vs_spy_prom)}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // --- Según los puntos de cuidado
+            const gruposC = d.por_cuidados ?? [];
+            const contC = document.getElementById('aud-cuidados');
+            if (!gruposC.some(g => g.casos > 0)) {
+                contC.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay alertas con puntos de cuidado grabados. Se empiezan a juntar desde ahora.</div>';
+            } else {
+                contC.innerHTML = `
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Grupo</span><span class="text-right">Aciertos</span><span class="text-right">Retorno</span><span class="text-right">vs SPY</span>
+                    </div>` + gruposC.filter(g => g.casos > 0 || !g.grupo.startsWith('·')).map(g => {
+                    const x = g[h] ?? {};
+                    const sub = g.grupo.startsWith('·');
+                    const nombre = `<span class="${sub ? 'text-gray-500 pl-2' : 'text-gray-300'}">${g.grupo.replace('· ', '')}</span>`;
+                    if (!g.casos) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">sin casos</span></div>`;
+                    if (!x.n) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">${g.casos} esperando</span></div>`;
+                    const chica = x.n < confiable ? 'text-accent' : 'text-gray-600';
+                    return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                        ${nombre}
                         <span class="text-right text-white font-bold">${x.pct_aciertos}% <span class="${chica} text-[9px]">(${x.n})</span></span>
                         <span class="text-right">${audPct(x.ret_prom)}</span>
                         <span class="text-right">${audPct(x.vs_spy_prom)}</span>
