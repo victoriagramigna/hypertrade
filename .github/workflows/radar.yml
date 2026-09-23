@@ -67,7 +67,7 @@ jobs:
           # Auditoría -- mismos cuidados: pueden no existir en las primeras
           # corridas. Sin estas líneas los resultados se calculaban pero se
           # perdían al terminar la corrida (nunca se guardaban en el repo).
-          for f in data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json; do
+          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json; do
             if [ -f "$f" ]; then
               git add "$f"
             fi
