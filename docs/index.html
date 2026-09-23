@@ -133,6 +133,10 @@
                 </div>
                 <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
                     <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
+                    <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm">
+                        <option value="nuevas">Más nuevas primero</option>
+                        <option value="tipo">Por tipo (compras primero)</option>
+                    </select>
                 </div>
                 <!-- 4. Contenedor de Alertas -->
                 <div id="alerts-container" class="grid grid-cols-1 gap-4"></div>
@@ -606,11 +610,35 @@
         // tener que volver a pedir el JSON cada vez que se escribe.
         let currentAlertasCompletas = [];
 
+        // Orden de las alertas: "nuevas" (por defecto) = la señal que empezó
+        // más recientemente arriba; "tipo" = compras/líder primero, después
+        // ventas, después el resto -- y dentro de cada grupo, las más nuevas
+        // primero. Se recuerda la última elección en este navegador.
+        function ordenarAlertas(lista) {
+            let modo = 'nuevas';
+            try { modo = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
+            const tiempo = (a) => {
+                const t = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : 0;
+                return isNaN(t) ? 0 : t;
+            };
+            const grupo = (a) => {
+                const rec = a?.['Recomendación final'];
+                if (rec === 'COMPRA' || a?.Tipo === 'lider_soporte') return 1;
+                if (rec === 'VENTA') return 2;
+                return 3;
+            };
+            return [...lista].sort((a, b) => {
+                if (modo === 'tipo' && grupo(a) !== grupo(b)) return grupo(a) - grupo(b);
+                return tiempo(b) - tiempo(a);
+            });
+        }
+
         function filtrarAlertas() {
             const query = (document.getElementById('alertas-search')?.value ?? '').trim().toUpperCase();
-            const alertas = query
+            const filtradas = query
                 ? currentAlertasCompletas.filter(a => (a?.Ticker ?? '').toUpperCase().includes(query))
                 : currentAlertasCompletas;
+            const alertas = ordenarAlertas(filtradas);
 
             const alertsContainer = document.getElementById('alerts-container');
             const totalTexto = query ? `${alertas.length} de ${currentAlertasCompletas.length}` : `${alertas.length}`;
@@ -836,17 +864,8 @@
             // Renderizado de Alertas -- se guarda la lista completa aparte
             // para poder filtrarla por ticker sin volver a pedir el JSON
             // (ver filtrarAlertas() definida fuera de esta función).
-            const alertasCompletas = data?.alertas ?? [];
-            alertasCompletas.sort((a, b) => {
-                const getRank = (alerta) => {
-                    const rec = alerta?.['Recomendación final'];
-                    if (rec === 'COMPRA' || alerta?.Tipo === 'lider_soporte') return 1;
-                    if (rec === 'VENTA') return 2;
-                    return 3;
-                };
-                return getRank(a) - getRank(b);
-            });
-            currentAlertasCompletas = alertasCompletas;
+            // El orden se aplica en filtrarAlertas(), según el selector
+            currentAlertasCompletas = data?.alertas ?? [];
             filtrarAlertas();
 
             const rankingArray = data?.ranking ?? [];
@@ -1597,6 +1616,14 @@
         }
 
         document.getElementById('alertas-search').addEventListener('input', filtrarAlertas);
+        (() => {
+            const sel = document.getElementById('alertas-orden');
+            try { sel.value = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
+            sel.addEventListener('change', () => {
+                try { localStorage.setItem('orden_alertas', sel.value); } catch (e) {}
+                filtrarAlertas();
+            });
+        })();
 
         function actualizarUIsincronizacion() {
             const token = cargarTokenGithub();
