@@ -15,11 +15,17 @@ import json
 import logging
 import os
 
-from notificador_email import enviar_email
+from telegram_bot import enviar_mensaje
 
 log = logging.getLogger("radar.cartera")
 
 RUTA_CARTERA = "data/mi_cartera.json"
+# Memoria de avisos ya mandados, APARTE de mi_cartera.json: ese archivo lo
+# pisa el dashboard cada vez que sincroniza, así que cualquier marca que
+# se guardara adentro se perdía y el mismo aviso salía en cada corrida.
+# Este archivo solo lo escribe el radar y lo sube el workflow.
+RUTA_AVISOS = "data/cartera_avisos.json"
+SMA50_TOLERANCIA_PCT = 2  # mismo margen que el dashboard y Alertas
 
 # Mismos umbrales que en el dashboard (docs/index.html) -- si cambiás
 # uno, cambiá el otro para que no queden desincronizados.
@@ -73,12 +79,12 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str) -> tuple:
     if precio_actual is not None and p["precio"] > 0:
         ganancia_pct = (precio_actual / p["precio"] - 1) * 100
 
-    # Trailing: el stop solo puede subir
-    if ganancia_pct is not None:
-        if ganancia_pct >= GANANCIA_TRAILING_PCT and sma50 is not None:
-            p["stopActual"] = max(p["stopActual"], sma50 * 0.98)
-        elif ganancia_pct >= GANANCIA_PARCIAL_PCT:
-            p["stopActual"] = max(p["stopActual"], p["precio"])
+    # Trailing: el stop solo puede subir -- mismas reglas que el dashboard
+    # (SMA50 -2% en cada corrida si protege más, equilibrio desde +20%)
+    if sma50 is not None:
+        p["stopActual"] = max(p["stopActual"], sma50 * 0.98)
+    if ganancia_pct is not None and ganancia_pct >= GANANCIA_PARCIAL_PCT:
+        p["stopActual"] = max(p["stopActual"], p["precio"])
 
     avisos_candidatos = []  # (tipo, texto)
 
@@ -100,19 +106,31 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str) -> tuple:
         if caida >= CAIDA_RADAR_SCORE:
             avisos_candidatos.append(("radar_score_cae", f"⚠️ {p['ticker']}: Radar Score bajó de {p['radarScoreCompra']:.0f} a {radar_score_actual:.0f} desde la compra"))
 
-    if sobre_sma50 is False:
-        avisos_candidatos.append(("perdio_sma50", f"⚠️ {p['ticker']}: perdió el soporte de su SMA50"))
+    dist50 = ticker_data.get("Dist_SMA50_%") if ticker_data else None
+    if dist50 is not None and dist50 < -SMA50_TOLERANCIA_PCT:
+        avisos_candidatos.append(("perdio_sma50", f"⚠️ {p['ticker']}: perdió el soporte de su SMA50 ({dist50:.1f}%)"))
 
-    # Dedup: solo se considera "nuevo" un aviso que hoy todavía no se mandó
-    p.setdefault("_avisos_enviados", {})
-    avisos_nuevos = []
-    for tipo, texto in avisos_candidatos:
-        clave = f"{fecha_hoy}|{tipo}"
-        if p["_avisos_enviados"].get(tipo) != clave:
-            avisos_nuevos.append({"tipo": tipo, "texto": texto})
-            p["_avisos_enviados"][tipo] = clave
+    return p, avisos_candidatos
 
-    return p, avisos_nuevos
+
+def _clave_posicion(p: dict) -> str:
+    return f"{p.get('ticker', '').upper()}|{p.get('fecha')}|{p.get('precio')}"
+
+
+def _cargar_avisos() -> dict:
+    if not os.path.exists(RUTA_AVISOS):
+        return {}
+    try:
+        with open(RUTA_AVISOS, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _guardar_avisos(avisos: dict):
+    os.makedirs("data", exist_ok=True)
+    with open(RUTA_AVISOS, "w", encoding="utf-8") as f:
+        json.dump(avisos, f, ensure_ascii=False, indent=2)
 
 
 def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str, email_to: str, modo: str):
@@ -131,16 +149,30 @@ def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str
     if not df_rs.empty:
         ranking_por_ticker = df_rs.set_index("Ticker").to_dict(orient="index")
 
+    # Un aviso se manda cuando la condición EMPIEZA (no estaba activa en la
+    # corrida anterior). Mientras siga igual, no se repite. Si desaparece
+    # (ej: el precio se aleja del stop) y después vuelve, se avisa de nuevo.
+    memoria = _cargar_avisos()
+    memoria_nueva = {}
     todos_los_avisos = []
     for p in posiciones:
         ticker_data = ranking_por_ticker.get(p.get("ticker", "").upper()) or ranking_por_ticker.get(p.get("ticker"))
-        p_actualizada, avisos = _evaluar_posicion(p, ticker_data, fecha_hoy)
-        todos_los_avisos.extend(avisos)
+        _, candidatos = _evaluar_posicion(p, ticker_data, fecha_hoy)
+        clave = _clave_posicion(p)
+        activos_antes = set(memoria.get(clave, []))
+        for tipo, texto in candidatos:
+            if tipo not in activos_antes:
+                todos_los_avisos.append({"tipo": tipo, "texto": texto})
+        memoria_nueva[clave] = [tipo for tipo, _ in candidatos]
 
-    guardar_cartera(posiciones)
+    # mi_cartera.json NO se reescribe acá: lo maneja el dashboard (que es
+    # quien sincroniza el stop). Pisarlo desde el radar podía borrar una
+    # compra o venta recién cargada en el celular.
 
     if not todos_los_avisos:
         log.info("Cartera: sin avisos nuevos")
+        if modo == "produccion":
+            _guardar_avisos(memoria_nueva)
         return
 
     log.info(f"Cartera: {len(todos_los_avisos)} aviso(s) nuevo(s)")
@@ -148,14 +180,17 @@ def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str
         log.info(f"  [CARTERA] {a['texto']}")
 
     if modo != "produccion":
-        log.info("MODO=test -- no se envía el mail real, solo se loguea arriba")
+        # En test no se manda nada NI se guarda la memoria: así la próxima
+        # corrida real sí manda estos avisos.
+        log.info("MODO=test -- no se envía nada a Telegram ni se marca como avisado")
         return
 
-    cuerpo = "\n".join(a["texto"] for a in todos_los_avisos)
-    enviar_email(
-        asunto=f"[Mi Cartera] {len(todos_los_avisos)} aviso(s) -- {fecha_hoy}",
-        cuerpo=cuerpo,
-        email_user=email_user,
-        email_password=email_password,
-        email_to=email_to,
-    )
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    texto = f"<b>💼 Mi Cartera -- {len(todos_los_avisos)} aviso(s)</b>\n\n" + "\n".join(a["texto"] for a in todos_los_avisos)
+    if enviar_mensaje(token, chat_id, texto):
+        log.info("Cartera: avisos enviados a Telegram")
+        _guardar_avisos(memoria_nueva)
+    else:
+        # No se guarda la memoria: la próxima corrida lo reintenta
+        log.warning("Cartera: no se pudo mandar el Telegram -- se reintenta en la próxima corrida")
