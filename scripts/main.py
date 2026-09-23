@@ -8,6 +8,13 @@ CAMBIOS v2.1:
   dashboard, pero calcular_radar_score() ya no los usa para puntuar).
 - La narrativa ahora recibe también SMA50 y SMA200 de cada ticker, para
   poder mostrar el valor exacto entre paréntesis en cada condición.
+- Mi Cartera: seguimiento activo (trailing stop, objetivos, caída de
+  Radar Score) + mail si hay algo nuevo para avisar.
+- Seguimiento de precios de la bitácora, para el backtest futuro que
+  compara radar-mercado (v1) vs. hypertrade (v2).
+- Evaluación del sistema (una vez por semana, los viernes): responde si
+  el Radar Score y sus señales individuales realmente anticipan un
+  movimiento rentable, y si le ganan al mercado (alpha vs. SPY).
 """
 import json
 import logging
@@ -35,6 +42,7 @@ from narrativa import armar_narrativa
 from senales_nuevas import calcular_distribution_days, multiplicador_distribution
 from cartera_seguimiento import procesar_cartera
 from seguimiento_precios import procesar_seguimiento
+from evaluacion_sistema import evaluar_sistema
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -272,6 +280,17 @@ def main():
         procesar_seguimiento(precios)
     except Exception as e:
         log.error(f"Seguimiento de precios falló, no afecta al resto de la corrida: {e}")
+
+    # 9d. Evaluación del sistema -- responde si el Radar Score y sus
+    # señales individuales realmente anticipan un movimiento rentable.
+    # No hace falta correrla en cada corrida de 30 min (es una foto sobre
+    # datos que se acumulan lento) -- una vez por semana alcanza. Se
+    # puede ajustar el día si se prefiere otro.
+    try:
+        if ahora.weekday() == 4:  # viernes
+            evaluar_sistema()
+    except Exception as e:
+        log.error(f"Evaluación del sistema falló, no afecta al resto de la corrida: {e}")
 
     # 10. Mi Cartera -- seguimiento activo (trailing stop, objetivos,
     # caída de Radar Score) + mail si hay algo nuevo para avisar. No

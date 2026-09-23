@@ -50,6 +50,17 @@ def registrar_eventos(alertas_nuevas: list, rs_por_ticker: dict, precios_usd: di
             "vcp_valido": vcp_info.get("valido") if isinstance(vcp_info, dict) else None,
             "precio": precios_usd.get(ticker),
             "recomendacion": a.get("Recomendación final"),
+            # --- Nuevo: la "foto" de señales individuales, para poder
+            # evaluar más adelante cuáles de verdad anticipan movimiento
+            # rentable (ver evaluacion_sistema.py) -- sin esto, el backtest
+            # solo puede evaluar el Radar Score en conjunto, nunca sus partes.
+            "apoyo_avwap": a.get("Apoyo_AVWAP"),
+            "cruce_avwap_52w": a.get("Cruce_AVWAP_52w"),
+            "atr_contraction": a.get("ATR_Contraction"),
+            "pendiente_ok": a.get("Pendiente_OK"),
+            "dist_max52w_pct": a.get("Dist_Max52w_%"),
+            "var_dia_pct": a.get("Var_dia_%"),
+            "var_spy_dia_pct": a.get("Var_SPY_dia_%"),
         }
         lineas.append(json.dumps(evento, ensure_ascii=False))
 
