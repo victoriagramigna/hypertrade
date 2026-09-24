@@ -21,6 +21,7 @@ import pandas as pd
 import yfinance as yf
 
 from telegram_bot import enviar_mensaje, DISCLAIMER
+from cripto_bitacora import registrar_eventos_cripto
 
 # ---------------------------------------------------------------------------
 # CONFIG — acá se suman/sacan monedas. El símbolo es el ticker de yfinance.
@@ -261,16 +262,21 @@ def notificar_alertas_cripto(resultados: list, modo: str) -> None:
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    timestamp = datetime.now(timezone.utc).isoformat()
 
     enviados = 0
+    eventos_bitacora = []
     for clave, r, alerta in pendientes:
         texto = formatear_alerta_cripto(r["nombre"], r["ticker"], alerta) + DISCLAIMER
         if enviar_mensaje(token, chat_id, texto):
             enviados += 1
             notificaciones[clave] = hoy
+            eventos_bitacora.append((timestamp, r["nombre"], r["ticker"], alerta, r))
 
     guardar_notificaciones(notificaciones)
-    print(f"Cripto: {enviados}/{len(pendientes)} alerta(s) enviada(s) a Telegram.")
+    registrados = registrar_eventos_cripto(eventos_bitacora)
+    print(f"Cripto: {enviados}/{len(pendientes)} alerta(s) enviada(s) a Telegram, "
+          f"{registrados} agregada(s) a la bitácora.")
 
 
 # ---------------------------------------------------------------------------
