@@ -1330,9 +1330,23 @@
                 const rsi = c?.rsi;
                 let rsiColor = 'text-gray-300';
                 if (rsi != null) {
-                    if (rsi >= 75) rsiColor = 'text-neg';
-                    else if (rsi <= 30) rsiColor = 'text-pos';
+                    // El RSI es solo cautela: alto en naranja, sin "verde" en sobreventa
+                    if (rsi >= 75) rsiColor = 'text-accent';
                 }
+
+                const nombresScore = { tendencia: 'Tendencia', volumen: 'Volumen', distancia_max52w: 'Cerca del máx.', momentum: 'RSI' };
+                const maximos = c?.score_maximos ?? {};
+                const desglose = Object.entries(c?.score_detalle ?? {}).map(([k, v]) =>
+                    `<span>${nombresScore[k] ?? k} <span class="text-white">${v}${maximos[k] != null ? '/' + maximos[k] : ''}</span></span>`).join('');
+                const desgloseHtml = desglose
+                    ? `<div class="font-mono text-[10px] text-gray-500 flex flex-wrap gap-x-3 gap-y-0.5">${desglose}</div>`
+                    : '';
+                const cuidadosCripto = (c?.cuidados ?? []).length
+                    ? `<div class="border border-accent bg-accent/10 rounded-sm px-2 py-1.5 space-y-1">
+                        <div class="text-accent text-[10px] font-bold uppercase">Puntos de cuidado</div>
+                        ${c.cuidados.map(t => `<div class="text-gray-300 text-[11px]">⚠️ ${t}</div>`).join('')}
+                       </div>`
+                    : '';
 
                 const alertasHtml = (c?.alertas ?? []).length > 0
                     ? c.alertas.map(a => `
@@ -1354,6 +1368,7 @@
                                 <div class="font-mono text-2xl font-bold ${scoreColor}">${score}</div>
                             </div>
                         </div>
+                        ${desgloseHtml}
 
                         <div class="grid grid-cols-4 gap-2 font-mono text-[10px] border-t border-base pt-2">
                             <div>
@@ -1373,6 +1388,8 @@
                                 <div class="mt-0.5">${c?.dist_max52w_pct != null ? c.dist_max52w_pct + '%' : '—'}</div>
                             </div>
                         </div>
+
+                        ${cuidadosCripto}
 
                         <div class="space-y-1.5 border-t border-base pt-2">
                             ${alertasHtml}
