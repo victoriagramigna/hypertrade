@@ -148,16 +148,15 @@ def calcular_score(ind: dict) -> dict:
         tend += 10
     detalle["tendencia"] = tend
 
-    # Volumen: >1.5x su promedio suma completo, entre 1-1.5x parcial
+    # Volumen: GRADUAL, sin escalones -- 0 puntos con 0.8x su promedio o
+    # menos, puntaje completo con 1.5x o más, proporcional en el medio.
+    # (Antes pasar de 1.49x a 1.51x movía 13 puntos de golpe.)
     vol_rel = ind["vol_rel"]
     if vol_rel is None:
         detalle["volumen"] = 0
-    elif vol_rel >= 1.5:
-        detalle["volumen"] = SCORE_WEIGHTS["volumen"]
-    elif vol_rel >= 1.0:
-        detalle["volumen"] = round(SCORE_WEIGHTS["volumen"] * 0.5)
     else:
-        detalle["volumen"] = 0
+        frac = max(0.0, min(1.0, (vol_rel - 0.8) / (1.5 - 0.8)))
+        detalle["volumen"] = round(SCORE_WEIGHTS["volumen"] * frac)
 
     # Distancia a máximo 52w: cerca del máximo (0 a -10%) puntúa alto;
     # muy lejos (<-30%) puntúa bajo
@@ -333,7 +332,21 @@ def procesar_ticker(ticker: str, nombre: str):
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
-    ind = calcular_indicadores(df)
+    # Cripto cotiza 24/7 y la vela diaria cierra a medianoche UTC (21:00 ARG).
+    # Si la última vela es la de HOY, está a medio hacer: su volumen es
+    # parcial y el "volumen relativo" cambiaría hora a hora sin que pase nada.
+    # Por eso indicadores, score y alertas se calculan con la ÚLTIMA VELA
+    # CERRADA; el precio en vivo se muestra aparte.
+    precio_vivo = float(df["Close"].iloc[-1])
+    ultima_fecha = pd.Timestamp(df.index[-1]).date()
+    hoy_utc = datetime.now(timezone.utc).date()
+    df_cerrado = df.iloc[:-1] if ultima_fecha >= hoy_utc and len(df) > 60 else df
+    fecha_vela = pd.Timestamp(df_cerrado.index[-1]).date().isoformat()
+
+    ind = calcular_indicadores(df_cerrado)
+    ind["precio_cierre"] = ind["precio"]
+    ind["precio"] = round(precio_vivo, 2)
+    ind["vela_cerrada"] = fecha_vela
     score = calcular_score(ind)
     alertas = generar_alertas(nombre, ind, score)
 
