@@ -46,6 +46,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/cripto.json data/cripto_notificaciones.json
+          git add data/cripto.json
+          # Solo se crea en modo produccion (cuando hubo alertas para notificar) --
+          # en modo test no existe, y "git add" de un archivo inexistente rompe el commit.
+          if [ -f data/cripto_notificaciones.json ]; then
+            git add data/cripto_notificaciones.json
+          fi
           git diff --staged --quiet || git commit -m "Actualiza cripto.json [skip ci]"
           git push
