@@ -36,14 +36,22 @@ CRYPTO_TICKERS = {
 OUTPUT_PATH = "data/cripto.json"
 NOTIFICACIONES_PATH = "data/cripto_notificaciones.json"
 
-# Pesos del Score v1 (0-100). Es una primera aproximación pensada para la
-# volatilidad de cripto; fácil de recalibrar más adelante con datos reales.
+# Pesos del Score v2 (0-100). Filosofía "precio + volumen + tendencia",
+# igual que el Radar Score de acciones: el RSI ya NO suma puntos (es un
+# derivado del precio, y en tendencias fuertes la moneda puede pasar
+# semanas "sobrecomprada" sin que eso sea un techo). El RSI queda como
+# señal de CAUTELA -- ver calcular_cuidados(). Los 25 puntos que tenía se
+# repartieron entre tendencia, volumen y distancia al máximo.
+# v1 (hasta sept 2026): tendencia 35, momentum RSI 25, volumen 20, 52w 20.
+SCORE_VERSION = "v2"
 SCORE_WEIGHTS = {
-    "tendencia": 35,   # relación SMA50 vs SMA200 y pendiente
-    "momentum": 25,    # zona de RSI
-    "volumen": 20,     # volumen relativo a su propio promedio
-    "distancia_max52w": 20,  # qué tan cerca/lejos está del máximo de 52 semanas
+    "tendencia": 45,   # SMA50 vs SMA200 (25) + precio sobre SMA50 (10) + SMA50 subiendo (10)
+    "volumen": 25,     # volumen relativo a su propio promedio
+    "distancia_max52w": 30,  # qué tan cerca/lejos está del máximo de 52 semanas
 }
+PENDIENTE_VENTANA = 10      # ruedas para medir si la SMA50 sube
+RSI_SOBRECOMPRA = 75
+RSI_ZONA_ALTA = 70          # para contar "cuántos días lleva sobrecomprada"
 
 RSI_PERIOD = 14
 SMA_CORTA = 50
@@ -99,6 +107,15 @@ def calcular_indicadores(df: pd.DataFrame) -> dict:
         elif not hoy_arriba and ayer_arriba:
             cruce = "cruce_muerte"
 
+    # Pendiente de la SMA50 y días seguidos con RSI alto (para la cautela)
+    sma50_antes = df["SMA50"].iloc[-1 - PENDIENTE_VENTANA] if len(df) > PENDIENTE_VENTANA else np.nan
+    sma50_subiendo = bool(sma50 and not pd.isna(sma50_antes) and sma50 > float(sma50_antes))
+    dias_rsi_alto = 0
+    for v in reversed(df["RSI"].tolist()):
+        if pd.isna(v) or v < RSI_ZONA_ALTA:
+            break
+        dias_rsi_alto += 1
+
     return {
         "precio": round(precio, 2),
         "sma50": round(sma50, 2) if sma50 else None,
@@ -108,6 +125,9 @@ def calcular_indicadores(df: pd.DataFrame) -> dict:
         "max_52w": round(max_52w, 2),
         "dist_max52w_pct": dist_max52w_pct,
         "tendencia_alcista": bool(sma50 and sma200 and sma50 > sma200),
+        "precio_sobre_sma50": bool(sma50 and precio > sma50),
+        "sma50_subiendo": sma50_subiendo,
+        "dias_rsi_alto": dias_rsi_alto,
         "cruce": cruce,
     }
 
@@ -117,23 +137,16 @@ def calcular_score(ind: dict) -> dict:
     por qué dio ese número."""
     detalle = {}
 
-    # Tendencia: SMA50 sobre SMA200 = full puntaje; si está por debajo, 0
-    if ind["sma50"] is not None and ind["sma200"] is not None:
-        detalle["tendencia"] = SCORE_WEIGHTS["tendencia"] if ind["tendencia_alcista"] else 0
-    else:
-        detalle["tendencia"] = 0
-
-    # Momentum vía RSI: mejor puntaje en zona 45-65 (tendencia sana, sin
-    # sobrecompra extrema); penaliza sobrecompra >75 y sobreventa <30
-    rsi = ind["rsi"]
-    if rsi is None:
-        detalle["momentum"] = 0
-    elif 45 <= rsi <= 65:
-        detalle["momentum"] = SCORE_WEIGHTS["momentum"]
-    elif 30 < rsi < 45 or 65 < rsi <= 75:
-        detalle["momentum"] = round(SCORE_WEIGHTS["momentum"] * 0.6)
-    else:
-        detalle["momentum"] = round(SCORE_WEIGHTS["momentum"] * 0.2)
+    # Tendencia (45): SMA50 sobre SMA200 (25) + precio sobre su SMA50 (10)
+    # + SMA50 con pendiente positiva (10)
+    tend = 0
+    if ind["sma50"] is not None and ind["sma200"] is not None and ind["tendencia_alcista"]:
+        tend += 25
+    if ind.get("precio_sobre_sma50"):
+        tend += 10
+    if ind.get("sma50_subiendo"):
+        tend += 10
+    detalle["tendencia"] = tend
 
     # Volumen: >1.5x su promedio suma completo, entre 1-1.5x parcial
     vol_rel = ind["vol_rel"]
@@ -162,6 +175,23 @@ def calcular_score(ind: dict) -> dict:
     return {"score_total": total, "detalle": detalle}
 
 
+def calcular_cuidados(nombre: str, ind: dict) -> list:
+    """Señales de cautela: no restan puntos, se muestran aparte (como los
+    'puntos de cuidado' de acciones)."""
+    cuidados = []
+    rsi = ind.get("rsi")
+    if rsi is not None and rsi >= RSI_SOBRECOMPRA:
+        dias = ind.get("dias_rsi_alto", 0)
+        hace = f", lleva {dias} días con RSI arriba de {RSI_ZONA_ALTA}" if dias >= 3 else ""
+        cuidados.append(f"RSI en {rsi:.0f}{hace}: sobrecompra. En tendencias fuertes puede seguir así "
+                        f"un tiempo, pero entrar acá deja poco margen si corrige.")
+    if ind.get("sma50") and not ind.get("precio_sobre_sma50"):
+        cuidados.append(f"Precio debajo de su SMA50 (${ind['sma50']:,.0f}): la tendencia de corto plazo no acompaña.")
+    if ind.get("sma50") and not ind.get("sma50_subiendo"):
+        cuidados.append("SMA50 con pendiente negativa: el mediano plazo todavía no gira.")
+    return cuidados
+
+
 def generar_alertas(nombre: str, ind: dict, score: dict) -> list:
     alertas = []
 
@@ -180,16 +210,18 @@ def generar_alertas(nombre: str, ind: dict, score: dict) -> list:
 
     if ind["rsi"] is not None:
         if ind["rsi"] >= 75:
+            # Se mantienen como alertas (mismo nombre) para que la Auditoría
+            # siga midiéndolas, pero el texto ya no las vende como señal
             alertas.append({
                 "tipo": "RSI en sobrecompra",
-                "narrativa": f"{nombre} tiene RSI de {ind['rsi']}, zona de sobrecompra: "
-                             f"posible descanso o corrección de corto plazo.",
+                "narrativa": f"{nombre} tiene RSI de {ind['rsi']}, zona de sobrecompra. Es una señal de "
+                             f"cautela, no de venta: en tendencias fuertes puede quedar así semanas.",
             })
         elif ind["rsi"] <= 30:
             alertas.append({
                 "tipo": "RSI en sobreventa",
-                "narrativa": f"{nombre} tiene RSI de {ind['rsi']}, zona de sobreventa: "
-                             f"posible rebote técnico de corto plazo.",
+                "narrativa": f"{nombre} tiene RSI de {ind['rsi']}, zona de sobreventa. No es señal de compra "
+                             f"por sí sola: puede rebotar, pero la tendencia manda.",
             })
 
     if ind["dist_max52w_pct"] is not None and ind["dist_max52w_pct"] >= -0.5:
@@ -310,7 +342,10 @@ def procesar_ticker(ticker: str, nombre: str):
         "nombre": nombre,
         **ind,
         "score": score["score_total"],
+        "score_version": SCORE_VERSION,
         "score_detalle": score["detalle"],
+        "score_maximos": SCORE_WEIGHTS,
+        "cuidados": calcular_cuidados(nombre, ind),
         "alertas": alertas,
     }
     return resultado, df["Close"]

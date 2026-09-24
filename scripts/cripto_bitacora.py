@@ -36,6 +36,7 @@ def registrar_eventos_cripto(eventos: list):
             "narrativa": alerta.get("narrativa"),
             "precio": r.get("precio"),
             "score": r.get("score"),
+            "score_version": r.get("score_version", "v1"),
             "rsi": r.get("rsi"),
             "vol_rel": r.get("vol_rel"),
             "sma50": r.get("sma50"),
