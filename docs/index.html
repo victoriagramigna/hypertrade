@@ -344,8 +344,14 @@
     </div>
 
     <!-- ===== SOLAPA: CRIPTO ===== -->
-    <div id="tab-cripto" class="tab-content hidden-tab space-y-4">
+    <div id="tab-cripto" class="tab-content hidden-tab space-y-6">
         <div id="cripto-container" class="grid grid-cols-1 gap-4"></div>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Resultados por señal</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cómo le fue en la práctica a cada tipo de alerta de cripto: retorno a 3/7/14 días de cuando se disparó. Se necesitan varios casos reales para que el promedio diga algo -- recién arranca a juntar datos.</p>
+            <div id="cripto-auditoria-panel" class="space-y-3"></div>
+        </section>
     </div>
 
     <!-- Barra de navegación inferior fija -->
@@ -1217,6 +1223,7 @@
 
         // ============ CRIPTO ============
         const CRIPTO_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/cripto.json';
+        const CRIPTO_AUDITORIA_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/auditoria_cripto.json';
         let cryptoData = null; // null = todavía no se pidió
 
         async function fetchCryptoData() {
@@ -1236,6 +1243,57 @@
                 cryptoData = [];
                 container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4">No se pudo cargar cripto.json.</div>';
             }
+            fetchCryptoAuditoria();
+        }
+
+        async function fetchCryptoAuditoria() {
+            const panel = document.getElementById('cripto-auditoria-panel');
+            panel.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Cargando...</div>';
+            try {
+                const resp = await fetch(`${CRIPTO_AUDITORIA_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) {
+                    panel.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Todavía no hay datos de auditoría -- se van a ir acumulando con cada alerta real.</div>';
+                    return;
+                }
+                renderCriptoAuditoria(await resp.json());
+            } catch (error) {
+                panel.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4">No se pudo cargar la auditoría de cripto.</div>';
+            }
+        }
+
+        function renderCriptoAuditoria(aud) {
+            const panel = document.getElementById('cripto-auditoria-panel');
+            const resumen = aud?.resumen_señales ?? [];
+
+            if (resumen.length === 0) {
+                panel.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Sin casos todavía -- se registra uno por cada alerta real que se manda a Telegram.</div>';
+                return;
+            }
+
+            panel.innerHTML = resumen.map(fila => {
+                const horizontes = [3, 7, 14].map(h => {
+                    const d = fila.horizontes?.[h] ?? {};
+                    if (!d.n) return `<div class="text-center"><div class="text-gray-600 text-[9px] uppercase">${h}d</div><div class="text-gray-600">—</div></div>`;
+                    const retStr = d.ret_prom != null
+                        ? `<span class="${d.ret_prom >= 0 ? 'text-pos' : 'text-neg'} font-bold">${d.ret_prom >= 0 ? '+' : ''}${d.ret_prom}%</span>`
+                        : `<span class="text-gray-600 text-[9px]">n&lt;${aud.muestra_minima}</span>`;
+                    const pctStr = d.pct_aciertos != null ? `<div class="text-[9px] text-gray-500">${d.pct_aciertos}% acierto</div>` : '';
+                    return `<div class="text-center">
+                        <div class="text-gray-600 text-[9px] uppercase">${h}d (n=${d.n})</div>
+                        <div>${retStr}</div>
+                        ${pctStr}
+                    </div>`;
+                }).join('');
+
+                return `
+                    <div class="bg-surface p-3 rounded-sm border border-surface">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="font-mono text-xs text-white font-bold">${fila.tipo}</div>
+                            <div class="text-[10px] text-gray-500 font-mono">${fila.casos_total} caso(s)</div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">${horizontes}</div>
+                    </div>`;
+            }).join('');
         }
 
         function renderCripto(actualizadoUtc) {
