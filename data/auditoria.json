@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-24T14:31:27.968509+00:00",
+ "generado_utc": "2026-09-24T15:01:50.647689+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 124,
+ "casos_total": 125,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
@@ -58,21 +58,21 @@
   {
    "señal": "Confirmado",
    "direccion": "alcista",
-   "casos_total": 24,
+   "casos_total": 25,
    "horizontes": {
     "5": {
      "n": 0,
-     "pendientes": 24,
+     "pendientes": 25,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 24,
+     "pendientes": 25,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 24,
+     "pendientes": 25,
      "confiable": false
     }
    }
@@ -169,7 +169,7 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 124,
+   "casos": 125,
    "5": {
     "n": 0
    },
@@ -197,7 +197,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 10,
+   "casos": 11,
    "5": {
     "n": 0
    },
@@ -251,7 +251,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 8,
+   "casos": 9,
    "5": {
     "n": 0
    },
@@ -264,7 +264,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 6,
+   "casos": 7,
    "5": {
     "n": 0
    },
@@ -277,7 +277,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 3,
+   "casos": 4,
    "5": {
     "n": 0
    },
@@ -481,6 +481,24 @@
    "radar_score": 61.0,
    "regimen_score": 66,
    "cuidados": [
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AZN",
+   "fecha": "2026-09-24",
+   "señal": "Confirmado",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 164.07,
+   "radar_score": 47.3,
+   "regimen_score": 64,
+   "cuidados": [
+    "sma50_bajando",
     "bajo_sma200"
    ],
    "ruedas_transcurridas": 0,
