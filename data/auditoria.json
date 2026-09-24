@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-24T13:31:28.819365+00:00",
+ "generado_utc": "2026-09-24T14:01:51.194303+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,26 +9,26 @@
   10,
   20
  ],
- "casos_total": 119,
+ "casos_total": 123,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 38,
+   "casos_total": 42,
    "horizontes": {
     "5": {
      "n": 0,
-     "pendientes": 38,
+     "pendientes": 42,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 38,
+     "pendientes": 42,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 38,
+     "pendientes": 42,
      "confiable": false
     }
    }
@@ -169,7 +169,7 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 119,
+   "casos": 123,
    "5": {
     "n": 0
    },
@@ -197,7 +197,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 5,
+   "casos": 9,
    "5": {
     "n": 0
    },
@@ -238,7 +238,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 2,
+   "casos": 3,
    "5": {
     "n": 0
    },
@@ -251,7 +251,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 4,
+   "casos": 7,
    "5": {
     "n": 0
    },
@@ -264,7 +264,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 4,
+   "casos": 6,
    "5": {
     "n": 0
    },
@@ -277,7 +277,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 1,
+   "casos": 2,
    "5": {
     "n": 0
    },
@@ -303,7 +303,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 0,
+   "casos": 1,
    "5": {
     "n": 0
    },
@@ -399,6 +399,73 @@
    "radar_score": 52.5,
    "regimen_score": 64,
    "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "MDLZ",
+   "fecha": "2026-09-24",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 62.1,
+   "radar_score": 49.3,
+   "regimen_score": 64,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "OXY",
+   "fecha": "2026-09-24",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 58.25,
+   "radar_score": 67.5,
+   "regimen_score": 64,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AZN",
+   "fecha": "2026-09-24",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 164.96,
+   "radar_score": 48.3,
+   "regimen_score": 64,
+   "cuidados": [
+    "sma50_bajando",
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "ECL",
+   "fecha": "2026-09-24",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 277.57,
+   "radar_score": 39.5,
+   "regimen_score": 64,
+   "cuidados": [
+    "sma50_bajando"
+   ],
    "ruedas_transcurridas": 0,
    "r5": null,
    "r10": null,
@@ -766,7 +833,7 @@
    "radar_score": 57.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -946,7 +1013,7 @@
    "radar_score": 69.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1801,7 +1868,7 @@
    "radar_score": 53.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
