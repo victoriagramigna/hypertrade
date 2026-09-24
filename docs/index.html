@@ -1540,4 +1540,745 @@
                     <div class="font-mono text-[11px] text-gray-400 mb-3">Si cada lunes entre el ${f(sim.desde)} y el ${f(sim.hasta)} hubieras comprado el Top 30 de Fuerza Relativa, a ${h} ruedas en promedio:</div>
                     <div class="grid grid-cols-3 gap-2 font-mono text-center">
                         <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">Top 30</div><div class="text-lg font-bold">${audPct(sh.top_prom)}</div></div>
-   
+                        <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">Universo</div><div class="text-lg">${audPct(sh.univ_prom)}</div></div>
+                        <div class="bg-base p-2 rounded-sm"><div class="text-[9px] uppercase text-gray-500">SPY</div><div class="text-lg">${audPct(sh.spy_prom)}</div></div>
+                    </div>
+                    <div class="font-mono text-[11px] text-gray-400 mt-3">
+                        El Top 30 le ganó al universo en <span class="text-white font-bold">${sh.semanas_top_gana_univ} de ${sh.semanas}</span> semanas, y al SPY en <span class="text-white font-bold">${sh.semanas_top_gana_spy} de ${sh.semanas}</span>.
+                    </div>
+                    <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">⚠ ${sim.advertencia ?? ''}</div>`;
+            }
+
+            renderAuditoriaDetalle();
+        }
+
+        function renderMisOperaciones(m) {
+            const cont = document.getElementById('aud-mis-ops');
+            const pendientesLocales = cargarOperacionesCerradas().length;
+            if (!m || !m.total?.n) {
+                const nota = pendientesLocales
+                    ? `Tenés ${pendientesLocales} venta(s) registrada(s) en este navegador. Aparecen acá después de la próxima corrida del radar${cargarTokenGithub() ? '' : ', pero primero conectá la cartera con GitHub (solapa Cartera)'}.`
+                    : 'Todavía no registraste ninguna venta. Cuando vendas algo, usá el botón Vender en Mi Cartera y va a aparecer acá.';
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">${nota}</div>`;
+                return;
+            }
+            const t = m.total;
+            const usd = (v) => v == null ? '—' : `<span class="${v >= 0 ? 'text-pos' : 'text-neg'}">${v >= 0 ? '+' : '−'}US$ ${Math.abs(v).toLocaleString('es-AR', {maximumFractionDigits: 2})}</span>`;
+            const chica = t.n < 20 ? `<div class="font-mono text-[10px] text-accent mt-2">Con ${t.n} operación(es) todavía es pronto para sacar conclusiones.</div>` : '';
+
+            const bloque = (titulo, b) => !b?.n ? '' : `
+                <div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                    <span class="text-gray-300">${titulo} <span class="text-gray-600">(${b.n})</span></span>
+                    <span class="text-right">${b.pct_ganadoras}%</span>
+                    <span class="text-right">${audPct(b.resultado_prom)}</span>
+                    <span class="text-right">${audPct(b.vs_spy_prom)}</span>
+                </div>`;
+
+            const motivos = Object.entries(m.por_motivo ?? {}).sort((a, b) => b[1].n - a[1].n)
+                .map(([k, b]) => bloque(k, b)).join('');
+
+            const ultimas = (m.detalle ?? []).slice(0, 30).map(o => {
+                const f = (x) => x ? new Date(x + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'2-digit'}) : '—';
+                return `
+                    <div class="bg-surface p-3 rounded-sm border-l-2 ${o.ret > 0 ? 'border-pos' : 'border-neg'} flex justify-between items-center gap-3 font-mono text-sm">
+                        <div class="min-w-0">
+                            <div><span class="font-bold text-white">${o.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${f(o.fecha)} → ${f(o.fechaVenta)}${o.dias != null ? ` · ${o.dias} días` : ''}</span></div>
+                            <div class="text-[10px] text-gray-500">${o.motivo}${o.con_alerta ? ' · había alerta al comprar' : ''}</div>
+                            <div class="text-[10px] text-gray-600">$${o.precio} → $${o.precioVenta}</div>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <div class="font-bold">${audPct(o.ret)}</div>
+                            <div class="text-[10px] text-gray-500">vs SPY ${audPct(o.vs_spy)}</div>
+                            ${o.resultado_usd != null ? `<div class="text-[10px]">${usd(o.resultado_usd)}</div>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+
+            cont.innerHTML = `
+                <div class="bg-surface p-4 rounded-sm border border-surface">
+                    <div class="grid grid-cols-3 gap-2 font-mono text-center">
+                        <div><div class="text-[9px] uppercase text-gray-500">Ganadoras</div><div class="text-lg text-white font-bold">${t.ganadoras}/${t.n}</div><div class="text-[10px] text-gray-500">${t.pct_ganadoras}%</div></div>
+                        <div><div class="text-[9px] uppercase text-gray-500">Por operación</div><div class="text-lg font-bold">${audPct(t.resultado_prom)}</div><div class="text-[10px] text-gray-500">vs SPY ${audPct(t.vs_spy_prom)}</div></div>
+                        <div><div class="text-[9px] uppercase text-gray-500">Resultado</div><div class="text-sm font-bold mt-1">${usd(t.resultado_usd_total)}</div><div class="text-[10px] text-gray-500">${t.dias_prom != null ? `${Math.round(t.dias_prom)} días prom.` : ''}</div></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 font-mono text-[11px] mt-3 pt-3 border-t border-base">
+                        <div class="text-gray-500">Ganancia prom. de las ganadoras: ${audPct(t.ganancia_prom)}</div>
+                        <div class="text-gray-500 text-right">Pérdida prom. de las perdedoras: ${audPct(t.perdida_prom)}</div>
+                    </div>
+                    ${chica}
+                </div>
+                <div class="bg-surface p-4 rounded-sm border border-surface">
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Grupo</span><span class="text-right">Ganadoras</span><span class="text-right">Por op.</span><span class="text-right">vs SPY</span>
+                    </div>
+                    ${bloque('Con alerta al comprar', m.con_alerta)}
+                    ${bloque('Sin alerta', m.sin_alerta)}
+                    <div class="font-mono text-[9px] uppercase text-gray-500 pt-3 pb-1">Según por qué vendiste</div>
+                    ${motivos}
+                </div>
+                <div class="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">${ultimas}</div>`;
+        }
+
+        function renderAuditoriaDetalle() {
+            const d = auditoriaData ?? {};
+            const h = audHorizonte;
+            const filtro = document.getElementById('aud-filtro').value.trim().toUpperCase();
+            let casos = d.detalle ?? [];
+            if (filtro) casos = casos.filter(c => (c.ticker ?? '').toUpperCase().includes(filtro));
+            const cont = document.getElementById('aud-detalle');
+            if (casos.length === 0) {
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">${filtro ? 'Sin casos para ese ticker.' : 'Sin casos todavía.'}</div>`;
+                return;
+            }
+            cont.innerHTML = casos.map(c => {
+                const r = c[`r${h}`];
+                const fecha = new Date(c.fecha + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+                let resultado;
+                if (r == null) {
+                    const faltan = Math.max(0, Number(h) - (c.ruedas_transcurridas ?? 0));
+                    resultado = `<span class="text-gray-600 text-xs">faltan ${faltan} rueda(s)</span>`;
+                } else {
+                    const ok = c[`acierto${h}`];
+                    resultado = `<div class="font-bold">${audPct(r)} <span class="${ok ? 'text-pos' : 'text-neg'}">${ok ? '✓' : '✗'}</span></div>
+                        <div class="text-[10px] text-gray-500">vs SPY ${audPct(c[`vs_spy${h}`])}</div>
+                        ${c[`stop${h}`] ? '<div class="text-[10px] text-neg">tocó el stop</div>' : ''}`;
+                }
+                const dirColor = c.direccion === 'bajista' ? 'border-neg' : 'border-pos';
+                return `
+                    <div class="bg-surface p-3 rounded-sm border-l-2 ${dirColor} flex justify-between items-center gap-3 font-mono text-sm">
+                        <div class="min-w-0">
+                            <div><span class="font-bold text-white">${c.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${fecha}</span></div>
+                            <div class="text-[11px] text-gray-400 truncate">${c.señal}</div>
+                            <div class="text-[10px] text-gray-600">Entrada $${c.precio_entrada}${c.radar_score != null ? ` · Radar ${Number(c.radar_score).toFixed(0)}` : ''}</div>
+                        </div>
+                        <div class="text-right flex-shrink-0">${resultado}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        document.getElementById('aud-filtro').addEventListener('input', () => {
+            if (auditoriaData !== null) renderAuditoriaDetalle();
+        });
+
+        // ============ MI CARTERA ============
+        function cargarCartera() {
+            try {
+                return JSON.parse(localStorage.getItem('mi_cartera') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function guardarCartera(posiciones) {
+            localStorage.setItem('mi_cartera', JSON.stringify(posiciones));
+            sincronizarConGithub(posiciones); // fire-and-forget, no bloquea la UI
+        }
+
+        // ============ SINCRONIZACIÓN AUTOMÁTICA CON GITHUB ============
+        // El token queda SOLO en este navegador (localStorage), nunca se sube
+        // al repo. Con permiso "Contents: Read and write" sobre este único
+        // repo, alcanza para leer y escribir data/mi_cartera.json vía la API
+        // de contenidos de GitHub -- no hace falta copiar/pegar nada más.
+        const GITHUB_OWNER = 'victoriagramigna';
+        const GITHUB_REPO = 'hypertrade';
+        const GITHUB_PATH_CARTERA = 'data/mi_cartera.json';
+
+        function cargarTokenGithub() {
+            return localStorage.getItem('gh_token_hypertrade');
+        }
+
+        function guardarTokenGithub(token) {
+            localStorage.setItem('gh_token_hypertrade', token);
+        }
+
+        function borrarTokenGithub() {
+            localStorage.removeItem('gh_token_hypertrade');
+        }
+
+        function _posicionesParaExportar(posiciones) {
+            return posiciones.map(p => ({
+                ticker: p.ticker,
+                precio: p.precio,
+                cantidad: p.cantidad ?? null,
+                fecha: p.fecha,
+                stopInicial: p.stopInicial ?? null,
+                stopActual: p.stopActual ?? null,
+                radarScoreCompra: p.radarScoreCompra ?? null,
+                origenStop: p.origenStop ?? null,
+                spyCompra: p.spyCompra ?? null,
+                alertaAlComprar: p.alertaAlComprar ?? null,
+            }));
+        }
+
+        async function sincronizarConGithub(posiciones) {
+            const token = cargarTokenGithub();
+            const statusEl = document.getElementById('sync-status');
+            if (!token) return; // sin token conectado -- usar el botón de exportar manual
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH_CARTERA}`;
+
+                // 1. Traer el sha actual del archivo (si existe) -- la API de
+                // GitHub lo exige para poder actualizar un archivo existente
+                let sha = null;
+                const getResp = await fetch(apiUrl, {
+                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
+                });
+                if (getResp.ok) {
+                    const info = await getResp.json();
+                    sha = info.sha;
+                } else if (getResp.status !== 404) {
+                    throw new Error(`No se pudo leer el archivo actual (HTTP ${getResp.status})`);
+                }
+
+                // 2. Armar el contenido nuevo, codificado en base64 (lo que pide la API)
+                const contenido = JSON.stringify(_posicionesParaExportar(posiciones), null, 2);
+                const contenidoB64 = btoa(unescape(encodeURIComponent(contenido)));
+
+                const putBody = {
+                    message: `Sync cartera desde dashboard (${new Date().toISOString()})`,
+                    content: contenidoB64,
+                };
+                if (sha) putBody.sha = sha;
+
+                const putResp = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/vnd.github+json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(putBody),
+                });
+
+                if (statusEl) {
+                    if (putResp.ok) {
+                        const ahora = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                        statusEl.textContent = `Última sincronización: ${ahora}`;
+                        statusEl.classList.remove('text-neg');
+                    } else {
+                        statusEl.textContent = `⚠ Error al sincronizar (HTTP ${putResp.status}) -- revisá el token`;
+                        statusEl.classList.add('text-neg');
+                    }
+                }
+            } catch (e) {
+                if (statusEl) {
+                    statusEl.textContent = '⚠ Error al sincronizar (sin conexión o token inválido)';
+                    statusEl.classList.add('text-neg');
+                }
+            }
+        }
+
+        document.getElementById('alertas-search').addEventListener('input', filtrarAlertas);
+        (() => {
+            const sel = document.getElementById('alertas-orden');
+            try { sel.value = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
+            sel.addEventListener('change', () => {
+                try { localStorage.setItem('orden_alertas', sel.value); } catch (e) {}
+                filtrarAlertas();
+            });
+        })();
+
+        function actualizarUIsincronizacion() {
+            const token = cargarTokenGithub();
+            document.getElementById('sync-configurado').classList.toggle('hidden', !token);
+            document.getElementById('sync-sin-configurar').classList.toggle('hidden', !!token);
+        }
+
+        document.getElementById('github-token-guardar-btn').addEventListener('click', () => {
+            const input = document.getElementById('github-token-input');
+            const token = input.value.trim();
+            if (!token) return;
+            guardarTokenGithub(token);
+            input.value = '';
+            actualizarUIsincronizacion();
+            sincronizarConGithub(cargarCartera()); // sincroniza de una lo que ya tenía cargado
+            if (cargarOperacionesCerradas().length) sincronizarOperacionesCerradas();
+        });
+
+        document.getElementById('sync-desconectar-btn').addEventListener('click', () => {
+            borrarTokenGithub();
+            actualizarUIsincronizacion();
+        });
+
+        actualizarUIsincronizacion();
+
+        // Umbrales del seguimiento activo de posiciones -- reglas clásicas
+        // de swing trading (O'Neil/Minervini), ajustables acá si hace falta
+        const CARTERA_STOP_PCT_INICIAL = 0.08;       // -8% del precio de entrada, si no hay SMA50 más cercana
+        const CARTERA_GANANCIA_PARCIAL_PCT = 20;     // primer punto clásico para vender una porción
+        const CARTERA_GANANCIA_TRAILING_PCT = 35;    // a partir de acá, trailing más agresivo (bajo SMA50)
+        const CARTERA_CAIDA_RADAR_SCORE = 15;        // puntos de caída en el Radar Score vs. la compra = alerta
+        const CARTERA_AVISO_PREVIO_STOP_PCT = 1;     // avisa cuando falta esta distancia (%) para tocar el stop
+        // Mismo margen de tolerancia que usa Alertas para "apoyo en SMA50"
+        // (ver config.py: UMBRAL_LIDER_DIST_SMA50_PCT) -- así Mi Cartera no
+        // dispara "perdió el soporte" por una diferencia de centavos que en
+        // el resto de la app todavía se considera "dentro de tolerancia".
+        const SMA50_TOLERANCIA_PCT = 2;
+
+        function calcularStopInicial(precioCompra, tickerData) {
+            const stopPorcentual = precioCompra * (1 - CARTERA_STOP_PCT_INICIAL);
+            const sma50 = tickerData?.SMA50;
+            if (sma50 != null && sma50 < precioCompra) {
+                // Toma el más ajustado (más alto) de los dos, sin superar el precio de compra
+                const candidatoSMA50 = sma50 * 0.98;
+                if (candidatoSMA50 > stopPorcentual) {
+                    return { valor: candidatoSMA50, origen: 'SMA50 en el momento de la compra' };
+                }
+            }
+            return { valor: stopPorcentual, origen: 'techo -8% desde la compra' };
+        }
+
+        function renderCartera() {
+            const container = document.getElementById('cartera-container');
+            const posiciones = cargarCartera();
+
+            if (posiciones.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Todavía no anotaste ninguna compra.</div>';
+                return;
+            }
+
+            const ranking = currentRadarData?.ranking ?? [];
+            let huboCambios = false; // si el trailing stop de alguna posición subió, hay que re-guardar
+
+            container.innerHTML = posiciones.map((p, idx) => {
+                const tickerData = ranking.find(t => t?.Ticker?.toUpperCase() === p.ticker.toUpperCase());
+                const precioActual = tickerData?.Precio;
+
+                let variacionHtml = '<span class="text-gray-500">sin precio actual disponible</span>';
+                let gananciaPct = null;
+                if (precioActual != null && p.precio > 0) {
+                    gananciaPct = (precioActual / p.precio - 1) * 100;
+                    const color = gananciaPct >= 0 ? 'text-pos' : 'text-neg';
+                    variacionHtml = `<span class="${color} font-bold">${gananciaPct >= 0 ? '+' : ''}${gananciaPct.toFixed(1)}%</span> (actual: $${precioActual.toFixed(2)})`;
+                }
+
+                // Stop inicial: se calcula UNA sola vez, al cargar la compra
+                // (queda grabado en la posición). Si por algún motivo una
+                // posición vieja no lo tiene, se calcula ahora como respaldo.
+                if (p.stopInicial == null) {
+                    const calculo = calcularStopInicial(p.precio, tickerData);
+                    p.stopInicial = calculo.valor;
+                    p.stopActual = p.stopInicial;
+                    p.origenStop = calculo.origen;
+                    huboCambios = true;
+                }
+                if (p.stopActual == null) p.stopActual = p.stopInicial;
+                // Reconstrucción/validación del origen del stop. No alcanza
+                // con "está vacío": posiciones cargadas con el bug viejo
+                // (antes de este fix) ya tienen guardado el label por
+                // defecto incorrecto ("techo -8%"), así que hay que
+                // VALIDAR que el label guardado sea matemáticamente
+                // consistente con el stop guardado, y corregirlo si no lo
+                // es -- no solo cuando falta. "techo -8%" y "equilibrio"
+                // son verificables exactos; si dicen eso pero el número no
+                // coincide, están mintiendo. Cualquier otro label (SMA50,
+                // ya sea de hoy o "de una corrida anterior") se deja tal
+                // cual, porque no hay forma de re-verificar una SMA50 vieja.
+                const stopPctPuro = p.precio * (1 - CARTERA_STOP_PCT_INICIAL);
+                const esTecho8 = Math.abs(p.stopActual - stopPctPuro) < 0.01;
+                const esEquilibrio = Math.abs(p.stopActual - p.precio) < 0.01;
+                const labelInconsistente =
+                    (p.origenStop === 'techo -8% desde la compra' && !esTecho8) ||
+                    (p.origenStop === 'equilibrio (+20% de ganancia)' && !esEquilibrio);
+                if (p.origenStop == null || labelInconsistente) {
+                    if (esTecho8) {
+                        p.origenStop = 'techo -8% desde la compra';
+                    } else if (esEquilibrio) {
+                        p.origenStop = 'equilibrio (+20% de ganancia)';
+                    } else {
+                        p.origenStop = 'SMA50 en una corrida anterior';
+                    }
+                    huboCambios = true;
+                }
+
+                // Trailing: el stop SOLO puede subir, nunca bajar -- asegura
+                // ganancias progresivamente, nunca afloja el piso ya ganado.
+                // El techo -8% queda fijo desde la compra (ya está en
+                // p.stopInicial); acá se compara ese piso contra los
+                // candidatos que sí se mueven con el tiempo, y gana
+                // siempre el MÁS PROTECTOR (el más alto) de todos. El
+                // origen se PERSISTE junto con el valor -- si hoy ningún
+                // candidato supera el stop ya guardado, el label se queda
+                // con el de la última vez que sí subió (no vuelve a "-8%").
+                let stopSugerido = p.stopActual;
+                let origenStop = p.origenStop;
+
+                // Piso estructural: se revisa en cada corrida (no solo al
+                // llegar a +35%), así el stop puede subir apenas la SMA50
+                // suba lo suficiente como para proteger más que el -8%.
+                if (tickerData?.SMA50 != null) {
+                    const candidatoSMA50 = tickerData.SMA50 * 0.98;
+                    if (candidatoSMA50 > stopSugerido) {
+                        stopSugerido = candidatoSMA50;
+                        origenStop = 'SMA50 -- más ajustado que el -8%';
+                    }
+                }
+                if (gananciaPct != null) {
+                    if (gananciaPct >= CARTERA_GANANCIA_PARCIAL_PCT && p.precio > stopSugerido) {
+                        stopSugerido = p.precio; // mueve a punto de equilibrio
+                        origenStop = 'equilibrio (+20% de ganancia)';
+                    }
+                }
+                if (stopSugerido !== p.stopActual || origenStop !== p.origenStop) {
+                    p.stopActual = stopSugerido;
+                    p.origenStop = origenStop; // se persiste -- sobrevive aunque la condición de hoy ya no se cumpla
+                    huboCambios = true;
+                }
+
+                // Señales de gestión activa -- pueden acumularse varias a la vez
+                const señales = [];
+                if (precioActual != null && p.stopActual != null) {
+                    const distStopPct = ((precioActual - p.stopActual) / p.stopActual) * 100;
+                    if (distStopPct <= 0) {
+                        señales.push({ color: 'neg', texto: '🛑 Tocó el stop sugerido -- considerar vender' });
+                    } else if (distStopPct <= CARTERA_AVISO_PREVIO_STOP_PCT) {
+                        señales.push({ color: 'accent', texto: `⚠️ A ${distStopPct.toFixed(1)}% del stop -- atenta, puede tocarlo pronto` });
+                    }
+                }
+                if (gananciaPct != null && gananciaPct >= CARTERA_GANANCIA_TRAILING_PCT) {
+                    señales.push({ color: 'pos', texto: `💰 +${CARTERA_GANANCIA_TRAILING_PCT}% de ganancia -- evaluar tomar ganancia parcial adicional, stop ajustado bajo la SMA50` });
+                } else if (gananciaPct != null && gananciaPct >= CARTERA_GANANCIA_PARCIAL_PCT) {
+                    señales.push({ color: 'accent', texto: `💰 +${CARTERA_GANANCIA_PARCIAL_PCT}% de ganancia -- punto clásico para vender una porción y asegurar punto de equilibrio` });
+                }
+                if (tickerData?.Radar_Score != null && p.radarScoreCompra != null) {
+                    const caida = p.radarScoreCompra - tickerData.Radar_Score;
+                    if (caida >= CARTERA_CAIDA_RADAR_SCORE) {
+                        señales.push({ color: 'accent', texto: `⚠️ Perdiendo fuerza técnica -- Radar Score bajó de ${p.radarScoreCompra.toFixed(0)} a ${tickerData.Radar_Score.toFixed(0)} desde la compra` });
+                    }
+                }
+                // Usa el mismo margen de tolerancia que Alertas (±2%, ver
+                // SMA50_TOLERANCIA_PCT) en vez del booleano estricto
+                // Sobre_SMA50 -- antes disparaba con cualquier diferencia
+                // de centavos, aunque el resto de la app todavía considerara
+                // "apoyo válido" esa misma distancia.
+                const dist50Actual = tickerData?.['Dist_SMA50_%'];
+                if (dist50Actual != null && dist50Actual < -SMA50_TOLERANCIA_PCT) {
+                    señales.push({ color: 'accent', texto: `⚠️ Perdió el soporte de su SMA50 (${dist50Actual.toFixed(1)}%, fuera de la zona de tolerancia)` });
+                }
+                if (señales.length === 0 && precioActual != null) {
+                    señales.push({ color: 'gray-500', texto: '✅ Sin señales de alerta -- tendencia técnica intacta' });
+                }
+
+                const coloresBorde = { neg: 'border-neg', accent: 'border-accent', pos: 'border-pos', 'gray-500': 'border-surface' };
+                const cardBorder = señales.some(s => s.color === 'neg') ? coloresBorde.neg
+                    : señales.some(s => s.color === 'accent') ? coloresBorde.accent
+                    : señales.some(s => s.color === 'pos') ? coloresBorde.pos
+                    : 'border-surface';
+                const cardBg = cardBorder === coloresBorde.neg ? 'bg-neg/10' : cardBorder === coloresBorde.accent ? 'bg-accent/10' : 'bg-surface';
+
+                const señalesHtml = señales.map(s =>
+                    `<div class="mt-1.5 bg-${s.color}/20 border border-${s.color} text-${s.color} font-bold text-xs px-2 py-1.5 rounded-sm">${s.texto}</div>`
+                ).join('');
+
+                const stopHtml = p.stopActual != null
+                    ? `<div class="text-accent text-xs mt-2">STOP ACTUAL: $${p.stopActual.toFixed(2)} <span class="text-gray-500">(${p.origenStop})</span></div>`
+                    : '';
+
+                const objetivoHtml = `<div class="text-gray-500 text-[10px] mt-1">Objetivo parcial (+${CARTERA_GANANCIA_PARCIAL_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_PARCIAL_PCT / 100)).toFixed(2)} · Objetivo trailing (+${CARTERA_GANANCIA_TRAILING_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_TRAILING_PCT / 100)).toFixed(2)}</div>`;
+
+                return `
+                    <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-white text-lg">${p.ticker}</span>
+                                <div class="text-xs text-gray-500 mt-1">Compra: $${p.precio} (USD/acción) ${p.cantidad ? `× ${p.cantidad}` : ''} el ${p.fecha}</div>
+                                ${p.origenArs ? `<div class="text-[10px] text-gray-600 mt-0.5">CEDEAR: ARS $${p.origenArs.precioArs} · CCL ${p.origenArs.cclCompra} · ratio ${p.origenArs.ratio}:1</div>` : ''}
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <button onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
+                                <button onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
+                            </div>
+                        </div>
+                        <div class="mt-2">${variacionHtml}</div>
+                        ${stopHtml}
+                        ${objetivoHtml}
+                        ${señalesHtml}
+                        ${ventaAbierta === idx ? formularioVenta(p, precioActual) : ''}
+                    </div>`;
+            }).join('');
+
+            if (huboCambios) guardarCartera(posiciones);
+        }
+
+        function eliminarPosicion(idx) {
+            if (!confirm('¿Borrar esta posición? Usalo solo si la cargaste por error: no queda registrada como operación. Si la vendiste, usá el botón Vender.')) return;
+            const posiciones = cargarCartera();
+            posiciones.splice(idx, 1);
+            guardarCartera(posiciones);
+            renderCartera();
+        }
+
+        // ============ VENTAS (operaciones reales para la Auditoría) ============
+        let ventaAbierta = null;
+
+        function abrirVenta(idx) {
+            ventaAbierta = ventaAbierta === idx ? null : idx;
+            renderCartera();
+        }
+
+        function formularioVenta(p, precioActual) {
+            const hoy = new Date().toISOString().slice(0, 10);
+            const esArs = !!p.origenArs;
+            return `
+                <div class="mt-3 pt-3 border-t border-gray-700 space-y-2 text-xs">
+                    <div class="text-accent font-bold uppercase text-[10px] tracking-widest">Registrar venta</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="col-span-2">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">¿Cómo vendiste?</label>
+                            <select id="venta-moneda" onchange="document.getElementById('venta-usd').classList.toggle('hidden', this.value==='ARS'); document.getElementById('venta-ars').classList.toggle('hidden', this.value!=='ARS');" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                                <option value="USD" ${esArs ? '' : 'selected'}>En dólares (precio de la acción)</option>
+                                <option value="ARS" ${esArs ? 'selected' : ''}>CEDEAR en pesos</option>
+                            </select>
+                        </div>
+                        <div id="venta-usd" class="col-span-2 ${esArs ? 'hidden' : ''}">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Precio de venta (USD, por acción)</label>
+                            <input type="number" step="0.01" id="venta-precio-usd" value="${precioActual != null ? precioActual.toFixed(2) : ''}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div id="venta-ars" class="col-span-2 grid grid-cols-2 gap-2 ${esArs ? '' : 'hidden'}">
+                            <div>
+                                <label class="text-gray-500 text-[10px] uppercase block mb-1">Precio CEDEAR (ARS)</label>
+                                <input type="number" step="0.01" id="venta-precio-ars" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                            </div>
+                            <div>
+                                <label class="text-gray-500 text-[10px] uppercase block mb-1">CCL de ese día</label>
+                                <input type="number" step="0.01" id="venta-ccl" value="${currentAutoCcl ? currentAutoCcl.toFixed(2) : ''}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Cantidad vendida</label>
+                            <input type="number" step="any" id="venta-cantidad" value="${p.cantidad ?? ''}" placeholder="todo" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div>
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">Fecha de venta</label>
+                            <input type="date" id="venta-fecha" value="${hoy}" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-gray-500 text-[10px] uppercase block mb-1">¿Por qué vendiste?</label>
+                            <select id="venta-motivo" class="w-full bg-base border border-gray-700 rounded-sm px-2 py-1.5 text-white">
+                                <option>Tocó el stop</option>
+                                <option>Objetivo de ganancia</option>
+                                <option>Aviso técnico de la app</option>
+                                <option>Decisión propia</option>
+                                <option>Necesitaba la plata</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="venta-error" class="text-neg hidden"></div>
+                    <div class="flex gap-2">
+                        <button onclick="confirmarVenta(${ventaAbierta})" class="flex-1 bg-accent text-base font-bold uppercase py-2 rounded-sm hover:bg-white">Confirmar venta</button>
+                        <button onclick="abrirVenta(${ventaAbierta})" class="px-4 border border-gray-700 text-gray-400 rounded-sm">Cancelar</button>
+                    </div>
+                    ${p.cantidad ? '<div class="text-[10px] text-gray-600">Si vendés menos que el total, la posición queda abierta con el resto.</div>' : ''}
+                </div>`;
+        }
+
+        function cargarOperacionesCerradas() {
+            try { return JSON.parse(localStorage.getItem('mis_operaciones_cerradas') || '[]'); }
+            catch (e) { return []; }
+        }
+
+        function confirmarVenta(idx) {
+            const posiciones = cargarCartera();
+            const p = posiciones[idx];
+            const errorEl = document.getElementById('venta-error');
+            const mostrarError = (t) => { errorEl.textContent = t; errorEl.classList.remove('hidden'); };
+            if (!p) return;
+
+            const moneda = document.getElementById('venta-moneda').value;
+            let precioVenta, origenVentaArs = null;
+            if (moneda === 'USD') {
+                precioVenta = parseFloat(document.getElementById('venta-precio-usd').value);
+            } else {
+                const precioArs = parseFloat(document.getElementById('venta-precio-ars').value);
+                const ccl = parseFloat(document.getElementById('venta-ccl').value);
+                const ratio = p.origenArs?.ratio
+                    ?? (currentRadarData?.cedears_pricing?.cedears ?? []).find(c => c?.Ticker?.toUpperCase() === p.ticker.toUpperCase())?.Ratio;
+                if (!precioArs || !ccl) return mostrarError('Completá el precio en pesos y el CCL.');
+                if (!ratio) return mostrarError(`No tengo el ratio de ${p.ticker} para convertir a dólares -- cargala en dólares.`);
+                precioVenta = Math.round((precioArs * ratio / ccl) * 100) / 100;
+                origenVentaArs = { precioArs, ccl, ratio };
+            }
+            if (!precioVenta || precioVenta <= 0) return mostrarError('Falta el precio de venta.');
+
+            const fechaVenta = document.getElementById('venta-fecha').value;
+            if (!fechaVenta) return mostrarError('Falta la fecha de venta.');
+            if (fechaVenta < p.fecha) return mostrarError('La fecha de venta es anterior a la de compra.');
+
+            const total = p.cantidad != null && p.cantidad !== '' ? parseFloat(p.cantidad) : null;
+            let vendida = parseFloat(document.getElementById('venta-cantidad').value);
+            if (isNaN(vendida) || vendida <= 0) vendida = total;
+            if (total != null && vendida > total) return mostrarError(`No podés vender más de ${total}.`);
+
+            const esHoy = fechaVenta === new Date().toISOString().slice(0, 10);
+            const operacion = {
+                id: `${p.ticker}-${Date.now()}`,
+                ticker: p.ticker,
+                precio: p.precio,
+                fecha: p.fecha,
+                cantidad: vendida ?? null,
+                origenArs: p.origenArs ?? null,
+                radarScoreCompra: p.radarScoreCompra ?? null,
+                alertaAlComprar: p.alertaAlComprar ?? null,
+                spyCompra: p.spyCompra ?? null,
+                stopAlVender: p.stopActual ?? null,
+                precioVenta,
+                fechaVenta,
+                origenVentaArs,
+                motivoVenta: document.getElementById('venta-motivo').value,
+                spyVenta: esHoy ? (currentRadarData?.spy_precio ?? null) : null,
+            };
+
+            const cerradas = cargarOperacionesCerradas();
+            cerradas.push(operacion);
+            localStorage.setItem('mis_operaciones_cerradas', JSON.stringify(cerradas));
+            sincronizarOperacionesCerradas();
+
+            if (total != null && vendida < total) {
+                p.cantidad = Math.round((total - vendida) * 10000) / 10000; // venta parcial: queda el resto
+            } else {
+                posiciones.splice(idx, 1);
+            }
+            ventaAbierta = null;
+            guardarCartera(posiciones);
+            renderCartera();
+        }
+
+        // Sube data/operaciones_cerradas.json SUMANDO a lo que ya hay en el
+        // repo (nunca pisa): así una venta cargada desde el celular no borra
+        // otra cargada desde la compu. Cada operación tiene un id único.
+        async function sincronizarOperacionesCerradas() {
+            const token = cargarTokenGithub();
+            if (!token) return;
+            const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/operaciones_cerradas.json`;
+            const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+            try {
+                let sha = null, remotas = [];
+                const getResp = await fetch(`${apiUrl}?t=${Date.now()}`, { headers, cache: 'no-store' });
+                if (getResp.ok) {
+                    const info = await getResp.json();
+                    sha = info.sha;
+                    try { remotas = JSON.parse(decodeURIComponent(escape(atob(info.content.replace(/\n/g, ''))))); } catch (e) { remotas = []; }
+                } else if (getResp.status !== 404) {
+                    return;
+                }
+                const porId = {};
+                [...remotas, ...cargarOperacionesCerradas()].forEach(o => { if (o?.id) porId[o.id] = o; });
+                const todas = Object.values(porId).sort((a, b) => (a.fechaVenta ?? '').localeCompare(b.fechaVenta ?? ''));
+                localStorage.setItem('mis_operaciones_cerradas', JSON.stringify(todas));
+                const body = {
+                    message: `Operación cerrada desde dashboard (${new Date().toISOString()})`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(todas, null, 2)))),
+                };
+                if (sha) body.sha = sha;
+                await fetch(apiUrl, { method: 'PUT', headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            } catch (e) {
+                // Sin conexión: queda guardada en este navegador y se sube en la próxima venta o al reconectar
+            }
+        }
+
+        // Muestra los campos de USD o de ARS+CCL según lo que elija Victoria
+        document.getElementById('cartera-moneda').addEventListener('change', (e) => {
+            const esArs = e.target.value === 'ARS';
+            document.getElementById('cartera-campos-usd').classList.toggle('hidden', esArs);
+            document.getElementById('cartera-campos-ars').classList.toggle('hidden', !esArs);
+        });
+
+        document.getElementById('cartera-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('cartera-error');
+            errorDiv.classList.add('hidden');
+
+            const ticker = document.getElementById('cartera-ticker').value.trim().toUpperCase();
+            const moneda = document.getElementById('cartera-moneda').value;
+            const cantidad = document.getElementById('cartera-cantidad').value || null;
+            const fecha = document.getElementById('cartera-fecha').value;
+            if (!ticker || !fecha) return;
+
+            let precioUsd, origenArs = null;
+
+            if (moneda === 'USD') {
+                precioUsd = parseFloat(document.getElementById('cartera-precio-usd').value);
+                if (!precioUsd) return;
+            } else {
+                const precioArs = parseFloat(document.getElementById('cartera-precio-ars').value);
+                const cclCompra = parseFloat(document.getElementById('cartera-ccl-compra').value);
+                if (!precioArs || !cclCompra) return;
+
+                const cedears = currentRadarData?.cedears_pricing?.cedears ?? [];
+                const infoCedear = cedears.find(c => c?.Ticker?.toUpperCase() === ticker);
+                if (!infoCedear || !infoCedear.Ratio) {
+                    errorDiv.textContent = `No tengo el ratio de conversión de ${ticker} todavía -- no puedo calcular el equivalente en dólares. Avisale a Claude para que lo sume al panel de CEDEARs.`;
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                const ratio = infoCedear.Ratio;
+                precioUsd = Math.round((precioArs * ratio / cclCompra) * 100) / 100;
+                origenArs = { precioArs, cclCompra, ratio };
+            }
+
+            // Captura el estado técnico del ticker AL MOMENTO DE LA COMPRA
+            // (stop inicial + Radar Score de referencia), para poder hacer
+            // seguimiento activo después -- ver renderCartera().
+            const tickerDataCompra = (currentRadarData?.ranking ?? []).find(t => t?.Ticker?.toUpperCase() === ticker);
+            const calculoStop = calcularStopInicial(precioUsd, tickerDataCompra);
+            const stopInicial = calculoStop.valor;
+            const radarScoreCompra = tickerDataCompra?.Radar_Score ?? null;
+            // Para la Auditoría: precio del SPY hoy (para comparar la operación
+            // contra el mercado) y si el radar tenía una alerta activa de este
+            // ticker al momento de comprar (para ver si seguir las alertas rinde)
+            const esHoy = fecha === new Date().toISOString().slice(0, 10);
+            const spyCompra = esHoy ? (currentRadarData?.spy_precio ?? null) : null;
+            const alertaActiva = (currentRadarData?.alertas ?? []).find(a => a?.Ticker?.toUpperCase() === ticker);
+            const alertaAlComprar = alertaActiva ? `${alertaActiva.Estado ?? ''} (${alertaActiva['Recomendación final'] ?? ''})` : null;
+
+            const posiciones = cargarCartera();
+            posiciones.push({
+                ticker, precio: precioUsd, cantidad, fecha, origenArs,
+                stopInicial, stopActual: stopInicial, radarScoreCompra,
+                origenStop: calculoStop.origen,
+                spyCompra, alertaAlComprar,
+            });
+            guardarCartera(posiciones);
+            renderCartera();
+            e.target.reset();
+            document.getElementById('cartera-campos-ars').classList.add('hidden');
+            document.getElementById('cartera-campos-usd').classList.remove('hidden');
+        });
+
+        // Exportar cartera -- arma el JSON que el backend espera en
+        // data/mi_cartera.json (mismos campos que ya guarda cada
+        // posición: ticker, precio, cantidad, fecha, stopInicial,
+        // stopActual, radarScoreCompra). No incluye origenArs ni
+        // campos internos del dashboard que el backend no necesita.
+        document.getElementById('exportar-cartera-btn').addEventListener('click', () => {
+            const posiciones = cargarCartera();
+            const paraExportar = posiciones.map(p => ({
+                ticker: p.ticker,
+                precio: p.precio,
+                cantidad: p.cantidad ?? null,
+                fecha: p.fecha,
+                stopInicial: p.stopInicial ?? null,
+                stopActual: p.stopActual ?? null,
+                radarScoreCompra: p.radarScoreCompra ?? null,
+                origenStop: p.origenStop ?? null,
+            }));
+            const output = document.getElementById('exportar-cartera-output');
+            output.value = JSON.stringify(paraExportar, null, 2);
+            output.classList.remove('hidden');
+            document.getElementById('exportar-cartera-hint').classList.remove('hidden');
+            output.focus();
+            output.select();
+        });
+
+        // Fecha de hoy por defecto en el form de Mi Cartera
+        document.getElementById('cartera-fecha').valueAsDate = new Date();
+
+        // Refresco automático
+        fetchRadarData();
+        renderCartera();
+        setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
+    </script>
+</body>
+</html>
