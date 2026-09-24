@@ -20,6 +20,8 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+from telegram_bot import enviar_mensaje, DISCLAIMER
+
 # ---------------------------------------------------------------------------
 # CONFIG — acá se suman/sacan monedas. El símbolo es el ticker de yfinance.
 # ---------------------------------------------------------------------------
@@ -30,6 +32,7 @@ CRYPTO_TICKERS = {
 }
 
 OUTPUT_PATH = "data/cripto.json"
+NOTIFICACIONES_PATH = "data/cripto_notificaciones.json"
 
 # Pesos del Score v1 (0-100). Es una primera aproximación pensada para la
 # volatilidad de cripto; fácil de recalibrar más adelante con datos reales.
@@ -205,6 +208,72 @@ def generar_alertas(nombre: str, ind: dict, score: dict) -> list:
 
 
 # ---------------------------------------------------------------------------
+# TELEGRAM -- reutiliza el mismo bot que las alertas de acciones, con su
+# propio archivo de deduplicación (una alerta por moneda+tipo se notifica
+# como máximo una vez por día UTC, aunque el script corra cada 4hs).
+# ---------------------------------------------------------------------------
+
+def cargar_notificaciones() -> dict:
+    try:
+        with open(NOTIFICACIONES_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def guardar_notificaciones(notificaciones: dict) -> None:
+    os.makedirs(os.path.dirname(NOTIFICACIONES_PATH), exist_ok=True)
+    with open(NOTIFICACIONES_PATH, "w", encoding="utf-8") as f:
+        json.dump(notificaciones, f, ensure_ascii=False, indent=2)
+
+
+def formatear_alerta_cripto(nombre: str, ticker: str, alerta: dict) -> str:
+    return (
+        f"🪙 <b>{nombre}</b> ({ticker})\n"
+        f"{alerta['tipo']}\n"
+        f"{alerta['narrativa']}"
+    )
+
+
+def notificar_alertas_cripto(resultados: list, modo: str) -> None:
+    hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    notificaciones = cargar_notificaciones()
+
+    # Junta todas las alertas de hoy que todavía no se notificaron
+    pendientes = []
+    for r in resultados:
+        if r.get("error"):
+            continue
+        for alerta in r.get("alertas", []):
+            clave = f"{r['ticker']}|{alerta['tipo']}"
+            if notificaciones.get(clave) != hoy:
+                pendientes.append((clave, r, alerta))
+
+    if not pendientes:
+        print("Cripto: sin alertas nuevas para notificar hoy.")
+        return
+
+    if modo != "produccion":
+        print(f"MODO=test -- NO se envían notificaciones reales de cripto ({len(pendientes)} pendiente(s)):")
+        for _, r, alerta in pendientes:
+            print(f"  [TEST] {r['nombre']}: {alerta['tipo']}")
+        return
+
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+
+    enviados = 0
+    for clave, r, alerta in pendientes:
+        texto = formatear_alerta_cripto(r["nombre"], r["ticker"], alerta) + DISCLAIMER
+        if enviar_mensaje(token, chat_id, texto):
+            enviados += 1
+            notificaciones[clave] = hoy
+
+    guardar_notificaciones(notificaciones)
+    print(f"Cripto: {enviados}/{len(pendientes)} alerta(s) enviada(s) a Telegram.")
+
+
+# ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
 
@@ -254,6 +323,9 @@ def main():
         json.dump(salida, f, ensure_ascii=False, indent=2)
 
     print(f"Guardado {OUTPUT_PATH} con {len(resultados)} criptomonedas.")
+
+    modo = os.environ.get("RADAR_MODO", "test")
+    notificar_alertas_cripto(resultados, modo)
 
 
 if __name__ == "__main__":
