@@ -50,6 +50,10 @@ SCORE_WEIGHTS = {
     "distancia_max52w": 30,  # qué tan cerca/lejos está del máximo de 52 semanas
 }
 PENDIENTE_VENTANA = 10      # ruedas para medir si la SMA50 sube
+RUPTURA_DIAS = 20           # ruptura = cierre sobre el máximo de los 20 días previos
+RUPTURA_VOL_MIN = 1.2       # ...con volumen de al menos 1.2x su promedio
+MOVIMIENTO_FUERTE_X = 2.5   # movimiento del día > 2.5 veces su movimiento diario normal
+MOVIMIENTO_VENTANA = 20     # días para medir el "movimiento diario normal"
 RSI_SOBRECOMPRA = 75
 RSI_ZONA_ALTA = 70          # para contar "cuántos días lleva sobrecomprada"
 
@@ -107,6 +111,24 @@ def calcular_indicadores(df: pd.DataFrame) -> dict:
         elif not hoy_arriba and ayer_arriba:
             cruce = "cruce_muerte"
 
+    # Ruptura de máximo de 20 días (cierre de hoy sobre el máximo de los
+    # 20 cierres anteriores) -- señal clásica de seguimiento de tendencia
+    max_20_previo = df["Close"].iloc[-1 - RUPTURA_DIAS:-1].max() if len(df) > RUPTURA_DIAS else np.nan
+    ruptura_20d = bool(not pd.isna(max_20_previo) and ultimo["Close"] > max_20_previo)
+
+    # Cruce del PRECIO con su SMA50 (más temprano que el cruce dorado)
+    cruce_sma50 = None
+    if not pd.isna(ultimo["SMA50"]) and not pd.isna(previo["SMA50"]):
+        if ultimo["Close"] > ultimo["SMA50"] and previo["Close"] <= previo["SMA50"]:
+            cruce_sma50 = "recupera"
+        elif ultimo["Close"] < ultimo["SMA50"] and previo["Close"] >= previo["SMA50"]:
+            cruce_sma50 = "pierde"
+
+    # Movimiento diario "normal" de esta moneda: promedio del cambio % absoluto
+    # de los últimos 20 días. Sirve para que "movimiento fuerte" se adapte a
+    # cada moneda (un 6% es mucho para BTC y bastante común para ETH).
+    mov_normal_pct = float(df["Close"].pct_change().abs().tail(MOVIMIENTO_VENTANA).mean() * 100)
+
     # Pendiente de la SMA50 y días seguidos con RSI alto (para la cautela)
     sma50_antes = df["SMA50"].iloc[-1 - PENDIENTE_VENTANA] if len(df) > PENDIENTE_VENTANA else np.nan
     sma50_subiendo = bool(sma50 and not pd.isna(sma50_antes) and sma50 > float(sma50_antes))
@@ -129,6 +151,10 @@ def calcular_indicadores(df: pd.DataFrame) -> dict:
         "sma50_subiendo": sma50_subiendo,
         "dias_rsi_alto": dias_rsi_alto,
         "cruce": cruce,
+        "ruptura_20d": ruptura_20d,
+        "max_20d_previo": round(float(max_20_previo), 2) if not pd.isna(max_20_previo) else None,
+        "cruce_sma50": cruce_sma50,
+        "mov_normal_pct": round(mov_normal_pct, 2),
     }
 
 
@@ -222,6 +248,32 @@ def generar_alertas(nombre: str, ind: dict, score: dict) -> list:
                 "narrativa": f"{nombre} tiene RSI de {ind['rsi']}, zona de sobreventa. No es señal de compra "
                              f"por sí sola: puede rebotar, pero la tendencia manda.",
             })
+
+    # Ruptura de 20 días con volumen (si también es máximo de 52 semanas,
+    # alcanza con esa otra alerta, más fuerte)
+    es_max_52w = ind["dist_max52w_pct"] is not None and ind["dist_max52w_pct"] >= -0.5
+    if ind.get("ruptura_20d") and not es_max_52w:
+        vol = ind.get("vol_rel")
+        if vol is not None and vol >= RUPTURA_VOL_MIN:
+            alertas.append({
+                "tipo": "Ruptura de máximo de 20 días",
+                "narrativa": f"{nombre} cerró sobre su máximo de los últimos {RUPTURA_DIAS} días "
+                             f"(${ind['max_20d_previo']:,.0f}) con volumen {vol:.1f}x: posible inicio "
+                             f"o continuación de un tramo alcista.",
+            })
+
+    if ind.get("cruce_sma50") == "recupera":
+        alertas.append({
+            "tipo": "Recuperó su SMA50",
+            "narrativa": f"{nombre} cerró arriba de su media de 50 días (${ind['sma50']:,.0f}) después de estar "
+                         f"abajo: señal temprana de mejora de tendencia (antes que un cruce dorado).",
+        })
+    elif ind.get("cruce_sma50") == "pierde":
+        alertas.append({
+            "tipo": "Perdió su SMA50",
+            "narrativa": f"{nombre} cerró debajo de su media de 50 días (${ind['sma50']:,.0f}): "
+                         f"se debilita la tendencia de corto plazo.",
+        })
 
     if ind["dist_max52w_pct"] is not None and ind["dist_max52w_pct"] >= -0.5:
         alertas.append({
@@ -349,6 +401,21 @@ def procesar_ticker(ticker: str, nombre: str):
     ind["vela_cerrada"] = fecha_vela
     score = calcular_score(ind)
     alertas = generar_alertas(nombre, ind, score)
+
+    # Movimiento fuerte del día: precio EN VIVO contra el último cierre,
+    # comparado con el movimiento diario normal de esta moneda. Es un aviso
+    # ("pasó algo, mirá"), no una señal de compra o venta por sí sola.
+    mov_hoy_pct = (precio_vivo / ind["precio_cierre"] - 1) * 100 if ind.get("precio_cierre") else None
+    ind["mov_hoy_pct"] = round(mov_hoy_pct, 2) if mov_hoy_pct is not None else None
+    normal = ind.get("mov_normal_pct")
+    if mov_hoy_pct is not None and normal and abs(mov_hoy_pct) >= MOVIMIENTO_FUERTE_X * normal:
+        sube = mov_hoy_pct > 0
+        alertas.append({
+            "tipo": "Movimiento fuerte al alza" if sube else "Movimiento fuerte a la baja",
+            "narrativa": f"{nombre} {'sube' if sube else 'cae'} {abs(mov_hoy_pct):.1f}% desde el cierre de ayer, "
+                         f"{abs(mov_hoy_pct) / normal:.1f} veces su movimiento diario normal ({normal:.1f}%). "
+                         f"Es un aviso para mirar, no una señal por sí sola.",
+        })
 
     resultado = {
         "ticker": ticker,

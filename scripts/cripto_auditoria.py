@@ -36,6 +36,14 @@ DIRECCION_POR_TIPO = {
     "RSI en sobrecompra": "bajista",
     "Nuevo máximo de 52 semanas": "alcista",
     "Volumen anómalo": None,
+    "Ruptura de máximo de 20 días": "alcista",
+    "Recuperó su SMA50": "alcista",
+    "Perdió su SMA50": "bajista",
+    # Los movimientos fuertes se miden como "¿siguió en la misma dirección?"
+    # -- si en cripto hay momentum, deberían continuar; si revierten, el
+    # aviso sirve solo como alerta de volatilidad.
+    "Movimiento fuerte al alza": "alcista",
+    "Movimiento fuerte a la baja": "bajista",
 }
 
 
