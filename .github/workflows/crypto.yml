@@ -55,5 +55,11 @@ jobs:
           if [ -f data/log_alertas_cripto.jsonl ]; then
             git add data/log_alertas_cripto.jsonl
           fi
+          if [ -f data/auditoria_cripto.json ]; then
+            git add data/auditoria_cripto.json
+          fi
+          if [ -f data/auditoria_cripto_resultados.jsonl ]; then
+            git add data/auditoria_cripto_resultados.jsonl
+          fi
           git diff --staged --quiet || git commit -m "Actualiza cripto.json [skip ci]"
           git push
