@@ -22,6 +22,7 @@ import yfinance as yf
 
 from telegram_bot import enviar_mensaje, DISCLAIMER
 from cripto_bitacora import registrar_eventos_cripto
+from cripto_auditoria import correr_auditoria_cripto
 
 # ---------------------------------------------------------------------------
 # CONFIG — acá se suman/sacan monedas. El símbolo es el ticker de yfinance.
@@ -283,14 +284,17 @@ def notificar_alertas_cripto(resultados: list, modo: str) -> None:
 # MAIN
 # ---------------------------------------------------------------------------
 
-def procesar_ticker(ticker: str, nombre: str) -> dict:
+def procesar_ticker(ticker: str, nombre: str):
+    """Devuelve (resultado_dict, serie_cierres). serie_cierres es None si
+    falló la descarga -- se guarda aparte para poder pasarle a la auditoría
+    los precios ya descargados, sin tener que bajarlos de nuevo."""
     df = yf.download(ticker, period="1y", interval="1d", progress=False, auto_adjust=True)
     if df.empty or len(df) < 60:
         return {
             "ticker": ticker,
             "nombre": nombre,
             "error": "datos insuficientes o falla de descarga",
-        }
+        }, None
 
     # yfinance a veces devuelve columnas MultiIndex si se pide más de un ticker;
     # acá siempre es uno solo, pero por las dudas se aplana.
@@ -301,7 +305,7 @@ def procesar_ticker(ticker: str, nombre: str) -> dict:
     score = calcular_score(ind)
     alertas = generar_alertas(nombre, ind, score)
 
-    return {
+    resultado = {
         "ticker": ticker,
         "nombre": nombre,
         **ind,
@@ -309,13 +313,18 @@ def procesar_ticker(ticker: str, nombre: str) -> dict:
         "score_detalle": score["detalle"],
         "alertas": alertas,
     }
+    return resultado, df["Close"]
 
 
 def main():
     resultados = []
+    precios = {}   # {ticker: serie de cierres} -- para la auditoría
     for ticker, nombre in CRYPTO_TICKERS.items():
         try:
-            resultados.append(procesar_ticker(ticker, nombre))
+            resultado, serie = procesar_ticker(ticker, nombre)
+            resultados.append(resultado)
+            if serie is not None:
+                precios[ticker] = serie
         except Exception as e:
             resultados.append({"ticker": ticker, "nombre": nombre, "error": str(e)})
 
@@ -332,6 +341,12 @@ def main():
 
     modo = os.environ.get("RADAR_MODO", "test")
     notificar_alertas_cripto(resultados, modo)
+
+    try:
+        auditoria = correr_auditoria_cripto(precios)
+        print(f"Auditoría cripto: {auditoria['casos_total']} caso(s) evaluados.")
+    except Exception as e:
+        print(f"Auditoría cripto: no se pudo correr ({e}) -- no afecta el resto de la corrida.")
 
 
 if __name__ == "__main__":
