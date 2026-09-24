@@ -5,7 +5,14 @@ on:
     # Cada 4 horas, todos los días (cripto no tiene horario de mercado).
     # Ajustable: cambiar "*/4" por la frecuencia que prefieras.
     - cron: "0 */4 * * *"
-  workflow_dispatch: {}   # permite correrlo manualmente desde la pestaña Actions
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'Modo de ejecución'
+        required: true
+        default: 'test'
+        type: choice
+        options: [test, produccion]
 
 permissions:
   contents: write
@@ -26,12 +33,19 @@ jobs:
         run: pip install yfinance pandas numpy
 
       - name: Correr crypto_radar.py
+        env:
+          # El cron automático corre en producción; el disparo manual respeta
+          # lo que elijas en el desplegable (por defecto "test", sin envíos reales)
+          RADAR_MODO: ${{ github.event_name == 'schedule' && 'produccion' || (github.event.inputs.modo || 'test') }}
+          # Mismos secrets que usa el radar de acciones (Settings > Secrets)
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python scripts/crypto_radar.py
 
       - name: Commit y push de data/cripto.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/cripto.json
+          git add data/cripto.json data/cripto_notificaciones.json
           git diff --staged --quiet || git commit -m "Actualiza cripto.json [skip ci]"
           git push
