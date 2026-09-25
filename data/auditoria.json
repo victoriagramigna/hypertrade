@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-25T13:01:47.567853+00:00",
+ "generado_utc": "2026-09-25T13:31:31.748291+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,26 +9,29 @@
   10,
   20
  ],
- "casos_total": 127,
+ "casos_total": 128,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 42,
+   "casos_total": 43,
    "horizontes": {
     "5": {
-     "n": 0,
-     "pendientes": 42,
+     "n": 3,
+     "pendientes": 40,
+     "aciertos": 2,
+     "pct_aciertos": 67,
+     "tocaron_stop": 0,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 42,
+     "pendientes": 43,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 42,
+     "pendientes": 43,
      "confiable": false
     }
    }
@@ -39,8 +42,11 @@
    "casos_total": 28,
    "horizontes": {
     "5": {
-     "n": 0,
-     "pendientes": 28,
+     "n": 2,
+     "pendientes": 26,
+     "aciertos": 1,
+     "pct_aciertos": 50,
+     "tocaron_stop": 0,
      "confiable": false
     },
     "10": {
@@ -105,8 +111,11 @@
    "casos_total": 8,
    "horizontes": {
     "5": {
-     "n": 0,
-     "pendientes": 8,
+     "n": 5,
+     "pendientes": 3,
+     "aciertos": 3,
+     "pct_aciertos": 60,
+     "tocaron_stop": 0,
      "confiable": false
     },
     "10": {
@@ -127,8 +136,11 @@
    "casos_total": 6,
    "horizontes": {
     "5": {
-     "n": 0,
-     "pendientes": 6,
+     "n": 4,
+     "pendientes": 2,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "tocaron_stop": 0,
      "confiable": false
     },
     "10": {
@@ -169,9 +181,12 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 127,
+   "casos": 128,
    "5": {
-    "n": 0
+    "n": 14,
+    "pct_aciertos": 43,
+    "ret_a_favor_prom": 0.35,
+    "vs_spy_prom": 0.09
    },
    "10": {
     "n": 0
@@ -197,7 +212,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 13,
+   "casos": 14,
    "5": {
     "n": 0
    },
@@ -238,7 +253,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 4,
+   "casos": 5,
    "5": {
     "n": 0
    },
@@ -358,6 +373,21 @@
    "r20": null
   },
   {
+   "ticker": "SONY",
+   "fecha": "2026-09-25",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 23.43,
+   "radar_score": 61.9,
+   "regimen_score": 62,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
    "ticker": "BRK-B",
    "fecha": "2026-09-24",
    "señal": "Confirmado",
@@ -367,7 +397,7 @@
    "radar_score": 52.7,
    "regimen_score": 64,
    "cuidados": [],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -382,7 +412,7 @@
    "radar_score": 39.7,
    "regimen_score": 64,
    "cuidados": [],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -399,7 +429,7 @@
    "cuidados": [
     "sma50_bajando"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -414,7 +444,7 @@
    "radar_score": 52.5,
    "regimen_score": 64,
    "cuidados": [],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -431,7 +461,7 @@
    "cuidados": [
     "techo_avwap"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -446,7 +476,7 @@
    "radar_score": 67.5,
    "regimen_score": 64,
    "cuidados": [],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -464,7 +494,7 @@
     "sma50_bajando",
     "bajo_sma200"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -481,7 +511,7 @@
    "cuidados": [
     "sma50_bajando"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -498,7 +528,7 @@
    "cuidados": [
     "bajo_sma200"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -516,7 +546,7 @@
     "sma50_bajando",
     "bajo_sma200"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -533,7 +563,7 @@
    "cuidados": [
     "extendida"
    ],
-   "ruedas_transcurridas": 0,
+   "ruedas_transcurridas": 1,
    "r5": null,
    "r10": null,
    "r20": null
@@ -548,7 +578,7 @@
    "radar_score": 40.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -563,7 +593,7 @@
    "radar_score": 37.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -578,7 +608,7 @@
    "radar_score": 50.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -593,7 +623,7 @@
    "radar_score": 44.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -608,7 +638,7 @@
    "radar_score": 35.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -623,7 +653,7 @@
    "radar_score": 25.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -638,7 +668,7 @@
    "radar_score": 39.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -653,7 +683,7 @@
    "radar_score": 43.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -668,7 +698,7 @@
    "radar_score": 50.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -683,7 +713,7 @@
    "radar_score": 39.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -698,7 +728,7 @@
    "radar_score": 32.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -713,7 +743,7 @@
    "radar_score": 56.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -730,7 +760,7 @@
    "cuidados": [
     "sma50_bajando"
    ],
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -748,7 +778,7 @@
     "sma50_bajando",
     "bajo_sma200"
    ],
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -765,7 +795,7 @@
    "cuidados": [
     "sma50_bajando"
    ],
-   "ruedas_transcurridas": 1,
+   "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
    "r20": null
@@ -780,7 +810,7 @@
    "radar_score": 33.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -795,7 +825,7 @@
    "radar_score": 40.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -810,7 +840,7 @@
    "radar_score": 69.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -825,7 +855,7 @@
    "radar_score": 48.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -840,7 +870,7 @@
    "radar_score": 63.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -855,7 +885,7 @@
    "radar_score": 67.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -870,7 +900,7 @@
    "radar_score": 46.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -885,7 +915,7 @@
    "radar_score": 46.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -915,7 +945,7 @@
    "radar_score": 45.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -930,7 +960,7 @@
    "radar_score": 20.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -945,7 +975,7 @@
    "radar_score": 67.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -960,7 +990,7 @@
    "radar_score": 54.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -975,7 +1005,7 @@
    "radar_score": 69.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -990,7 +1020,7 @@
    "radar_score": 68.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1005,7 +1035,7 @@
    "radar_score": 47.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1020,7 +1050,7 @@
    "radar_score": 73.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1035,7 +1065,7 @@
    "radar_score": 65.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1050,7 +1080,7 @@
    "radar_score": 60.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1065,7 +1095,7 @@
    "radar_score": 52.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1095,7 +1125,7 @@
    "radar_score": 30.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1110,7 +1140,7 @@
    "radar_score": 36.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1125,7 +1155,7 @@
    "radar_score": 57.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1140,7 +1170,7 @@
    "radar_score": 80.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1155,7 +1185,7 @@
    "radar_score": 64.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1170,7 +1200,7 @@
    "radar_score": 46.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1185,7 +1215,7 @@
    "radar_score": 62.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1200,7 +1230,7 @@
    "radar_score": 77.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1215,7 +1245,7 @@
    "radar_score": 64.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1230,7 +1260,7 @@
    "radar_score": 46.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1245,7 +1275,7 @@
    "radar_score": 57.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1260,7 +1290,7 @@
    "radar_score": 54.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1275,7 +1305,7 @@
    "radar_score": 53.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1290,7 +1320,7 @@
    "radar_score": 70.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1305,7 +1335,7 @@
    "radar_score": 25.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1320,7 +1350,7 @@
    "radar_score": 68.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1335,7 +1365,7 @@
    "radar_score": 30.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 2,
+   "ruedas_transcurridas": 3,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1350,7 +1380,7 @@
    "radar_score": 52.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1365,7 +1395,7 @@
    "radar_score": 39.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1380,7 +1410,7 @@
    "radar_score": 59.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1395,7 +1425,7 @@
    "radar_score": 53.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1410,7 +1440,7 @@
    "radar_score": 30.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1425,7 +1455,7 @@
    "radar_score": 32.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1440,7 +1470,7 @@
    "radar_score": 62.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1455,7 +1485,7 @@
    "radar_score": 56.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1470,7 +1500,7 @@
    "radar_score": 37.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1485,7 +1515,7 @@
    "radar_score": 34.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1500,7 +1530,7 @@
    "radar_score": 54.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1515,7 +1545,7 @@
    "radar_score": 42.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1530,7 +1560,7 @@
    "radar_score": 43.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1545,7 +1575,7 @@
    "radar_score": 44.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1560,7 +1590,7 @@
    "radar_score": 46.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1575,7 +1605,7 @@
    "radar_score": 38.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1590,7 +1620,7 @@
    "radar_score": 19.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1605,7 +1635,7 @@
    "radar_score": 45.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1620,7 +1650,7 @@
    "radar_score": 36.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1635,7 +1665,7 @@
    "radar_score": 25.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1650,7 +1680,7 @@
    "radar_score": 57.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1665,7 +1695,7 @@
    "radar_score": 55.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1680,7 +1710,7 @@
    "radar_score": 31.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1695,7 +1725,7 @@
    "radar_score": 60.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1710,7 +1740,7 @@
    "radar_score": 42.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1725,7 +1755,7 @@
    "radar_score": 42.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1740,7 +1770,7 @@
    "radar_score": 26.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1755,7 +1785,7 @@
    "radar_score": 43.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1770,7 +1800,7 @@
    "radar_score": 52.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1785,7 +1815,7 @@
    "radar_score": 32.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1800,7 +1830,7 @@
    "radar_score": 23.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1815,7 +1845,7 @@
    "radar_score": 35.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1830,7 +1860,7 @@
    "radar_score": 54.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1845,7 +1875,7 @@
    "radar_score": 24.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1860,7 +1890,7 @@
    "radar_score": 43.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1875,7 +1905,7 @@
    "radar_score": 34.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1890,7 +1920,7 @@
    "radar_score": 55.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1905,7 +1935,7 @@
    "radar_score": 53.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1920,7 +1950,7 @@
    "radar_score": 46.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1950,7 +1980,7 @@
    "radar_score": 41.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1965,7 +1995,7 @@
    "radar_score": 22.0,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1980,7 +2010,7 @@
    "radar_score": 46.4,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -1995,7 +2025,7 @@
    "radar_score": 31.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -2010,7 +2040,7 @@
    "radar_score": 56.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -2025,7 +2055,7 @@
    "radar_score": 58.8,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -2040,7 +2070,7 @@
    "radar_score": 48.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -2055,7 +2085,7 @@
    "radar_score": 41.6,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 3,
+   "ruedas_transcurridas": 4,
    "r5": null,
    "r10": null,
    "r20": null
@@ -2070,8 +2100,12 @@
    "radar_score": 90.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -0.47,
+   "spy5": 0.91,
+   "vs_spy5": -1.38,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2085,8 +2119,12 @@
    "radar_score": 41.3,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -3.97,
+   "spy5": 0.91,
+   "vs_spy5": -4.88,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2100,8 +2138,12 @@
    "radar_score": 73.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -1.31,
+   "spy5": 0.91,
+   "vs_spy5": -2.22,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2115,8 +2157,12 @@
    "radar_score": 79.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -1.61,
+   "spy5": 0.91,
+   "vs_spy5": -2.52,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2130,8 +2176,12 @@
    "radar_score": 78.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": 3.09,
+   "spy5": 0.91,
+   "vs_spy5": 2.18,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2145,8 +2195,12 @@
    "radar_score": 93.2,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -2.82,
+   "spy5": 0.91,
+   "vs_spy5": -3.73,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2160,8 +2214,12 @@
    "radar_score": 54.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -1.22,
+   "spy5": 0.91,
+   "vs_spy5": -2.13,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2175,8 +2233,12 @@
    "radar_score": 65.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": 0.86,
+   "spy5": 0.91,
+   "vs_spy5": -0.05,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2190,8 +2252,12 @@
    "radar_score": 56.5,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": 6.43,
+   "spy5": 0.91,
+   "vs_spy5": 5.52,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2205,8 +2271,12 @@
    "radar_score": 66.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": 2.69,
+   "spy5": 0.91,
+   "vs_spy5": 1.78,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2220,8 +2290,12 @@
    "radar_score": 58.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": 1.89,
+   "spy5": 0.91,
+   "vs_spy5": 0.98,
+   "acierto5": true,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2235,8 +2309,12 @@
    "radar_score": 31.9,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -2.89,
+   "spy5": 0.91,
+   "vs_spy5": -3.8,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2250,8 +2328,12 @@
    "radar_score": 54.7,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -0.4,
+   "spy5": 0.91,
+   "vs_spy5": -1.31,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   },
@@ -2265,8 +2347,12 @@
    "radar_score": 61.1,
    "regimen_score": null,
    "cuidados": null,
-   "ruedas_transcurridas": 4,
-   "r5": null,
+   "ruedas_transcurridas": 5,
+   "r5": -2.02,
+   "spy5": 0.91,
+   "vs_spy5": -2.93,
+   "acierto5": false,
+   "stop5": false,
    "r10": null,
    "r20": null
   }

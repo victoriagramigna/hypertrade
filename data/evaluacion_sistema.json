@@ -1,5 +1,213 @@
 {
-  "generado_utc": "2026-09-25T13:03:53.570635+00:00",
-  "suficiente_data": false,
-  "motivo": "Todavía no hay resultados acumulados -- seguimiento_precios.py recién empieza a llenar data/seguimiento_resultados.jsonl."
+  "generado_utc": "2026-09-25T13:32:27.751919+00:00",
+  "suficiente_data": true,
+  "umbral_muestra_minima": 10,
+  "n_muestras_total_todos_horizontes": 14,
+  "horizontes": {
+    "5": {
+      "n_muestras_total": 14,
+      "retorno_promedio_pct": {
+        "n_muestras": 14,
+        "suficiente_data": true,
+        "promedio_pct": -0.13,
+        "desvio_pct": 2.84
+      },
+      "por_radar_score": {
+        "70-100 (alto)": {
+          "n_muestras": 5,
+          "suficiente_data": false
+        },
+        "45-69 (medio)": {
+          "n_muestras": 7,
+          "suficiente_data": false
+        },
+        "0-44 (bajo)": {
+          "n_muestras": 2,
+          "suficiente_data": false
+        }
+      },
+      "por_señal_individual": {
+        "apoyo_avwap": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "cruce_avwap_52w": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "atr_contraction": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "pendiente_ok": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        }
+      },
+      "alpha_vs_spy": {
+        "n_muestras": 14,
+        "suficiente_data": true,
+        "promedio_pct": -1.03,
+        "desvio_pct": 2.84
+      }
+    },
+    "10": {
+      "n_muestras_total": 0,
+      "retorno_promedio_pct": {
+        "n_muestras": 0,
+        "suficiente_data": false
+      },
+      "por_radar_score": {
+        "70-100 (alto)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        },
+        "45-69 (medio)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        },
+        "0-44 (bajo)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        }
+      },
+      "por_señal_individual": {
+        "apoyo_avwap": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "cruce_avwap_52w": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "atr_contraction": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "pendiente_ok": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        }
+      },
+      "alpha_vs_spy": {
+        "n_muestras": 0,
+        "suficiente_data": false
+      }
+    },
+    "20": {
+      "n_muestras_total": 0,
+      "retorno_promedio_pct": {
+        "n_muestras": 0,
+        "suficiente_data": false
+      },
+      "por_radar_score": {
+        "70-100 (alto)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        },
+        "45-69 (medio)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        },
+        "0-44 (bajo)": {
+          "n_muestras": 0,
+          "suficiente_data": false
+        }
+      },
+      "por_señal_individual": {
+        "apoyo_avwap": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "cruce_avwap_52w": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "atr_contraction": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        },
+        "pendiente_ok": {
+          "con_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          },
+          "sin_señal": {
+            "n_muestras": 0,
+            "suficiente_data": false
+          }
+        }
+      },
+      "alpha_vs_spy": {
+        "n_muestras": 0,
+        "suficiente_data": false
+      }
+    }
+  }
 }
