@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-25T15:31:34.143350+00:00",
+ "generado_utc": "2026-09-25T16:01:43.331942+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,16 +9,16 @@
   10,
   20
  ],
- "casos_total": 135,
+ "casos_total": 136,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 47,
+   "casos_total": 48,
    "horizontes": {
     "5": {
      "n": 3,
-     "pendientes": 44,
+     "pendientes": 45,
      "aciertos": 1,
      "pct_aciertos": 33,
      "tocaron_stop": 0,
@@ -26,12 +26,12 @@
     },
     "10": {
      "n": 0,
-     "pendientes": 47,
+     "pendientes": 48,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 47,
+     "pendientes": 48,
      "confiable": false
     }
    }
@@ -181,12 +181,12 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 135,
+   "casos": 136,
    "5": {
     "n": 14,
     "pct_aciertos": 36,
-    "ret_a_favor_prom": -0.12,
-    "vs_spy_prom": -0.42
+    "ret_a_favor_prom": -0.05,
+    "vs_spy_prom": -0.4
    },
    "10": {
     "n": 0
@@ -212,7 +212,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 21,
+   "casos": 22,
    "5": {
     "n": 0
    },
@@ -266,7 +266,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 15,
+   "casos": 16,
    "5": {
     "n": 0
    },
@@ -279,7 +279,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 10,
+   "casos": 11,
    "5": {
     "n": 0
    },
@@ -292,7 +292,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 6,
+   "casos": 7,
    "5": {
     "n": 0
    },
@@ -318,7 +318,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 4,
+   "casos": 5,
    "5": {
     "n": 0
    },
@@ -499,6 +499,25 @@
    "regimen_score": 63,
    "cuidados": [
     "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "BBD",
+   "fecha": "2026-09-25",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 3.42,
+   "radar_score": 55.9,
+   "regimen_score": 64,
+   "cuidados": [
+    "sma50_bajando",
+    "bajo_sma200",
+    "techo_avwap"
    ],
    "ruedas_transcurridas": 0,
    "r5": null,
@@ -2219,9 +2238,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.66,
-   "spy5": 1.05,
-   "vs_spy5": -1.71,
+   "r5": -0.56,
+   "spy5": 1.22,
+   "vs_spy5": -1.78,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2238,9 +2257,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.11,
-   "spy5": 1.05,
-   "vs_spy5": -2.16,
+   "r5": -0.79,
+   "spy5": 1.22,
+   "vs_spy5": -2.01,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2257,9 +2276,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.87,
-   "spy5": 1.05,
-   "vs_spy5": -1.92,
+   "r5": -0.29,
+   "spy5": 1.22,
+   "vs_spy5": -1.51,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2276,9 +2295,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.8,
-   "spy5": 1.05,
-   "vs_spy5": -1.85,
+   "r5": -1.03,
+   "spy5": 1.22,
+   "vs_spy5": -2.25,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2295,9 +2314,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 4.58,
-   "spy5": 1.05,
-   "vs_spy5": 3.53,
+   "r5": 4.93,
+   "spy5": 1.22,
+   "vs_spy5": 3.71,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2314,9 +2333,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.59,
-   "spy5": 1.05,
-   "vs_spy5": -3.64,
+   "r5": -2.63,
+   "spy5": 1.22,
+   "vs_spy5": -3.85,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2333,9 +2352,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.83,
-   "spy5": 1.05,
-   "vs_spy5": -2.88,
+   "r5": -1.33,
+   "spy5": 1.22,
+   "vs_spy5": -2.55,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2352,9 +2371,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 1.6,
-   "spy5": 1.05,
-   "vs_spy5": 0.55,
+   "r5": 1.79,
+   "spy5": 1.22,
+   "vs_spy5": 0.57,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2371,9 +2390,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 5.49,
-   "spy5": 1.05,
-   "vs_spy5": 4.44,
+   "r5": 5.64,
+   "spy5": 1.22,
+   "vs_spy5": 4.42,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2390,9 +2409,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 2.63,
-   "spy5": 1.05,
-   "vs_spy5": 1.58,
+   "r5": 3.1,
+   "spy5": 1.22,
+   "vs_spy5": 1.88,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2409,9 +2428,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.53,
-   "spy5": 1.05,
-   "vs_spy5": -1.58,
+   "r5": -0.48,
+   "spy5": 1.22,
+   "vs_spy5": -1.7,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2428,9 +2447,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.63,
-   "spy5": 1.05,
-   "vs_spy5": -1.68,
+   "r5": -0.11,
+   "spy5": 1.22,
+   "vs_spy5": -1.33,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2447,9 +2466,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.8,
-   "spy5": 1.05,
-   "vs_spy5": -1.85,
+   "r5": -0.45,
+   "spy5": 1.22,
+   "vs_spy5": -1.67,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2466,9 +2485,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -3.2,
-   "spy5": 1.05,
-   "vs_spy5": -4.25,
+   "r5": -2.91,
+   "spy5": 1.22,
+   "vs_spy5": -4.13,
    "acierto5": false,
    "stop5": false,
    "r10": null,
