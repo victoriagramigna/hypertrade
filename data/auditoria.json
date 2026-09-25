@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-25T13:35:15.600635+00:00",
+ "generado_utc": "2026-09-25T14:01:40.474162+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,29 +9,29 @@
   10,
   20
  ],
- "casos_total": 129,
+ "casos_total": 133,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 44,
+   "casos_total": 46,
    "horizontes": {
     "5": {
      "n": 3,
-     "pendientes": 41,
-     "aciertos": 2,
-     "pct_aciertos": 67,
+     "pendientes": 43,
+     "aciertos": 1,
+     "pct_aciertos": 33,
      "tocaron_stop": 0,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 44,
+     "pendientes": 46,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 44,
+     "pendientes": 46,
      "confiable": false
     }
    }
@@ -39,11 +39,11 @@
   {
    "señal": "Gap alcista con macrotendencia",
    "direccion": "alcista",
-   "casos_total": 28,
+   "casos_total": 29,
    "horizontes": {
     "5": {
      "n": 2,
-     "pendientes": 26,
+     "pendientes": 27,
      "aciertos": 1,
      "pct_aciertos": 50,
      "tocaron_stop": 0,
@@ -51,12 +51,12 @@
     },
     "10": {
      "n": 0,
-     "pendientes": 28,
+     "pendientes": 29,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 28,
+     "pendientes": 29,
      "confiable": false
     }
    }
@@ -64,21 +64,21 @@
   {
    "señal": "Confirmado",
    "direccion": "alcista",
-   "casos_total": 26,
+   "casos_total": 27,
    "horizontes": {
     "5": {
      "n": 0,
-     "pendientes": 26,
+     "pendientes": 27,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 26,
+     "pendientes": 27,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 26,
+     "pendientes": 27,
      "confiable": false
     }
    }
@@ -181,12 +181,12 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 129,
+   "casos": 133,
    "5": {
     "n": 14,
-    "pct_aciertos": 43,
-    "ret_a_favor_prom": 0.48,
-    "vs_spy_prom": 0.18
+    "pct_aciertos": 36,
+    "ret_a_favor_prom": 0.02,
+    "vs_spy_prom": -0.24
    },
    "10": {
     "n": 0
@@ -212,7 +212,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 15,
+   "casos": 19,
    "5": {
     "n": 0
    },
@@ -253,7 +253,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 5,
+   "casos": 6,
    "5": {
     "n": 0
    },
@@ -266,7 +266,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 11,
+   "casos": 14,
    "5": {
     "n": 0
    },
@@ -279,7 +279,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 8,
+   "casos": 10,
    "5": {
     "n": 0
    },
@@ -292,7 +292,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 4,
+   "casos": 5,
    "5": {
     "n": 0
    },
@@ -318,7 +318,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 2,
+   "casos": 4,
    "5": {
     "n": 0
    },
@@ -398,6 +398,74 @@
    "regimen_score": 63,
    "cuidados": [
     "sma50_bajando",
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "MSFT",
+   "fecha": "2026-09-25",
+   "señal": "Gap alcista con macrotendencia",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 513.65,
+   "radar_score": 70.1,
+   "regimen_score": 62,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "GOOGL",
+   "fecha": "2026-09-25",
+   "señal": "Confirmado",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 343.33,
+   "radar_score": 41.5,
+   "regimen_score": 62,
+   "cuidados": [
+    "sma50_bajando",
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "PG",
+   "fecha": "2026-09-25",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 145.88,
+   "radar_score": 39.5,
+   "regimen_score": 62,
+   "cuidados": [
+    "sma50_bajando",
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "MSI",
+   "fecha": "2026-09-25",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 459.7,
+   "radar_score": 46.4,
+   "regimen_score": 62,
+   "cuidados": [
     "techo_avwap"
    ],
    "ruedas_transcurridas": 0,
@@ -2119,9 +2187,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.51,
-   "spy5": 1.03,
-   "vs_spy5": -1.54,
+   "r5": -0.65,
+   "spy5": 0.92,
+   "vs_spy5": -1.57,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2138,9 +2206,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -4.49,
-   "spy5": 1.03,
-   "vs_spy5": -5.52,
+   "r5": -3.98,
+   "spy5": 0.92,
+   "vs_spy5": -4.9,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2157,9 +2225,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.31,
-   "spy5": 1.03,
-   "vs_spy5": -2.34,
+   "r5": -1.46,
+   "spy5": 0.92,
+   "vs_spy5": -2.38,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2176,9 +2244,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.0,
-   "spy5": 1.03,
-   "vs_spy5": -3.03,
+   "r5": -2.08,
+   "spy5": 0.92,
+   "vs_spy5": -3.0,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2195,9 +2263,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 3.37,
-   "spy5": 1.03,
-   "vs_spy5": 2.34,
+   "r5": 4.41,
+   "spy5": 0.92,
+   "vs_spy5": 3.49,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2214,8 +2282,8 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -3.08,
-   "spy5": 1.03,
+   "r5": -3.19,
+   "spy5": 0.92,
    "vs_spy5": -4.11,
    "acierto5": false,
    "stop5": false,
@@ -2233,9 +2301,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.27,
-   "spy5": 1.03,
-   "vs_spy5": -2.3,
+   "r5": -1.77,
+   "spy5": 0.92,
+   "vs_spy5": -2.69,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2252,9 +2320,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 0.65,
-   "spy5": 1.03,
-   "vs_spy5": -0.38,
+   "r5": 1.09,
+   "spy5": 0.92,
+   "vs_spy5": 0.17,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2271,9 +2339,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 7.12,
-   "spy5": 1.03,
-   "vs_spy5": 6.09,
+   "r5": 5.58,
+   "spy5": 0.92,
+   "vs_spy5": 4.66,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2290,9 +2358,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 2.3,
-   "spy5": 1.03,
-   "vs_spy5": 1.27,
+   "r5": 2.68,
+   "spy5": 0.92,
+   "vs_spy5": 1.76,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2309,10 +2377,10 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": 1.43,
-   "spy5": 1.03,
-   "vs_spy5": 0.4,
-   "acierto5": true,
+   "r5": -1.18,
+   "spy5": 0.92,
+   "vs_spy5": -2.1,
+   "acierto5": false,
    "stop5": false,
    "r10": null,
    "r20": null
@@ -2328,9 +2396,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.89,
-   "spy5": 1.03,
-   "vs_spy5": -3.92,
+   "r5": -2.21,
+   "spy5": 0.92,
+   "vs_spy5": -3.13,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2347,9 +2415,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -0.1,
-   "spy5": 1.03,
-   "vs_spy5": -1.13,
+   "r5": -0.4,
+   "spy5": 0.92,
+   "vs_spy5": -1.32,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2366,9 +2434,9 @@
    "regimen_score": null,
    "cuidados": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.27,
-   "spy5": 1.03,
-   "vs_spy5": -3.3,
+   "r5": -4.08,
+   "spy5": 0.92,
+   "vs_spy5": -5.0,
    "acierto5": false,
    "stop5": false,
    "r10": null,
