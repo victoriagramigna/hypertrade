@@ -207,6 +207,10 @@ def main():
         "SMA50", "SMA200",
         "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap", "Apoyo_AVWAP",
         "ATR_Ratio", "ATR_Contraction", "Pendiente_OK", "Cruce_AVWAP_52w",
+        # RS Score contra el sector (además del RS Score contra el mercado
+        # de siempre) -- ver rs_score.py. Puramente informativo, no toca
+        # ninguna cuenta existente.
+        "RS_Score_Sector", "Perfil_Fuerza",
     ]
     columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
     extras_por_ticker = (
