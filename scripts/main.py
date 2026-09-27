@@ -48,6 +48,8 @@ from auditoria import correr_auditoria
 from regimen_score import calcular_regimen_score
 from cuidados import puntos_de_cuidado
 from confluencia import detectar_confluencia
+from rotacion_sectorial import actualizar_rotacion_sectorial
+from auditoria_rotacion import correr_auditoria_rotacion
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -140,6 +142,16 @@ def main():
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes)
     rs_por_sector = df_rs.groupby("Sector")["RS_Score"].mean().to_dict() if not df_rs.empty else {}
     rs_por_ticker = dict(zip(df_rs["Ticker"], df_rs["RS_Score"])) if not df_rs.empty else {}
+
+    # 3a. Cuadrante de Rotación Sectorial (Líder/Mejorando/Debilitándose/
+    # Rezagado) -- no se calcula de nuevo nada, usa el rs_por_sector de
+    # arriba. Si un sector cambia de cuadrante, queda logueado para que
+    # auditoria_rotacion.py lo pueda medir más adelante (ver módulo).
+    try:
+        rotacion_sectorial = actualizar_rotacion_sectorial(rs_por_sector, TICKERS, ahora)
+    except Exception as e:
+        log.error(f"Rotación sectorial falló, no afecta al resto de la corrida: {e}")
+        rotacion_sectorial = []
 
     # 3a-bis. Radar Score v2.1 (compuesto 0-100 -- Distribution Days ya NO
     # se pasa acá, ver nota arriba)
@@ -256,6 +268,7 @@ def main():
         "frescura_dato": frescura,
         "ranking": df_rs.to_dict(orient="records") if not df_rs.empty else [],
         "rs_por_sector": rs_por_sector,
+        "rotacion_sectorial": rotacion_sectorial,
         "regimen_mercado": regimen,
         "regimen_score": regimen_score,
         "alertas": recomendaciones,
@@ -348,6 +361,14 @@ def main():
         correr_auditoria(precios, None if corrida_degradada else df_rs, list(TICKERS), ahora)
     except Exception as e:
         log.error(f"Auditoría falló, no afecta al resto de la corrida: {e}")
+
+    # 9c-ter. Auditoría de Rotación Sectorial -- mide si entrar a Líder/
+    # Mejorando (o Debilitándose/Rezagado) realmente anticipó que el sector
+    # le gane (o le pierda) al SPY. Ver auditoria_rotacion.py.
+    try:
+        correr_auditoria_rotacion(precios, TICKERS, BENCHMARK, ahora)
+    except Exception as e:
+        log.error(f"Auditoría de rotación sectorial falló, no afecta al resto de la corrida: {e}")
 
     # 9d. Evaluación del sistema -- responde si el Radar Score y sus
     # señales individuales realmente anticipan un movimiento rentable.
