@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-26T22:57:46.009456+00:00",
+ "generado_utc": "2026-09-27T03:37:49.732018+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 139,
+ "casos_total": 151,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
@@ -106,6 +106,28 @@
    }
   },
   {
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "casos_total": 12,
+   "horizontes": {
+    "5": {
+     "n": 0,
+     "pendientes": 12,
+     "confiable": false
+    },
+    "10": {
+     "n": 0,
+     "pendientes": 12,
+     "confiable": false
+    },
+    "20": {
+     "n": 0,
+     "pendientes": 12,
+     "confiable": false
+    }
+   }
+  },
+  {
    "señal": "Rompió piso (SMA200)",
    "direccion": "bajista",
    "casos_total": 8,
@@ -181,7 +203,7 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 139,
+   "casos": 151,
    "5": {
     "n": 14,
     "pct_aciertos": 36,
@@ -212,7 +234,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 25,
+   "casos": 37,
    "5": {
     "n": 0
    },
@@ -253,7 +275,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 7,
+   "casos": 12,
    "5": {
     "n": 0
    },
@@ -266,7 +288,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 19,
+   "casos": 26,
    "5": {
     "n": 0
    },
@@ -279,7 +301,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 11,
+   "casos": 12,
    "5": {
     "n": 0
    },
@@ -292,7 +314,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 9,
+   "casos": 12,
    "5": {
     "n": 0
    },
@@ -318,7 +340,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 7,
+   "casos": 10,
    "5": {
     "n": 0
    },
@@ -357,6 +379,200 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "DELL",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 562.89,
+   "radar_score": 91.1,
+   "regimen_score": 68,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "SPXL",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 291.28,
+   "radar_score": 71.7,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "BBVA",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 28.87,
+   "radar_score": 72.0,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "MRK",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 148.78,
+   "radar_score": 66.0,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "LLY",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 1183.46,
+   "radar_score": 83.2,
+   "regimen_score": 68,
+   "cuidados": [
+    "sma50_bajando"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "ROST",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 236.12,
+   "radar_score": 57.1,
+   "regimen_score": 68,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "VRTX",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 526.19,
+   "radar_score": 80.5,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "B",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 42.88,
+   "radar_score": 74.2,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "CDE",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 19.22,
+   "radar_score": 66.8,
+   "regimen_score": 68,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "BRK-B",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 505.48,
+   "radar_score": 54.9,
+   "regimen_score": 68,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "CRWV",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 87.59,
+   "radar_score": 47.7,
+   "regimen_score": 68,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AVY",
+   "fecha": "2026-09-27",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 170.34,
+   "radar_score": 64.4,
+   "regimen_score": 68,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "OXY",
    "fecha": "2026-09-25",
