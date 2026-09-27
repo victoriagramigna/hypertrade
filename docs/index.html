@@ -181,6 +181,20 @@
                 <div id="sector-rotation" class="bg-surface p-5 space-y-5 rounded-sm border border-surface"></div>
             </section>
         </div>
+        <!-- 4b. Cuadrante de Rotación Sectorial (nuevo: mide si el cuadrante anticipa algo, no solo lo grafica) -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de Rotación Sectorial</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-4 leading-relaxed">
+                Ubica cada sector según dos preguntas: ¿está fuerte o débil ahora? (eje vertical, el mismo RS sectorial de "Rotación
+                Sectorial" de arriba) y ¿mejoró o empeoró en los últimos 7 días? (eje horizontal). No es solo una foto: cada vez que un
+                sector CAMBIA de cuadrante queda registrado con fecha, y en la solapa Auditoría se mide si eso anticipó algo real --
+                si entrar a <span class="text-pos">Líder</span> o <span class="text-accent">Mejorando</span> efectivamente le ganó
+                después al SPY, y si entrar a <span class="text-blueAlert">Debilitándose</span> o <span class="text-neg">Rezagado</span>
+                le perdió. La "cola" que sale de cada punto muestra su recorrido de las últimas semanas -- de dónde viene, no solo dónde
+                está parado hoy -- y se puede animar con el botón Reproducir.
+            </div>
+            <div id="quadrant-chart" class="bg-surface p-4 rounded-sm border border-surface"></div>
+        </section>
         <!-- 5. Detalle por Sector (Ranking) -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Universo Técnico <span id="universo-total-count" class="text-gray-500 normal-case"></span></h2>
@@ -331,6 +345,12 @@
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Resultados por señal</h2>
             <div id="aud-senales" class="space-y-3"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Rotación sectorial: ¿anticipa algo?</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cada vez que un sector cambió de cuadrante (ver el gráfico en la solapa Universo), se guardó la fecha. Acá se mide cómo le fue después a la canasta de tickers de ese sector contra el SPY -- si el cuadrante no anticipa nada real, "Líder" y "Mejorando" no deberían acertar más que al azar.</p>
+            <div id="aud-rotacion" class="space-y-3"></div>
         </section>
 
         <section>
@@ -1077,6 +1097,9 @@
                 }).join('');
             }
 
+            // Renderizado del Cuadrante de Rotación Sectorial (no toca ni reemplaza el bloque de arriba)
+            renderCuadranteRotacion(data);
+
             // Renderizado de Detalle por Sector
             const sectorsDetail = document.getElementById('sectors-detail');
             document.getElementById('universo-total-count').textContent = `(${rankingArray.length})`;
@@ -1199,6 +1222,266 @@
             }
         }
 
+        // ============ CUADRANTE DE ROTACIÓN SECTORIAL ============
+        // Gráfico de dispersión: eje X = cuánto cambió el RS del sector en 7
+        // días (empeorando/mejorando), eje Y = RS sectorial de hoy (débil/
+        // fuerte). Los 4 colores de cuadrante son los mismos tokens ya usados
+        // en toda la app (pos/accent/blueAlert/neg); como el validador de
+        // paleta marca a accent y pos con distancia de color chica para
+        // daltonismo, cada punto lleva además el nombre del sector como
+        // etiqueta directa (no depende solo del color para identificarse).
+        //
+        // Además del punto de hoy, se dibuja la "cola" del recorrido de las
+        // últimas semanas (de dónde viene cada sector, no solo dónde está
+        // parado ahora) y un botón para animarla semana a semana. Es una
+        // capa puramente visual sobre el mismo dato que ya se mide en
+        // Auditoría (data/rs_sector_historial.jsonl) -- no agrega ninguna
+        // medición nueva, solo ayuda a leer mejor la que ya existe.
+        const ROTACION_HISTORIAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_sector_historial.jsonl';
+        let rotacionHistorialCache = null;  // array [{fecha, rs_por_sector}], ordenado por fecha
+        let rotacionUltimoData = null;      // último `data` recibido, para poder re-renderizar al togglear Play
+        let rotacionAnimIndex = null;       // null = mostrar el recorrido completo (sin animar); número = semana que se está mostrando
+        let rotacionAnimTimer = null;
+
+        async function fetchRotacionHistorial() {
+            try {
+                const resp = await fetch(`${ROTACION_HISTORIAL_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) { rotacionHistorialCache = []; return; }
+                const texto = await resp.text();
+                rotacionHistorialCache = texto.split('\n').map(l => l.trim()).filter(Boolean)
+                    .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
+                    .filter(Boolean)
+                    .sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''));
+            } catch (e) {
+                rotacionHistorialCache = rotacionHistorialCache ?? [];
+            }
+            if (rotacionUltimoData) renderCuadranteRotacion(rotacionUltimoData);
+        }
+
+        // Mismo criterio que el backend (rotacion_sectorial.py): busca, dentro
+        // del historial guardado, el snapshot más cercano a una fecha objetivo,
+        // con una tolerancia de días (por si no cae justo).
+        function _valorCercano(historial, sector, fechaObjetivo, toleranciaDias) {
+            let mejor = null, mejorDist = null;
+            for (const fila of historial) {
+                if (!fila.fecha) continue;
+                const f = new Date(fila.fecha + 'T12:00:00');
+                const dist = Math.abs((f - fechaObjetivo) / 86400000);
+                if (dist <= toleranciaDias && (mejorDist === null || dist < mejorDist)) {
+                    const v = fila.rs_por_sector?.[sector];
+                    if (v != null) { mejor = { fecha: fila.fecha, rs: v }; mejorDist = dist; }
+                }
+            }
+            return mejor;
+        }
+
+        function _cuadranteDe(rs, delta) {
+            if (rs == null || delta == null) return null;
+            const fuerte = rs >= 50, mejorando = delta > 0;
+            if (fuerte && mejorando) return 'Líder';
+            if (fuerte && !mejorando) return 'Debilitándose';
+            if (!fuerte && mejorando) return 'Mejorando';
+            return 'Rezagado';
+        }
+
+        // Arma, para cada sector, hasta 8 puntos semanales (hoy, hoy-7, hoy-14...)
+        // con su RS y su delta de 7 días, calculados con el mismo criterio que el
+        // backend. Solo quedan los puntos donde ya se puede calcular el delta.
+        function construirRecorridoSemanal(historial, sectores) {
+            if (!historial || historial.length === 0) return {};
+            const ultimaFecha = new Date(historial[historial.length - 1].fecha + 'T12:00:00');
+            const anclas = [];
+            for (let i = 7; i >= 0; i--) {
+                const f = new Date(ultimaFecha);
+                f.setDate(f.getDate() - i * 7);
+                anclas.push(f);
+            }
+            const recorridos = {};
+            for (const sector of sectores) {
+                const puntos = [];
+                for (const ancla of anclas) {
+                    const actual = _valorCercano(historial, sector, ancla, 2);
+                    if (!actual) continue;
+                    const anclaPrevia = new Date(ancla); anclaPrevia.setDate(anclaPrevia.getDate() - 7);
+                    const previo = _valorCercano(historial, sector, anclaPrevia, 2);
+                    if (!previo) continue;
+                    const delta = Math.round((actual.rs - previo.rs) * 10) / 10;
+                    puntos.push({ fecha: actual.fecha, rs: actual.rs, delta, cuadrante: _cuadranteDe(actual.rs, delta) });
+                }
+                if (puntos.length > 0) recorridos[sector] = puntos;
+            }
+            return recorridos;
+        }
+
+        function toggleAnimacionRotacion() {
+            if (rotacionAnimTimer) {
+                clearInterval(rotacionAnimTimer);
+                rotacionAnimTimer = null;
+                rotacionAnimIndex = null;  // al frenar, vuelve a mostrar el recorrido completo
+                renderCuadranteRotacion(rotacionUltimoData);
+                return;
+            }
+            rotacionAnimIndex = 0;
+            // Ojo con el orden: rotacionAnimTimer se setea ANTES de renderizar, para
+            // que el botón ya diga "Pausar" en este mismo render (si no, el primer
+            // frame se dibuja con rotacionAnimTimer todavía en null).
+            rotacionAnimTimer = setInterval(() => {
+                rotacionAnimIndex++;
+                if (rotacionAnimIndex >= 7) {
+                    // Se limpia ANTES de renderizar el último frame, para que el
+                    // botón ya vuelva a decir "Reproducir" (permite repetirla).
+                    clearInterval(rotacionAnimTimer);
+                    rotacionAnimTimer = null;
+                }
+                renderCuadranteRotacion(rotacionUltimoData);
+            }, 700);
+            renderCuadranteRotacion(rotacionUltimoData);
+        }
+
+        function renderCuadranteRotacion(data) {
+            const cont = document.getElementById('quadrant-chart');
+            if (!cont || !data) return;
+            rotacionUltimoData = data;
+            const todos = data?.rotacion_sectorial ?? [];
+            const puntosHoy = todos.filter(p => p.Cuadrante);
+            const sinHistorial = todos.filter(p => !p.Cuadrante);
+
+            if (todos.length === 0) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Sin datos todavía.</div>';
+                return;
+            }
+            if (puntosHoy.length === 0) {
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-2 border border-dashed border-surface rounded-sm">
+                    Todavía juntando historial (hace falta guardar 7 días de RS sectorial antes de poder ubicar un sector en un cuadrante).
+                </div>`;
+                return;
+            }
+
+            const COLOR = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
+
+            // Recorrido semanal (cola). Al punto más nuevo de cada sector se le
+            // pisa el RS/delta por el de hoy (`data`), que es el dato en vivo --
+            // el historial guardado puede ir un paso atrás si la corrida de hoy
+            // todavía no guardó su snapshot diario.
+            const recorridos = construirRecorridoSemanal(rotacionHistorialCache ?? [], puntosHoy.map(p => p.Sector));
+            for (const p of puntosHoy) {
+                const r = recorridos[p.Sector];
+                const puntoHoy = { fecha: 'hoy', rs: p.RS_Sector, delta: p.Delta_7d, cuadrante: p.Cuadrante };
+                if (!r) { recorridos[p.Sector] = [puntoHoy]; continue; }
+                const ultimo = r[r.length - 1];
+                // Si el último punto del historial ya es esencialmente "hoy" (mismo RS), se reemplaza; si no, se agrega.
+                if (Math.abs(ultimo.rs - p.RS_Sector) < 0.05 && Math.abs((ultimo.delta ?? 0) - (p.Delta_7d ?? 0)) < 0.05) {
+                    r[r.length - 1] = puntoHoy;
+                } else {
+                    r.push(puntoHoy);
+                }
+            }
+
+            const hayRecorridoLargo = Object.values(recorridos).some(r => r.length > 1);
+            const maxSemanas = Math.max(1, ...Object.values(recorridos).map(r => r.length));
+            const idxMostrar = rotacionAnimIndex == null ? maxSemanas - 1 : Math.min(rotacionAnimIndex, maxSemanas - 1);
+
+            // Los puntos efectivamente visibles en este frame (para escalar los ejes)
+            const puntosVisibles = [];
+            for (const sector in recorridos) {
+                const r = recorridos[sector];
+                const hasta = Math.min(idxMostrar, r.length - 1);
+                for (let i = 0; i <= hasta; i++) puntosVisibles.push(r[i]);
+            }
+
+            const W = 440, H = 300, PAD = 44;
+            const maxAbsDelta = Math.max(5, ...puntosVisibles.map(p => Math.abs(p.delta ?? 0)));
+            const xMin = -maxAbsDelta * 1.15, xMax = maxAbsDelta * 1.15;
+            const xScale = (v) => PAD + (v - xMin) / (xMax - xMin) * (W - PAD * 2);
+            const yScale = (v) => H - PAD - (v - 0) / 100 * (H - PAD * 2);
+            const x0 = xScale(0), y50 = yScale(50);
+
+            const zonas = `
+                <rect x="${x0}" y="${PAD}" width="${W - PAD - x0}" height="${y50 - PAD}" fill="${COLOR['Líder']}" opacity="0.07"/>
+                <rect x="${PAD}" y="${PAD}" width="${x0 - PAD}" height="${y50 - PAD}" fill="${COLOR['Debilitándose']}" opacity="0.07"/>
+                <rect x="${x0}" y="${y50}" width="${W - PAD - x0}" height="${H - PAD - y50}" fill="${COLOR['Mejorando']}" opacity="0.07"/>
+                <rect x="${PAD}" y="${y50}" width="${x0 - PAD}" height="${H - PAD - y50}" fill="${COLOR['Rezagado']}" opacity="0.07"/>`;
+
+            const ejes = `
+                <line x1="${PAD}" y1="${y50}" x2="${W - PAD}" y2="${y50}" stroke="#2a3040" stroke-width="1"/>
+                <line x1="${x0}" y1="${PAD}" x2="${x0}" y2="${H - PAD}" stroke="#2a3040" stroke-width="1"/>
+                <rect x="${PAD}" y="${PAD}" width="${W - PAD * 2}" height="${H - PAD * 2}" fill="none" stroke="#2a3040" stroke-width="1"/>`;
+
+            const etiquetasCuadrante = `
+                <text x="${W - PAD - 4}" y="${PAD + 14}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Líder']}">LÍDER</text>
+                <text x="${PAD + 4}" y="${PAD + 14}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
+                <text x="${W - PAD - 4}" y="${H - PAD - 6}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Mejorando']}">MEJORANDO</text>
+                <text x="${PAD + 4}" y="${H - PAD - 6}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Rezagado']}">REZAGADO</text>`;
+
+            const ejesTexto = `
+                <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← empeoró 7d    mejoró 7d →</text>
+                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">RS fuerte</text>
+                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">RS débil</text>`;
+
+            let colasSvg = '', puntosSvg = '';
+            for (const sector in recorridos) {
+                const r = recorridos[sector];
+                const hasta = Math.min(idxMostrar, r.length - 1);
+                const visibles = r.slice(0, hasta + 1);
+                if (visibles.length === 0) continue;
+
+                const actual = visibles[visibles.length - 1];
+                const color = COLOR[actual.cuadrante] ?? '#9ca3af';
+
+                // La cola: línea que conecta las semanas anteriores, cada vez más tenue hacia atrás.
+                if (visibles.length > 1) {
+                    for (let i = 1; i < visibles.length; i++) {
+                        const a = visibles[i - 1], b = visibles[i];
+                        const opacidad = 0.15 + 0.55 * (i / (visibles.length - 1));
+                        colasSvg += `<line x1="${xScale(a.delta)}" y1="${yScale(a.rs)}" x2="${xScale(b.delta)}" y2="${yScale(b.rs)}" stroke="${color}" stroke-width="1.5" opacity="${opacidad.toFixed(2)}"/>`;
+                    }
+                    for (let i = 0; i < visibles.length - 1; i++) {
+                        const p = visibles[i];
+                        colasSvg += `<circle cx="${xScale(p.delta)}" cy="${yScale(p.rs)}" r="2" fill="${color}" opacity="0.45"/>`;
+                    }
+                }
+
+                const cx = xScale(actual.delta), cy = yScale(actual.rs);
+                const label = sector.length > 16 ? sector.slice(0, 15) + '…' : sector;
+                const arriba = cy > H / 2;
+                const signo = (actual.delta ?? 0) > 0 ? '+' : '';
+                puntosSvg += `
+                    <g>
+                        <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">
+                            <title>${sector}: RS ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
+                        </circle>
+                        <text x="${cx}" y="${arriba ? cy - 9 : cy + 16}" text-anchor="middle" font-size="9" font-family="monospace" fill="#d1d5db">${label}</text>
+                    </g>`;
+            }
+
+            const semanaLabel = idxMostrar === maxSemanas - 1
+                ? (rotacionAnimIndex == null ? '' : `Semana ${idxMostrar + 1}/${maxSemanas} (hoy)`)
+                : `Semana ${idxMostrar + 1}/${maxSemanas}`;
+
+            const controlAnimacion = hayRecorridoLargo ? `
+                <div class="flex items-center gap-3 mt-3 font-mono text-[10px]">
+                    <button onclick="toggleAnimacionRotacion()" class="px-3 py-1 rounded-sm border border-gray-700 text-gray-300 hover:border-accent hover:text-accent">
+                        ${rotacionAnimTimer ? '⏸ Pausar' : '▶ Reproducir recorrido'}
+                    </button>
+                    <span class="text-gray-500">${semanaLabel || 'Recorrido de las últimas ' + maxSemanas + ' semanas'}</span>
+                </div>` : '';
+
+            cont.innerHTML = `
+                <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cuadrante de rotación sectorial">
+                    ${zonas}${ejes}${etiquetasCuadrante}${ejesTexto}${colasSvg}${puntosSvg}
+                </svg>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Debilitándose']}"></span> Debilitándose: fuerte pero empeorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
+                </div>
+                ${controlAnimacion}
+                ${hayRecorridoLargo ? '<div class="font-mono text-[10px] text-gray-600 mt-2">La cola muestra el recorrido de las últimas semanas -- de dónde viene cada sector, no solo dónde está parado hoy.</div>' : ''}
+                ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">Todavía juntando historial de 7 días: ${sinHistorial.map(p => p.Sector).join(', ')}.</div>` : ''}
+            `;
+        }
+
         // ============ SOLAPAS ============
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
@@ -1207,7 +1490,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
-            if (name === 'auditoria') fetchAuditoria();
+            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); }
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
@@ -1771,6 +2054,101 @@
             }
 
             renderAuditoriaDetalle();
+        }
+
+        // ============ AUDITORÍA DE ROTACIÓN SECTORIAL ============
+        // Mide si el cuadrante de arriba (solapa Universo) anticipa algo real:
+        // cuando un sector entró a Líder/Mejorando, ¿su canasta de tickers le
+        // ganó después al SPY? Y al revés para Debilitándose/Rezagado.
+        const AUDITORIA_ROTACION_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/auditoria_rotacion.json';
+        let auditoriaRotacionData = null;
+        let audRotHorizonte = '10';
+
+        async function fetchAuditoriaRotacion() {
+            const cont = document.getElementById('aud-rotacion');
+            if (auditoriaRotacionData === null && cont) cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Cargando...</div>';
+            try {
+                const resp = await fetch(`${AUDITORIA_ROTACION_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                auditoriaRotacionData = resp.ok ? await resp.json() : {};
+            } catch (e) {
+                auditoriaRotacionData = auditoriaRotacionData ?? {};
+            }
+            renderAuditoriaRotacion();
+        }
+
+        function renderAuditoriaRotacion() {
+            const d = auditoriaRotacionData ?? {};
+            const cont = document.getElementById('aud-rotacion');
+            if (!cont) return;
+
+            if (!d.generado_utc) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Todavía no hay auditoría de rotación. Se genera sola la primera vez que un sector cambie de cuadrante.</div>';
+                return;
+            }
+            const resumen = d.resumen_cuadrantes ?? [];
+            if (resumen.length === 0) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Todavía ningún sector cambió de cuadrante -- se empieza a medir la primera vez que pase.</div>';
+                return;
+            }
+            const hs = (d.horizontes ?? [10, 20]).map(String);
+            if (!hs.includes(audRotHorizonte)) audRotHorizonte = hs[0] ?? '10';
+            const h = audRotHorizonte;
+            const minimo = d.muestra_minima ?? 5;
+            const confiable = d.muestra_confiable ?? 15;
+
+            const COLOR_TXT = { 'Líder': 'text-pos', 'Mejorando': 'text-accent', 'Debilitándose': 'text-blueAlert', 'Rezagado': 'text-neg' };
+            const COLOR_BORDE = { 'Líder': 'border-pos', 'Mejorando': 'border-accent', 'Debilitándose': 'border-blueAlert', 'Rezagado': 'border-neg' };
+
+            const botonesH = `<div class="flex items-center gap-2 font-mono text-xs mb-3">
+                <span class="text-gray-500">Medir a:</span>
+                <div class="flex gap-1">${hs.map(x => `
+                    <button onclick="audRotHorizonte='${x}'; renderAuditoriaRotacion()"
+                        class="px-3 py-1 rounded-sm border ${x === h ? 'border-accent text-accent bg-accent/10' : 'border-gray-700 text-gray-500'}">${x} ruedas</button>`).join('')}
+                </div>
+            </div>`;
+
+            const tarjetas = resumen.map(f => {
+                const x = f.horizontes?.[h] ?? {};
+                const n = x.n ?? 0;
+                const dirChip = f.direccion === 'bajista'
+                    ? '<span class="signal-chip text-neg border-neg">ESPERA QUE LE PIERDA AL SPY</span>'
+                    : '<span class="signal-chip text-pos border-pos">ESPERA QUE LE GANE AL SPY</span>';
+                let muestraChip;
+                if (n === 0) muestraChip = '<span class="signal-chip text-gray-500 border-gray-700">SIN CASOS MEDIBLES AÚN</span>';
+                else if (x.confiable) muestraChip = '<span class="signal-chip text-pos border-pos">MUESTRA CONFIABLE</span>';
+                else muestraChip = `<span class="signal-chip text-accent border-accent">MUESTRA CHICA (${n}/${confiable})</span>`;
+
+                const pct = x.pct_aciertos;
+                const barColor = pct == null ? 'bg-gray-700' : (pct >= 60 ? 'bg-pos' : (pct >= 45 ? 'bg-accent' : 'bg-neg'));
+                const vsSpy = n >= minimo
+                    ? `<div><div class="uppercase">vs SPY prom.</div><div class="text-[12px]">${audPct(x.vs_spy_prom)}</div></div>`
+                    : `<div class="text-gray-600 text-[10px] self-end">Promedio desde ${minimo} casos</div>`;
+
+                return `
+                <div class="bg-surface p-4 rounded-sm border ${COLOR_BORDE[f.cuadrante] ?? 'border-surface'}">
+                    <div class="flex justify-between items-start gap-2">
+                        <div class="font-bold ${COLOR_TXT[f.cuadrante] ?? 'text-white'}">${f.cuadrante}</div>
+                    </div>
+                    <div class="flex flex-wrap gap-1 mt-2">${dirChip}${muestraChip}</div>
+                    <div class="mt-3">
+                        <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
+                            <span>Acertó a ${h} ruedas</span>
+                            <span class="text-white font-bold">${pct != null ? `${x.aciertos} de ${n} (${pct}%)` : '—'}</span>
+                        </div>
+                        <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
+                            <div class="h-full ${barColor}" style="width: ${pct ?? 0}%"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 font-mono text-[9px] text-gray-500 mt-3">
+                        ${vsSpy}
+                        <div><div class="uppercase">Casos totales</div><div class="text-white text-[12px]">${f.casos_total}</div></div>
+                        <div><div class="uppercase">Esperando</div><div class="text-white text-[12px]">${x.pendientes ?? 0}</div></div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            cont.innerHTML = botonesH + `<div class="space-y-3">${tarjetas}</div>
+                <div class="font-mono text-[10px] text-gray-600 mt-3">${d.casos_total ?? 0} transición(es) de cuadrante registradas en total. "Líder" y "Mejorando" apuestan a que el sector le gane al SPY después; "Debilitándose" y "Rezagado" apuestan a que le pierda.</div>`;
         }
 
         function renderMisOperaciones(m) {
@@ -2498,6 +2876,7 @@
 
         // Refresco automático
         fetchRadarData();
+        fetchRotacionHistorial();
         renderCartera();
         setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
     </script>
