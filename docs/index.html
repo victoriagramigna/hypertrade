@@ -184,6 +184,13 @@
         <!-- 5. Detalle por Sector (Ranking) -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Universo Técnico <span id="universo-total-count" class="text-gray-500 normal-case"></span></h2>
+                <div class="font-mono text-[11px] text-gray-500 mb-4 leading-relaxed">
+                    El número grande (barra) es la fuerza relativa contra el <span class="text-white">mercado</span> (SPY), de siempre.
+                    <span class="text-blueAlert font-bold">SECTOR</span> es un segundo número, nuevo: la misma cuenta pero contra el
+                    <span class="text-white">promedio de sus propios pares</span> del sector, no contra el mercado -- sirve para distinguir
+                    si un ticker es fuerte por mérito propio o solo porque todo su sector viene subiendo junto (caso YPF: puede ganarle al
+                    SPY sin ser el más fuerte dentro de Energía). Cuando aparecen los dos, la línea de abajo (↳) resume qué combinación es.
+                </div>
                 <div id="sectors-detail" class="space-y-6"></div>
             </section>
     </div>
@@ -1070,7 +1077,21 @@
                         const radarChip = radarScoreTicker != null
                             ? `<span class="text-[9px] text-gray-500 ml-2">RADAR <span class="text-accent font-bold">${radarScoreTicker.toFixed(0)}</span></span>`
                             : '';
-                        
+
+                        // RS contra el SECTOR (no contra el mercado) -- ver rs_score.py.
+                        // Mismo número 0-100, pero comparado contra el promedio de sus
+                        // propios pares, no contra el SPY. null = sector con un solo
+                        // ticker, sin pares para comparar.
+                        const rsSector = ticker?.RS_Score_Sector;
+                        const rsSectorChip = rsSector != null
+                            ? `<span class="text-[9px] text-gray-500 ml-2 cursor-help" title="Fuerza relativa contra el PROMEDIO DE SUS PARES del mismo sector (no contra el SPY). Sirve para distinguir si un ticker es fuerte por mérito propio o solo porque todo su sector viene subiendo junto.">SECTOR <span class="text-blueAlert font-bold">${rsSector.toFixed(0)}</span></span>`
+                            : '';
+
+                        const perfilFuerza = ticker?.Perfil_Fuerza;
+                        const perfilFuerzaHtml = perfilFuerza
+                            ? `<div class="text-[9px] text-blueAlert mt-0.5">↳ ${perfilFuerza}</div>`
+                            : '';
+
                         // Lógica Tooltip Hover
                         const s50V = ticker?.SMA50 != null ? `$${ticker.SMA50.toFixed(2)} (${ticker['Dist_SMA50_%'] > 0 ? '+' : ''}${ticker['Dist_SMA50_%'].toFixed(1)}%)` : 'sin datos';
                         const s200V = ticker?.SMA200 != null ? `$${ticker.SMA200.toFixed(2)} (${ticker['Dist_SMA200_%'] > 0 ? '+' : ''}${ticker['Dist_SMA200_%'].toFixed(1)}%)` : 'sin datos aún';
@@ -1093,6 +1114,7 @@
                                         </div>
                                         <div class="w-10 text-right text-xs text-gray-500">${displayRs}</div>
                                         ${radarChip}
+                                        ${rsSectorChip}
                                     </div>
 
                                     <div class="w-32 text-right flex justify-end items-center gap-2 text-[10px] text-gray-400 ml-auto tracking-widest">
@@ -1107,6 +1129,7 @@
                                     <span>RSI: ${rsiV}</span>
                                     <span>Vol: ${volV}</span>
                                 </div>
+                                ${perfilFuerzaHtml}
                             </div>
                         `;
                     }).join('');
