@@ -126,6 +126,25 @@
 
     <!-- ===== SOLAPA: ALERTAS ===== -->
     <div id="tab-alertas" class="tab-content hidden-tab">
+        <!-- Confluencia Alcista -- filtro duro, aparte del resto: junta 3+ chips
+             técnicos independientes en las últimas 48hs SIN mirar el Radar Score. -->
+        <section class="mb-6">
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest">🎯 Confluencia Alcista <span id="confluencia-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Un filtro aparte, no una alerta más: junta tickers con <span class="text-white">3 o más</span> de estas 4 señales técnicas
+                independientes encendidas en las últimas 48hs --
+                <span class="cursor-help border-b border-dashed border-gray-600" title="El precio cierra a no más de 2% de su SMA50 o de su AVWAP anclado, un nivel donde suele haber compradores institucionales defendiendo.">AVWAP SOPORTE</span>,
+                <span class="cursor-help border-b border-dashed border-gray-600" title="Cruzó hacia arriba su AVWAP anclado al máximo de 52 semanas: posible señal de que los vendedores atrapados en ese techo ya se agotaron.">CRUCE 52W</span>,
+                <span class="cursor-help border-b border-dashed border-gray-600" title="SMA50 y SMA200 con pendiente positiva en los últimos 10 días: la tendencia de mediano/largo plazo va para arriba.">TENDENCIA+</span> y
+                <span class="cursor-help border-b border-dashed border-gray-600" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span> --
+                <span class="text-white">a propósito sin usar el Radar Score</span> para decidir si aparece o no: la idea es que varias razones
+                distintas apuntando para el mismo lado valen más que un solo número compuesto. El Radar Score de cada uno se muestra igual, solo de referencia.
+            </div>
+            <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </section>
+
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
             <section>
                 <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
@@ -718,7 +737,7 @@
                 let bgCustom = 'bg-surface';
                 let titleIcon = '';
 
-                if (tipo === 'lider_soporte') {
+                if (tipo === 'lider_soporte' || tipo === 'confluencia_alcista') {
                     recColor = 'bg-blueAlert/20 text-blueAlert border border-blueAlert';
                     containerBorder = 'border-l-4 border-blueAlert shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]';
                     bgCustom = 'bg-[#151b2b]';
@@ -746,18 +765,21 @@
                 }
 
                 // Chips de señales nuevas activas (AVWAP, tendencia, contracción)
+                // -- cada uno con su explicación en el "title" (tooltip al pasar
+                // el mouse / mantener presionado), para no dar por sentado que
+                // se entiende qué significa cada sigla.
                 const chips = [];
-                if (alerta?.Apoyo_AVWAP) chips.push('<span class="signal-chip text-blueAlert border-blueAlert">AVWAP SOPORTE</span>');
-                if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos">CRUCE 52W</span>');
-                if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent">TENDENCIA+</span>');
-                if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600">ATR COMPRIMIDO</span>');
+                if (alerta?.Apoyo_AVWAP) chips.push('<span class="signal-chip text-blueAlert border-blueAlert cursor-help" title="El precio cierra a no más de 2% de su SMA50 o de su AVWAP anclado -- zona de costo institucional, donde suele haber compradores defendiendo.">AVWAP SOPORTE</span>');
+                if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos cursor-help" title="Cruzó hacia arriba su AVWAP anclado al máximo de 52 semanas: posible señal de que los vendedores atrapados en ese techo ya se agotaron.">CRUCE 52W</span>');
+                if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent cursor-help" title="SMA50 y SMA200 con pendiente positiva en los últimos 10 días: la tendencia de mediano/largo plazo va para arriba.">TENDENCIA+</span>');
+                if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600 cursor-help" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span>');
                 const nCuidados = (alerta?.Cuidados ?? []).length;
-                if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
+                if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent cursor-help" title="Cosas que juegan EN CONTRA de esta señal alcista (no bajan el score, pero conviene mirarlas antes de entrar): ${(alerta?.Cuidados ?? []).join(' | ')}">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
 
                 // Aviso de régimen: solo en señales de compra, cuando el clima general no acompaña
                 const regAlerta = alerta?.Regimen_Score;
-                const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista';
+                const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista' || tipo === 'confluencia_alcista';
                 let regimenAvisoHtml = '';
                 if (esCompra && regAlerta != null && regAlerta < 60) {
                     const bajo = regAlerta < 40;
@@ -799,6 +821,60 @@
                         ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
                         ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
                         ${narrativaHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Confluencia Alcista: mismo dato que ya viaja en data.alertas (Tipo ===
+        // 'confluencia_alcista'), pero mostrado en su propio panel arriba de todo,
+        // ordenado por cantidad de chips y, dentro de eso, por más reciente --
+        // sin ordenar nunca por Radar Score (ese dato se muestra solo de referencia).
+        function renderConfluencia(data) {
+            const container = document.getElementById('confluencia-container');
+            const countEl = document.getElementById('confluencia-count');
+            const todas = (data?.alertas ?? []).filter(a => a?.Tipo === 'confluencia_alcista');
+
+            countEl.textContent = `(${todas.length})`;
+            if (todas.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Sin coincidencias hoy -- ningún ticker llegó a 3 chips en las últimas 48hs.</div>';
+                return;
+            }
+
+            const ordenadas = [...todas].sort((a, b) => {
+                const chipsA = (a?.Señales ?? []).length, chipsB = (b?.Señales ?? []).length;
+                if (chipsB !== chipsA) return chipsB - chipsA;
+                const tA = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : 0;
+                const tB = b?.fecha_evento ? new Date(b.fecha_evento).getTime() : 0;
+                return tB - tA;
+            });
+
+            const tooltipsChip = {
+                'AVWAP SOPORTE': 'El precio cierra a no más de 2% de su SMA50 o de su AVWAP anclado -- zona de costo institucional.',
+                'CRUCE 52W': 'Cruzó hacia arriba su AVWAP anclado al máximo de 52 semanas.',
+                'TENDENCIA+': 'SMA50 y SMA200 con pendiente positiva en los últimos 10 días.',
+                'ATR COMPRIMIDO': 'El rango de movimiento reciente se comprimió respecto al de más largo plazo -- volatilidad baja.',
+            };
+
+            container.innerHTML = ordenadas.map(a => {
+                const chips = (a?.Señales ?? []).map(nombre =>
+                    `<span class="signal-chip text-blueAlert border-blueAlert cursor-help" title="${tooltipsChip[nombre] ?? ''}">${nombre}</span>`
+                ).join('');
+                const radarScore = a?.Radar_Score;
+                const fe = a?.fecha_evento ? new Date(a.fecha_evento) : null;
+                const feStr = fe ? fe.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit'}) + ' · ' + fe.toLocaleTimeString('es-AR', {hour12: false, hour: '2-digit', minute: '2-digit'}) : '';
+                return `
+                    <div class="bg-[#151b2b] border-l-4 border-blueAlert p-3 rounded-r-sm">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-lg font-bold text-white">${a?.Ticker ?? '—'}</span>
+                            <span class="font-mono text-[10px] text-gray-500 uppercase">${a?.Sector ?? '—'}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1">${chips}</div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-2 flex justify-between">
+                            <span title="Solo de referencia -- esta señal no lo usa para decidir si aparece.">RADAR SCORE (ref.): <span class="text-white">${radarScore != null ? radarScore.toFixed(0) : '—'}/100</span></span>
+                            <span>${a?.Precio != null ? '$' + a.Precio : ''}</span>
+                        </div>
+                        ${feStr ? `<div class="font-mono text-[9px] text-gray-600 mt-1">${feStr}</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -891,6 +967,7 @@
             // El orden se aplica en filtrarAlertas(), según el selector
             currentAlertasCompletas = data?.alertas ?? [];
             filtrarAlertas();
+            renderConfluencia(data);
 
             const rankingArray = data?.ranking ?? [];
 
