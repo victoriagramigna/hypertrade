@@ -681,15 +681,48 @@
             });
         }
 
+        // Un mismo ticker puede disparar más de un tipo de alerta el mismo
+        // día (ej: el flujo técnico "Confirmado" Y Confluencia Alcista a la
+        // vez) -- cada una se sigue registrando POR SEPARADO en la
+        // bitácora/Auditoría/Telegram (para poder comparar más adelante cuál
+        // de las dos predice mejor), pero mostrar dos tarjetas casi
+        // idénticas para el mismo ticker es confuso -- se fusionan acá, solo
+        // para mostrar, en una tarjeta con los dos sellos.
+        function fusionarPorTicker(lista) {
+            const porTicker = new Map();
+            for (const a of lista) {
+                const t = a?.Ticker ?? '—';
+                if (!porTicker.has(t)) porTicker.set(t, []);
+                porTicker.get(t).push(a);
+            }
+            const resultado = [];
+            for (const grupo of porTicker.values()) {
+                if (grupo.length === 1) {
+                    resultado.push(grupo[0]);
+                    continue;
+                }
+                // El resto de los datos (chips, cuidados, Radar Score, RSI,
+                // etc.) son del TICKER, no del tipo de alerta -- son iguales
+                // en todo el grupo. Se toma como "principal" la del flujo
+                // técnico de siempre (tiene Score_num) si está, y las demás
+                // quedan como sellos extra sobre la misma tarjeta.
+                const principal = grupo.find(a => a?.Score_num != null) ?? grupo[0];
+                const otras = grupo.filter(a => a !== principal);
+                resultado.push({ ...principal, _otrasSeñales: otras });
+            }
+            return resultado;
+        }
+
         function filtrarAlertas() {
             const query = (document.getElementById('alertas-search')?.value ?? '').trim().toUpperCase();
+            const todasFusionadas = fusionarPorTicker(currentAlertasCompletas);
             const filtradas = query
-                ? currentAlertasCompletas.filter(a => (a?.Ticker ?? '').toUpperCase().includes(query))
-                : currentAlertasCompletas;
+                ? todasFusionadas.filter(a => (a?.Ticker ?? '').toUpperCase().includes(query))
+                : todasFusionadas;
             const alertas = ordenarAlertas(filtradas);
 
             const alertsContainer = document.getElementById('alerts-container');
-            const totalTexto = query ? `${alertas.length} de ${currentAlertasCompletas.length}` : `${alertas.length}`;
+            const totalTexto = query ? `${alertas.length} de ${todasFusionadas.length}` : `${alertas.length}`;
             document.getElementById('alert-title').textContent = `Alertas Activas (${totalTexto})`;
 
             if (alertas.length === 0) {
@@ -784,6 +817,18 @@
                 if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent cursor-help" title="Cosas que juegan EN CONTRA de esta señal alcista (no bajan el score, pero conviene mirarlas antes de entrar): ${(alerta?.Cuidados ?? []).join(' | ')}">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
 
+                // Este mismo ticker disparó más de un tipo de alerta hoy (ver
+                // fusionarPorTicker) -- se listan como sellos extra, arriba
+                // de todo, para que se vea que es UN ticker con dos motivos
+                // distintos, no dos tickers. Cada uno se sigue midiendo por
+                // separado en la Auditoría aunque acá compartan tarjeta.
+                const otrasSeñales = alerta?._otrasSeñales ?? [];
+                const otrasSeñalesHtml = otrasSeñales.length
+                    ? `<div class="flex flex-wrap gap-1 mt-2">${otrasSeñales.map(o =>
+                        `<span class="signal-chip text-blueAlert border-blueAlert cursor-help" title="Esta misma acción, el mismo día, también disparó esta otra señal -- se cuentan aparte en la Auditoría, para poder comparar cuál de las dos anticipa mejor.">${o?.Estado ?? '—'}${o?.Score ? ' · ' + o.Score : ''}</span>`
+                      ).join('')}</div>`
+                    : '';
+
                 // Aviso de régimen: solo en señales de compra, cuando el clima general no acompaña
                 const regAlerta = alerta?.Regimen_Score;
                 const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista' || tipo === 'confluencia_alcista';
@@ -810,6 +855,7 @@
                             <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
                         </div>
                         <div class="font-mono text-sm text-gray-300">${estado}</div>
+                        ${otrasSeñalesHtml}
                         ${chipsHtml}
                         ${regimenAvisoHtml}
                         ${radarScoreHtml}
