@@ -164,6 +164,14 @@ def armar_narrativa(
 
     cuerpo = " ".join(frases) if frases else "Sin señales técnicas adicionales destacadas."
 
+    # Confluencia Alcista: filtro aparte que junta 3+ chips independientes
+    # y ADEMÁS -- a propósito -- ignora el Radar Score para decidir si
+    # mostrarse o no. Se aclara explícito para que no se lea como si el
+    # Radar Score (que sí se muestra más abajo, de contexto) fuera el motivo.
+    if row.get("Tipo") == "confluencia_alcista":
+        cuerpo = ("Entra por Confluencia Alcista: 3 o más señales técnicas independientes "
+                   "encendidas en las últimas 48hs, sin mirar el Radar Score. " + cuerpo)
+
     contexto_mercado = _frase_contexto_mercado(dist_days, regimen_sano, regimen_score)
     if contexto_mercado:
         cuerpo += " " + contexto_mercado

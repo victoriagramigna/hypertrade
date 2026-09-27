@@ -21,6 +21,7 @@ import logging
 import math
 import os
 import numpy as np
+import pandas as pd
 from datetime import datetime, timezone, timedelta
 
 from config import (TICKERS, BENCHMARK, SCORE_MINIMO_ALERTA, MODO, VIX_TICKER,
@@ -46,6 +47,7 @@ from evaluacion_sistema import evaluar_sistema
 from auditoria import correr_auditoria
 from regimen_score import calcular_regimen_score
 from cuidados import puntos_de_cuidado
+from confluencia import detectar_confluencia
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -166,6 +168,20 @@ def main():
                                               fecha_hoy, timestamp)
     guardar_historial(historial)
 
+    # 5b. Confluencia Alcista -- filtro duro sobre chips que YA se calculan
+    # para todo el universo (AVWAP SOPORTE, CRUCE 52W, TENDENCIA+, ATR
+    # COMPRIMIDO), ignorando a propósito el Radar Score (ver confluencia.py
+    # para la lógica completa). Se suma a df_alertas para pasar por el
+    # MISMO camino de siempre (recomendación, cuidados, narrativa,
+    # notificación, bitácora, Auditoría) -- no es un sistema paralelo.
+    try:
+        filas_confluencia = detectar_confluencia(df_rs, ahora)
+        if filas_confluencia:
+            df_alertas = pd.concat([df_alertas, pd.DataFrame(filas_confluencia)], ignore_index=True)
+        log.info(f"Confluencia Alcista: {len(filas_confluencia)} ticker(s) con 3+ señales en las últimas 48hs")
+    except Exception as e:
+        log.error(f"Confluencia Alcista falló, no afecta al resto de la corrida: {e}")
+
     # 6. Contexto (noticias + macro-local)
     titulares = traer_titulares_ejemplo()
     alertas_sector = escanear_titulares(titulares)
@@ -257,7 +273,8 @@ def main():
     # 9. Notificaciones
     alertas_relevantes = [
         a for a in recomendaciones
-        if (a.get("Score_num") and a["Score_num"] >= SCORE_MINIMO_ALERTA) or a.get("Tipo") in ("lider_soporte", "gap_alcista")
+        if (a.get("Score_num") and a["Score_num"] >= SCORE_MINIMO_ALERTA)
+        or a.get("Tipo") in ("lider_soporte", "gap_alcista", "confluencia_alcista")
     ]
     # Dos memorias separadas:
     #  - _notificaciones: qué ya se mandó por Telegram. Solo la marca el

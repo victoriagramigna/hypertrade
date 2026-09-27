@@ -45,7 +45,8 @@ def evaluar_contexto_macro(riesgo_pais, riesgo_pais_ayer, brecha_cambiaria_pct) 
 def recomendacion_final(sector, score_tecnico, evento_tecnico, alertas_sector, contexto_macro):
     if evento_tecnico and "Rompió piso" in evento_tecnico:
         base = "VENTA"
-    elif evento_tecnico and ("Líder apoyando en soporte" in evento_tecnico or "Gap alcista" in evento_tecnico):
+    elif evento_tecnico and ("Líder apoyando en soporte" in evento_tecnico or "Gap alcista" in evento_tecnico
+                              or "Confluencia Alcista" in evento_tecnico):
         base = "COMPRA"  # tipos de señal distintos al score 0-7 -- ya vienen con su propia lógica de entrada
     elif evento_tecnico and score_tecnico and score_tecnico >= 4:
         base = "COMPRA"
