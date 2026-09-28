@@ -61,7 +61,11 @@ def notificar_alertas(token: str, chat_id: str, alertas: list, fecha: str) -> in
         return 0
 
     enviados = 0
-    encabezado = f"📡 <b>Radar de Mercado</b> — {fecha}\n{len(alertas)} alerta(s) hoy\n"
+    # "HyperTrade" y no "Radar de Mercado" a propósito: las dos apps
+    # comparten el mismo bot de Telegram, así que si el encabezado dijera
+    # lo mismo en las dos, sería imposible saber cuál app mandó cada
+    # aviso una vez que llegan mezclados a la misma conversación.
+    encabezado = f"📡 <b>HyperTrade</b> — {fecha}\n{len(alertas)} alerta(s) hoy\n"
     if enviar_mensaje(token, chat_id, encabezado + DISCLAIMER):
         enviados += 1
 
