@@ -164,6 +164,21 @@ TICKERS = {
     "TM": "Automotriz", "TMO": "Salud", "TMUS": "Telecomunicaciones", "TRIP": "Consumo",
     "TV": "Telecomunicaciones", "TWLO": "Tecnología", "UGP": "Energía", "UL": "Consumo",
     "URBN": "Consumo", "VRSN": "Tecnología", "VST": "Energía", "VZ": "Telecomunicaciones",
+    # --- Lista de biotecnología/salud + ETFs pedida por Victoria (sept. 2026).
+    # De los 19 tickers pedidos, 9 ya estaban en el universo (VRTX, ABBV, BMY,
+    # BIIB, JNJ, NVS, ABT, MDT, BIOX) -- solo se suman los 10 que faltaban.
+    # Sin ratio de CEDEAR todavía (ver RATIOS_CEDEAR): entran al universo
+    # técnico (RS Score, alertas) pero no al panel de CEDEAR caro/barato.
+    "IBB": "ETF",    # iShares Biotechnology ETF
+    "GLD": "ETF",    # SPDR Gold Shares
+    "XLI": "ETF",    # Industrial Select Sector SPDR
+    "GE": "Aeroespacial",   # GE Aerospace tras el spin-off de GE Vernova/GE HealthCare (2024)
+    "AMGN": "Salud",  # Amgen
+    "XLV": "ETF",    # Health Care Select Sector SPDR
+    "GILD": "Salud",  # Gilead Sciences
+    "ILMN": "Salud",  # Illumina
+    "REGN": "Salud",  # Regeneron
+    "CRSP": "Salud",  # CRISPR Therapeutics
 }
 
 BENCHMARK = "SPY"
