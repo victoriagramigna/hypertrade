@@ -372,6 +372,12 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Según la tendencia semanal</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Señales alcistas agrupadas según cómo estaban el RSI y el MACD, medidos en la vela SEMANAL (no la diaria), el día que se dispararon. Hoy este dato es solo informativo -- no cambia el score ni la recomendación de ninguna alerta. Este panel es justamente para decidir, con casos reales, si en algún momento debería empezar a influir: si "a favor" acierta más que "en contra", tiene sentido; si da todo parecido, se queda como está: un dato más para mirar, no un filtro.</p>
+            <div id="aud-tendencia-semanal" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Top 30 de cada semana</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">El primer día de cada semana se guarda el Top 30 de Fuerza Relativa. Acá se ve si le ganó al SPY y al promedio de todo el universo.</p>
             <div id="aud-top30" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
@@ -833,6 +839,14 @@
                 if (alerta?.Cruce_AVWAP_52w) chips.push('<span class="signal-chip text-pos border-pos cursor-help" title="Cruzó hacia arriba su AVWAP anclado al máximo de 52 semanas: posible señal de que los vendedores atrapados en ese techo ya se agotaron.">CRUCE 52W</span>');
                 if (alerta?.Pendiente_OK) chips.push('<span class="signal-chip text-accent border-accent cursor-help" title="SMA50 y SMA200 con pendiente positiva en los últimos 10 días: la tendencia de mediano/largo plazo va para arriba.">TENDENCIA+</span>');
                 if (alerta?.ATR_Contraction) chips.push('<span class="signal-chip text-gray-300 border-gray-600 cursor-help" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span>');
+                // Tendencia Semanal (RSI+MACD comprimidos a semanal): dato de
+                // CONTEXTO nada más -- no suma ni resta del score, no cambia la
+                // recomendación. Se audita aparte para saber, con el tiempo, si
+                // de verdad sirve para elegir mejor (ver panel en Auditoría).
+                const tendSem = alerta?.Tendencia_Semanal;
+                if (tendSem === 'favor') chips.push('<span class="signal-chip text-pos border-pos cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, tanto el RSI(14) como el MACD(12,26,9) están alcistas. No suma puntos al score ni cambia la recomendación -- es un dato más para vos.">🟢 SEMANAL A FAVOR</span>');
+                else if (tendSem === 'contra') chips.push('<span class="signal-chip text-neg border-neg cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, tanto el RSI(14) como el MACD(12,26,9) están bajistas -- la señal diaria va a favor pero el fondo semanal no acompaña todavía. No cambia la recomendación, es un dato más para vos.">🔴 SEMANAL EN CONTRA</span>');
+                else if (tendSem === 'mixta') chips.push('<span class="signal-chip text-accent border-accent cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, el RSI(14) y el MACD(12,26,9) no coinciden (uno alcista, el otro no). No cambia la recomendación, es un dato más para vos.">🟡 SEMANAL MIXTA</span>');
                 const nCuidados = (alerta?.Cuidados ?? []).length;
                 if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent cursor-help" title="Cosas que juegan EN CONTRA de esta señal alcista (no bajan el score, pero conviene mirarlas antes de entrar): ${(alerta?.Cuidados ?? []).join(' | ')}">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
@@ -1994,6 +2008,32 @@
                     const x = g[h] ?? {};
                     const sub = g.grupo.startsWith('·');
                     const nombre = `<span class="${sub ? 'text-gray-500 pl-2' : 'text-gray-300'}">${g.grupo.replace('· ', '')}</span>`;
+                    if (!g.casos) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">sin casos</span></div>`;
+                    if (!x.n) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">${g.casos} esperando</span></div>`;
+                    const chica = x.n < confiable ? 'text-accent' : 'text-gray-600';
+                    return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                        ${nombre}
+                        <span class="text-right text-white font-bold">${x.pct_aciertos}% <span class="${chica} text-[9px]">(${x.n})</span></span>
+                        <span class="text-right">${audPct(x.ret_prom)}</span>
+                        <span class="text-right">${audPct(x.vs_spy_prom)}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // --- Según la tendencia semanal (RSI+MACD) -- puramente informativo,
+            // este panel existe justamente para decidir si en algún momento debería
+            // dejar de serlo (ver texto de la sección en el HTML)
+            const gruposTS = d.por_tendencia_semanal ?? [];
+            const contTS = document.getElementById('aud-tendencia-semanal');
+            if (!gruposTS.some(g => g.casos > 0)) {
+                contTS.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay alertas con la tendencia semanal grabada. Se empiezan a juntar desde ahora.</div>';
+            } else {
+                contTS.innerHTML = `
+                    <div class="grid grid-cols-4 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                        <span>Grupo</span><span class="text-right">Aciertos</span><span class="text-right">Retorno</span><span class="text-right">vs SPY</span>
+                    </div>` + gruposTS.map(g => {
+                    const x = g[h] ?? {};
+                    const nombre = `<span class="text-gray-300">${g.grupo}</span>`;
                     if (!g.casos) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">sin casos</span></div>`;
                     if (!x.n) return `<div class="grid grid-cols-4 gap-2 font-mono text-xs py-1">${nombre}<span class="col-span-3 text-right text-gray-600">${g.casos} esperando</span></div>`;
                     const chica = x.n < confiable ? 'text-accent' : 'text-gray-600';
