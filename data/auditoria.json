@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-27T14:54:04.049008+00:00",
+ "generado_utc": "2026-09-28T01:14:03.841858+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 151,
+ "casos_total": 152,
  "resumen_señales": [
   {
    "señal": "Recién cruzó, sin confirmar",
@@ -108,21 +108,21 @@
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 12,
+   "casos_total": 13,
    "horizontes": {
     "5": {
      "n": 0,
-     "pendientes": 12,
+     "pendientes": 13,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 12,
+     "pendientes": 13,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 12,
+     "pendientes": 13,
      "confiable": false
     }
    }
@@ -203,7 +203,7 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 151,
+   "casos": 152,
    "5": {
     "n": 14,
     "pct_aciertos": 36,
@@ -234,7 +234,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 37,
+   "casos": 38,
    "5": {
     "n": 0
    },
@@ -275,7 +275,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 12,
+   "casos": 13,
    "5": {
     "n": 0
    },
@@ -379,6 +379,21 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "IBB",
+   "fecha": "2026-09-28",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 209.77,
+   "radar_score": 86.0,
+   "regimen_score": 68,
+   "cuidados": [],
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "DELL",
    "fecha": "2026-09-27",
@@ -2764,6 +2779,14 @@
  ],
  "top30_semanal": [
   {
+   "semana": "2026-S40",
+   "fecha": "2026-09-28",
+   "n": 30,
+   "top5": null,
+   "top10": null,
+   "top20": null
+  },
+  {
    "semana": "2026-S39",
    "fecha": "2026-09-23",
    "n": 30,
@@ -2779,27 +2802,27 @@
   "horizontes": {
    "5": {
     "semanas": 25,
-    "top_prom": 0.93,
+    "top_prom": 1.0,
     "univ_prom": 0.78,
     "spy_prom": 0.76,
     "semanas_top_gana_univ": 11,
-    "semanas_top_gana_spy": 12
+    "semanas_top_gana_spy": 13
    },
    "10": {
     "semanas": 24,
-    "top_prom": 1.86,
+    "top_prom": 1.97,
     "univ_prom": 1.55,
     "spy_prom": 1.51,
     "semanas_top_gana_univ": 14,
-    "semanas_top_gana_spy": 14
+    "semanas_top_gana_spy": 13
    },
    "20": {
     "semanas": 22,
-    "top_prom": 2.87,
-    "univ_prom": 2.59,
+    "top_prom": 3.06,
+    "univ_prom": 2.6,
     "spy_prom": 2.52,
     "semanas_top_gana_univ": 11,
-    "semanas_top_gana_spy": 12
+    "semanas_top_gana_spy": 13
    }
   },
   "advertencia": "Simulación hacia atrás con el universo actual: no incluye acciones que ya no están (sesgo de supervivencia), ni costos, ni el CCL. Sirve como orientación, no como prueba. Lo que vale es la auditoría en vivo."
