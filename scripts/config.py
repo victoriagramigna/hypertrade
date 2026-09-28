@@ -179,6 +179,30 @@ TICKERS = {
     "ILMN": "Salud",  # Illumina
     "REGN": "Salud",  # Regeneron
     "CRSP": "Salud",  # CRISPR Therapeutics
+    # --- Tickers del listado de CEDEARs de Caja de Valores (sept. 2026) que
+    # todavía no estaban en el universo -- solo la parte de renta variable de
+    # EE.UU. (mercado de origen NYSE/NASDAQ/CBOE), con ticker real confirmado
+    # contra el listado. Quedaron afuera de esta tanda, a la espera de tu
+    # confirmación: SI (Silvergate) y KEEL (Bitfarms) -- ver el resto de la
+    # conversación -- y los ~19 CEDEARs de acciones brasileñas (VALE3, PETR3,
+    # BBDC3, etc., que cotizan en B3 en reales, no en NYSE en dólares como
+    # VALE y PBR que ya están en el universo).
+    "IWM": "ETF",    # iShares Russell 2000 -- small caps EE.UU.
+    "EEM": "ETF",    # iShares MSCI Emerging Markets
+    "XLF": "ETF",    # Financial Select Sector SPDR
+    "DIA": "ETF",    # SPDR Dow Jones Industrial Average
+    "SH": "ETF",     # ProShares Short S&P500 -- INVERSO: sube cuando el mercado baja, se va a comportar al revés que el resto del universo
+    "ETHA": "ETF",   # iShares Ethereum Trust -- ETF spot de Ethereum, cotiza como una acción
+    "SMH": "ETF",    # VanEck Semiconductor ETF
+    "XLU": "ETF",    # Utilities Select Sector SPDR
+    "CIBR": "ETF",   # First Trust NASDAQ Cybersecurity ETF
+    "TQQQ": "ETF",   # ProShares UltraPro QQQ -- APALANCADO 3x, mismo tipo de riesgo que SPXL
+    "VXX": "ETF",    # iPath Series B S&P 500 VIX -- sigue la volatilidad, no el precio: se comporta muy distinto al resto del universo
+    "ITA": "ETF",    # iShares U.S. Aerospace & Defense ETF
+    "ICLN": "ETF",   # iShares Global Clean Energy ETF
+    "EWY": "ETF",    # iShares MSCI South Korea ETF
+    "XME": "ETF",    # SPDR S&P Metals & Mining ETF
+    "RSP": "ETF",    # Invesco S&P 500 Equal Weight ETF
 }
 
 BENCHMARK = "SPY"
