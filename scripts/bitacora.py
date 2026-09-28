@@ -67,6 +67,11 @@ def registrar_eventos(alertas_nuevas: list, rs_por_ticker: dict, precios_usd: di
             "dist_max52w_pct": a.get("Dist_Max52w_%"),
             "var_dia_pct": a.get("Var_dia_%"),
             "var_spy_dia_pct": a.get("Var_SPY_dia_%"),
+            # Tendencia Semanal (RSI+MACD) al momento de la alerta -- dato de
+            # contexto, no cambia nada de lo de arriba. Se guarda para que la
+            # Auditoría pueda comparar más adelante si las alertas con la
+            # tendencia semanal a favor rinden distinto que las que no.
+            "tendencia_semanal": a.get("Tendencia_Semanal"),
         }
         lineas.append(json.dumps(evento, ensure_ascii=False))
 

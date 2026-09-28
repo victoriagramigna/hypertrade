@@ -146,6 +146,7 @@ def _evaluar_evento(ev, serie, serie_spy):
         "radar_score": ev.get("radar_score"),
         "regimen_score": ev.get("regimen_score"),
         "cuidados": ev.get("cuidados"),
+        "tendencia_semanal": ev.get("tendencia_semanal"),
         "ruedas_transcurridas": int(len(posteriores)),
     }
 
@@ -277,7 +278,7 @@ def auditar_señales(precios):
 
     lista = sorted(casos.values(), key=lambda c: c["fecha"], reverse=True)
     return (_resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista),
-            _por_regimen(lista), _por_cuidados(lista))
+            _por_regimen(lista), _por_cuidados(lista), _por_tendencia_semanal(lista))
 
 
 FRANJAS_REGIMEN = [(80, "80-100 Favorable"), (60, "60-79 Aceptable"), (40, "40-59 Cauteloso"), (0, "0-39 Desfavorable")]
@@ -330,6 +331,39 @@ def _por_cuidados(casos):
               ("Con 1 o más", [c for c in con_dato if c["cuidados"]])]
     for clave, nombre in NOMBRES_CUIDADOS.items():
         grupos.append((f"· {nombre}", [c for c in con_dato if clave in c["cuidados"]]))
+    salida = []
+    for nombre, lista in grupos:
+        fila = {"grupo": nombre, "casos": len(lista)}
+        for h in HORIZONTES:
+            medibles = [c for c in lista if c.get(f"r{h}") is not None]
+            n = len(medibles)
+            datos = {"n": n}
+            if n:
+                datos["pct_aciertos"] = round(sum(1 for c in medibles if c[f"acierto{h}"]) / n * 100)
+                datos["ret_prom"] = _prom([c[f"r{h}"] for c in medibles])
+                datos["vs_spy_prom"] = _prom([c.get(f"vs_spy{h}") for c in medibles])
+            fila[str(h)] = datos
+        salida.append(fila)
+    return salida
+
+
+LECTURAS_TENDENCIA_SEMANAL = [
+    ("favor", "🟢 A favor (RSI y MACD semanal alcistas)"),
+    ("mixta", "🟡 Mixta (RSI y MACD semanal en desacuerdo)"),
+    ("contra", "🔴 En contra (RSI y MACD semanal bajistas)"),
+]
+
+
+def _por_tendencia_semanal(casos):
+    """¿Las alertas ALCISTAS que además tenían la tendencia semanal (RSI+
+    MACD) a favor rinden distinto que las que la tenían en contra o mixta?
+    Es la pregunta que responde si vale la pena, más adelante, que esto deje
+    de ser solo informativo. Solo cuenta casos grabados desde que existe el
+    dato (None = corrida vieja, sin este campo, o sin suficiente historial
+    semanal para ese ticker)."""
+    con_dato = [c for c in casos if c.get("direccion") == "alcista" and c.get("tendencia_semanal") is not None]
+    grupos = [(nombre, [c for c in con_dato if c["tendencia_semanal"] == clave])
+              for clave, nombre in LECTURAS_TENDENCIA_SEMANAL]
     salida = []
     for nombre, lista in grupos:
         fila = {"grupo": nombre, "casos": len(lista)}
@@ -661,7 +695,7 @@ def evaluar_mis_operaciones(precios):
 
 def correr_auditoria(precios, df_rs, universo, ahora=None):
     ahora = ahora or datetime.now(timezone.utc)
-    resumen, detalle, n_casos, por_mes, por_regimen, por_cuidados = auditar_señales(precios)
+    resumen, detalle, n_casos, por_mes, por_regimen, por_cuidados, por_tendencia_semanal = auditar_señales(precios)
 
     fotos = guardar_foto_top30(df_rs, ahora)
     top30 = evaluar_top30_real(fotos, precios, universo)
@@ -690,6 +724,7 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         "por_mes": por_mes,
         "por_regimen": por_regimen,
         "por_cuidados": por_cuidados,
+        "por_tendencia_semanal": por_tendencia_semanal,
         "detalle": detalle,
         "top30_semanal": top30,
         "simulacion_top30": simulacion,

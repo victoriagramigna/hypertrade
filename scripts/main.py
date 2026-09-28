@@ -223,6 +223,10 @@ def main():
         # de siempre) -- ver rs_score.py. Puramente informativo, no toca
         # ninguna cuenta existente.
         "RS_Score_Sector", "Perfil_Fuerza",
+        # Tendencia Semanal (RSI+MACD) -- ver tendencia_semanal.py. También
+        # puramente informativa: no toca el Score ni la Recomendación de
+        # ninguna alerta, solo viaja junto para mostrarse y auditarse aparte.
+        "Tendencia_Semanal", "RSI_Semanal", "MACD_Semanal", "MACD_Señal_Semanal",
     ]
     columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
     extras_por_ticker = (

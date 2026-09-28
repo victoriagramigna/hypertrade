@@ -38,6 +38,7 @@ import pandas as pd
 
 from avwap import agregar_avwaps, evaluar_apoyo_avwap, detectar_cruce_avwap_52w
 from senales_nuevas import agregar_atr_ratio, evaluar_atr_contraction, evaluar_pendiente_positiva
+from tendencia_semanal import calcular_tendencia_semanal
 
 TOPE_VOL_REL = 1.5
 TOPE_DIST_52W_PCT = -30
@@ -82,6 +83,10 @@ def _procesar_indicadores_ticker(df_ohlc: pd.DataFrame):
 
     fila_hoy = df.iloc[-1]
 
+    # Tendencia Semanal (RSI+MACD): puramente informativa, no entra en
+    # ningún componente del Radar Score -- ver docstring de tendencia_semanal.py
+    tendencia_sem = calcular_tendencia_semanal(df["Close"])
+
     return {
         "avwap_ytd": fila_hoy.get("AVWAP_YTD"),
         "avwap_52w_high": fila_hoy.get("AVWAP_52W_High"),
@@ -91,6 +96,7 @@ def _procesar_indicadores_ticker(df_ohlc: pd.DataFrame):
         "atr_contraction": evaluar_atr_contraction(fila_hoy),
         "pendiente_ok": evaluar_pendiente_positiva(df["Close"]),
         "cruce_avwap_52w": detectar_cruce_avwap_52w(df),
+        "tendencia_semanal": tendencia_sem,
     }
 
 
@@ -116,6 +122,8 @@ def calcular_radar_score(
         "AVWAP_YTD", "AVWAP_52W_High", "AVWAP_Ultimo_Gap",
         "Apoyo_AVWAP", "ATR_Ratio", "ATR_Contraction",
         "Pendiente_OK", "Cruce_AVWAP_52w", "Radar_Score",
+        # Tendencia Semanal (RSI+MACD) -- contexto informativo, no puntúa
+        "Tendencia_Semanal", "RSI_Semanal", "MACD_Semanal", "MACD_Señal_Semanal",
     ]
     if df_rs.empty:
         for c in columnas_nuevas:
@@ -161,6 +169,8 @@ def calcular_radar_score(
         score_final = min(100.0, score_final)
         scores.append(score_final)
 
+        tendencia_sem = (ind or {}).get("tendencia_semanal") or {}
+
         filas_nuevas.append({
             "AVWAP_YTD": ind["avwap_ytd"] if ind else None,
             "AVWAP_52W_High": ind["avwap_52w_high"] if ind else None,
@@ -170,6 +180,10 @@ def calcular_radar_score(
             "ATR_Contraction": atr_contraction,
             "Pendiente_OK": pendiente_ok,
             "Cruce_AVWAP_52w": cruce_52w,
+            "Tendencia_Semanal": tendencia_sem.get("lectura"),
+            "RSI_Semanal": tendencia_sem.get("rsi_semanal"),
+            "MACD_Semanal": tendencia_sem.get("macd_semanal"),
+            "MACD_Señal_Semanal": tendencia_sem.get("macd_señal_semanal"),
         })
 
     df_rs = df_rs.copy()
