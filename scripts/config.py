@@ -182,11 +182,12 @@ TICKERS = {
     # --- Tickers del listado de CEDEARs de Caja de Valores (sept. 2026) que
     # todavía no estaban en el universo -- solo la parte de renta variable de
     # EE.UU. (mercado de origen NYSE/NASDAQ/CBOE), con ticker real confirmado
-    # contra el listado. Quedaron afuera de esta tanda, a la espera de tu
-    # confirmación: SI (Silvergate) y KEEL (Bitfarms) -- ver el resto de la
-    # conversación -- y los ~19 CEDEARs de acciones brasileñas (VALE3, PETR3,
-    # BBDC3, etc., que cotizan en B3 en reales, no en NYSE en dólares como
-    # VALE y PBR que ya están en el universo).
+    # contra el listado. Quedó afuera de esta tanda SI (Silvergate): quebró y
+    # el "SICPQ" que muestra la Caja de Valores es el remanente que cotiza
+    # OTC tras la bancarrota, sin datos confiables. También quedaron afuera
+    # los ~19 CEDEARs de acciones brasileñas (VALE3, PETR3, BBDC3, etc., que
+    # cotizan en B3 en reales, no en NYSE en dólares como VALE y PBR que ya
+    # están en el universo) -- a la espera de tu confirmación.
     "IWM": "ETF",    # iShares Russell 2000 -- small caps EE.UU.
     "EEM": "ETF",    # iShares MSCI Emerging Markets
     "XLF": "ETF",    # Financial Select Sector SPDR
@@ -203,6 +204,9 @@ TICKERS = {
     "EWY": "ETF",    # iShares MSCI South Korea ETF
     "XME": "ETF",    # SPDR S&P Metals & Mining ETF
     "RSP": "ETF",    # Invesco S&P 500 Equal Weight ETF
+    "KEEL": "Tecnología",  # Keel Infrastructure Corp -- nuevo nombre de Bitfarms tras
+                            # re-domiciliarse a EE.UU. (abr. 2026), sigue en NASDAQ,
+                            # mismo grupo que HUT/IREN/RIOT (mineras BTC / data centers IA)
 }
 
 BENCHMARK = "SPY"
