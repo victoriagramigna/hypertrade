@@ -461,6 +461,16 @@
         </div>
     </div>
 
+    <!-- Panel de Explicación de Chips: al tocar cualquier etiqueta con
+         explicación (las que en desktop muestran el "title" al pasar el
+         mouse), esto la muestra igual en el celular, donde no hay mouse. -->
+    <div id="chip-explain" class="hidden fixed inset-x-4 bottom-4 z-50 max-w-md mx-auto bg-surface border border-gray-700 rounded-sm shadow-2xl p-4">
+        <div class="flex justify-between items-start gap-3">
+            <div id="chip-explain-text" class="text-gray-300 font-mono text-xs leading-relaxed"></div>
+            <button id="chip-explain-close" class="text-gray-500 hover:text-white font-mono font-bold text-lg flex-shrink-0">✕</button>
+        </div>
+    </div>
+
     <script>
         const DATA_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/ultimo.json';
         
@@ -646,6 +656,31 @@
             if (e.target.id === 'ticker-modal') {
                 e.target.classList.add('hidden');
             }
+        });
+
+        // Panel de Explicación de Chips: los chips informativos (clase
+        // "cursor-help") llevan su explicación en el atributo "title", que
+        // en desktop se ve al pasar el mouse -- pero en el celular no hay
+        // mouse, así que ese texto nunca aparecía. Con esto, tocar el chip
+        // lo muestra igual, en un panel abajo de la pantalla.
+        document.addEventListener('click', (e) => {
+            const chip = e.target.closest('.cursor-help[title]');
+            if (chip) {
+                const texto = chip.getAttribute('title');
+                if (texto) {
+                    document.getElementById('chip-explain-text').textContent = texto;
+                    document.getElementById('chip-explain').classList.remove('hidden');
+                }
+                return;
+            }
+            // Tocar afuera del panel lo cierra
+            const panel = document.getElementById('chip-explain');
+            if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target)) {
+                panel.classList.add('hidden');
+            }
+        });
+        document.getElementById('chip-explain-close').addEventListener('click', () => {
+            document.getElementById('chip-explain').classList.add('hidden');
         });
 
         function renderCedearPanel(data) {
@@ -958,7 +993,7 @@
                         </div>
                         <div class="flex flex-wrap gap-1 mt-1">${chips}</div>
                         <div class="font-mono text-[10px] text-gray-500 mt-2 flex justify-between">
-                            <span title="Solo de referencia -- esta señal no lo usa para decidir si aparece.">RADAR SCORE (ref.): <span class="text-white">${radarScore != null ? radarScore.toFixed(0) : '—'}/100</span></span>
+                            <span class="cursor-help" title="Solo de referencia -- esta señal no lo usa para decidir si aparece.">RADAR SCORE (ref.): <span class="text-white">${radarScore != null ? radarScore.toFixed(0) : '—'}/100</span></span>
                             <span>${a?.Precio != null ? '$' + a.Precio : ''}</span>
                         </div>
                         ${feStr ? `<div class="font-mono text-[9px] text-gray-600 mt-1">${feStr}</div>` : ''}
