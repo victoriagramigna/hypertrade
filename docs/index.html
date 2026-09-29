@@ -2402,6 +2402,12 @@
                 origenStop: p.origenStop ?? null,
                 spyCompra: p.spyCompra ?? null,
                 alertaAlComprar: p.alertaAlComprar ?? null,
+                // CAMBIO (29/9): antes se descartaba acá -- por eso el
+                // respaldo en el repo se quedaba sin el precio real en
+                // pesos y el CCL de compra, y una compra cargada "CEDEAR
+                // en pesos" no se podía restaurar con el Balance real
+                // intacto. Ahora viaja siempre que exista.
+                origenArs: p.origenArs ?? null,
             }));
         }
 
@@ -2522,6 +2528,49 @@
                 }
             }
             return { valor: stopPorcentual, origen: 'techo -8% desde la compra' };
+        }
+
+        // Balance real en pesos (29/9): usa el precio real del CEDEAR que
+        // ya trae el pipeline (data/ultimo.json -> cedears_pricing, el
+        // mismo que arma el panel de CEDEARs con datos de data912.com) --
+        // ES el precio de mercado, no un teórico. Compara contra lo que
+        // quedó guardado al cargar la compra (origenArs.precioArs y el CCL
+        // de ese día). Si la compra se cargó en dólares (sin origenArs) no
+        // hay con qué comparar, así que no se muestra nada -- mejor nada
+        // que un número inventado.
+        function calcularBalanceReal(p) {
+            if (!p.origenArs || !p.origenArs.precioArs || !p.origenArs.cclCompra) return null;
+
+            const cedears = currentRadarData?.cedears_pricing?.cedears ?? [];
+            const info = cedears.find(c => c?.Ticker?.toUpperCase() === p.ticker.toUpperCase());
+            const cclHoy = currentRadarData?.cedears_pricing?.ccl;
+            if (!info || info.sin_datos || !info.Precio_real_ARS || !cclHoy) return null;
+
+            const P0 = p.origenArs.precioArs;   // lo que pagaste, en pesos, por CEDEAR
+            const C0 = p.origenArs.cclCompra;   // CCL el día que compraste
+            const P1 = info.Precio_real_ARS;    // precio real del CEDEAR hoy
+            const C1 = cclHoy;                  // CCL hoy
+            const cantidad = parseFloat(p.cantidad) || 0;
+            if (!cantidad) return null;
+
+            const resultadoArs = (P1 - P0) * cantidad;
+            const rendimientoArsPct = (P1 / P0 - 1) * 100;
+
+            // Resultado "real" en dólares: el precio del CEDEAR convertido
+            // a dólares en cada momento (así se le saca el efecto del tipo
+            // de cambio -- es cuánto ganaste/perdiste con dólares constantes).
+            const usd0 = P0 / C0;
+            const usd1 = P1 / C1;
+            const resultadoUsd = (usd1 - usd0) * cantidad;
+
+            // De ese resultado en pesos, cuánto es por el CEDEAR en sí
+            // (el mismo resultadoUsd, traducido al dólar de HOY) y cuánto
+            // es lo que queda -- que solo puede ser por el movimiento del
+            // dólar en el medio.
+            const porCedearArs = (usd1 - usd0) * C1 * cantidad;
+            const porDolarArs = resultadoArs - porCedearArs;
+
+            return { P1, C1, resultadoArs, rendimientoArsPct, resultadoUsd, porCedearArs, porDolarArs };
         }
 
         function renderCartera() {
@@ -2672,6 +2721,30 @@
 
                 const objetivoHtml = `<div class="text-gray-500 text-[10px] mt-1">Objetivo parcial (+${CARTERA_GANANCIA_PARCIAL_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_PARCIAL_PCT / 100)).toFixed(2)} · Objetivo trailing (+${CARTERA_GANANCIA_TRAILING_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_TRAILING_PCT / 100)).toFixed(2)}</div>`;
 
+                // Balance real (29/9): el stop-loss y los objetivos de
+                // arriba están en dólares -- son la señal TÉCNICA, y esa no
+                // se toca. Esto es aparte: cuánto ganaste o perdiste de
+                // verdad en pesos, comparando el precio real del CEDEAR
+                // (mismo dato que usa el panel de CEDEARs, coincide con el
+                // bróker) contra lo que pagaste. Solo aparece si la compra
+                // se cargó "CEDEAR en pesos" -- si se cargó en dólares, no
+                // hay con qué compararlo.
+                const balanceReal = calcularBalanceReal(p);
+                const balanceRealHtml = balanceReal ? `
+                    <div class="mt-3 pt-3 border-t border-gray-700">
+                        <div class="text-accent text-[10px] uppercase tracking-widest mb-1" title="Compara el precio real del CEDEAR hoy (el mismo que ves en tu bróker) contra lo que pagaste en pesos -- no es el mismo número que el stop-loss de arriba, que está en dólares.">Balance real (pesos, como en tu bróker)</div>
+                        <div class="${balanceReal.resultadoArs >= 0 ? 'text-pos' : 'text-neg'} font-bold text-sm">
+                            ${balanceReal.resultadoArs >= 0 ? '+' : ''}$${balanceReal.resultadoArs.toLocaleString('es-AR', {maximumFractionDigits: 2})} ARS
+                            <span class="text-gray-500 font-normal">(${balanceReal.rendimientoArsPct >= 0 ? '+' : ''}${balanceReal.rendimientoArsPct.toFixed(2)}%)</span>
+                        </div>
+                        <div class="text-gray-500 text-[10px] mt-1" title="Convierte el mismo resultado a dólares sacando el efecto del tipo de cambio -- así ves cuánto ganaste 'de verdad' en dólares, no solo en pesos devaluados.">
+                            Equivalente en dólares: <span class="${balanceReal.resultadoUsd >= 0 ? 'text-pos' : 'text-neg'} font-bold">${balanceReal.resultadoUsd >= 0 ? '+' : ''}US$${balanceReal.resultadoUsd.toFixed(2)}</span>
+                        </div>
+                        <div class="text-gray-600 text-[10px]" title="De tu resultado en pesos, esta es la parte que corresponde al CEDEAR moviéndose en sí (traducida al dólar de hoy) y la parte que corresponde solo al tipo de cambio moviéndose desde que compraste.">
+                            Desglose: ${balanceReal.porCedearArs >= 0 ? '+' : ''}$${balanceReal.porCedearArs.toLocaleString('es-AR', {maximumFractionDigits: 0})} por el CEDEAR ${balanceReal.porDolarArs >= 0 ? '+' : ''}$${balanceReal.porDolarArs.toLocaleString('es-AR', {maximumFractionDigits: 0})} por el dólar
+                        </div>
+                    </div>` : '';
+
                 return `
                     <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
                         <div class="flex justify-between items-start">
@@ -2688,6 +2761,7 @@
                         <div class="mt-2">${variacionHtml}</div>
                         ${stopHtml}
                         ${objetivoHtml}
+                        ${balanceRealHtml}
                         ${señalesHtml}
                         ${ventaAbierta === idx ? formularioVenta(p, precioActual) : ''}
                     </div>`;
@@ -2943,22 +3017,12 @@
         });
 
         // Exportar cartera -- arma el JSON que el backend espera en
-        // data/mi_cartera.json (mismos campos que ya guarda cada
-        // posición: ticker, precio, cantidad, fecha, stopInicial,
-        // stopActual, radarScoreCompra). No incluye origenArs ni
-        // campos internos del dashboard que el backend no necesita.
+        // data/mi_cartera.json. Usa la misma función que la sincronización
+        // automática (_posicionesParaExportar) para que las dos vías
+        // guarden exactamente los mismos campos, incluido origenArs.
         document.getElementById('exportar-cartera-btn').addEventListener('click', () => {
             const posiciones = cargarCartera();
-            const paraExportar = posiciones.map(p => ({
-                ticker: p.ticker,
-                precio: p.precio,
-                cantidad: p.cantidad ?? null,
-                fecha: p.fecha,
-                stopInicial: p.stopInicial ?? null,
-                stopActual: p.stopActual ?? null,
-                radarScoreCompra: p.radarScoreCompra ?? null,
-                origenStop: p.origenStop ?? null,
-            }));
+            const paraExportar = _posicionesParaExportar(posiciones);
             const output = document.getElementById('exportar-cartera-output');
             output.value = JSON.stringify(paraExportar, null, 2);
             output.classList.remove('hidden');
