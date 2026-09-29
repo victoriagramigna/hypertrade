@@ -171,6 +171,14 @@ def main():
 
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
+    # El benchmark (SPY) nunca aparece en df_rs -- no tiene sentido rankearlo
+    # contra sí mismo -- pero sí tiene CEDEAR propio y ratio configurado
+    # (RATIOS_CEDEAR), así que sin este agregado quedaba afuera del panel de
+    # CEDEAR caro/barato y de "Balance real" en Mi Cartera. Solo se agrega acá,
+    # a esta copia local del dict: no toca df_rs ni ningún otro cálculo (RS
+    # Score, Alertas, Auditoría siguen exactamente igual que antes).
+    if not bench_close.empty:
+        precios_usd_actuales[BENCHMARK] = float(bench_close.iloc[-1])
     cedears_pricing = calcular_brechas_cedear(precios_usd_actuales)
     log.info(f"CEDEARs -- CCL: {cedears_pricing.get('ccl')}, "
              f"{len(cedears_pricing.get('cedears', []))} calculados")
