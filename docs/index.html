@@ -2408,6 +2408,12 @@
                 // en pesos" no se podía restaurar con el Balance real
                 // intacto. Ahora viaja siempre que exista.
                 origenArs: p.origenArs ?? null,
+                // CAMBIO (29/9): el máximo rendimiento real alcanzado, para
+                // la alerta de "protección de ganancia" -- si esto no viaja,
+                // cada restauración desde GitHub perdería el historial del
+                // pico y la alerta de devolución dejaría de detectar nada
+                // hasta que vuelva a subir por encima del último guardado.
+                maxRendimientoArs: p.maxRendimientoArs ?? null,
             }));
         }
 
@@ -2517,6 +2523,62 @@
         // el resto de la app todavía se considera "dentro de tolerancia".
         const SMA50_TOLERANCIA_PCT = 2;
 
+        // Umbrales del "Balance real" (29/9): estos son EN PESOS reales
+        // (rendimientoArsPct de calcularBalanceReal), no en dólares -- son
+        // un aviso NUEVO y aparte de los de arriba (que siguen igual, en
+        // USD). Conversados y ajustados con Victoria en varias rondas.
+        const CARTERA_ARS_PERDIDA_1_PCT = -7;    // primer aviso de pérdida real
+        const CARTERA_ARS_PERDIDA_2_PCT = -13;   // aviso fuerte
+        const CARTERA_ARS_GANANCIA_1_PCT = 25;   // primer aviso de ganancia real importante
+        const CARTERA_ARS_GANANCIA_2_PCT = 40;   // aviso fuerte
+        // Protección de ganancia: no mide contra cero, mide cuánto se
+        // "devolvió" desde el máximo que llegó a tener esa posición -- así
+        // detecta a tiempo un papel que viene bajando aunque todavía no
+        // esté en pérdida (el caso que preguntó Victoria con AAPL). Recién
+        // se activa si el máximo llegó a ser una ganancia relevante, para
+        // no disparar con posiciones que apenas subieron un poco.
+        const CARTERA_ARS_DEVOLUCION_MIN_PICO_PCT = 15;
+        const CARTERA_ARS_DEVOLUCION_1_PCT = 15;  // % de la ganancia acumulada que se devolvió
+        const CARTERA_ARS_DEVOLUCION_2_PCT = 30;
+        const CARTERA_ARS_DEVOLUCION_3_PCT = 50;
+
+        // "Cuidados de esta posición" (29/9): 4 de las 5 reglas de
+        // cuidados.py (ver Alertas), portadas a JS porque los datos ya
+        // están disponibles en el ranking técnico (ultimo.json). La 5ta
+        // regla (sma50_bajando) necesita 10 días de historial de SMA50 que
+        // no está disponible acá, así que queda afuera. A diferencia de
+        // Alertas, acá se muestran SIEMPRE que apliquen (no solo en
+        // contexto alcista) -- el objetivo es avisar sobre una posición que
+        // ya tenés, no filtrar señales de compra.
+        const CUIDADO_RSI_ALTO = 75;
+        const CUIDADO_EXTENDIDA_SMA50_PCT = 20;
+        const CUIDADO_TECHO_AVWAP_PCT = 3;
+        const CUIDADO_VOLUMEN_ALTO = 1.5;
+
+        function calcularCuidados(tickerData) {
+            if (!tickerData) return [];
+            const cuidados = [];
+            if (tickerData['Dist_SMA200_%'] != null && tickerData['Dist_SMA200_%'] < 0) {
+                cuidados.push('📉 Por debajo de su promedio de 200 días -- la tendencia de largo plazo se dio vuelta');
+            }
+            if (tickerData.RSI != null && tickerData.RSI >= CUIDADO_RSI_ALTO) {
+                cuidados.push(`🌡️ RSI en ${tickerData.RSI.toFixed(0)} -- sobrecomprado en el corto plazo, subió muy rápido`);
+            }
+            if (tickerData['Dist_SMA50_%'] != null && tickerData['Dist_SMA50_%'] > CUIDADO_EXTENDIDA_SMA50_PCT) {
+                cuidados.push(`🚀 Extendida ${tickerData['Dist_SMA50_%'].toFixed(0)}% sobre su promedio de 50 días -- lejos de su "precio normal" reciente`);
+            }
+            if (tickerData.AVWAP_52W_High != null && tickerData.Precio != null) {
+                const distTecho = ((tickerData.AVWAP_52W_High - tickerData.Precio) / tickerData.AVWAP_52W_High) * 100;
+                if (distTecho >= 0 && distTecho <= CUIDADO_TECHO_AVWAP_PCT) {
+                    const conVolumen = tickerData.Vol_rel != null && tickerData.Vol_rel >= CUIDADO_VOLUMEN_ALTO;
+                    cuidados.push(conVolumen
+                        ? '🧱 Cerca del techo de su rango de 52 semanas, con volumen alto -- puede estar tocando una resistencia'
+                        : '🧱 Cerca del techo de su rango de 52 semanas');
+                }
+            }
+            return cuidados;
+        }
+
         function calcularStopInicial(precioCompra, tickerData) {
             const stopPorcentual = precioCompra * (1 - CARTERA_STOP_PCT_INICIAL);
             const sma50 = tickerData?.SMA50;
@@ -2571,6 +2633,49 @@
             const porDolarArs = resultadoArs - porCedearArs;
 
             return { P1, C1, resultadoArs, rendimientoArsPct, resultadoUsd, porCedearArs, porDolarArs };
+        }
+
+        // Balance Global (29/9): suma el Balance real de todas las
+        // posiciones que tienen ese dato (compradas "CEDEAR en pesos").
+        // Las cargadas en dólares (sin origenArs) no entran en esta suma --
+        // mismo criterio que el Balance real individual: mejor no sumar
+        // números que no son comparables entre sí.
+        function balanceGlobalHtml(posiciones) {
+            let invertidoArs = 0, valorHoyArs = 0, resultadoUsdTotal = 0;
+            let ganadoras = 0, perdedoras = 0, sinDato = 0;
+            for (const p of posiciones) {
+                const br = calcularBalanceReal(p);
+                if (!br) { sinDato++; continue; }
+                const cantidad = parseFloat(p.cantidad) || 0;
+                invertidoArs += p.origenArs.precioArs * cantidad;
+                valorHoyArs += br.P1 * cantidad;
+                resultadoUsdTotal += br.resultadoUsd;
+                if (br.rendimientoArsPct >= 0) ganadoras++; else perdedoras++;
+            }
+            const conDato = ganadoras + perdedoras;
+            if (conDato === 0) return '';
+
+            const resultadoArsTotal = valorHoyArs - invertidoArs;
+            const rendimientoPctTotal = invertidoArs > 0 ? (resultadoArsTotal / invertidoArs) * 100 : 0;
+            const color = resultadoArsTotal >= 0 ? 'text-pos' : 'text-neg';
+
+            return `
+                <div class="bg-surface p-4 rounded-sm border border-accent font-mono text-sm mb-3">
+                    <div class="text-accent text-[10px] uppercase tracking-widest mb-2" title="Suma el Balance real (pesos, como en tu bróker) de todas las posiciones cargadas como 'CEDEAR en pesos'. ${sinDato > 0 ? `${sinDato} posición(es) sin este dato todavía no entran en esta suma.` : ''}">Balance global (${conDato} posiciones)</div>
+                    <div class="${color} font-bold text-lg">
+                        ${resultadoArsTotal >= 0 ? '+' : ''}$${resultadoArsTotal.toLocaleString('es-AR', {maximumFractionDigits: 0})} ARS
+                        <span class="text-gray-500 font-normal text-sm">(${rendimientoPctTotal >= 0 ? '+' : ''}${rendimientoPctTotal.toFixed(2)}%)</span>
+                    </div>
+                    <div class="text-gray-500 text-[10px] mt-1" title="Mismo resultado total, convertido a dólares sacando el efecto del tipo de cambio.">
+                        Equivalente en dólares: <span class="${resultadoUsdTotal >= 0 ? 'text-pos' : 'text-neg'} font-bold">${resultadoUsdTotal >= 0 ? '+' : ''}US$${resultadoUsdTotal.toFixed(2)}</span>
+                    </div>
+                    <div class="text-gray-600 text-[10px] mt-1">
+                        Invertido: $${invertidoArs.toLocaleString('es-AR', {maximumFractionDigits: 0})} ARS · Valor hoy: $${valorHoyArs.toLocaleString('es-AR', {maximumFractionDigits: 0})} ARS
+                    </div>
+                    <div class="text-gray-600 text-[10px] mt-1">
+                        <span class="text-pos">${ganadoras} ganadora${ganadoras !== 1 ? 's' : ''}</span> · <span class="text-neg">${perdedoras} perdedora${perdedoras !== 1 ? 's' : ''}</span>${sinDato > 0 ? ` · ${sinDato} sin balance real todavía` : ''}
+                    </div>
+                </div>`;
         }
 
         function renderCartera() {
@@ -2745,6 +2850,57 @@
                         </div>
                     </div>` : '';
 
+                // Avisos de salida en pesos reales (29/9): corte de pérdida
+                // y ganancia grande miden contra el capital invertido;
+                // protección de ganancia mide contra el MÁXIMO que llegó a
+                // tener la posición (se guarda en p.maxRendimientoArs y solo
+                // puede subir, nunca bajar -- así detecta que se "devolvió"
+                // ganancia aunque todavía no esté en pérdida). Es un aviso
+                // NUEVO, aparte de los de arriba en dólares -- no los
+                // reemplaza.
+                let alertasArsHtml = '';
+                if (balanceReal) {
+                    const pct = balanceReal.rendimientoArsPct;
+                    if (p.maxRendimientoArs == null || pct > p.maxRendimientoArs) {
+                        p.maxRendimientoArs = pct;
+                        huboCambios = true;
+                    }
+                    const avisosArs = [];
+                    if (pct <= CARTERA_ARS_PERDIDA_2_PCT) {
+                        avisosArs.push({ color: 'neg', texto: `🔻 Pérdida real de ${pct.toFixed(1)}% -- evaluá seriamente cerrar la posición` });
+                    } else if (pct <= CARTERA_ARS_PERDIDA_1_PCT) {
+                        avisosArs.push({ color: 'accent', texto: `⚠️ Pérdida real de ${pct.toFixed(1)}% -- revisá si todavía tiene sentido sostenerla` });
+                    }
+                    if (pct >= CARTERA_ARS_GANANCIA_2_PCT) {
+                        avisosArs.push({ color: 'pos', texto: `🎯 Ganancia real de +${pct.toFixed(1)}% -- ganancia muy grande, considerá asegurar una parte importante` });
+                    } else if (pct >= CARTERA_ARS_GANANCIA_1_PCT) {
+                        avisosArs.push({ color: 'pos', texto: `🎯 Ganancia real de +${pct.toFixed(1)}% -- considerá asegurar una parte` });
+                    }
+                    if (p.maxRendimientoArs >= CARTERA_ARS_DEVOLUCION_MIN_PICO_PCT) {
+                        const devuelto = ((p.maxRendimientoArs - pct) / p.maxRendimientoArs) * 100;
+                        if (devuelto >= CARTERA_ARS_DEVOLUCION_3_PCT) {
+                            avisosArs.push({ color: 'neg', texto: `🔻 Se devolvió más de la mitad de la ganancia máxima (llegó a +${p.maxRendimientoArs.toFixed(1)}%, ahora +${pct.toFixed(1)}%) -- evaluá cerrar posición` });
+                        } else if (devuelto >= CARTERA_ARS_DEVOLUCION_2_PCT) {
+                            avisosArs.push({ color: 'accent', texto: `⚠️ Se devolvió buena parte de la ganancia máxima (llegó a +${p.maxRendimientoArs.toFixed(1)}%, ahora +${pct.toFixed(1)}%) -- considerá asegurar algo` });
+                        } else if (devuelto >= CARTERA_ARS_DEVOLUCION_1_PCT) {
+                            avisosArs.push({ color: 'gray-500', texto: `👀 Empezó a retroceder desde el máximo (llegó a +${p.maxRendimientoArs.toFixed(1)}%, ahora +${pct.toFixed(1)}%) -- nada grave, pero prestale atención` });
+                        }
+                    }
+                    alertasArsHtml = avisosArs.map(a =>
+                        `<div class="mt-1.5 bg-${a.color}/20 border border-${a.color} text-${a.color} font-bold text-xs px-2 py-1.5 rounded-sm" title="Basado en tu Balance real en pesos, no en el precio en dólares de arriba.">${a.texto}</div>`
+                    ).join('');
+                }
+
+                // Cuidados de esta posición: informativo, no es una alerta
+                // de compra/venta en sí -- ayuda a evaluar si conviene
+                // sostener una posición ganadora o si ya está sobre-extendida.
+                const cuidados = calcularCuidados(tickerData);
+                const cuidadosHtml = cuidados.length > 0 ? `
+                    <div class="mt-3 pt-3 border-t border-gray-700">
+                        <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-1" title="Señales técnicas del papel hoy -- no dicen 'vender ya', ayudan a evaluar si conviene sostener la posición o si ya está sobre-extendida.">Cuidados de esta posición</div>
+                        ${cuidados.map(c => `<div class="text-gray-400 text-xs mt-1">${c}</div>`).join('')}
+                    </div>` : '';
+
                 return `
                     <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
                         <div class="flex justify-between items-start">
@@ -2762,10 +2918,14 @@
                         ${stopHtml}
                         ${objetivoHtml}
                         ${balanceRealHtml}
+                        ${alertasArsHtml}
+                        ${cuidadosHtml}
                         ${señalesHtml}
                         ${ventaAbierta === idx ? formularioVenta(p, precioActual) : ''}
                     </div>`;
             }).join('');
+
+            container.innerHTML = balanceGlobalHtml(posiciones) + container.innerHTML;
 
             if (huboCambios) guardarCartera(posiciones);
         }
