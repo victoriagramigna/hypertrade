@@ -312,6 +312,12 @@
                     <textarea id="exportar-cartera-output" readonly class="hidden w-full bg-base border border-gray-700 rounded-sm p-2 text-white text-[10px] h-40 mt-2" onclick="this.select()"></textarea>
                     <div id="exportar-cartera-hint" class="hidden text-gray-500 text-[10px] mt-1">Tocá el texto de arriba para seleccionarlo todo, copialo, y pegalo reemplazando el contenido de <code class="text-accent">data/mi_cartera.json</code> en el repo.</div>
                 </div>
+
+                <div class="border-t border-base pt-3 mt-3">
+                    <button id="restaurar-cartera-btn" class="text-gray-500 hover:text-white text-[10px] underline">Restaurar desde GitHub (si las posiciones desaparecieron de este navegador)</button>
+                    <div id="restaurar-cartera-estado" class="text-gray-600 text-[10px] mt-1"></div>
+                    <div class="text-gray-600 text-[10px] mt-1">Trae lo último guardado en <code class="text-accent">data/mi_cartera.json</code> del repo. Sirve si cambiaste de navegador, se borró el caché, o esta lista quedó vacía por error -- nunca escribe nada, solo lee.</div>
+                </div>
             </div>
         </section>
 
@@ -2960,6 +2966,42 @@
             output.focus();
             output.select();
         });
+
+        // Restaurar cartera desde el repo -- de SOLO LECTURA (nunca escribe
+        // nada en GitHub). Existía la sincronización automática (local ->
+        // repo) pero no el camino inverso: si esta lista se vaciaba en el
+        // navegador (caché borrado, otro navegador, modo incógnito, etc.)
+        // no había forma de traer de vuelta lo que ya estaba guardado en
+        // data/mi_cartera.json. Lee el archivo público del repo directo
+        // (sin necesidad de token) y, con confirmación explícita, reemplaza
+        // lo que hay en este navegador.
+        async function restaurarCarteraDesdeGithub() {
+            const estadoEl = document.getElementById('restaurar-cartera-estado');
+            if (estadoEl) estadoEl.textContent = 'Buscando en el repo...';
+            try {
+                const url = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${GITHUB_PATH_CARTERA}?t=${Date.now()}`;
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const posiciones = await resp.json();
+                if (!Array.isArray(posiciones)) throw new Error('formato inesperado');
+
+                const actuales = cargarCartera();
+                const mensaje = actuales.length
+                    ? `El repo tiene ${posiciones.length} posición(es) guardada(s). Esto va a REEMPLAZAR las ${actuales.length} que ves ahora en este navegador por esas. ¿Seguir?`
+                    : `Se encontraron ${posiciones.length} posición(es) guardada(s) en el repo. ¿Traerlas a este navegador?`;
+                if (!confirm(mensaje)) {
+                    if (estadoEl) estadoEl.textContent = '';
+                    return;
+                }
+
+                localStorage.setItem('mi_cartera', JSON.stringify(posiciones));
+                renderCartera();
+                if (estadoEl) estadoEl.textContent = `✓ Se restauraron ${posiciones.length} posición(es), recién ahora.`;
+            } catch (e) {
+                if (estadoEl) estadoEl.textContent = `⚠ No se pudo leer data/mi_cartera.json del repo (${e.message})`;
+            }
+        }
+        document.getElementById('restaurar-cartera-btn').addEventListener('click', restaurarCarteraDesdeGithub);
 
         // Fecha de hoy por defecto en el form de Mi Cartera
         document.getElementById('cartera-fecha').valueAsDate = new Date();
