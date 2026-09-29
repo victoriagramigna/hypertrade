@@ -1051,7 +1051,18 @@
                 const listaTickers = data.tickers_fallidos.map(f => f.ticker).join(', ');
                 badgesHtml.push(`<span class="border border-accent text-accent px-2 py-1 rounded-sm bg-surface cursor-help" title="Falló: ${listaTickers}">⚠️ ${nFallidos} FUENTE(S) CON PROBLEMAS</span>`);
             }
-            
+
+            // Badge de tickers con dato desactualizado (descarga OK, pero el
+            // último precio seguía siendo el del día hábil anterior -- se
+            // omiten de esta corrida para no calcular señales con un precio
+            // viejo; ver datos.py). Distinto de "fuente con problemas": acá
+            // la descarga funcionó, solo que el dato no estaba al día.
+            const nDesactualizados = (data?.tickers_desactualizados ?? []).length;
+            if (nDesactualizados > 0) {
+                const listaDesact = data.tickers_desactualizados.map(d => d.ticker).join(', ');
+                badgesHtml.push(`<span class="border border-accent text-accent px-2 py-1 rounded-sm bg-surface cursor-help" title="No se evaluaron esta corrida porque su último dato era el del día hábil anterior, no el de hoy: ${listaDesact}. Se reintenta en la próxima corrida.">⚠️ ${nDesactualizados} TICKER(S) SIN DATO DE HOY</span>`);
+            }
+
             const rScore = data?.regimen_score?.score;
             if (rScore != null) {
                 const rc = colorRegimen(rScore);
@@ -1916,8 +1927,12 @@
                     class="px-3 py-1 rounded-sm border ${x === h ? 'border-accent text-accent bg-accent/10' : 'border-gray-700 text-gray-500'}">${x} ruedas</button>`).join('');
 
             const gen = d.generado_utc ? new Date(d.generado_utc) : null;
-            document.getElementById('aud-generado').textContent = gen
-                ? `Actualizado: ${gen.toLocaleDateString('es-AR')} ${gen.toLocaleTimeString('es-AR', {hour12:false, hour:'2-digit', minute:'2-digit'})} · ${d.casos_total ?? 0} casos en total (una señal repetida en el mismo ticker dentro de 7 días cuenta una sola vez)`
+            const nExcluidos = d.casos_excluidos_sospechosos ?? 0;
+            const excluidosStr = nExcluidos > 0
+                ? ` · <span class="cursor-help border-b border-dashed border-gray-600" title="Casos con precio de entrada incorrecto (dato desactualizado al momento de la alerta -- ver ⚠ TICKER(S) SIN DATO DE HOY). No se borraron de la bitácora, solo se excluyen de estos promedios.">${nExcluidos} excluido(s) por dato sospechoso</span>`
+                : '';
+            document.getElementById('aud-generado').innerHTML = gen
+                ? `Actualizado: ${gen.toLocaleDateString('es-AR')} ${gen.toLocaleTimeString('es-AR', {hour12:false, hour:'2-digit', minute:'2-digit'})} · ${d.casos_total ?? 0} casos en total (una señal repetida en el mismo ticker dentro de 7 días cuenta una sola vez)${excluidosStr}`
                 : '';
 
             const minimo = d.muestra_minima ?? 10;
