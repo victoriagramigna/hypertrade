@@ -32,7 +32,7 @@ from alertas import detectar_alertas
 from contexto import escanear_titulares, evaluar_contexto_macro, recomendacion_final
 from regimen_mercado import evaluar_regimen_mercado
 from historial import cargar_historial, guardar_historial
-from telegram_bot import notificar_alertas
+from telegram_bot import notificar_alertas, notificar_datos_desactualizados
 from macro_local import traer_contexto_macro
 from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
@@ -99,7 +99,8 @@ def main():
 
     # 1. Datos
     tickers_a_pedir = {**TICKERS}
-    precios, volumenes, precios_ohlc, fallidos = traer_datos({**tickers_a_pedir, VIX_TICKER: "Índice"}, BENCHMARK)
+    precios, volumenes, precios_ohlc, fallidos, desactualizados = traer_datos(
+        {**tickers_a_pedir, VIX_TICKER: "Índice"}, BENCHMARK)
     if BENCHMARK not in precios:
         log.error("El benchmark no se pudo traer -- abortando la corrida")
         return
@@ -111,6 +112,14 @@ def main():
         log.warning(f"CORRIDA DEGRADADA: falló el {pct_fallidos}% del universo "
                     f"({len(fallidos_universo)}/{len(TICKERS)}) -- se guarda igual, "
                     f"pero se saltea el envío de Telegram esta corrida")
+
+    # 1b. Tickers con dato desactualizado (ver datos.py): no se calcula
+    # ninguna señal para ellos en esta corrida, para no repetir el caso de
+    # Gap alcista con el cierre del día hábil anterior.
+    desactualizados_universo = [d for d in desactualizados if d["ticker"] in TICKERS]
+    if desactualizados_universo:
+        log.warning(f"{len(desactualizados_universo)} ticker(s) del universo quedaron desactualizados "
+                    f"y se omiten de esta corrida: {[d['ticker'] for d in desactualizados_universo]}")
 
     # 2. Régimen de mercado (VIX)
     vix_actual = traer_vix(precios)
@@ -269,6 +278,7 @@ def main():
         "tickers_fallidos": fallidos,
         "pct_fallidos": pct_fallidos,
         "corrida_degradada": corrida_degradada,
+        "tickers_desactualizados": desactualizados_universo,
         "frescura_dato": frescura,
         "ranking": df_rs.to_dict(orient="records") if not df_rs.empty else [],
         "rs_por_sector": rs_por_sector,
@@ -346,6 +356,14 @@ def main():
                 log.info(f"  [TEST] {a['Ticker']}: {a['Estado']} ({a['Score']}) -- {a['Recomendación final']}")
     else:
         log.info("Sin alertas nuevas para notificar en esta corrida")
+
+    # 9b. Aviso de tickers desactualizados -- un solo mensaje, solo si hubo
+    # alguno esta corrida (no todos los días), para no sumar ruido al
+    # mensaje diario cuando no hace falta.
+    if desactualizados_universo and MODO == "produccion" and not corrida_degradada:
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+        notificar_datos_desactualizados(token, chat_id, desactualizados_universo, fecha_hoy)
 
     guardar_historial(historial)
 

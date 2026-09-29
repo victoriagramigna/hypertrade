@@ -34,6 +34,13 @@ log = logging.getLogger("radar.auditoria")
 RUTA_LOG = "data/log_alertas.jsonl"
 RUTA_TOP30 = "data/top30_semanal.json"
 RUTA_SALIDA = "data/auditoria.json"
+# Casos marcados como sospechosos a posteriori (ej. el bug de dato
+# desactualizado del 21/9 y 28/9 -- ver datos.py). Archivo de SOLO AGREGADO,
+# igual que la bitácora: nunca se edita ni se borra una línea, solo se
+# suman nuevas marcas. auditar_señales() los excluye del cálculo de
+# performance (no distorsionan el % de acierto de ninguna señal), pero ni
+# la bitácora ni el histórico permanente de casos se tocan.
+RUTA_SOSPECHOSOS = "data/eventos_sospechosos.jsonl"
 # Archivo PERMANENTE: cada caso que ya terminó de medirse (tiene sus tres
 # horizontes) se graba acá una sola vez y nunca se borra. Así la auditoría
 # no depende del año de precios que se baja en cada corrida: un caso de
@@ -240,12 +247,26 @@ def _clave_caso(c):
     return (c.get("ticker"), c.get("fecha"), c.get("señal"))
 
 
+def _pares_sospechosos():
+    """(ticker, fecha) marcados en RUTA_SOSPECHOSOS -- se excluyen de la
+    auditoría sin tocar ni la bitácora ni el histórico permanente."""
+    return {(s.get("ticker"), s.get("fecha")) for s in _leer_jsonl(RUTA_SOSPECHOSOS)}
+
+
 def auditar_señales(precios):
-    # 1. Lo que ya quedó grabado para siempre
-    historico = {_clave_caso(c): c for c in _leer_jsonl(RUTA_HISTORICO)}
+    sospechosos = _pares_sospechosos()
+
+    # 1. Lo que ya quedó grabado para siempre (menos lo marcado como sospechoso)
+    historico = {
+        _clave_caso(c): c for c in _leer_jsonl(RUTA_HISTORICO)
+        if (c.get("ticker"), c.get("fecha")) not in sospechosos
+    }
 
     # 2. Lo que se puede medir hoy con los precios descargados
-    eventos = _dedup(_leer_jsonl(RUTA_LOG))
+    eventos = [
+        ev for ev in _dedup(_leer_jsonl(RUTA_LOG))
+        if (ev.get("ticker"), (ev.get("timestamp") or "")[:10]) not in sospechosos
+    ]
     serie_spy = _serie_limpia(precios, "SPY")
     nuevos_completos = []
     casos = dict(historico)
@@ -278,7 +299,7 @@ def auditar_señales(precios):
 
     lista = sorted(casos.values(), key=lambda c: c["fecha"], reverse=True)
     return (_resumir(lista), lista[:MAX_DETALLE], len(lista), _por_mes(lista),
-            _por_regimen(lista), _por_cuidados(lista), _por_tendencia_semanal(lista))
+            _por_regimen(lista), _por_cuidados(lista), _por_tendencia_semanal(lista), len(sospechosos))
 
 
 FRANJAS_REGIMEN = [(80, "80-100 Favorable"), (60, "60-79 Aceptable"), (40, "40-59 Cauteloso"), (0, "0-39 Desfavorable")]
@@ -695,7 +716,8 @@ def evaluar_mis_operaciones(precios):
 
 def correr_auditoria(precios, df_rs, universo, ahora=None):
     ahora = ahora or datetime.now(timezone.utc)
-    resumen, detalle, n_casos, por_mes, por_regimen, por_cuidados, por_tendencia_semanal = auditar_señales(precios)
+    (resumen, detalle, n_casos, por_mes, por_regimen, por_cuidados, por_tendencia_semanal,
+     casos_excluidos_sospechosos) = auditar_señales(precios)
 
     fotos = guardar_foto_top30(df_rs, ahora)
     top30 = evaluar_top30_real(fotos, precios, universo)
@@ -720,6 +742,11 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         "stop_pct": STOP_PCT,
         "horizontes": list(HORIZONTES),
         "casos_total": n_casos,
+        # Casos marcados en RUTA_SOSPECHOSOS (ver arriba) que quedaron
+        # afuera de "casos_total" y de todos los promedios de esta
+        # auditoría -- ninguno se borró de la bitácora, solo no cuentan
+        # para medir performance porque el precio de entrada era incorrecto.
+        "casos_excluidos_sospechosos": casos_excluidos_sospechosos,
         "resumen_señales": resumen,
         "por_mes": por_mes,
         "por_regimen": por_regimen,

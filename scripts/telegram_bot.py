@@ -75,3 +75,20 @@ def notificar_alertas(token: str, chat_id: str, alertas: list, fecha: str) -> in
             enviados += 1
 
     return enviados
+
+
+def notificar_datos_desactualizados(token: str, chat_id: str, desactualizados: list, fecha: str) -> bool:
+    """Un solo mensaje resumen cuando algún ticker quedó con dato viejo esta
+    corrida (ver datos.py) -- así queda claro que esos tickers NO se
+    evaluaron hoy, en vez de que parezca que simplemente no hubo novedades."""
+    if not desactualizados:
+        return False
+
+    lista = ", ".join(sorted(d["ticker"] for d in desactualizados))
+    texto = (
+        f"⚠️ <b>Datos no actualizados</b> — {fecha}\n"
+        f"{len(desactualizados)} ticker(s) no se evaluaron esta corrida porque su dato "
+        f"seguía siendo el del día hábil anterior: {lista}.\n"
+        f"Se reintenta solo(s) en la próxima corrida."
+    )
+    return enviar_mensaje(token, chat_id, texto)
