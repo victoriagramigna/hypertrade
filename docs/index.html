@@ -2901,26 +2901,60 @@
                         ${cuidados.map(c => `<div class="text-gray-400 text-xs mt-1">${c}</div>`).join('')}
                     </div>` : '';
 
+                // Encabezado (30/9): para una compra "CEDEAR en pesos", lo
+                // que se ve primero tiene que ser lo que vos realmente
+                // pagaste en pesos -- antes decía "Compra: $338,4 (USD/
+                // acción)" como si ese fuera tu precio de compra, cuando en
+                // realidad es solo una referencia técnica interna (para
+                // poder calcular el stop-loss, que en este sistema siempre
+                // se sigue en dólares). Eso generaba confusión real
+                // (Victoria, 30/9). Para una compra cargada directo en
+                // dólares (sin origenArs), esa sigue siendo tu plata real,
+                // así que el encabezado no cambia.
+                const encabezadoHtml = p.origenArs ? `
+                    <div class="text-xs text-gray-400 mt-1">Comprado en pesos: ARS $${p.origenArs.precioArs} ${p.cantidad ? `× ${p.cantidad}` : ''} el ${p.fecha}</div>
+                    <div class="text-[10px] text-gray-600 mt-0.5">CCL de compra: ${p.origenArs.cclCompra} · ratio ${p.origenArs.ratio}:1</div>
+                    <div class="text-[10px] text-gray-700 mt-0.5" title="No es tu precio de compra -- es un precio de referencia en dólares que usa el sistema para calcular el stop-loss y los objetivos de venta más abajo, que siempre se siguen en dólares.">(referencia técnica para el stop: US$${p.precio}/acción)</div>
+                ` : `
+                    <div class="text-xs text-gray-500 mt-1">Compra: $${p.precio} (USD/acción) ${p.cantidad ? `× ${p.cantidad}` : ''} el ${p.fecha}</div>
+                `;
+
+                // Seguimiento técnico en dólares (30/9): para una compra en
+                // pesos, este bloque entero (variación, stop, objetivos,
+                // señales) NO es tu plata real -- es el sistema interno que
+                // sigue el precio de la ACCIÓN en dólares para decidir
+                // cuándo mover el stop-loss. Se muestra aparte y atenuado,
+                // con un rótulo explícito, para no confundirlo con tu
+                // resultado real (que es el Balance real de abajo). Para
+                // una compra cargada en dólares, esto ES tu plata real, así
+                // que no lleva la aclaración.
+                const seguimientoTecnicoHtml = `
+                    <div class="mt-3 pt-3 border-t border-gray-800">
+                        ${p.origenArs ? '<div class="text-gray-600 text-[10px] uppercase tracking-widest mb-1" title="Este bloque sigue el precio de la ACCIÓN en dólares -- es información técnica interna para decidir cuándo vender, no es tu ganancia o pérdida real (esa está arriba, en Balance real).">Seguimiento técnico (dólares, no es tu ganancia real)</div>' : ''}
+                        <div class="${p.origenArs ? 'opacity-70' : ''}">
+                            <div>${variacionHtml}</div>
+                            ${stopHtml}
+                            ${objetivoHtml}
+                            ${señalesHtml}
+                        </div>
+                    </div>`;
+
                 return `
                     <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="font-bold text-white text-lg">${p.ticker}</span>
-                                <div class="text-xs text-gray-500 mt-1">Compra: $${p.precio} (USD/acción) ${p.cantidad ? `× ${p.cantidad}` : ''} el ${p.fecha}</div>
-                                ${p.origenArs ? `<div class="text-[10px] text-gray-600 mt-0.5">CEDEAR: ARS $${p.origenArs.precioArs} · CCL ${p.origenArs.cclCompra} · ratio ${p.origenArs.ratio}:1</div>` : ''}
+                                ${encabezadoHtml}
                             </div>
                             <div class="flex flex-col items-end gap-2">
                                 <button onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
                                 <button onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
                             </div>
                         </div>
-                        <div class="mt-2">${variacionHtml}</div>
-                        ${stopHtml}
-                        ${objetivoHtml}
                         ${balanceRealHtml}
                         ${alertasArsHtml}
                         ${cuidadosHtml}
-                        ${señalesHtml}
+                        ${seguimientoTecnicoHtml}
                         ${ventaAbierta === idx ? formularioVenta(p, precioActual) : ''}
                     </div>`;
             }).join('');
