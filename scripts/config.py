@@ -287,6 +287,11 @@ RATIOS_CEDEAR = {
     "SPY": 20, "TSLA": 15, "QQQ": 20, "NVDA": 24, "BABA": 9, "OKLO": 28,
     "AAPL": 20, "JMIA": 1, "SATL": 1, "CRWV": 27, "TEM": 12, "LAC": 1,
     "TSM": 9,  # Taiwan Semiconductor -- faltaba, lo pidió Victoria para Mi Cartera
+    "SPCE": 2,  # Virgin Galactic -- ratio 1:2 según Banco Comafi (29/9). Ojo:
+    # el "teórico" puede no cerrar del todo contra el precio real (posible
+    # precio en USD desactualizado para este ticker en el pipeline) -- no
+    # afecta al Balance real de Mi Cartera, que usa el precio real del
+    # CEDEAR en vivo, no este teórico.
     # --- 19 tickers nuevos sumados en sept. 2026 (EDN queda afuera: es ADR sin CEDEAR propio) ---
     "ARM": 27, "AVGO": 39, "IREN": 12, "TXN": 5, "AMAT": 5, "SNDK": 170,
     "KLAC": 34, "SKHY": 25, "DELL": 74, "WDC": 92, "GEV": 180, "TLN": 63,
