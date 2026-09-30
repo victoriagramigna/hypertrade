@@ -895,9 +895,25 @@
                 if (tendSem === 'favor') chips.push('<span class="signal-chip text-pos border-pos cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, tanto el RSI(14) como el MACD(12,26,9) están alcistas. No suma puntos al score ni cambia la recomendación -- es un dato más para vos.">🟢 SEMANAL A FAVOR</span>');
                 else if (tendSem === 'contra') chips.push('<span class="signal-chip text-neg border-neg cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, tanto el RSI(14) como el MACD(12,26,9) están bajistas -- la señal diaria va a favor pero el fondo semanal no acompaña todavía. No cambia la recomendación, es un dato más para vos.">🔴 SEMANAL EN CONTRA</span>');
                 else if (tendSem === 'mixta') chips.push('<span class="signal-chip text-accent border-accent cursor-help" title="Contexto, no gatillo: en la vela SEMANAL, el RSI(14) y el MACD(12,26,9) no coinciden (uno alcista, el otro no). No cambia la recomendación, es un dato más para vos.">🟡 SEMANAL MIXTA</span>');
-                const nCuidados = (alerta?.Cuidados ?? []).length;
-                if (nCuidados) chips.push(`<span class="signal-chip text-accent border-accent cursor-help" title="Cosas que juegan EN CONTRA de esta señal alcista (no bajan el score, pero conviene mirarlas antes de entrar): ${(alerta?.Cuidados ?? []).join(' | ')}">⚠ ${nCuidados} PUNTO${nCuidados > 1 ? 'S' : ''} DE CUIDADO</span>`);
                 const chipsHtml = chips.length ? `<div class="flex flex-wrap gap-1 mt-2">${chips.join('')}</div>` : '';
+
+                // Puntos de cuidado -- ANTES era un chip chiquito "⚠ N PUNTOS DE
+                // CUIDADO" con el detalle escondido en un title= (tooltip poco
+                // confiable en celular, ver charla del 30/9). Se cambia a un
+                // aviso visible con el texto de cada punto directamente en la
+                // tarjeta -- es lo que hubiera importado ver antes de comprar
+                // META extendida con RSI 85, caso real que motivó este cambio.
+                const cuidadosLista = alerta?.Cuidados ?? [];
+                let cuidadosAvisoHtml = '';
+                if (cuidadosLista.length) {
+                    const filasCuidados = cuidadosLista.map(c =>
+                        `<div class="flex gap-1.5 mt-1"><span>⚠</span><span class="text-gray-300">${c}</span></div>`
+                    ).join('');
+                    cuidadosAvisoHtml = `<div class="mt-2 border border-accent text-accent bg-accent/10 font-mono text-[11px] px-2 py-1.5 rounded-sm">
+                        <div class="font-bold">${cuidadosLista.length} PUNTO${cuidadosLista.length > 1 ? 'S' : ''} DE CUIDADO -- en contra de esta señal, mirá antes de entrar:</div>
+                        ${filasCuidados}
+                    </div>`;
+                }
 
                 // Este mismo ticker disparó más de un tipo de alerta hoy (ver
                 // fusionarPorTicker) -- se listan como sellos extra, arriba
@@ -996,6 +1012,7 @@
                         <div class="font-mono text-sm text-gray-300">${estado}</div>
                         ${otrasSeñalesHtml}
                         ${chipsHtml}
+                        ${cuidadosAvisoHtml}
                         ${regimenAvisoHtml}
                         ${volumenBajoAvisoHtml}
                         ${radarScoreHtml}
