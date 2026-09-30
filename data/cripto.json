@@ -1,33 +1,33 @@
 {
-  "actualizado_utc": "2026-09-30T03:40:51.333540+00:00",
+  "actualizado_utc": "2026-09-30T10:14:29.392920+00:00",
   "criptomonedas": [
     {
       "ticker": "BTC-USD",
       "nombre": "Bitcoin",
-      "precio": 83357.92,
-      "sma50": 76477.71,
-      "sma200": 71137.77,
-      "rsi": 65.1,
-      "vol_rel": 1.37,
+      "precio": 83700.85,
+      "sma50": 76871.95,
+      "sma200": 71201.04,
+      "rsi": 76.3,
+      "vol_rel": 0.91,
       "max_52w": 124752.53,
-      "dist_max52w_pct": -33.07,
+      "dist_max52w_pct": -32.97,
       "tendencia_alcista": true,
       "precio_sobre_sma50": true,
       "sma50_subiendo": true,
-      "dias_rsi_alto": 0,
+      "dias_rsi_alto": 1,
       "cruce": null,
       "ruptura_20d": false,
       "max_20d_previo": 86602.91,
       "cruce_sma50": null,
       "mov_normal_pct": 1.38,
-      "precio_cierre": 83502.61,
-      "vela_cerrada": "2026-09-28",
-      "mov_hoy_pct": -0.17,
-      "score": 65,
+      "precio_cierre": 83622.43,
+      "vela_cerrada": "2026-09-29",
+      "mov_hoy_pct": 0.09,
+      "score": 49,
       "score_version": "v2",
       "score_detalle": {
         "tendencia": 45,
-        "volumen": 20,
+        "volumen": 4,
         "distancia_max52w": 0
       },
       "score_maximos": {
@@ -35,36 +35,43 @@
         "volumen": 25,
         "distancia_max52w": 30
       },
-      "cuidados": [],
-      "alertas": []
+      "cuidados": [
+        "RSI en 76: sobrecompra. En tendencias fuertes puede seguir así un tiempo, pero entrar acá deja poco margen si corrige."
+      ],
+      "alertas": [
+        {
+          "tipo": "RSI en sobrecompra",
+          "narrativa": "Bitcoin tiene RSI de 76.3, zona de sobrecompra. Es una señal de cautela, no de venta: en tendencias fuertes puede quedar así semanas."
+        }
+      ]
     },
     {
       "ticker": "ETH-USD",
       "nombre": "Ethereum",
-      "precio": 2674.02,
-      "sma50": 2403.57,
-      "sma200": 2103.89,
-      "rsi": 64.4,
-      "vol_rel": 1.09,
+      "precio": 2690.42,
+      "sma50": 2419.68,
+      "sma200": 2106.81,
+      "rsi": 77.7,
+      "vol_rel": 1.02,
       "max_52w": 4687.77,
-      "dist_max52w_pct": -42.65,
+      "dist_max52w_pct": -42.9,
       "tendencia_alcista": true,
       "precio_sobre_sma50": true,
       "sma50_subiendo": true,
-      "dias_rsi_alto": 0,
+      "dias_rsi_alto": 1,
       "cruce": null,
       "ruptura_20d": false,
       "max_20d_previo": 2776.47,
       "cruce_sma50": null,
-      "mov_normal_pct": 1.63,
-      "precio_cierre": 2688.67,
-      "vela_cerrada": "2026-09-28",
-      "mov_hoy_pct": -0.54,
-      "score": 55,
+      "mov_normal_pct": 1.62,
+      "precio_cierre": 2676.72,
+      "vela_cerrada": "2026-09-29",
+      "mov_hoy_pct": 0.51,
+      "score": 53,
       "score_version": "v2",
       "score_detalle": {
         "tendencia": 45,
-        "volumen": 10,
+        "volumen": 8,
         "distancia_max52w": 0
       },
       "score_maximos": {
@@ -72,8 +79,15 @@
         "volumen": 25,
         "distancia_max52w": 30
       },
-      "cuidados": [],
-      "alertas": []
+      "cuidados": [
+        "RSI en 78: sobrecompra. En tendencias fuertes puede seguir así un tiempo, pero entrar acá deja poco margen si corrige."
+      ],
+      "alertas": [
+        {
+          "tipo": "RSI en sobrecompra",
+          "narrativa": "Ethereum tiene RSI de 77.7, zona de sobrecompra. Es una señal de cautela, no de venta: en tendencias fuertes puede quedar así semanas."
+        }
+      ]
     }
   ]
 }
