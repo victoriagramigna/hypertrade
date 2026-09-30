@@ -609,6 +609,22 @@
             const dist200Text = dist200 != null ? `(${dist200 > 0 ? '+' : ''}${dist200.toFixed(1)}%)` : '';
             const dist200Color = dist200 > 0 ? 'text-pos' : 'text-neg';
 
+            // Mismos datos "nuevos" que ya se ven en la fila de Universo
+            // Técnico -- antes esta ventanita se había quedado atrás y no
+            // los mostraba (ver charla con Victoria, 30/9).
+            const radarScoreTicker = tickerData?.Radar_Score;
+            const radarScoreHtml = radarScoreTicker != null
+                ? `<span class="text-[10px] text-gray-500 ml-3">RADAR <span class="text-accent font-bold">${radarScoreTicker.toFixed(0)}</span></span>`
+                : '';
+            const rsSectorTicker = tickerData?.RS_Score_Sector;
+            const rsSectorHtml = rsSectorTicker != null
+                ? `<span class="text-[10px] text-gray-500 ml-3">SECTOR <span class="text-blueAlert font-bold">${rsSectorTicker.toFixed(0)}</span></span>`
+                : '';
+            const perfilFuerzaTicker = tickerData?.Perfil_Fuerza;
+            const perfilFuerzaModalHtml = perfilFuerzaTicker
+                ? `<div class="text-[11px] text-blueAlert mt-2">↳ ${perfilFuerzaTicker}</div>`
+                : '';
+
             content.innerHTML = `
                 ${alertHtml}
                 <div class="${alerta ? '' : 'mt-2'} flex justify-between items-end mb-6">
@@ -623,12 +639,22 @@
                 </div>
                 
                 <div class="mb-6 bg-base p-4 rounded-sm border border-gray-800">
-                    <div class="flex justify-between font-mono text-xs mb-2 uppercase">
+                    <div class="flex justify-between items-center font-mono text-xs mb-2 uppercase">
                         <span class="text-gray-400 tracking-widest">RS Score</span>
-                        <span class="text-white font-bold">${rsScore.toFixed(0)} / 100</span>
+                        <span>
+                            <span class="text-white font-bold">${rsScore.toFixed(0)} / 100</span>
+                            ${radarScoreHtml}
+                            ${rsSectorHtml}
+                        </span>
                     </div>
                     <div class="h-2 w-full bar-bg rounded-full overflow-hidden">
                         <div class="h-full ${rsColor}" style="width: ${Math.min(rsScore, 100)}%"></div>
+                    </div>
+                    ${perfilFuerzaModalHtml}
+                    <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-800 font-mono text-[10px] text-gray-500 uppercase tracking-widest">
+                        <span>Δ día ${deltaRsHtml(tickerData?.Delta_RS_dia)}</span>
+                        <span>Δ sem ${deltaRsHtml(tickerData?.Delta_RS_semana)}</span>
+                        <span>Δ mes ${deltaRsHtml(tickerData?.Delta_RS_mes)}</span>
                     </div>
                 </div>
 
