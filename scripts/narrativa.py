@@ -11,6 +11,8 @@ afecta o no el puntaje.
 """
 import pandas as pd
 
+from config import VOLUMEN_RELATIVO_MINIMO
+
 
 ORDEN_NARRATIVA = [
     "rs_alto",
@@ -69,10 +71,25 @@ def _frase_apoyo_soporte(row: pd.Series) -> str:
 
 
 def _frase_gap_alcista(row: pd.Series) -> str:
+    """FIX 30/9: antes decía "con volumen" siempre, sin mirar el dato real
+    (Vol_rel) -- la alerta de gap alcista NO exige volumen alto para
+    dispararse (ver UMBRAL_GAP_ALCISTA_PCT en alertas.py), así que el texto
+    podía afirmar volumen alto en un salto con volumen bajo. Ahora la frase
+    refleja el Vol_rel real de ese día."""
     gap_pct = row.get("Gap_Pct", row.get("Var_dia_%"))
+    vol_rel = row.get("Vol_rel")
+    vol_valido = vol_rel is not None and pd.notna(vol_rel)
+
+    if vol_valido and vol_rel > VOLUMEN_RELATIVO_MINIMO:
+        frase_vol = f", con volumen alto ({vol_rel:.1f}x su promedio de 20 días)"
+    elif vol_valido:
+        frase_vol = f" (volumen {vol_rel:.1f}x su promedio -- sin confirmación de volumen alto)"
+    else:
+        frase_vol = ""
+
     if gap_pct is not None and pd.notna(gap_pct):
-        return f"Salto de {gap_pct:.1f}% con volumen, por encima de su SMA200 -- momentum de corto plazo."
-    return "Salto alcista reciente con volumen, por encima de su SMA200 -- momentum de corto plazo."
+        return f"Salto de {gap_pct:.1f}%{frase_vol}, por encima de su SMA200 -- momentum de corto plazo."
+    return f"Salto alcista reciente{frase_vol}, por encima de su SMA200 -- momentum de corto plazo."
 
 
 def _frase_cruce_avwap_52w(row: pd.Series) -> str:
