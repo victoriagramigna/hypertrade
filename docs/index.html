@@ -173,6 +173,7 @@
             <!-- Sección: Top 30 -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 30 Fuerza Relativa</h2>
+                <div id="top30-nuevos-container" class="mb-3"></div>
                 <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto"></div>
             </section>
             <!-- 4. Rotación Sectorial -->
@@ -1196,6 +1197,43 @@
 
             const rankingArray = data?.ranking ?? [];
 
+            // Nuevos ingresos diarios al Top 30 -- comparación contra la
+            // última foto guardada (normalmente ayer). Puramente
+            // informativo: no reemplaza ni toca el Top 30 de siempre de
+            // abajo, solo señala quién es nuevo hoy.
+            const nuevosTop30Container = document.getElementById('top30-nuevos-container');
+            const nuevosTop30 = data?.top30_nuevos_hoy ?? [];
+            const salientesTop30 = data?.top30_salientes_hoy ?? [];
+            const fechaComparacionTop30 = data?.top30_fecha_comparacion;
+            if (!fechaComparacionTop30) {
+                nuevosTop30Container.innerHTML = '';
+            } else if (nuevosTop30.length === 0 && salientesTop30.length === 0) {
+                nuevosTop30Container.innerHTML = `
+                    <div class="font-mono text-[10px] text-gray-600 px-1">Sin cambios en el Top 30 desde el ${fechaComparacionTop30}.</div>
+                `;
+            } else {
+                const filaTicker = (t) => {
+                    const info = rankingArray.find(r => r?.Ticker === t);
+                    const rs = info?.RS_Score != null ? info.RS_Score.toFixed(0) : '—';
+                    return `<span class="inline-flex items-center gap-1 bg-base border border-gray-800 rounded-sm px-1.5 py-0.5 mr-1 mb-1 cursor-pointer hover:border-accent" onclick="irAAlertasDeTicker('${t}')">
+                        <span class="font-bold text-white">${t}</span><span class="text-gray-500">${rs}</span>
+                    </span>`;
+                };
+                const nuevosHtml = nuevosTop30.length
+                    ? `<div class="mb-1"><span class="text-pos text-[10px] uppercase font-bold">▲ Nuevos hoy:</span> ${nuevosTop30.map(filaTicker).join('')}</div>`
+                    : '';
+                const salientesHtml = salientesTop30.length
+                    ? `<div><span class="text-gray-500 text-[10px] uppercase font-bold">▼ Salieron:</span> ${salientesTop30.map(filaTicker).join('')}</div>`
+                    : '';
+                nuevosTop30Container.innerHTML = `
+                    <div class="bg-surface border border-surface rounded-sm px-2 py-2 font-mono text-[11px]">
+                        ${nuevosHtml}
+                        ${salientesHtml}
+                        <div class="text-gray-700 text-[9px] mt-1">vs. la foto del ${fechaComparacionTop30} -- tocá un ticker para ver su tarjeta de alertas.</div>
+                    </div>
+                `;
+            }
+
             // Renderizado Top 30
             const top10Container = document.getElementById('top10-container');
             if (rankingArray.length === 0) {
@@ -1205,16 +1243,24 @@
                 top10Container.innerHTML = top10.map((ticker, index) => {
                     const rsScore = ticker?.RS_Score ?? 0;
                     const dotClass = ticker?.Sobre_SMA50 ? 'dot-pos' : 'dot-neg';
+                    const nombreTicker = ticker?.Ticker ?? '—';
                     return `
-                        <div class="flex justify-between items-center border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
-                            <div class="flex items-center gap-2">
-                                <span class="text-gray-600 font-mono text-xs w-6 text-right">${index + 1}.</span>
-                                <span class="font-bold text-white w-14">${ticker?.Ticker ?? '—'}</span>
-                                <span class="text-[10px] uppercase text-gray-500 truncate w-24 hidden 2xl:inline-block">${ticker?.Sector ?? '—'}</span>
+                        <div class="border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-600 font-mono text-xs w-6 text-right">${index + 1}.</span>
+                                    <span class="font-bold text-white w-14 cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    <span class="text-[10px] uppercase text-gray-500 truncate w-24 hidden 2xl:inline-block">${ticker?.Sector ?? '—'}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-accent text-sm w-8 text-right">${rsScore.toFixed(0)}</span>
+                                    <span class="dot ${dotClass}"></span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <span class="font-mono text-accent text-sm w-8 text-right">${rsScore.toFixed(0)}</span>
-                                <span class="dot ${dotClass}"></span>
+                            <div class="flex items-center gap-3 pl-8 mt-0.5 font-mono text-[9px] text-gray-600">
+                                <span title="Cuánto cambió el RS Score desde la corrida anterior">Δ día ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
+                                <span title="Cuánto cambió el RS Score en las últimas ~5 ruedas (1 semana)">Δ sem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
+                                <span title="Cuánto cambió el RS Score en las últimas ~21 ruedas (1 mes)">Δ mes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                             </div>
                         </div>
                     `;
@@ -1322,7 +1368,7 @@
                         return `
                             <div class="ticker-row py-2 border-b border-base/50 font-mono text-sm hover:bg-base/40 px-2 -mx-2 transition-colors">
                                 <div class="flex flex-wrap md:flex-nowrap items-center">
-                                    <div class="w-16 font-bold text-white">${tickerName}</div>
+                                    <div class="w-16 font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${tickerName}')">${tickerName}</div>
 
                                     <div class="w-28 flex-shrink-0 text-right mr-4 md:mr-6">
                                         <div class="text-gray-400">${displayPrecio}</div>
@@ -1349,6 +1395,9 @@
                                     <span>SMA200: ${s200V}</span>
                                     <span>RSI: ${rsiV}</span>
                                     <span>Vol: ${volV}</span>
+                                    <span>RS Δdía ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
+                                    <span>Δsem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
+                                    <span>Δmes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                                 </div>
                                 ${perfilFuerzaHtml}
                             </div>
@@ -1645,6 +1694,20 @@
             if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); }
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // Ir desde cualquier lista de tickers (Top 30, Universo Técnico,
+        // Nuevos en el Top 30) directo a su tarjeta en Alertas Activas --
+        // reusa el mismo buscador de la solapa Alertas, así se ve la
+        // tarjeta completa (cuidados, score detallado, etc.) en vez de un
+        // resumen aparte. Si el ticker no tiene alerta activa, el propio
+        // buscador ya muestra "Sin alertas para ese ticker".
+        function irAAlertasDeTicker(ticker) {
+            switchTab('alertas');
+            const input = document.getElementById('alertas-search');
+            if (!input) return;
+            input.value = ticker;
+            filtrarAlertas();
         }
 
         // ============ RÉGIMEN DE MERCADO (Inicio) ============
@@ -2006,6 +2069,15 @@
             if (v == null) return '<span class="text-gray-600">—</span>';
             const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-400');
             return `<span class="${color}">${conSigno && v > 0 ? '+' : ''}${Number(v).toFixed(1)}%</span>`;
+        }
+
+        // Δ de RS Score (puntos, no %) -- día/semana/mes. '—' cuando
+        // todavía no hay suficiente historial guardado (el sistema recién
+        // empezó a guardar esto, o el ticker es nuevo en el universo).
+        function deltaRsHtml(v) {
+            if (v == null) return '<span class="text-gray-700">—</span>';
+            const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-500');
+            return `<span class="${color}">${v > 0 ? '+' : ''}${Number(v).toFixed(1)}</span>`;
         }
 
         function renderAuditoria() {
