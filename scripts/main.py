@@ -38,6 +38,9 @@ from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
 from movimientos import detectar_movimientos_diarios
 from bitacora import registrar_eventos
+from top30_nuevos import registrar_y_comparar_top30
+from rs_deltas import registrar_y_calcular_deltas
+from rebote_ema200 import detectar_rebote_ema200
 from radar_score import calcular_radar_score
 from narrativa import armar_narrativa
 from senales_nuevas import calcular_distribution_days, multiplicador_distribution
@@ -169,6 +172,15 @@ def main():
     spy_sobre_sma50 = bool(bench_close.iloc[-1] > spy_sma50) if spy_sma50 is not None and not math.isnan(spy_sma50) else True
     df_rs = calcular_radar_score(df_rs, rs_por_sector, spy_sobre_sma50, regimen, precios_ohlc)
 
+    # 3a-ter. Δ del RS Score (día/semana/mes) -- igual que el Top 30 nuevo,
+    # en una corrida degradada no se guarda la foto (el RS no es confiable
+    # con medio universo caído).
+    rs_deltas_por_ticker = {} if corrida_degradada else registrar_y_calcular_deltas(df_rs, fecha_hoy)
+    if rs_deltas_por_ticker and not df_rs.empty:
+        df_rs["Delta_RS_dia"] = df_rs["Ticker"].map(lambda t: rs_deltas_por_ticker.get(t, {}).get("Delta_RS_dia"))
+        df_rs["Delta_RS_semana"] = df_rs["Ticker"].map(lambda t: rs_deltas_por_ticker.get(t, {}).get("Delta_RS_semana"))
+        df_rs["Delta_RS_mes"] = df_rs["Ticker"].map(lambda t: rs_deltas_por_ticker.get(t, {}).get("Delta_RS_mes"))
+
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
     # El benchmark (SPY) nunca aparece en df_rs -- no tiene sentido rankearlo
@@ -278,6 +290,14 @@ def main():
                                                      regimen_score)
         recomendaciones.append(fila_completa)
 
+    # 7b. Nuevos ingresos diarios al Top 30 de RS Score -- igual que la
+    # foto semanal de Auditoría, en una corrida degradada NO se guarda
+    # (el RS no es confiable con medio universo caído), para no ensuciar
+    # el historial con un Top 30 armado con datos incompletos.
+    top30_nuevos_hoy = ({"nuevos": [], "salientes": [], "fecha_comparacion": None}
+                         if corrida_degradada
+                         else registrar_y_comparar_top30(df_rs, fecha_hoy))
+
     # 8. Guardar resultado para el dashboard
     salida = {
         "generado_utc": timestamp,
@@ -302,6 +322,9 @@ def main():
         "spy_precio": round(float(precios[BENCHMARK].dropna().iloc[-1]), 2),
         "distribution_days": dist_days,
         "multiplicador_distribution": mult_dist_badge,
+        "top30_nuevos_hoy": top30_nuevos_hoy["nuevos"],
+        "top30_salientes_hoy": top30_nuevos_hoy["salientes"],
+        "top30_fecha_comparacion": top30_nuevos_hoy["fecha_comparacion"],
     }
 
     salida_limpia = limpiar_para_json(salida)
@@ -372,6 +395,22 @@ def main():
         token = os.environ.get("TELEGRAM_BOT_TOKEN")
         chat_id = os.environ.get("TELEGRAM_CHAT_ID")
         notificar_datos_desactualizados(token, chat_id, desactualizados_universo, fecha_hoy)
+
+    # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
+    # con Victoria, 30/9): se registra en la bitácora para que la
+    # Auditoría la mida con el tiempo, pero todavía NO aparece como
+    # alerta (ni tarjeta ni Telegram) hasta tener resultados reales que
+    # la respalden.
+    if not corrida_degradada:
+        try:
+            candidatos_rebote, historial = detectar_rebote_ema200(precios, TICKERS, rs_por_ticker, historial)
+            if candidatos_rebote:
+                registrar_eventos(candidatos_rebote, rs_por_ticker, precios_usd_actuales, timestamp,
+                                   radar_score_por_ticker)
+                log.info(f"Rebote en EMA200 (experimental): {len(candidatos_rebote)} episodio(s) nuevo(s) "
+                         f"registrado(s) en bitácora -- todavía sin mostrarse como alerta")
+        except Exception as e:
+            log.error(f"Rebote en EMA200 (experimental) falló, no afecta al resto de la corrida: {e}")
 
     guardar_historial(historial)
 
