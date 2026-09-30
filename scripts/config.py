@@ -251,7 +251,7 @@ ESTADOS = {
     "stop_loss":     "🛑 Perdió EMA200 tras rebote — stop sugerido",
     "lider_soporte": "📈 Líder apoyando en soporte",
     "gap_alcista":   "🚀 Gap alcista con macrotendencia",
-    "ruptura_confirmada": "✅💥 Ruptura confirmada con volumen",
+    "ruptura_confirmada": "🚀✅ Gap alcista, ahora con volumen",
 }
 
 # --- Medias móviles a calcular ---

@@ -323,7 +323,7 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
             alertas.append({
                 "Ticker": ticker, "Sector": sector,
                 "Tipo": "ruptura_confirmada",
-                "Estado": ESTADOS.get("ruptura_confirmada", "✅💥 Ruptura confirmada con volumen"),
+                "Estado": ESTADOS.get("ruptura_confirmada", "🚀✅ Gap alcista, ahora con volumen"),
                 "Score": f"{vol_rel_hoy:.1f}x volumen",
                 "Score_num": None,
                 "Señales": [f"superó ${gap_referencia_previa} (nivel del Gap alcista anterior) "
