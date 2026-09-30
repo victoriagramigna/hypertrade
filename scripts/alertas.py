@@ -265,6 +265,20 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Score": f"{score_mostrado}/7",
                 "Score_num": score_mostrado,
                 "Señales": señales,
+                # Desglose de los 7 ingredientes del score -- se agrega 30/9
+                # para que el dashboard pueda mostrar CUÁLES de los 7 prendieron
+                # y cuáles no (antes solo se veía el número "3/7", sin decir si
+                # el volumen era uno de los que faltaban). No cambia el cálculo
+                # del score ni lo que ya mide la Auditoría, es solo el detalle.
+                "Score_detalle": {
+                    "cruce_sma50": bool(cruzo_sma50_hoy),
+                    "volumen_fuerte": bool(volumen_confirma),
+                    "rsi_sano": bool(rsi_sano),
+                    "base_ordenada": bool(base_ordenada),
+                    "sector_mercado_ok": bool(sector_acompana),
+                    "vcp_valido": bool(vcp_resultado["valido"]),
+                    "rsi_semanal_cruzo": bool(rsi_sem_cruzo),
+                },
                 "VCP": vcp_resultado,
                 "RSI": round(rsi_hoy, 1) if pd.notna(rsi_hoy) else None,
                 "Vol_rel": round(vol_rel_hoy, 2),
