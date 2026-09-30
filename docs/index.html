@@ -322,6 +322,9 @@
         </section>
 
         <section>
+            <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
+                <input type="text" id="cartera-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Buscar por ticker (opcional)">
+            </div>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Posiciones</h2>
             <div id="cartera-container" class="space-y-3"></div>
         </section>
@@ -2560,6 +2563,7 @@
         }
 
         document.getElementById('alertas-search').addEventListener('input', filtrarAlertas);
+        document.getElementById('cartera-search').addEventListener('input', renderCartera);
         (() => {
             const sel = document.getElementById('alertas-orden');
             try { sel.value = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
@@ -2772,8 +2776,10 @@
 
             const ranking = currentRadarData?.ranking ?? [];
             let huboCambios = false; // si el trailing stop de alguna posición subió, hay que re-guardar
+            const queryCartera = (document.getElementById('cartera-search')?.value ?? '').trim().toUpperCase();
+            let huboCoincidencias = false;
 
-            container.innerHTML = posiciones.map((p, idx) => {
+            const tarjetas = posiciones.map((p, idx) => {
                 const tickerData = ranking.find(t => t?.Ticker?.toUpperCase() === p.ticker.toUpperCase());
                 const precioActual = tickerData?.Precio;
 
@@ -3022,6 +3028,16 @@
                         </div>
                     </div>`;
 
+                // El filtro de búsqueda se aplica ACÁ, al final -- todo lo
+                // de arriba (auto-corrección del stop, trailing, etc.) ya se
+                // ejecutó para ESTA posición sin importar el filtro, así que
+                // ninguna posición deja de auto-corregirse por no coincidir
+                // con la búsqueda. Solo se oculta la tarjeta.
+                if (queryCartera && !p.ticker.toUpperCase().includes(queryCartera)) {
+                    return '';
+                }
+                huboCoincidencias = true;
+
                 return `
                     <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
                         <div class="flex justify-between items-start">
@@ -3042,7 +3058,13 @@
                     </div>`;
             }).join('');
 
-            container.innerHTML = balanceGlobalHtml(posiciones) + container.innerHTML;
+            const tarjetasHtml = (queryCartera && !huboCoincidencias)
+                ? `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Ninguna posición coincide con "${queryCartera}".</div>`
+                : tarjetas;
+            // balanceGlobalHtml siempre usa TODAS las posiciones (sin
+            // filtrar) -- el total de la cartera no cambia por estar
+            // buscando un ticker puntual.
+            container.innerHTML = balanceGlobalHtml(posiciones) + tarjetasHtml;
 
             if (huboCambios) guardarCartera(posiciones);
         }
