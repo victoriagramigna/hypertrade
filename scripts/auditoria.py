@@ -51,6 +51,19 @@ RUTA_HISTORICO = "data/auditoria_resultados.jsonl"
 # dashboard solo agrega, nunca borra.
 RUTA_OPERACIONES = "data/operaciones_cerradas.json"
 
+# CORTE DE METODOLOGÍA (30/9/2026): hasta esta fecha, "nuevo máximo de 52
+# semanas" (usado en Dist_Max52w_% y en el estado "💣 Ruptura de máximo con
+# volumen") se calculaba con el CIERRE más alto del año, no con el precio
+# máximo intradiario real -- eso hacía más fácil de lo debido que algo
+# calificara como "nuevo máximo". A partir de esta fecha se corrigió para
+# usar el máximo real (ver rs_score.py y alertas.py). Los casos de
+# "ruptura_vol" ANTERIORES a esta fecha en data/auditoria_resultados.jsonl
+# quedaron medidos con la definición vieja (más floja) -- no se borraron ni
+# se re-calcularon, pero al comparar el desempeño de esa señal a través del
+# tiempo conviene separar antes/después de este corte en vez de mezclarlos
+# como si fueran la misma vara de medir.
+CORTE_METODOLOGIA_MAX52W = "2026-09-30"
+
 HORIZONTES = (5, 10, 20)
 STOP_PCT = 8                 # mismo -8% que usa Mi Cartera como techo de pérdida
 MUESTRA_MINIMA = 10          # con menos casos no se muestra promedio

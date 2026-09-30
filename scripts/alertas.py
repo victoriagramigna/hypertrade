@@ -61,11 +61,12 @@ def _horas_desde(fecha_iso: str, ahora: datetime) -> float:
 
 def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, benchmark: str,
                       rs_por_sector: dict, rs_por_ticker: dict, historial: dict, fecha_hoy: str,
-                      timestamp_iso: str):
+                      timestamp_iso: str, precios_ohlc: dict = None):
     bench = precios[benchmark].dropna()
     bench_sma50 = bench.rolling(50).mean()
     bench_sobre_sma50 = bool(bench.iloc[-1] > bench_sma50.iloc[-1])
     ahora = datetime.fromisoformat(timestamp_iso)
+    precios_ohlc = precios_ohlc or {}
 
     alertas = []
     for ticker, sector in tickers_sector.items():
@@ -81,7 +82,17 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
         ema200 = close.ewm(span=EMA_LARGA, adjust=False).mean()
         rsi14 = rsi(close, 14)
         vol_prom20 = vol.rolling(20).mean()
-        max_52w = close.iloc[-252:].max() if len(close) >= 252 else close.max()
+        # FIX 30/9: mismo fix que en rs_score.py -- usar el máximo INTRADIARIO
+        # real (High) de las últimas ~252 ruedas en vez del cierre más alto,
+        # para que "nuevo máximo de 52 semanas" (usado en el estado "Ruptura
+        # de máximo con volumen") sea un máximo de verdad, no uno más fácil
+        # de alcanzar por mirar solo cierres. Fallback a close si no hay High.
+        ohlc_ticker = precios_ohlc.get(ticker)
+        if ohlc_ticker is not None and "High" in ohlc_ticker and not ohlc_ticker["High"].dropna().empty:
+            high = ohlc_ticker["High"].dropna()
+            max_52w = high.iloc[-252:].max() if len(high) >= 252 else high.max()
+        else:
+            max_52w = close.iloc[-252:].max() if len(close) >= 252 else close.max()
 
         precio_hoy, precio_ayer = close.iloc[-1], close.iloc[-2]
         sma50_hoy, sma50_ayer = sma50.iloc[-1], sma50.iloc[-2]

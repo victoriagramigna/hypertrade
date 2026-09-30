@@ -148,7 +148,7 @@ def main():
     log.info(f"Distribution Days (25 ruedas): {dist_days} -- (informativo, ya no penaliza el score)")
 
     # 3. RS Score + indicadores completos
-    df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes)
+    df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes, precios_ohlc)
     rs_por_sector = df_rs.groupby("Sector")["RS_Score"].mean().to_dict() if not df_rs.empty else {}
     rs_por_ticker = dict(zip(df_rs["Ticker"], df_rs["RS_Score"])) if not df_rs.empty else {}
 
@@ -194,7 +194,7 @@ def main():
     # 5. Alertas técnicas
     df_alertas, historial = detectar_alertas(precios, volumenes, TICKERS, BENCHMARK,
                                               rs_por_sector, rs_por_ticker, historial,
-                                              fecha_hoy, timestamp)
+                                              fecha_hoy, timestamp, precios_ohlc)
     guardar_historial(historial)
 
     # 5b. Confluencia Alcista -- filtro duro sobre chips que YA se calculan

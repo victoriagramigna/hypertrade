@@ -53,12 +53,14 @@ def _perfil_fuerza(row) -> str | None:
     return "Mixto, sin lectura clara"
 
 
-def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volumenes: dict = None):
+def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volumenes: dict = None,
+                       precios_ohlc: dict = None):
     resultados = []
     if benchmark not in precios:
         raise ValueError(f"Benchmark '{benchmark}' no disponible en los datos traídos")
     bench = precios[benchmark].dropna()
     volumenes = volumenes or {}
+    precios_ohlc = precios_ohlc or {}
 
     def rendimiento(serie, dias):
         if len(serie) <= dias:
@@ -82,7 +84,20 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
 
         sma50_serie = close.rolling(50).mean()
         sma50 = sma50_serie.iloc[-1]
-        max_52w = close.max()
+        # FIX 30/9: antes "max_52w" se calculaba con close.max() -- el cierre
+        # más alto del año, no el precio más alto que de verdad tocó. Un pico
+        # intradiario que cerró más abajo quedaba invisible, así que la app
+        # mostraba a cualquier ticker MÁS CERCA de su máximo de 52 semanas de
+        # lo que en realidad estaba (ver charla del 30/9, comparación con un
+        # gráfico de TradingView de SNOW). El dato del precio máximo diario
+        # real (High) ya se descarga en datos.py, simplemente no se usaba
+        # acá -- ahora sí, con fallback a close.max() si por algún motivo no
+        # está disponible para ese ticker puntual.
+        ohlc_ticker = precios_ohlc.get(ticker)
+        if ohlc_ticker is not None and "High" in ohlc_ticker and not ohlc_ticker["High"].dropna().empty:
+            max_52w = ohlc_ticker["High"].dropna().max()
+        else:
+            max_52w = close.max()
 
         fila = {
             "Ticker": ticker, "Sector": sector, "Precio": round(precio_actual, 2),
