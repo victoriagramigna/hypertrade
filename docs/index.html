@@ -479,7 +479,13 @@
 
     <script>
         const DATA_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/ultimo.json';
-        
+
+        // Mismo umbral que VOLUMEN_RELATIVO_MINIMO en scripts/config.py --
+        // se usa acá solo para decidir si se muestra el aviso de "volumen
+        // bajo" en una tarjeta de Gap alcista (Opción C, 30/9). No cambia
+        // ningún cálculo del backend, solo un aviso visual.
+        const VOLUMEN_RELATIVO_MINIMO_JS = 1.5;
+
         let currentAutoCcl = null;
         let currentRadarData = null; // Guardamos el estado global para búsquedas
 
@@ -906,12 +912,27 @@
 
                 // Aviso de régimen: solo en señales de compra, cuando el clima general no acompaña
                 const regAlerta = alerta?.Regimen_Score;
-                const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista' || tipo === 'confluencia_alcista';
+                const esCompra = recomendacion === 'COMPRA' || tipo === 'lider_soporte' || tipo === 'gap_alcista' || tipo === 'confluencia_alcista' || tipo === 'ruptura_confirmada';
                 let regimenAvisoHtml = '';
                 if (esCompra && regAlerta != null && regAlerta < 60) {
                     const bajo = regAlerta < 40;
                     regimenAvisoHtml = `<div class="mt-2 border ${bajo ? 'border-neg text-neg bg-neg/10' : 'border-accent text-accent bg-accent/10'} font-mono text-[11px] px-2 py-1.5 rounded-sm">
                         ⚠️ Régimen de mercado ${regAlerta}/100 -- ${bajo ? 'clima desfavorable: mejor esperar' : 'clima cauteloso: posición chica y stop corto'}
+                    </div>`;
+                }
+
+                // Aviso de volumen bajo en un Gap alcista: esta señal NO exige
+                // volumen alto para dispararse (solo mira el % de suba y la
+                // macrotendencia), así que puede salir con volumen flojo -- lo
+                // cual es justamente el caso en que más conviene esperar una
+                // confirmación (ver alerta "Ruptura confirmada") antes de
+                // entrar con la posición completa. No cambia el Score ni la
+                // Recomendación, es solo un aviso visual (agregado 30/9).
+                let volumenBajoAvisoHtml = '';
+                if (tipo === 'gap_alcista' && volRel != null && volRel < VOLUMEN_RELATIVO_MINIMO_JS) {
+                    volumenBajoAvisoHtml = `<div class="mt-2 border border-accent text-accent bg-accent/10 font-mono text-[11px] px-2 py-1.5 rounded-sm cursor-help"
+                        title="El Gap alcista no exige volumen alto para dispararse, solo el % de suba. Volumen ${volRel}x su promedio es bajo (menos de ${VOLUMEN_RELATIVO_MINIMO_JS}x) -- todavía sin confirmar. Si más adelante vuelve a superar este nivel con volumen alto, te va a aparecer una alerta aparte de 'Ruptura confirmada'.">
+                        ⚠️ Volumen bajo (${volRel}x su promedio) -- suba sin confirmar por volumen
                     </div>`;
                 }
 
@@ -933,6 +954,7 @@
                         ${otrasSeñalesHtml}
                         ${chipsHtml}
                         ${regimenAvisoHtml}
+                        ${volumenBajoAvisoHtml}
                         ${radarScoreHtml}
                         <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
                             <span>SCORE: <span class="text-white">${score}</span></span>
