@@ -251,6 +251,7 @@ ESTADOS = {
     "stop_loss":     "🛑 Perdió EMA200 tras rebote — stop sugerido",
     "lider_soporte": "📈 Líder apoyando en soporte",
     "gap_alcista":   "🚀 Gap alcista con macrotendencia",
+    "ruptura_confirmada": "✅💥 Ruptura confirmada con volumen",
 }
 
 # --- Medias móviles a calcular ---
@@ -376,6 +377,16 @@ UMBRAL_LIDER_DIST_SMA50_PCT = 2   # como máximo a este % POR ENCIMA de la SMA50
 # más alto de los últimos 10 días (proxy de "ruptura", ya que no tenemos el máximo real).
 UMBRAL_GAP_ALCISTA_PCT = 3       # % mínimo de suba de cierre a cierre para considerarlo "gap"
 VENTANA_GAP_MAXIMO_DIAS = 10     # días hacia atrás para chequear que hoy sea el cierre más alto
+
+# --- "Ruptura confirmada" -- avisa por separado (no reemplaza al Gap alcista,
+# no le cambia el Score) cuando, DESPUÉS de un Gap alcista, el precio vuelve
+# a superar ese mismo nivel pero esta vez con volumen alto de verdad
+# (Vol_rel > VOLUMEN_RELATIVO_MINIMO). Agregado 30/9 a pedido de Victoria,
+# tras un caso real (SNOW) donde el Gap alcista había salido con volumen
+# bajo -- este aviso le da una segunda confirmación más sólida sin obligarla
+# a elegir entre "entro ya" o "me quedo afuera".
+VENTANA_RUPTURA_CONFIRMADA_DIAS = 10  # días desde el Gap alcista en que todavía
+# se considera "el mismo episodio" para buscar la ruptura con volumen
 
 # --- Modo de ejecución: en "test" no se envían notificaciones reales de Telegram ---
 import os

@@ -313,7 +313,7 @@ def main():
     alertas_relevantes = [
         a for a in recomendaciones
         if (a.get("Score_num") and a["Score_num"] >= SCORE_MINIMO_ALERTA)
-        or a.get("Tipo") in ("lider_soporte", "gap_alcista", "confluencia_alcista")
+        or a.get("Tipo") in ("lider_soporte", "gap_alcista", "confluencia_alcista", "ruptura_confirmada")
     ]
     # Dos memorias separadas:
     #  - _notificaciones: qué ya se mandó por Telegram. Solo la marca el

@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from config import (VOLUMEN_RELATIVO_MINIMO, RSI_ZONA_SANA, VENTANA_BASE_DIAS,
                      SMA_CORTAS, EMA_LARGA, DIAS_CONFIRMACION, SCORE_TECHO_SIN_CONFIRMAR,
                      ESTADOS, VENTANA_ALERTA_HORAS, UMBRAL_LIDER_RS, UMBRAL_LIDER_DIST_SMA50_PCT,
-                     UMBRAL_GAP_ALCISTA_PCT, VENTANA_GAP_MAXIMO_DIAS)
+                     UMBRAL_GAP_ALCISTA_PCT, VENTANA_GAP_MAXIMO_DIAS, VENTANA_RUPTURA_CONFIRMADA_DIAS)
 from vcp import detectar_vcp
 
 
@@ -201,6 +201,44 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
         else:
             fecha_evento_gap = estado_previo.get("fecha_evento_gap", timestamp_iso)
 
+        # --- Señal "Ruptura confirmada" -- sigue a un Gap alcista, NO lo
+        # reemplaza ni le toca el Score. Se dispara si, dentro de los
+        # VENTANA_RUPTURA_CONFIRMADA_DIAS siguientes a un episodio de Gap
+        # alcista YA registrado (de un día anterior), el precio vuelve a
+        # superar el nivel de ESE gap pero esta vez con volumen alto de
+        # verdad (volumen_confirma). Es información nueva que se suma, no
+        # una corrección del Gap alcista original -- por eso se compara
+        # siempre contra el nivel guardado ANTES de hoy, nunca contra el
+        # precio de hoy mismo (aunque hoy también arranque un gap nuevo).
+        gap_referencia_previa = estado_previo.get("gap_referencia_precio")
+        fecha_evento_gap_previa = estado_previo.get("fecha_evento_gap")
+        ruptura_confirmada_hecha_previa = estado_previo.get("ruptura_confirmada_hecha", False)
+
+        ruptura_confirmada_activa = False
+        if (gap_referencia_previa is not None and not ruptura_confirmada_hecha_previa
+                and fecha_evento_gap_previa is not None
+                and _horas_desde(fecha_evento_gap_previa, ahora) <= VENTANA_RUPTURA_CONFIRMADA_DIAS * 24
+                and precio_hoy > gap_referencia_previa and volumen_confirma):
+            ruptura_confirmada_activa = True
+
+        # Nivel de referencia y flag "ya se confirmó" a guardar de acá en
+        # adelante: si hoy arranca un episodio de Gap alcista nuevo, se
+        # reinicia a este nivel nuevo; si no, se mantiene el que ya había
+        # (y se marca "hecha" si la ruptura disparó hoy, para no repetir
+        # el aviso todos los días siguientes por la misma ruptura).
+        if gap_alcista_activo and not gap_previo:
+            gap_referencia_precio = round(float(precio_hoy), 2)
+            ruptura_confirmada_hecha = False
+        else:
+            gap_referencia_precio = gap_referencia_previa
+            ruptura_confirmada_hecha = ruptura_confirmada_hecha_previa or ruptura_confirmada_activa
+
+        ruptura_previa_activa = estado_previo.get("ruptura_confirmada_activa", False)
+        if ruptura_confirmada_activa and not ruptura_previa_activa:
+            fecha_evento_ruptura = timestamp_iso
+        else:
+            fecha_evento_ruptura = estado_previo.get("fecha_evento_ruptura", timestamp_iso)
+
         # --- Actualizar historial (SIEMPRE, tenga o no vigencia de display) ---
         historial[ticker] = {
             "ultima_fecha": fecha_hoy,
@@ -212,6 +250,10 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
             "fecha_evento_lider": fecha_evento_lider,
             "gap_alcista_activo": gap_alcista_activo,
             "fecha_evento_gap": fecha_evento_gap,
+            "gap_referencia_precio": gap_referencia_precio,
+            "ruptura_confirmada_hecha": ruptura_confirmada_hecha,
+            "ruptura_confirmada_activa": ruptura_confirmada_activa,
+            "fecha_evento_ruptura": fecha_evento_ruptura,
         }
 
         # --- Armar la(s) fila(s) de salida, solo si están dentro de la ventana de vigencia ---
@@ -269,6 +311,32 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Vol_rel": round(vol_rel_hoy, 2),
                 "Precio": round(float(precio_hoy), 2),
                 "fecha_evento": fecha_evento_gap,
+            })
+
+        if ruptura_confirmada_activa and _horas_desde(fecha_evento_ruptura, ahora) <= VENTANA_ALERTA_HORAS:
+            # Ojo: siempre contra gap_referencia_previa (el nivel de ANTES de
+            # hoy) -- si hoy también arrancó un episodio de gap nuevo,
+            # gap_referencia_precio ya fue reescrito al precio de hoy más
+            # arriba, y usarlo acá mostraría "superó su propio precio de hoy".
+            pct_sobre_referencia = round((precio_hoy / gap_referencia_previa - 1) * 100, 1)
+            stop_sugerido_aprox = round(precio_hoy * 0.99, 2)
+            alertas.append({
+                "Ticker": ticker, "Sector": sector,
+                "Tipo": "ruptura_confirmada",
+                "Estado": ESTADOS.get("ruptura_confirmada", "✅💥 Ruptura confirmada con volumen"),
+                "Score": f"{vol_rel_hoy:.1f}x volumen",
+                "Score_num": None,
+                "Señales": [f"superó ${gap_referencia_previa} (nivel del Gap alcista anterior) "
+                            f"con volumen {vol_rel_hoy:.1f}x su promedio",
+                            f"+{pct_sobre_referencia}% sobre ese nivel",
+                            f"stop sugerido (aprox.): ${stop_sugerido_aprox}"],
+                "Stop_sugerido": stop_sugerido_aprox,
+                "Nivel_referencia": gap_referencia_previa,
+                "Var_sobre_referencia_%": pct_sobre_referencia,
+                "RSI": round(rsi_hoy, 1) if pd.notna(rsi_hoy) else None,
+                "Vol_rel": round(vol_rel_hoy, 2),
+                "Precio": round(float(precio_hoy), 2),
+                "fecha_evento": fecha_evento_ruptura,
             })
 
     return pd.DataFrame(alertas), historial
