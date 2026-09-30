@@ -958,16 +958,24 @@
                         ['vcp_valido', 'VCP válido', 'Se detectó un patrón de contracción de volatilidad (rango de precio comprimiéndose en olas) -- setup típico previo a una ruptura.'],
                         ['rsi_semanal_cruzo', 'RSI semanal cruzó', 'En la vela SEMANAL (no diaria), el RSI cruzó hacia arriba su propia media de 14 semanas -- confirmación de más largo plazo.'],
                     ];
+                    // <details>/<summary> en vez de title="..." -- el tooltip nativo
+                    // del navegador (title) depende de mantener tocado en celular y
+                    // es inconsistente entre Android/iOS/navegadores. <details> es un
+                    // elemento HTML estándar: tocar/clickear el ítem despliega la
+                    // explicación debajo, igual en cualquier dispositivo, sin JS extra.
                     const filas = items.map(([clave, nombre, explicacion]) => {
                         const prendido = !!scoreDetalle[clave];
-                        return `<div class="flex items-center gap-1.5 cursor-help" title="${explicacion}">
-                            <span class="${prendido ? 'text-pos' : 'text-gray-600'}">${prendido ? '✅' : '✖️'}</span>
-                            <span class="${prendido ? 'text-gray-300' : 'text-gray-600'}">${nombre}</span>
-                        </div>`;
+                        return `<details>
+                            <summary class="flex items-center gap-1.5 cursor-pointer select-none list-none marker:content-none [&::-webkit-details-marker]:hidden">
+                                <span class="${prendido ? 'text-pos' : 'text-gray-600'}">${prendido ? '✅' : '✖️'}</span>
+                                <span class="${prendido ? 'text-gray-300' : 'text-gray-600'}">${nombre}</span>
+                            </summary>
+                            <div class="text-gray-500 text-[10px] pl-5 pt-0.5 pb-1 leading-snug normal-case">${explicacion}</div>
+                        </details>`;
                     }).join('');
                     scoreDetalleHtml = `<div class="mt-2 pt-2 border-t border-base">
-                        <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-1.5">Score técnico -- detalle</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 font-mono text-[11px]">${filas}</div>
+                        <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-1.5">Score técnico -- detalle (tocá cada uno para ver qué significa)</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">${filas}</div>
                     </div>`;
                 }
 
