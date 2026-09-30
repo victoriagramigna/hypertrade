@@ -1282,8 +1282,8 @@
                     const displayRs = typeof currentRs === 'number' ? currentRs.toFixed(1) : '—';
                     
                     return `
-                        <div>
-                            <div class="flex justify-between font-mono text-xs mb-1 uppercase">
+                        <div class="cursor-pointer" onclick="irASectorDetalle('${sector.replace(/'/g, "\\'")}')">
+                            <div class="flex justify-between font-mono text-xs mb-1 uppercase hover:text-accent">
                                 <span class="text-gray-300">${sector}</span>
                                 <span class="text-accent">${displayRs}</span>
                             </div>
@@ -1409,7 +1409,7 @@
                     const cantidadEnSector = groupedBySector[sector].length;
 
                     return `
-                        <div class="bg-surface p-4 rounded-sm border border-surface">
+                        <div id="${sectorSlug(sector)}" class="bg-surface p-4 rounded-sm border border-surface transition-shadow">
                             <h3 class="font-bold text-white mb-3 flex items-center justify-between uppercase">
                                 <span>${sector} <span class="text-gray-500 normal-case font-mono text-xs">(${cantidadEnSector})</span></span>
                                 <span class="text-xs font-mono text-accent bg-base px-2 py-1 rounded-sm">RS ${sectorScoreDisplay}</span>
@@ -2069,6 +2069,26 @@
             if (v == null) return '<span class="text-gray-600">—</span>';
             const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-400');
             return `<span class="${color}">${conSigno && v > 0 ? '+' : ''}${Number(v).toFixed(1)}%</span>`;
+        }
+
+        // Id seguro para anclar y scrollear a la tarjeta de un sector en
+        // "Universo Técnico" (nombres de sector pueden tener espacios/tildes).
+        function sectorSlug(sector) {
+            return 'sector-card-' + String(sector ?? '')
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+
+        // Ir desde cualquier mención de un sector (Rotación Sectorial,
+        // Cuadrante) directo a su tarjeta en "Universo Técnico", más abajo
+        // en la misma solapa -- sin recargar nada, solo scrollea y la
+        // resalta un instante para que quede claro cuál es.
+        function irASectorDetalle(sector) {
+            const el = document.getElementById(sectorSlug(sector));
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('ring-2', 'ring-accent');
+            setTimeout(() => el.classList.remove('ring-2', 'ring-accent'), 1500);
         }
 
         // Δ de RS Score (puntos, no %) -- día/semana/mes. '—' cuando
