@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-09-30T14:31:31.469400+00:00",
+ "generado_utc": "2026-09-30T15:01:42.251690+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 256,
+ "casos_total": 257,
  "casos_excluidos_sospechosos": 38,
  "resumen_señales": [
   {
@@ -23,8 +23,8 @@
      "aciertos": 16,
      "pct_aciertos": 42,
      "tocaron_stop": 2,
-     "ret_prom": -0.74,
-     "vs_spy_prom": 0.1,
+     "ret_prom": -0.73,
+     "vs_spy_prom": 0.11,
      "confiable": true
     },
     "10": {
@@ -42,21 +42,21 @@
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 57,
+   "casos_total": 58,
    "horizontes": {
     "5": {
      "n": 0,
-     "pendientes": 57,
+     "pendientes": 58,
      "confiable": false
     },
     "10": {
      "n": 0,
-     "pendientes": 57,
+     "pendientes": 58,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 57,
+     "pendientes": 58,
      "confiable": false
     }
    }
@@ -72,8 +72,8 @@
      "aciertos": 10,
      "pct_aciertos": 45,
      "tocaron_stop": 0,
-     "ret_prom": 1.01,
-     "vs_spy_prom": 1.82,
+     "ret_prom": 1.0,
+     "vs_spy_prom": 1.8,
      "confiable": false
     },
     "10": {
@@ -99,8 +99,8 @@
      "aciertos": 15,
      "pct_aciertos": 56,
      "tocaron_stop": 2,
-     "ret_prom": 0.68,
-     "vs_spy_prom": 1.39,
+     "ret_prom": 0.76,
+     "vs_spy_prom": 1.46,
      "confiable": false
     },
     "10": {
@@ -126,8 +126,8 @@
      "aciertos": 6,
      "pct_aciertos": 40,
      "tocaron_stop": 0,
-     "ret_prom": 0.81,
-     "vs_spy_prom": 1.81,
+     "ret_prom": 0.86,
+     "vs_spy_prom": 1.86,
      "confiable": false
     },
     "10": {
@@ -221,12 +221,12 @@
  "por_mes": [
   {
    "mes": "2026-09",
-   "casos": 256,
+   "casos": 257,
    "5": {
     "n": 115,
     "pct_aciertos": 44,
-    "ret_a_favor_prom": 0.15,
-    "vs_spy_prom": 0.88
+    "ret_a_favor_prom": 0.18,
+    "vs_spy_prom": 0.9
    },
    "10": {
     "n": 0
@@ -252,12 +252,12 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 134,
+   "casos": 135,
    "5": {
     "n": 2,
     "pct_aciertos": 100,
-    "ret_prom": 1.32,
-    "vs_spy_prom": 1.28
+    "ret_prom": 1.49,
+    "vs_spy_prom": 1.42
    },
    "10": {
     "n": 0
@@ -272,8 +272,8 @@
    "5": {
     "n": 1,
     "pct_aciertos": 100,
-    "ret_prom": 5.21,
-    "vs_spy_prom": 5.17
+    "ret_prom": 6.14,
+    "vs_spy_prom": 6.07
    },
    "10": {
     "n": 0
@@ -299,7 +299,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 37,
+   "casos": 38,
    "5": {
     "n": 0
    },
@@ -316,8 +316,8 @@
    "5": {
     "n": 3,
     "pct_aciertos": 100,
-    "ret_prom": 2.62,
-    "vs_spy_prom": 2.58
+    "ret_prom": 3.04,
+    "vs_spy_prom": 2.97
    },
    "10": {
     "n": 0
@@ -332,8 +332,8 @@
    "5": {
     "n": 3,
     "pct_aciertos": 100,
-    "ret_prom": 2.62,
-    "vs_spy_prom": 2.58
+    "ret_prom": 3.04,
+    "vs_spy_prom": 2.97
    },
    "10": {
     "n": 0
@@ -348,8 +348,8 @@
    "5": {
     "n": 1,
     "pct_aciertos": 100,
-    "ret_prom": 0.05,
-    "vs_spy_prom": 0.01
+    "ret_prom": 0.07,
+    "vs_spy_prom": 0.0
    },
    "10": {
     "n": 0
@@ -427,7 +427,7 @@
   },
   {
    "grupo": "🟡 Mixta (RSI y MACD semanal en desacuerdo)",
-   "casos": 23,
+   "casos": 24,
    "5": {
     "n": 0
    },
@@ -871,6 +871,22 @@
    "cuidados": [
     "techo_avwap"
    ],
+   "tendencia_semanal": "mixta",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AMZN",
+   "fecha": "2026-09-30",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 251.92,
+   "radar_score": 42.4,
+   "regimen_score": 62,
+   "cuidados": [],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 0,
    "r5": null,
@@ -2935,9 +2951,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.47,
-   "spy5": 0.04,
-   "vs_spy5": -1.51,
+   "r5": -1.49,
+   "spy5": 0.07,
+   "vs_spy5": -1.56,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2955,9 +2971,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 0.21,
-   "spy5": 0.04,
-   "vs_spy5": 0.17,
+   "r5": 0.42,
+   "spy5": 0.07,
+   "vs_spy5": 0.35,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2975,9 +2991,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 6.89,
-   "spy5": 0.04,
-   "vs_spy5": 6.85,
+   "r5": 7.84,
+   "spy5": 0.07,
+   "vs_spy5": 7.77,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2995,9 +3011,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 2.88,
-   "spy5": 0.04,
-   "vs_spy5": 2.84,
+   "r5": 2.74,
+   "spy5": 0.07,
+   "vs_spy5": 2.67,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3015,9 +3031,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 0.22,
-   "spy5": 0.04,
-   "vs_spy5": 0.18,
+   "r5": 0.87,
+   "spy5": 0.07,
+   "vs_spy5": 0.8,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3035,9 +3051,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -4.47,
-   "spy5": 0.04,
-   "vs_spy5": -4.51,
+   "r5": -5.01,
+   "spy5": 0.07,
+   "vs_spy5": -5.08,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -3055,9 +3071,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.87,
-   "spy5": 0.04,
-   "vs_spy5": -1.91,
+   "r5": -2.53,
+   "spy5": 0.07,
+   "vs_spy5": -2.6,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -3075,9 +3091,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -4.82,
-   "spy5": 0.04,
-   "vs_spy5": -4.86,
+   "r5": -4.42,
+   "spy5": 0.07,
+   "vs_spy5": -4.49,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -3095,9 +3111,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 3.24,
-   "spy5": 0.04,
-   "vs_spy5": 3.2,
+   "r5": 4.26,
+   "spy5": 0.07,
+   "vs_spy5": 4.19,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3115,9 +3131,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -1.56,
-   "spy5": 0.04,
-   "vs_spy5": -1.6,
+   "r5": -1.46,
+   "spy5": 0.07,
+   "vs_spy5": -1.53,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -3135,9 +3151,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.6,
-   "spy5": 0.04,
-   "vs_spy5": -2.64,
+   "r5": -2.76,
+   "spy5": 0.07,
+   "vs_spy5": -2.83,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3155,9 +3171,9 @@
    "cuidados": null,
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -2.05,
-   "spy5": 0.04,
-   "vs_spy5": -2.09,
+   "r5": -1.93,
+   "spy5": 0.07,
+   "vs_spy5": -2.0,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -3177,9 +3193,9 @@
    ],
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 5.21,
-   "spy5": 0.04,
-   "vs_spy5": 5.17,
+   "r5": 6.14,
+   "spy5": 0.07,
+   "vs_spy5": 6.07,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3200,9 +3216,9 @@
    ],
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 0.05,
-   "spy5": 0.04,
-   "vs_spy5": 0.01,
+   "r5": 0.07,
+   "spy5": 0.07,
+   "vs_spy5": 0.0,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -3222,9 +3238,9 @@
    ],
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": 2.6,
-   "spy5": 0.04,
-   "vs_spy5": 2.56,
+   "r5": 2.91,
+   "spy5": 0.07,
+   "vs_spy5": 2.84,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5244,11 +5260,11 @@
    "semana": "2026-S39",
    "fecha": "2026-09-23",
    "n": 30,
-   "top5": -2.76,
-   "verdes5": 6,
+   "top5": -2.63,
+   "verdes5": 9,
    "medidos5": 30,
-   "spy5": 0.04,
-   "univ5": -1.49,
+   "spy5": 0.07,
+   "univ5": -1.5,
    "top10": null,
    "top20": null
   }
