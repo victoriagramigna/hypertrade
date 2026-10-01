@@ -96,3 +96,38 @@ def calcular_tendencia_semanal(close_diario: pd.Series) -> dict:
         "macd_semanal": macd_valor,
         "macd_señal_semanal": macd_señal_valor,
     }
+
+
+SEMANAS_PROMEDIO_VOL = 12  # ~3 meses de semanas completas para el promedio
+
+
+def calcular_vol_rel_semanal(volumen_diario: pd.Series):
+    """
+    Mismo concepto que Vol_rel (diario, en rs_score.py) pero en semanas:
+    volumen de la semana en curso contra el promedio de las
+    SEMANAS_PROMEDIO_VOL semanas COMPLETAS anteriores (se excluye la semana
+    en curso del promedio para no comparar una semana contra sí misma).
+
+    Ojo: la "semana en curso" puede estar a mitad de camino (ej. si hoy es
+    martes), así que su volumen todavía no es comparable 1 a 1 contra una
+    semana ya cerrada -- es la misma limitación que tiene cualquier lectura
+    de "volumen semanal" antes de que termine la semana. Por eso es un dato
+    más a mirar, no algo que dispare ni cambie ninguna alerta.
+
+    None si no hay suficiente historial semanal (recién arranca el ticker,
+    o viene con huecos).
+    """
+    if volumen_diario is None or volumen_diario.empty:
+        return None
+
+    semanal = volumen_diario.resample("W").sum()
+    semanal = semanal[semanal > 0]  # semanas sin ruedas (feriados largos, etc.) no cuentan
+    if len(semanal) < SEMANAS_PROMEDIO_VOL + 2:
+        return None
+
+    vol_semana_actual = semanal.iloc[-1]
+    promedio_previas = semanal.iloc[-(SEMANAS_PROMEDIO_VOL + 1):-1].mean()
+    if not promedio_previas or pd.isna(promedio_previas) or promedio_previas <= 0:
+        return None
+
+    return round(float(vol_semana_actual / promedio_previas), 2)

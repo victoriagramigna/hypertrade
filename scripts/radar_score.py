@@ -38,7 +38,7 @@ import pandas as pd
 
 from avwap import agregar_avwaps, evaluar_apoyo_avwap, detectar_cruce_avwap_52w
 from senales_nuevas import agregar_atr_ratio, evaluar_atr_contraction, evaluar_pendiente_positiva
-from tendencia_semanal import calcular_tendencia_semanal
+from tendencia_semanal import calcular_tendencia_semanal, calcular_vol_rel_semanal
 
 TOPE_VOL_REL = 1.5
 TOPE_DIST_52W_PCT = -30
@@ -87,6 +87,12 @@ def _procesar_indicadores_ticker(df_ohlc: pd.DataFrame):
     # ningún componente del Radar Score -- ver docstring de tendencia_semanal.py
     tendencia_sem = calcular_tendencia_semanal(df["Close"])
 
+    # Volumen relativo semanal: mismo concepto informativo que el diario
+    # (Vol_rel), solo que comprimido a semanas -- ver charla con Victoria,
+    # 1/10, pidiendo los mismos datos pero en vela semanal. No toca el
+    # Radar Score ni ninguna alerta.
+    vol_rel_semanal = calcular_vol_rel_semanal(df["Volume"]) if "Volume" in df else None
+
     return {
         "avwap_ytd": fila_hoy.get("AVWAP_YTD"),
         "avwap_52w_high": fila_hoy.get("AVWAP_52W_High"),
@@ -97,6 +103,7 @@ def _procesar_indicadores_ticker(df_ohlc: pd.DataFrame):
         "pendiente_ok": evaluar_pendiente_positiva(df["Close"]),
         "cruce_avwap_52w": detectar_cruce_avwap_52w(df),
         "tendencia_semanal": tendencia_sem,
+        "vol_rel_semanal": vol_rel_semanal,
     }
 
 
@@ -124,6 +131,7 @@ def calcular_radar_score(
         "Pendiente_OK", "Cruce_AVWAP_52w", "Radar_Score",
         # Tendencia Semanal (RSI+MACD) -- contexto informativo, no puntúa
         "Tendencia_Semanal", "RSI_Semanal", "MACD_Semanal", "MACD_Señal_Semanal",
+        "Vol_Rel_Semanal",
     ]
     if df_rs.empty:
         for c in columnas_nuevas:
@@ -184,6 +192,7 @@ def calcular_radar_score(
             "RSI_Semanal": tendencia_sem.get("rsi_semanal"),
             "MACD_Semanal": tendencia_sem.get("macd_semanal"),
             "MACD_Señal_Semanal": tendencia_sem.get("macd_señal_semanal"),
+            "Vol_Rel_Semanal": (ind or {}).get("vol_rel_semanal"),
         })
 
     df_rs = df_rs.copy()
