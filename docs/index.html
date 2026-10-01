@@ -1296,11 +1296,11 @@
                     return `
                         <div class="border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0 ${esNuevoHoy ? 'border-l-2 border-pos pl-1' : ''}">
                             <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-gray-600 font-mono text-xs w-6 text-right">${index + 1}.</span>
-                                    <span class="font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="text-gray-600 font-mono text-xs w-6 text-right flex-shrink-0">${index + 1}.</span>
+                                    <span class="font-bold text-white cursor-pointer hover:text-accent hover:underline flex-shrink-0" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    <span class="text-[9px] uppercase text-gray-500 truncate">${ticker?.Sector ?? '—'}</span>
                                     ${badgeNuevo}
-                                    <span class="text-[10px] uppercase text-gray-500 truncate w-24 hidden 2xl:inline-block">${ticker?.Sector ?? '—'}</span>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <span class="font-mono text-accent text-sm w-8 text-right">${rsScore.toFixed(0)}</span>
