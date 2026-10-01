@@ -162,6 +162,47 @@ def _parte_sentimiento(vix, dist_days):
     return round(pts_vix + pts_dd, 1), f"{txt_vix} · {txt_dd}"
 
 
+def contar_extremos_52w(precios: dict, precios_ohlc: dict, universo: list) -> dict:
+    """
+    Cuenta cuántos tickers del universo hicieron HOY un máximo nuevo de 52
+    semanas y cuántos un mínimo nuevo -- puramente informativo (fila
+    "Nuevos máximos/mínimos" del panel de régimen, ver charla con
+    Victoria 30/9 comparando contra otro panel). No afecta el Régimen
+    Score ni ningún otro cálculo.
+
+    Usa el máximo/mínimo intradiario REAL (High/Low) cuando hay datos
+    OHLC disponibles -- mismo criterio que el resto del sistema desde el
+    fix del 30/9 (ver rs_score.py y alertas.py) -- con respaldo al cierre
+    si no hay OHLC para ese ticker puntual.
+    """
+    nuevos_max = nuevos_min = 0
+    precios_ohlc = precios_ohlc or {}
+    for t in universo:
+        s = precios.get(t)
+        if s is None:
+            continue
+        close = s.dropna()
+        if len(close) < 252:
+            continue
+
+        ohlc = precios_ohlc.get(t)
+        if (ohlc is not None and "High" in ohlc and "Low" in ohlc
+                and not ohlc["High"].dropna().empty and not ohlc["Low"].dropna().empty):
+            max_52w = ohlc["High"].dropna().iloc[-252:].max()
+            min_52w = ohlc["Low"].dropna().iloc[-252:].min()
+        else:
+            max_52w = close.iloc[-252:].max()
+            min_52w = close.iloc[-252:].min()
+
+        precio_hoy = close.iloc[-1]
+        if precio_hoy >= max_52w * 0.999:
+            nuevos_max += 1
+        elif precio_hoy <= min_52w * 1.001:
+            nuevos_min += 1
+
+    return {"nuevos_maximos_52w": nuevos_max, "nuevos_minimos_52w": nuevos_min}
+
+
 def banda_de(score):
     for piso, nombre, guia, color in BANDAS:
         if score >= piso:

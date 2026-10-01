@@ -48,7 +48,8 @@ from cartera_seguimiento import procesar_cartera
 from seguimiento_precios import procesar_seguimiento
 from evaluacion_sistema import evaluar_sistema
 from auditoria import correr_auditoria
-from regimen_score import calcular_regimen_score
+from regimen_score import calcular_regimen_score, contar_extremos_52w
+from amplitud_historial import registrar_y_obtener_serie
 from cuidados import puntos_de_cuidado
 from confluencia import detectar_confluencia
 from rotacion_sectorial import actualizar_rotacion_sectorial
@@ -149,6 +150,32 @@ def main():
         log.error(f"Régimen de mercado 0-100 falló, no afecta al resto de la corrida: {e}")
         regimen_score = None
     log.info(f"Distribution Days (25 ruedas): {dist_days} -- (informativo, ya no penaliza el score)")
+
+    # 2a. Nuevos máximos/mínimos de 52 semanas hoy + historial de amplitud
+    # para graficar la tendencia -- puramente informativo, no afecta el
+    # Régimen Score ni ningún otro cálculo (ver charla con Victoria, 30/9,
+    # comparando contra otro panel de régimen de mercado).
+    try:
+        extremos_52w = contar_extremos_52w(precios, precios_ohlc, list(TICKERS))
+    except Exception as e:
+        log.error(f"Nuevos máximos/mínimos 52w falló, no afecta al resto de la corrida: {e}")
+        extremos_52w = None
+
+    if corrida_degradada or regimen_score is None:
+        # Igual que el Top 30 nuevo y el Δ RS: con medio universo caído no
+        # se guarda la foto, para no ensuciar el historial con un dato
+        # armado con datos incompletos.
+        amplitud_historial = []
+    else:
+        try:
+            amplitud_historial = registrar_y_obtener_serie(
+                regimen_score.get("amplitud_sma50_pct"),
+                regimen_score.get("amplitud_sma200_pct"),
+                fecha_hoy,
+            )
+        except Exception as e:
+            log.error(f"Historial de amplitud falló, no afecta al resto de la corrida: {e}")
+            amplitud_historial = []
 
     # 3. RS Score + indicadores completos
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes, precios_ohlc)
@@ -325,6 +352,8 @@ def main():
         "top30_nuevos_hoy": top30_nuevos_hoy["nuevos"],
         "top30_salientes_hoy": top30_nuevos_hoy["salientes"],
         "top30_fecha_comparacion": top30_nuevos_hoy["fecha_comparacion"],
+        "extremos_52w": extremos_52w,
+        "amplitud_historial": amplitud_historial,
     }
 
     salida_limpia = limpiar_para_json(salida)
