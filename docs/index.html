@@ -155,8 +155,10 @@
                 <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
                     <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
                     <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm">
-                        <option value="nuevas">Más nuevas primero</option>
+                        <option value="nuevas">Más reciente</option>
                         <option value="tipo">Por tipo (compras primero)</option>
+                        <option value="radar">Radar Score</option>
+                        <option value="fuerza_relativa">Fuerza Relativa</option>
                     </select>
                 </div>
                 <!-- 4. Contenedor de Alertas -->
@@ -180,7 +182,7 @@
             </section>
             <!-- 4. Rotación Sectorial -->
             <section>
-                <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Rotación Sectorial (RS)</h2>
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Rotación Sectorial (por Fuerza Relativa)</h2>
                 <div id="sector-rotation" class="bg-surface p-5 space-y-5 rounded-sm border border-surface"></div>
             </section>
             <!-- Top 30 Radar Score -- mismo formato que el de Fuerza Relativa de
@@ -191,7 +193,7 @@
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 30 Radar Score</h2>
                 <div class="font-mono text-[10px] text-gray-500 mb-3 leading-relaxed">
                     Mismos 30 tickers posibles, pero ordenados por el <span class="text-white">Radar Score</span> (el compuesto con volumen,
-                    tendencia, apoyo en AVWAP y posición en 52 semanas) en vez de por Fuerza Relativa (RS) sola. No son necesariamente
+                    tendencia, apoyo en AVWAP y posición en 52 semanas) en vez de por Fuerza Relativa sola. No son necesariamente
                     los mismos nombres que el Top 30 de arriba.
                 </div>
                 <div id="top30-radar-nuevos-container" class="mb-3"></div>
@@ -202,7 +204,7 @@
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de Rotación Sectorial</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-4 leading-relaxed">
-                Ubica cada sector según dos preguntas: ¿está fuerte o débil ahora? (eje vertical, el mismo RS sectorial de "Rotación
+                Ubica cada sector según dos preguntas: ¿está fuerte o débil ahora? (eje vertical, la misma Fuerza Relativa sectorial de "Rotación
                 Sectorial" de arriba) y ¿mejoró o empeoró en los últimos 7 días? (eje horizontal). No es solo una foto: cada vez que un
                 sector CAMBIA de cuadrante queda registrado con fecha, y en la solapa Auditoría se mide si eso anticipó algo real --
                 si entrar a <span class="text-pos">Líder</span> o <span class="text-accent">Mejorando</span> efectivamente le ganó
@@ -657,7 +659,7 @@
                 
                 <div class="mb-6 bg-base p-4 rounded-sm border border-gray-800">
                     <div class="flex justify-between items-center font-mono text-xs mb-2 uppercase">
-                        <span class="text-gray-400 tracking-widest">Fuerza Relativa (RS)</span>
+                        <span class="text-gray-400 tracking-widest">Fuerza Relativa</span>
                         <span>
                             <span class="text-white font-bold">${rsScore.toFixed(0)} / 100</span>
                             ${radarScoreHtml}
@@ -797,6 +799,21 @@
                 if (rec === 'VENTA') return 2;
                 return 3;
             };
+            // Radar Score y Fuerza Relativa: no son el disparador de la alerta
+            // (eso sigue siendo el Score técnico 0-7, siempre), son otro orden
+            // posible para mirar las MISMAS alertas activas -- de la más
+            // "fuerte" por ese criterio a la más débil. Si a algún ticker le
+            // falta el dato (None), queda al final en vez de arriba de todo.
+            if (modo === 'radar' || modo === 'fuerza_relativa') {
+                const campo = modo === 'radar' ? 'Radar_Score' : 'RS_Score';
+                return [...lista].sort((a, b) => {
+                    const va = a?.[campo], vb = b?.[campo];
+                    if (va == null && vb == null) return tiempo(b) - tiempo(a);
+                    if (va == null) return 1;
+                    if (vb == null) return -1;
+                    return vb - va;
+                });
+            }
             return [...lista].sort((a, b) => {
                 if (modo === 'tipo' && grupo(a) !== grupo(b)) return grupo(a) - grupo(b);
                 return tiempo(b) - tiempo(a);
@@ -1083,7 +1100,7 @@
                             <div><div class="uppercase">RSI</div><div class="text-white text-[11px]">${rsi ?? '—'}</div></div>
                             <div><div class="uppercase">VOL</div><div class="text-white text-[11px]">${volRel != null ? volRel + 'x' : '—'}</div></div>
                             <div><div class="uppercase">52W</div><div class="text-white text-[11px]">${dist52w != null ? dist52w + '%' : '—'}</div></div>
-                            <div><div class="uppercase">RS SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
+                            <div><div class="uppercase">SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
                         </div>
                         <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-gray-600 mt-1">
                             <div><div class="uppercase">RSI SEM</div><div class="text-gray-300 text-[11px]">${alerta?.RSI_Semanal != null ? alerta.RSI_Semanal : '—'}</div></div>
@@ -1187,7 +1204,7 @@
             const degradedEl = document.getElementById('degraded-banner');
             if (data?.corrida_degradada) {
                 const nFallidos = (data?.tickers_fallidos ?? []).length;
-                degradedEl.innerHTML = `⚠️ CORRIDA CON DATOS PARCIALES — falló el ${data.pct_fallidos}% del universo (${nFallidos} ticker(s)). El RS Score de esta corrida no es confiable (percentil sobre una muestra chica). No se enviaron notificaciones de Telegram esta corrida.`;
+                degradedEl.innerHTML = `⚠️ CORRIDA CON DATOS PARCIALES — falló el ${data.pct_fallidos}% del universo (${nFallidos} ticker(s)). La Fuerza Relativa de esta corrida no es confiable (percentil sobre una muestra chica). No se enviaron notificaciones de Telegram esta corrida.`;
                 degradedEl.classList.remove('hidden');
             } else {
                 degradedEl.classList.add('hidden');
@@ -1324,9 +1341,9 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 pl-8 mt-0.5 font-mono text-[9px] text-gray-600">
-                                <span title="Cuánto cambió el RS Score desde la corrida anterior">Δ día ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
-                                <span title="Cuánto cambió el RS Score en las últimas ~5 ruedas (1 semana)">Δ sem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
-                                <span title="Cuánto cambió el RS Score en las últimas ~21 ruedas (1 mes)">Δ mes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
+                                <span title="Cuánto cambió la Fuerza Relativa desde la corrida anterior">Δ día ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
+                                <span title="Cuánto cambió la Fuerza Relativa en las últimas ~5 ruedas (1 semana)">Δ sem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
+                                <span title="Cuánto cambió la Fuerza Relativa en las últimas ~21 ruedas (1 mes)">Δ mes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                             </div>
                         </div>
                     `;
@@ -1399,7 +1416,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 pl-8 mt-0.5 font-mono text-[9px] text-gray-600">
-                                <span title="Fuerza Relativa (RS) de este ticker, para comparar contra el Radar Score">RS ${ticker?.RS_Score != null ? ticker.RS_Score.toFixed(0) : '—'}</span>
+                                <span title="Fuerza Relativa de este ticker, para comparar contra el Radar Score">FR ${ticker?.RS_Score != null ? ticker.RS_Score.toFixed(0) : '—'}</span>
                             </div>
                         </div>
                     `;
@@ -1534,7 +1551,7 @@
                                     <span>SMA200: ${s200V}</span>
                                     <span>RSI: ${rsiV}</span>
                                     <span>Vol: ${volV}</span>
-                                    <span>RS Δdía ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
+                                    <span>FR Δdía ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
                                     <span>Δsem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
                                     <span>Δmes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                                 </div>
@@ -1551,7 +1568,7 @@
                         <div id="${sectorSlug(sector)}" class="bg-surface p-4 rounded-sm border border-surface transition-shadow">
                             <h3 class="font-bold text-white mb-3 flex items-center justify-between uppercase">
                                 <span>${sector} <span class="text-gray-500 normal-case font-mono text-xs">(${cantidadEnSector})</span></span>
-                                <span class="text-xs font-mono text-accent bg-base px-2 py-1 rounded-sm">RS ${sectorScoreDisplay}</span>
+                                <span class="text-xs font-mono text-accent bg-base px-2 py-1 rounded-sm">FR ${sectorScoreDisplay}</span>
                             </h3>
                             <div class="max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
                                 ${rows}
@@ -1692,7 +1709,7 @@
             }
             if (puntosHoy.length === 0) {
                 cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-2 border border-dashed border-surface rounded-sm">
-                    Todavía juntando historial (hace falta guardar 7 días de RS sectorial antes de poder ubicar un sector en un cuadrante).
+                    Todavía juntando historial (hace falta guardar 7 días de Fuerza Relativa sectorial antes de poder ubicar un sector en un cuadrante).
                 </div>`;
                 return;
             }
@@ -1755,8 +1772,8 @@
 
             const ejesTexto = `
                 <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← empeoró 7d    mejoró 7d →</text>
-                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">RS fuerte</text>
-                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">RS débil</text>`;
+                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">FR fuerte</text>
+                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">FR débil</text>`;
 
             let colasSvg = '', puntosSvg = '';
             for (const sector in recorridos) {
@@ -1788,7 +1805,7 @@
                 puntosSvg += `
                     <g>
                         <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">
-                            <title>${sector}: RS ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
+                            <title>${sector}: FR ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
                         </circle>
                         <text x="${cx}" y="${arriba ? cy - 9 : cy + 16}" text-anchor="middle" font-size="9" font-family="monospace" fill="#d1d5db">${label}</text>
                     </g>`;
