@@ -23,12 +23,18 @@ log = logging.getLogger("radar.top30_nuevos")
 
 RUTA_HISTORIAL_DIARIO = "data/top30_diario.jsonl"
 
+# Mismo mecanismo, ahora también para el Top 30 por RADAR SCORE (a pedido
+# de Victoria, 1/10: "quiero el ranking del score, de características
+# similares al de fuerza relativa") -- archivo de historial aparte, nunca
+# se mezcla con el de RS Score.
+RUTA_HISTORIAL_DIARIO_RADAR = "data/top30_radar_diario.jsonl"
 
-def _leer_fotos():
-    if not os.path.exists(RUTA_HISTORIAL_DIARIO):
+
+def _leer_fotos(ruta):
+    if not os.path.exists(ruta):
         return []
     fotos = []
-    with open(RUTA_HISTORIAL_DIARIO, "r", encoding="utf-8") as f:
+    with open(ruta, "r", encoding="utf-8") as f:
         for linea in f:
             linea = linea.strip()
             if not linea:
@@ -40,32 +46,28 @@ def _leer_fotos():
     return fotos
 
 
-def registrar_y_comparar_top30(df_rs, fecha_hoy: str) -> dict:
+def _registrar_y_comparar(df_rs, columna: str, ruta_historial: str, fecha_hoy: str) -> dict:
     """
-    df_rs: DataFrame ya calculado, con columnas 'Ticker' y 'RS_Score'.
-    fecha_hoy: 'YYYY-MM-DD'.
+    Motor genérico: arma el Top 30 por la columna indicada (RS_Score o
+    Radar_Score), lo compara contra la última foto guardada en
+    ruta_historial, y appendea la foto de hoy (salvo que ya exista una).
 
-    Devuelve:
-        {"nuevos": [...], "salientes": [...], "fecha_comparacion": str|None}
-
-    Y de paso appendea la foto de hoy al historial diario -- salvo que ya
-    haya una foto de hoy guardada (una segunda corrida el mismo día no
-    debe duplicar ni pisar la entrada).
+    Devuelve {"nuevos": [...], "salientes": [...], "fecha_comparacion": str|None}
     """
     vacio = {"nuevos": [], "salientes": [], "fecha_comparacion": None}
-    if df_rs is None or df_rs.empty or "RS_Score" not in df_rs.columns:
+    if df_rs is None or df_rs.empty or columna not in df_rs.columns:
         return vacio
 
     top30_hoy = set(
-        df_rs.sort_values("RS_Score", ascending=False).head(30)["Ticker"].tolist()
+        df_rs.sort_values(columna, ascending=False).head(30)["Ticker"].tolist()
     )
 
-    fotos = _leer_fotos()
+    fotos = _leer_fotos(ruta_historial)
     ya_hoy = any(f.get("fecha") == fecha_hoy for f in fotos)
     if not ya_hoy:
-        with open(RUTA_HISTORIAL_DIARIO, "a", encoding="utf-8") as f:
+        with open(ruta_historial, "a", encoding="utf-8") as f:
             f.write(json.dumps({"fecha": fecha_hoy, "tickers": sorted(top30_hoy)}, ensure_ascii=False) + "\n")
-        log.info(f"Top 30 de hoy ({fecha_hoy}) guardado en {RUTA_HISTORIAL_DIARIO}")
+        log.info(f"Top 30 ({columna}) de hoy ({fecha_hoy}) guardado en {ruta_historial}")
 
     # Foto previa: la última guardada con fecha ANTERIOR a hoy (ignora la
     # que se acaba de agregar arriba, si la hubo).
@@ -80,3 +82,13 @@ def registrar_y_comparar_top30(df_rs, fecha_hoy: str) -> dict:
         "salientes": sorted(top30_previo - top30_hoy),
         "fecha_comparacion": previa["fecha"],
     }
+
+
+def registrar_y_comparar_top30(df_rs, fecha_hoy: str) -> dict:
+    """Top 30 por Fuerza Relativa (RS Score) -- el de siempre."""
+    return _registrar_y_comparar(df_rs, "RS_Score", RUTA_HISTORIAL_DIARIO, fecha_hoy)
+
+
+def registrar_y_comparar_top30_radar(df_rs, fecha_hoy: str) -> dict:
+    """Top 30 por Radar Score -- el compuesto con volumen/tendencia/AVWAP/etc."""
+    return _registrar_y_comparar(df_rs, "Radar_Score", RUTA_HISTORIAL_DIARIO_RADAR, fecha_hoy)

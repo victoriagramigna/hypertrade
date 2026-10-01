@@ -38,7 +38,7 @@ from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
 from movimientos import detectar_movimientos_diarios
 from bitacora import registrar_eventos
-from top30_nuevos import registrar_y_comparar_top30
+from top30_nuevos import registrar_y_comparar_top30, registrar_y_comparar_top30_radar
 from rs_deltas import registrar_y_calcular_deltas
 from rebote_ema200 import detectar_rebote_ema200
 from radar_score import calcular_radar_score
@@ -325,6 +325,14 @@ def main():
                          if corrida_degradada
                          else registrar_y_comparar_top30(df_rs, fecha_hoy))
 
+    # 7c. Mismo mecanismo, ahora para el Top 30 por RADAR SCORE (el
+    # compuesto con volumen/tendencia/AVWAP/52w, no la Fuerza Relativa) --
+    # a pedido de Victoria (1/10), con las mismas características que el
+    # de arriba: nuevos ingresos/salientes diarios.
+    top30_radar_nuevos_hoy = ({"nuevos": [], "salientes": [], "fecha_comparacion": None}
+                               if corrida_degradada
+                               else registrar_y_comparar_top30_radar(df_rs, fecha_hoy))
+
     # 8. Guardar resultado para el dashboard
     salida = {
         "generado_utc": timestamp,
@@ -352,6 +360,9 @@ def main():
         "top30_nuevos_hoy": top30_nuevos_hoy["nuevos"],
         "top30_salientes_hoy": top30_nuevos_hoy["salientes"],
         "top30_fecha_comparacion": top30_nuevos_hoy["fecha_comparacion"],
+        "top30_radar_nuevos_hoy": top30_radar_nuevos_hoy["nuevos"],
+        "top30_radar_salientes_hoy": top30_radar_nuevos_hoy["salientes"],
+        "top30_radar_fecha_comparacion": top30_radar_nuevos_hoy["fecha_comparacion"],
         "extremos_52w": extremos_52w,
         "amplitud_historial": amplitud_historial,
     }

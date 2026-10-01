@@ -209,6 +209,101 @@ TICKERS = {
                             # mismo grupo que HUT/IREN/RIOT (mineras BTC / data centers IA)
 }
 
+# --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
+# al lado del ticker en el dashboard). NO reemplaza ni toca el "Sector" de
+# arriba: Rotación Sectorial, RS contra sector y todo lo demás se sigue
+# calculando con TICKERS tal cual está. Se agregó a pedido de Victoria
+# (1/10) después de preguntar si los semiconductores estaban en el radar --
+# estaban, pero agrupados dentro de "Tecnología" sin distinguirse. Solo
+# cubre los 4 sectores más heterogéneos (Tecnología, Consumo, Energía,
+# Materiales); un ticker sin entrada acá simplemente no muestra
+# subcategoría, solo su sector de siempre.
+SUBCATEGORIAS = {
+    # --- Tecnología ---
+    # Semiconductores
+    "ADI": "Semiconductores", "ALAB": "Semiconductores", "AMAT": "Semiconductores",
+    "AMD": "Semiconductores", "ARM": "Semiconductores", "AVGO": "Semiconductores",
+    "INTC": "Semiconductores", "KLAC": "Semiconductores", "LRCX": "Semiconductores",
+    "MRVL": "Semiconductores", "MU": "Semiconductores", "NVDA": "Semiconductores",
+    "QCOM": "Semiconductores", "SNDK": "Semiconductores", "TSM": "Semiconductores",
+    "TXN": "Semiconductores", "WDC": "Semiconductores",
+    # Software / Servicios IT
+    "ACN": "Software", "ADBE": "Software", "ADP": "Software", "AI": "Software",
+    "CRM": "Software", "CRWD": "Software", "DOCU": "Software", "GLOB": "Software",
+    "INFY": "Software", "NOW": "Software", "ORCL": "Software", "PANW": "Software",
+    "PATH": "Software", "PLTR": "Software", "SAP": "Software", "SNOW": "Software",
+    "TEAM": "Software", "TWLO": "Software", "VRSN": "Software", "ZM": "Software",
+    # Hardware / Mega Cap
+    "AAPL": "Hardware/Mega Cap", "DELL": "Hardware/Mega Cap", "GLW": "Hardware/Mega Cap",
+    "GOOGL": "Hardware/Mega Cap", "GRMN": "Hardware/Mega Cap", "HPQ": "Hardware/Mega Cap",
+    "IBM": "Hardware/Mega Cap", "META": "Hardware/Mega Cap", "MSFT": "Hardware/Mega Cap",
+    "MSI": "Hardware/Mega Cap", "SONY": "Hardware/Mega Cap", "BB": "Hardware/Mega Cap",
+    # Internet / Medios digitales
+    "BIDU": "Internet/Medios", "DIS": "Internet/Medios", "PINS": "Internet/Medios",
+    "RBLX": "Internet/Medios", "ROKU": "Internet/Medios", "SHOP": "Internet/Medios",
+    "SNAP": "Internet/Medios", "SPOT": "Internet/Medios",
+    # Telecom / Equipos de red
+    "ERIC": "Telecom (equipos)", "NOK": "Telecom (equipos)",
+    # Minería cripto / Data center IA
+    "BMNR": "Minería cripto/Data center", "CRWV": "Minería cripto/Data center",
+    "HUT": "Minería cripto/Data center", "IREN": "Minería cripto/Data center",
+    "KEEL": "Minería cripto/Data center", "RIOT": "Minería cripto/Data center",
+    "SKHY": "Minería cripto/Data center",
+    # Espacio / Cuántica (emergente)
+    "ASTS": "Espacio/Cuántica", "RGTI": "Espacio/Cuántica", "SATL": "Espacio/Cuántica",
+
+    # --- Consumo ---
+    # Consumo Básico (defensivo -- la gente lo sigue comprando en cualquier contexto)
+    "CL": "Consumo Básico", "COST": "Consumo Básico", "DEO": "Consumo Básico",
+    "HSY": "Consumo Básico", "KMB": "Consumo Básico", "KO": "Consumo Básico",
+    "MDLZ": "Consumo Básico", "MO": "Consumo Básico", "PEP": "Consumo Básico",
+    "PG": "Consumo Básico", "PM": "Consumo Básico", "UL": "Consumo Básico",
+    "WMT": "Consumo Básico",
+    # Consumo Discrecional (gasto que se recorta primero si el bolsillo aprieta)
+    "ABNB": "Consumo Discrecional", "AMZN": "Consumo Discrecional", "BABA": "Consumo Discrecional",
+    "BKNG": "Consumo Discrecional", "CAR": "Consumo Discrecional", "CCL": "Consumo Discrecional",
+    "DECK": "Consumo Discrecional", "EBAY": "Consumo Discrecional", "ETSY": "Consumo Discrecional",
+    "HD": "Consumo Discrecional", "JD": "Consumo Discrecional", "JMIA": "Consumo Discrecional",
+    "LVS": "Consumo Discrecional", "MCD": "Consumo Discrecional", "MELI": "Consumo Discrecional",
+    "NFLX": "Consumo Discrecional", "NKE": "Consumo Discrecional", "PDD": "Consumo Discrecional",
+    "ROST": "Consumo Discrecional", "SBUX": "Consumo Discrecional", "SE": "Consumo Discrecional",
+    "TGT": "Consumo Discrecional", "TJX": "Consumo Discrecional", "TRIP": "Consumo Discrecional",
+    "UBER": "Consumo Discrecional", "URBN": "Consumo Discrecional",
+
+    # --- Energía ---
+    # Petróleo y Gas
+    "BKR": "Petróleo y Gas", "BP": "Petróleo y Gas", "COP": "Petróleo y Gas",
+    "CVX": "Petróleo y Gas", "EQNR": "Petróleo y Gas", "GPRK": "Petróleo y Gas",
+    "HAL": "Petróleo y Gas", "OXY": "Petróleo y Gas", "PBR": "Petróleo y Gas",
+    "PSX": "Petróleo y Gas", "SHEL": "Petróleo y Gas", "SLB": "Petróleo y Gas",
+    "TEN": "Petróleo y Gas", "TGS": "Petróleo y Gas", "TTE": "Petróleo y Gas",
+    "UGP": "Petróleo y Gas", "VIST": "Petróleo y Gas", "XOM": "Petróleo y Gas",
+    "YPF": "Petróleo y Gas",
+    # Utilities / Eléctricas reguladas
+    "CEG": "Utilities/Eléctricas", "EDN": "Utilities/Eléctricas", "GEV": "Utilities/Eléctricas",
+    "NEE": "Utilities/Eléctricas", "NGG": "Utilities/Eléctricas", "PAM": "Utilities/Eléctricas",
+    "TLN": "Utilities/Eléctricas", "VST": "Utilities/Eléctricas",
+    # Renovables / Uranio
+    "CCJ": "Renovables/Uranio", "FSLR": "Renovables/Uranio", "NXE": "Renovables/Uranio",
+    "OKLO": "Renovables/Uranio", "URA": "Renovables/Uranio",
+
+    # --- Materiales ---
+    # Industriales (maquinaria, conglomerados)
+    "CAT": "Industriales", "DE": "Industriales", "DHR": "Industriales",
+    "HON": "Industriales", "JCI": "Industriales", "MMM": "Industriales",
+    # Minería / Metales
+    "AEM": "Minería/Metales", "BHP": "Minería/Metales", "CDE": "Minería/Metales",
+    "HL": "Minería/Metales", "HMY": "Minería/Metales", "LAC": "Minería/Metales",
+    "LAR": "Minería/Metales", "MP": "Minería/Metales", "MUX": "Minería/Metales",
+    "NEM": "Minería/Metales", "PAAS": "Minería/Metales", "RIO": "Minería/Metales",
+    "SCCO": "Minería/Metales", "VALE": "Minería/Metales",
+    # Químicos / otros materiales
+    "AVY": "Químicos/Otros", "B": "Químicos/Otros", "BAK": "Químicos/Otros",
+    "DOW": "Químicos/Otros", "ECL": "Químicos/Otros", "IP": "Químicos/Otros",
+    "LIN": "Químicos/Otros", "NUE": "Químicos/Otros", "SHW": "Químicos/Otros",
+    "TX": "Químicos/Otros",
+}
+
 BENCHMARK = "SPY"
 
 # --- Palabras clave por sector, para detectar eventos geopolíticos/macro en noticias ---

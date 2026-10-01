@@ -16,6 +16,7 @@ eso no se distingue; con los dos, sí.
 """
 import pandas as pd
 from vcp import detectar_vcp
+from config import SUBCATEGORIAS
 
 UMBRAL_FUERTE = 70   # RS Score (de cualquiera de los dos) a partir de acá se considera "fuerte"
 UMBRAL_DEBIL = 50    # por debajo de acá se considera "débil"
@@ -100,7 +101,12 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
             max_52w = close.max()
 
         fila = {
-            "Ticker": ticker, "Sector": sector, "Precio": round(precio_actual, 2),
+            "Ticker": ticker, "Sector": sector,
+            # Subcategoría -- PURAMENTE informativa (ver config.py), no
+            # entra en ningún cálculo. None si el ticker no tiene una
+            # asignada (sectores que ya eran lo bastante específicos).
+            "Subcategoria": SUBCATEGORIAS.get(ticker),
+            "Precio": round(precio_actual, 2),
             "RS_raw": rs_raw,
             # Retornos crudos (sin redondear) -- se necesitan para el promedio
             # sectorial de RS_Score_Sector más abajo; se descartan al final.
