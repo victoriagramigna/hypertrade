@@ -680,6 +680,8 @@
                         <div class="text-white">${tickerData.Vol_rel?.toFixed(2) ?? '—'}x</div>
                     </div>
                 </div>
+
+                ${semanalPanelHtml(tickerData)}
             `;
             
             modal.classList.remove('hidden');
@@ -1066,6 +1068,10 @@
                             <div><div class="uppercase">VOL</div><div class="text-white text-[11px]">${volRel != null ? volRel + 'x' : '—'}</div></div>
                             <div><div class="uppercase">52W</div><div class="text-white text-[11px]">${dist52w != null ? dist52w + '%' : '—'}</div></div>
                             <div><div class="uppercase">RS SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 font-mono text-[9px] text-gray-600 mt-1">
+                            <div><div class="uppercase">RSI SEM</div><div class="text-gray-300 text-[11px]">${alerta?.RSI_Semanal != null ? alerta.RSI_Semanal : '—'}</div></div>
+                            <div><div class="uppercase">VOL SEM</div><div class="text-gray-300 text-[11px]">${alerta?.Vol_Rel_Semanal != null ? alerta.Vol_Rel_Semanal + 'x' : '—'}</div></div>
                         </div>
                         ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF. (USD): <span class="text-white">$${precioRef}</span></div>` : ''}
                         ${cedearHtml}
@@ -2212,6 +2218,45 @@
             if (v == null) return '<span class="text-gray-700">—</span>';
             const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-500');
             return `<span class="${color}">${v > 0 ? '+' : ''}${Number(v).toFixed(1)}</span>`;
+        }
+
+        // ============ DATOS EN VELA SEMANAL (informativo) ============
+        // Mismos datos que ya se muestran en vela DIARIA (RSI, Volumen
+        // relativo) pero comprimidos a semana -- a pedido de Victoria
+        // (1/10), "solo como dato": no dispara nada, no cambia ningún
+        // score ni recomendación, es el mismo RSI/MACD semanal que ya usa
+        // el chip "SEMANAL A FAVOR/CONTRA/MIXTA", mostrado acá como número
+        // en vez de solo como lectura cualitativa.
+        function tendenciaSemanalLabel(lectura) {
+            if (lectura === 'favor') return { texto: 'A favor', color: 'text-pos' };
+            if (lectura === 'contra') return { texto: 'En contra', color: 'text-neg' };
+            if (lectura === 'mixta') return { texto: 'Mixta', color: 'text-accent' };
+            return { texto: 'Sin datos aún', color: 'text-gray-600' };
+        }
+
+        function semanalPanelHtml(ticker) {
+            const rsiSem = ticker?.RSI_Semanal;
+            const volSem = ticker?.Vol_Rel_Semanal;
+            const lectura = tendenciaSemanalLabel(ticker?.Tendencia_Semanal);
+            if (rsiSem == null && volSem == null && ticker?.Tendencia_Semanal == null) return '';
+            return `
+                <div class="mt-3 bg-base p-3 rounded-sm border border-gray-800">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-500 text-[10px] uppercase tracking-widest">Vela semanal (dato, no gatillo)</span>
+                        <span class="text-[10px] font-bold ${lectura.color}">${lectura.texto}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 font-mono text-sm">
+                        <div>
+                            <div class="text-gray-600 text-[9px] uppercase">RSI (14) semanal</div>
+                            <div class="text-white">${rsiSem != null ? rsiSem.toFixed(1) : '—'}</div>
+                        </div>
+                        <div>
+                            <div class="text-gray-600 text-[9px] uppercase">Volumen relativo semanal</div>
+                            <div class="text-white">${volSem != null ? volSem.toFixed(2) + 'x' : '—'}</div>
+                        </div>
+                    </div>
+                    <div class="text-gray-700 text-[9px] mt-2 leading-snug">RSI y volumen de la vela SEMANAL, no diaria -- el mismo dato de arriba pero en otro marco temporal, para contexto de más largo plazo. No suma ni resta del score ni cambia ninguna recomendación. El volumen semanal compara la semana EN CURSO (puede estar a mitad de camino) contra el promedio de las últimas 12 semanas completas.</div>
+                </div>`;
         }
 
         function renderAuditoria() {
