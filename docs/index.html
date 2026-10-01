@@ -115,6 +115,8 @@
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Régimen de mercado</h2>
             <div id="regimen-panel" class="bg-surface p-4 rounded-sm border border-surface"></div>
+            <div id="extremos-52w-panel" class="bg-surface p-4 rounded-sm border border-surface mt-3"></div>
+            <div id="amplitud-historial-panel" class="bg-surface p-4 rounded-sm border border-surface mt-3"></div>
         </section>
 
         <!-- Movimientos del día -->
@@ -846,6 +848,14 @@
                 const stopSugerido = alerta?.Stop_sugerido;
                 const radarScore = alerta?.Radar_Score;
                 const precioRef = alerta?.Precio;
+                // CEDEAR en pesos (si este ticker tiene uno cotizando en
+                // Argentina) -- mismo dato que ya usa Mi Cartera, acá solo
+                // se muestra como referencia junto al precio en USD.
+                const cedearInfo = (currentRadarData?.cedears_pricing?.cedears ?? [])
+                    .find(c => c?.Ticker === ticker && !c.sin_datos);
+                const cedearHtml = cedearInfo
+                    ? `<div class="font-mono text-[10px] text-gray-500 mt-1">CEDEAR (ARS): <span class="text-white">$${cedearInfo.Precio_real_ARS}</span> <span class="text-gray-600">(ratio ${cedearInfo.Ratio}:1, CCL $${currentRadarData?.cedears_pricing?.ccl ?? '—'})</span></div>`
+                    : '';
                 const rsi = alerta?.RSI;
                 const volRel = alerta?.Vol_rel;
                 const dist52w = alerta?.['Dist_Max52w_%'];
@@ -1057,7 +1067,8 @@
                             <div><div class="uppercase">52W</div><div class="text-white text-[11px]">${dist52w != null ? dist52w + '%' : '—'}</div></div>
                             <div><div class="uppercase">RS SECTOR</div><div class="text-white text-[11px]">${rsSector ?? '—'}</div></div>
                         </div>
-                        ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF.: <span class="text-white">$${precioRef}</span></div>` : ''}
+                        ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF. (USD): <span class="text-white">$${precioRef}</span></div>` : ''}
+                        ${cedearHtml}
                         ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
                         ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
                         ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
@@ -1146,6 +1157,8 @@
             renderCedearPanel(data);
             renderMovimientosDia(data);
             renderRegimen(data);
+            renderExtremos52w(data);
+            renderAmplitudHistorial(data);
             renderCartera();
 
             // Banner de corrida degradada (mucho de la fuente de datos falló)
@@ -1800,6 +1813,76 @@
                 <div class="space-y-3 mt-5">${partes}</div>
                 <div class="grid grid-cols-2 gap-2 mt-5">${bandas}</div>
                 <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">Mide el clima del mercado en general, no de una acción. No cambia el Radar Score: es una guía de cuánto arriesgar. Informativo, no es una recomendación.</div>`;
+        }
+
+        // ============ NUEVOS MÁXIMOS/MÍNIMOS DE 52 SEMANAS (Inicio) ============
+        function renderExtremos52w(data) {
+            const cont = document.getElementById('extremos-52w-panel');
+            const e = data?.extremos_52w;
+            if (!e || e.nuevos_maximos_52w == null) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin datos de máximos/mínimos de 52 semanas en esta corrida.</div>';
+                return;
+            }
+            cont.innerHTML = `
+                <div class="flex items-center justify-between gap-4">
+                    <div class="flex-1 text-center">
+                        <div class="font-mono text-2xl font-bold text-pos">${e.nuevos_maximos_52w}</div>
+                        <div class="font-mono text-[10px] text-gray-500 uppercase tracking-wide">Nuevos máximos<br>de 52 semanas hoy</div>
+                    </div>
+                    <div class="w-px h-10 bg-gray-800"></div>
+                    <div class="flex-1 text-center">
+                        <div class="font-mono text-2xl font-bold text-neg">${e.nuevos_minimos_52w}</div>
+                        <div class="font-mono text-[10px] text-gray-500 uppercase tracking-wide">Nuevos mínimos<br>de 52 semanas hoy</div>
+                    </div>
+                </div>
+                <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">Cuántos tickers del universo cerraron HOY en su precio más alto o más bajo de las últimas 52 semanas. Muchos máximos nuevos = mercado sano empujando líderes; muchos mínimos nuevos = atención, el mercado se está debilitando por abajo. Informativo, no es una recomendación.</div>`;
+        }
+
+        // ============ HISTORIAL DE AMPLITUD -- TENDENCIA (Inicio) ============
+        function renderAmplitudHistorial(data) {
+            const cont = document.getElementById('amplitud-historial-panel');
+            const serie = data?.amplitud_historial ?? [];
+            if (serie.length < 2) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay suficiente historial para graficar la tendencia de amplitud. Se va juntando día a día.</div>';
+                return;
+            }
+            const W = 600, H = 160, padL = 28, padR = 8, padT = 10, padB = 8;
+            const innerW = W - padL - padR, innerH = H - padT - padB;
+            const n = serie.length;
+            const xAt = i => padL + (n === 1 ? 0 : innerW * i / (n - 1));
+            const yAt = v => padT + innerH * (1 - Math.max(0, Math.min(100, v)) / 100);
+
+            const pathFor = key => serie.map((f, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i).toFixed(1)} ${yAt(f[key]).toFixed(1)}`).join(' ');
+
+            const grid = [0, 25, 50, 75, 100].map(v => `
+                <line x1="${padL}" y1="${yAt(v)}" x2="${W - padR}" y2="${yAt(v)}" stroke="#1a2233" stroke-width="1"/>
+                <text x="4" y="${yAt(v) + 3}" font-family="IBM Plex Mono, monospace" font-size="8" fill="#4b5563">${v}</text>`).join('');
+
+            const ultimo = serie[n - 1];
+            const primero = serie[0];
+
+            const svg = `
+                <svg viewBox="0 0 ${W} ${H}" class="w-full block" preserveAspectRatio="none">
+                    ${grid}
+                    <path d="${pathFor('pct_sma50')}" fill="none" stroke="#E0A458" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="${pathFor('pct_sma200')}" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="${xAt(n - 1)}" cy="${yAt(ultimo.pct_sma50)}" r="3" fill="#E0A458"/>
+                    <circle cx="${xAt(n - 1)}" cy="${yAt(ultimo.pct_sma200)}" r="3" fill="#3b82f6"/>
+                </svg>`;
+
+            cont.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-mono text-[10px] text-gray-500 uppercase tracking-wide">% del universo sobre su media -- últimos ${n} días</div>
+                    <div class="flex gap-3 font-mono text-[10px]">
+                        <span><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#E0A458"></span><span class="text-gray-400">SMA50: <span class="text-white font-bold">${ultimo.pct_sma50}%</span></span></span>
+                        <span><span class="inline-block w-2 h-2 rounded-full mr-1" style="background:#3b82f6"></span><span class="text-gray-400">SMA200: <span class="text-white font-bold">${ultimo.pct_sma200}%</span></span></span>
+                    </div>
+                </div>
+                ${svg}
+                <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">
+                    Desde ${primero.fecha} (${primero.pct_sma50}% / ${primero.pct_sma200}%) hasta ${ultimo.fecha} (${ultimo.pct_sma50}% / ${ultimo.pct_sma200}%).
+                    Muestra si cada vez son MENOS las acciones las que sostienen al mercado (líneas bajando) aunque el índice general siga arriba -- una señal de alerta temprana. Informativo, no es una recomendación.
+                </div>`;
         }
 
         // ============ MOVIMIENTOS DEL DÍA (Inicio) ============
