@@ -283,6 +283,13 @@ def main():
         # puramente informativa: no toca el Score ni la Recomendación de
         # ninguna alerta, solo viaja junto para mostrarse y auditarse aparte.
         "Tendencia_Semanal", "RSI_Semanal", "MACD_Semanal", "MACD_Señal_Semanal",
+        # Subcategoría (ver config.py/rs_score.py) -- faltaba en esta lista,
+        # por eso no aparecía en las tarjetas de Alertas aunque el HTML ya
+        # estaba listo para mostrarla (bug encontrado 1/10): en el Top 30 y
+        # en el buscador de tickers SÍ se veía, porque esas dos pantallas
+        # leen directo de df_rs (el universo completo), que siempre la tuvo.
+        # Puramente informativa, igual que las de arriba.
+        "Subcategoria",
     ]
     columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
     extras_por_ticker = (
