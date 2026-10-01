@@ -67,7 +67,12 @@ jobs:
           # Auditoría -- mismos cuidados: pueden no existir en las primeras
           # corridas. Sin estas líneas los resultados se calculaban pero se
           # perdían al terminar la corrida (nunca se guardaban en el repo).
-          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json data/chips_historial.json data/rs_sector_historial.jsonl data/rotacion_sectorial_estado.json data/log_rotacion_sectorial.jsonl data/auditoria_rotacion.json data/auditoria_rotacion_resultados.jsonl; do
+          # top30_diario.jsonl, rs_score_historial.jsonl y amplitud_historial.jsonl
+          # faltaban en esta lista (bug encontrado 1/10): se calculaban bien en
+          # cada corrida pero nunca se guardaban en el repo, así que la corrida
+          # siguiente arrancaba de cero y "nuevos ingresos al Top 30" y "Δ RS
+          # día/semana/mes" nunca tenían un día anterior contra el cual comparar.
+          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json data/chips_historial.json data/rs_sector_historial.jsonl data/rotacion_sectorial_estado.json data/log_rotacion_sectorial.jsonl data/auditoria_rotacion.json data/auditoria_rotacion_resultados.jsonl data/top30_diario.jsonl data/rs_score_historial.jsonl data/amplitud_historial.jsonl; do
             if [ -f "$f" ]; then
               git add "$f"
             fi
