@@ -1283,12 +1283,17 @@
                     const rsScore = ticker?.RS_Score ?? 0;
                     const dotClass = ticker?.Sobre_SMA50 ? 'dot-pos' : 'dot-neg';
                     const nombreTicker = ticker?.Ticker ?? '—';
+                    const esNuevoHoy = fechaComparacionTop30 && nuevosTop30.includes(nombreTicker);
+                    const badgeNuevo = esNuevoHoy
+                        ? `<span class="text-[8px] uppercase font-bold text-pos border border-pos rounded-sm px-1 py-0.5 ml-1 cursor-help" title="Entró al Top 30 hoy -- ayer no estaba (comparado contra la foto del ${fechaComparacionTop30}).">nuevo</span>`
+                        : '';
                     return `
-                        <div class="border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
+                        <div class="border-b border-base/50 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0 ${esNuevoHoy ? 'border-l-2 border-pos pl-1' : ''}">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-2">
                                     <span class="text-gray-600 font-mono text-xs w-6 text-right">${index + 1}.</span>
-                                    <span class="font-bold text-white w-14 cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    <span class="font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    ${badgeNuevo}
                                     <span class="text-[10px] uppercase text-gray-500 truncate w-24 hidden 2xl:inline-block">${ticker?.Sector ?? '—'}</span>
                                 </div>
                                 <div class="flex items-center gap-3">
