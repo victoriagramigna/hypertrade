@@ -951,19 +951,49 @@
                     if (recomendacion === 'MANTENER') recColor = 'bg-accent text-base border-accent';
                 }
 
-                // Radar Score: barra de color + número, en vez de solo texto
+                // Radar Score: barra de color + número, y ahora además el
+                // desglose de sus 6 ingredientes (antes se calculaban y se
+                // descartaban -- ver radar_score.py) -- a pedido de Victoria
+                // (1/10: "que se explique todo acerca de los datos que
+                // aparecen"). No cambia el cálculo, solo lo hace visible.
                 let radarScoreHtml = '';
                 if (radarScore != null) {
                     const rColor = radarScore >= 70 ? 'bg-pos' : (radarScore >= 45 ? 'bg-accent' : 'bg-neg');
+                    const compItems = [
+                        ['Radar_Comp_FR', 'Fuerza Relativa', 25, 'Toma el RS Score (0-100) de este ticker y lo escala a 25 puntos -- el ingrediente de mayor peso.'],
+                        ['Radar_Comp_Contraccion', 'Contracción (VCP/ATR)', 25, 'Hasta 20 pts si se detectó un patrón VCP válido (rango de precio comprimiéndose en olas), +5 más si además el rango reciente (ATR10) está comprimido contra el de más largo plazo (ATR50). Setup típico previo a una ruptura.'],
+                        ['Radar_Comp_Volumen', 'Volumen (RVOL)', 15, `Escala con el volumen relativo de hoy -- llega al tope de 15 pts en ${VOLUMEN_RELATIVO_MINIMO_JS}x su promedio de 20 días o más.`],
+                        ['Radar_Comp_Tendencia', 'Tendencia', 15, 'Suma 3 pts por cada una de 5 condiciones: sobre SMA50, sobre SMA200, sector con Fuerza Relativa sana, mercado (SPY) sobre su SMA50, y pendiente positiva de SMA50/200.'],
+                        ['Radar_Comp_AVWAP', 'Apoyo en AVWAP/SMA50', 10, 'Todo o nada: 10 pts si el precio está en zona de costo institucional (±2% de su SMA50 o su AVWAP anclado), 0 si no.'],
+                        ['Radar_Comp_52w', 'Posición en 52 semanas', 10, 'Escala según qué tan cerca está el precio de su máximo de 52 semanas -- más lejos del máximo, menos puntos.'],
+                    ];
+                    const bono = alerta?.Radar_Bono_Cruce;
+                    const tieneDetalle = compItems.some(([clave]) => alerta?.[clave] != null);
+                    let detalleHtml = '';
+                    if (tieneDetalle) {
+                        const filasComp = compItems.map(([clave, nombre, tope, explicacion]) => {
+                            const valor = alerta?.[clave];
+                            return `<details>
+                                <summary class="flex items-center justify-between gap-1.5 cursor-pointer select-none list-none marker:content-none [&::-webkit-details-marker]:hidden">
+                                    <span class="text-gray-300">${nombre}</span>
+                                    <span class="text-white">${valor != null ? valor.toFixed(1) : '—'} / ${tope}</span>
+                                </summary>
+                                <div class="text-gray-500 text-[10px] pt-0.5 pb-1 leading-snug normal-case">${explicacion}</div>
+                            </details>`;
+                        }).join('');
+                        const bonoHtml = bono ? `<div class="flex items-center justify-between gap-1.5 text-pos"><span>+ Bono: cruzó su AVWAP de 52 semanas</span><span>+${bono.toFixed(0)}</span></div>` : '';
+                        detalleHtml = `<div class="mt-1.5 space-y-0.5 font-mono text-[11px]">${filasComp}${bonoHtml}</div>`;
+                    }
                     radarScoreHtml = `
                         <div class="mt-3">
                             <div class="flex justify-between font-mono text-[10px] uppercase text-gray-500 mb-1">
-                                <span>Radar Score</span>
+                                <span class="cursor-help" title="Puntaje compuesto 0-100 de calidad técnica: combina Fuerza Relativa, contracción de volatilidad, volumen, tendencia, apoyo institucional y posición en 52 semanas. Tocá cada ingrediente abajo para ver cuánto aportó.">Radar Score</span>
                                 <span class="text-white font-bold">${radarScore.toFixed(0)} / 100</span>
                             </div>
                             <div class="h-1.5 w-full bar-bg rounded-full overflow-hidden">
                                 <div class="h-full ${rColor}" style="width: ${Math.min(radarScore, 100)}%"></div>
                             </div>
+                            ${detalleHtml}
                         </div>`;
                 }
 
@@ -1133,6 +1163,46 @@
                     }
                 }
 
+                // Glosario de todo lo demás que aparece en la tarjeta (SCORE,
+                // ADJ, RSI, VOL, 52W, SECTOR, RSI SEM, VOL SEM, STOP SUGERIDO,
+                // vs SPY) -- a pedido de Victoria (1/10: "que se explique
+                // todo acerca de los datos que aparecen"). SCORE y ADJ
+                // cambian de significado según el tipo de señal, el resto es
+                // igual para todas.
+                const explicacionesScore = {
+                    tecnico: 'Cuántas de las 7 condiciones del Score técnico están prendidas hoy (de 7 posibles) -- ver el detalle con tildes más arriba.',
+                    lider_soporte: 'La Fuerza Relativa (RS) de este ticker -- es lo que dispara esta señal, acá no hay un puntaje 0-7.',
+                    gap_alcista: 'Cuánto subió el precio hoy (variación % del día) -- es lo que dispara esta señal.',
+                    ruptura_confirmada: 'Cuántas veces su volumen de hoy superó el promedio de 20 días -- la confirmación por volumen que le faltaba al Gap alcista original.',
+                    confluencia_alcista: 'Cuántos de los 4 chips técnicos (AVWAP soporte, cruce 52W, tendencia, ATR comprimido) están prendidos, de 4 posibles -- ver el detalle con tildes más arriba.',
+                };
+                const glosarioItems = [
+                    ['SCORE', explicacionesScore[tipo] ?? explicacionesScore.tecnico],
+                    ['ADJ (Ajustado por)', 'Si la Recomendación final de arriba se bajó de COMPRA a MANTENER por el clima general de mercado (régimen no sano), acá se explica por qué. "Sin ajustes" significa que no hubo ningún cambio.'],
+                    ['RSI', 'Fuerza del movimiento reciente del precio (0-100, 14 días). Zona sana: entre 30 y 70 aprox. -- por debajo puede estar débil, por encima de 70 hay riesgo de sobrecompra.'],
+                    ['VOL', `Volumen de hoy comparado con su promedio de 20 días. 1.0x = igual al promedio; ${VOLUMEN_RELATIVO_MINIMO_JS}x o más suele considerarse volumen fuerte.`],
+                    ['52W', 'Qué tan lejos está el precio de su máximo de las últimas 52 semanas. 0% = está en el máximo; cuanto más negativo, más lejos.'],
+                    ['SECTOR', 'Fuerza Relativa promedio de TODO el sector de este ticker (mismo cálculo que la Fuerza Relativa individual, pero aplicado al sector completo) -- para ver si el sector acompaña o no.'],
+                    ['RSI SEM', 'El mismo RSI de arriba, pero calculado sobre velas SEMANALES en vez de diarias -- una mirada de más largo plazo. Dato informativo: no cambia el score ni la recomendación de ninguna alerta.'],
+                    ['VOL SEM', 'El mismo volumen relativo, pero sumado por semana en vez de por día. También informativo.'],
+                ];
+                if (stopSugerido) {
+                    glosarioItems.push(['STOP SUGERIDO', tipo === 'lider_soporte'
+                        ? 'Aproximado: la SMA50 (el soporte que está testeando) menos un colchón del 1% -- si lo pierde, la tesis de esta señal se invalida.'
+                        : 'Aproximado: el precio del día menos un colchón del 1%. No es una recomendación de dónde poner el stop real, es solo una referencia.']);
+                }
+                if (vsSpyStr) {
+                    glosarioItems.push(['vs SPY', 'Cuánto más (o menos) subió o bajó el precio HOY comparado con el SPY en el mismo día, en puntos porcentuales (pp).']);
+                }
+                const glosarioHtml = `<div class="mt-2 pt-2 border-t border-base">
+                    <details>
+                        <summary class="text-gray-600 text-[10px] uppercase tracking-widest cursor-pointer select-none list-none marker:content-none [&::-webkit-details-marker]:hidden">¿Qué significa cada dato de acá abajo? (tocá para ver)</summary>
+                        <div class="mt-1.5 space-y-1.5 font-mono text-[11px]">
+                            ${glosarioItems.map(([nombre, explicacion]) => `<div><span class="text-gray-300">${nombre}:</span> <span class="text-gray-500 normal-case">${explicacion}</span></div>`).join('')}
+                        </div>
+                    </details>
+                </div>`;
+
                 // Narrativa al pie -- el texto de radar_score.py/narrativa.py
                 const narrativaHtml = narrativa
                     ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
@@ -1170,6 +1240,7 @@
                             <div><div class="uppercase">RSI SEM</div><div class="text-gray-300 text-[11px]">${alerta?.RSI_Semanal != null ? alerta.RSI_Semanal : '—'}</div></div>
                             <div><div class="uppercase">VOL SEM</div><div class="text-gray-300 text-[11px]">${alerta?.Vol_Rel_Semanal != null ? alerta.Vol_Rel_Semanal + 'x' : '—'}</div></div>
                         </div>
+                        ${glosarioHtml}
                         ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF. (USD): <span class="text-white">$${precioRef}</span></div>` : ''}
                         ${cedearHtml}
                         ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
