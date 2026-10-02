@@ -144,7 +144,7 @@
                 <span class="text-white">a propósito sin usar el Radar Score</span> para decidir si aparece o no: la idea es que varias razones
                 distintas apuntando para el mismo lado valen más que un solo número compuesto. El Radar Score de cada uno se muestra igual, solo de referencia.
             </div>
-            <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
 
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
@@ -1088,6 +1088,15 @@
                                 ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia -- no llega sobrecomprado a la ruptura.'],
                                 ['base_ordenada', 'Base ordenada', 'La volatilidad reciente es más baja que la histórica.'],
                                 ['sector_mercado_ok', 'Sector + mercado OK', 'El sector tiene fuerza relativa sana y el mercado en general (SPY) está por encima de su SMA50.'],
+                            ],
+                        },
+                        confluencia_alcista: {
+                            titulo: 'Confluencia Alcista -- detalle (los mismos 4 chips de arriba, con qué significa cada uno)',
+                            items: [
+                                ['apoyo_avwap', 'AVWAP soporte', 'El precio cierra a no más de 2% de su SMA50 o de su AVWAP anclado, un nivel donde suele haber compradores institucionales defendiendo.'],
+                                ['cruce_avwap_52w', 'Cruce 52W', 'Cruzó hacia arriba su AVWAP anclado al máximo de 52 semanas: posible señal de que los vendedores atrapados en ese techo ya se agotaron.'],
+                                ['pendiente_ok', 'Tendencia+', 'SMA50 y SMA200 con pendiente positiva en los últimos 10 días: la tendencia de mediano/largo plazo va para arriba.'],
+                                ['atr_contraction', 'ATR comprimido', 'El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.'],
                             ],
                         },
                     };
