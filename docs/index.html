@@ -181,10 +181,19 @@
             </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Sección: Top 30 -->
+            <!-- Las cajas Top 30 (FR y Radar Score) llevan "mx-3 md:mx-0": en
+                 celular quedan un poco más angostas que el resto de la página,
+                 a propósito -- dejan una franja libre a los costados para
+                 poder arrastrar hacia abajo DESDE AFUERA de la caja. Sin esa
+                 franja, el dedo cae encima de la caja (que se puede desplazar
+                 sola, tiene su propio scroll interno) y el scroll de la
+                 página se traba ahí en vez de seguir bajando (pedido de
+                 Victoria, 2/10). En pantallas grandes (md+) no hace falta,
+                 ahí ya quedan en su propia columna de la grilla. -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 30 Fuerza Relativa</h2>
                 <div id="top30-nuevos-container" class="mb-3"></div>
-                <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto"></div>
+                <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto mx-3 md:mx-0"></div>
             </section>
             <!-- 4. Rotación Sectorial -->
             <section>
@@ -203,7 +212,7 @@
                     los mismos nombres que el Top 30 de arriba.
                 </div>
                 <div id="top30-radar-nuevos-container" class="mb-3"></div>
-                <div id="top30-radar-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto"></div>
+                <div id="top30-radar-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto mx-3 md:mx-0"></div>
             </section>
         </div>
         <!-- 4b. Cuadrante de Rotación Sectorial (nuevo: mide si el cuadrante anticipa algo, no solo lo grafica) -->
@@ -2081,9 +2090,8 @@
             // en vez de superponerse, y 2) abajo del gráfico va una lista siempre
             // visible con cada sector y su valor -- no depende de distinguir el
             // nombrecito dentro del gráfico.
-            const bucketOffsets = {};
-            let colasSvg = '', puntosSvg = '';
             const listaPuntos = [];
+            const puntosRender = [];
             for (const sector in recorridos) {
                 const r = recorridos[sector];
                 const hasta = Math.min(idxMostrar, r.length - 1);
@@ -2093,37 +2101,113 @@
                 const actual = visibles[visibles.length - 1];
                 const color = COLOR[actual.cuadrante] ?? '#9ca3af';
                 listaPuntos.push({ sector, ...actual });
+                puntosRender.push({
+                    sector, visibles, actual, color,
+                    cx: xScale(actual.rs), cy: yScale(actual.delta),
+                });
+            }
 
-                // La cola: línea que conecta las semanas anteriores, cada vez más tenue hacia atrás.
+            // Cuando dos sectores caen prácticamente en el mismo punto exacto (mismo
+            // FR y mismo Δ7d redondeados -- ej. Salud y otro sector vecino), el
+            // círculo de uno tapa por completo al del otro: lo que se ve "encima"
+            // es el color del que se dibujó último, no el del sector cuya etiqueta
+            // quedó más cerca. Eso es lo que reportó Victoria el 2/10 ("salud
+            // aparece verde en el gráfico pero azul en la tabla, al revés para
+            // diversificado") -- no es un error de datos, la tabla de abajo
+            // siempre tiene el valor real de cada sector sin ningún corrimiento.
+            // Arreglo: si el punto de hoy de un sector cae a menos de
+            // RADIO_COLISION px del de otro ya ubicado, se lo separa un poco en
+            // abanico alrededor de su posición real -- así cada sector tiene SU
+            // PROPIO círculo visible, con SU color, y la etiqueta se ancla a esa
+            // misma posición ya separada (no a la original, que seguiría tapada).
+            const RADIO_COLISION = 13;
+            puntosRender.sort((a, b) => a.cx - b.cx || a.cy - b.cy);
+            for (let i = 0; i < puntosRender.length; i++) {
+                const p = puntosRender[i];
+                let colisiones = 0;
+                for (let j = 0; j < i; j++) {
+                    const q = puntosRender[j];
+                    const dx = p.cx - q.cxFinal, dy = p.cy - q.cyFinal;
+                    if (Math.sqrt(dx * dx + dy * dy) < RADIO_COLISION) colisiones++;
+                }
+                if (colisiones === 0) {
+                    p.cxFinal = p.cx;
+                    p.cyFinal = p.cy;
+                } else {
+                    // Reparte en abanico (ángulos distintos según cuántas colisiones
+                    // ya tuvo) para que no se vuelvan a superponer entre sí.
+                    const angulo = (colisiones - 1) * (Math.PI * 2 / 6) + Math.PI / 6;
+                    p.cxFinal = p.cx + Math.cos(angulo) * RADIO_COLISION;
+                    p.cyFinal = p.cy + Math.sin(angulo) * RADIO_COLISION;
+                }
+            }
+
+            const bucketOffsets = {};
+            let colasSvg = '', puntosSvg = '';
+            for (const p of puntosRender) {
+                const { sector, visibles, actual, color, cxFinal: cx, cyFinal: cy } = p;
+
+                // La cola: línea que conecta las semanas anteriores, cada vez más
+                // tenue hacia atrás, terminando en la posición YA separada de hoy
+                // (si no, la línea quedaría visualmente desconectada del círculo).
                 if (visibles.length > 1) {
                     for (let i = 1; i < visibles.length; i++) {
                         const a = visibles[i - 1], b = visibles[i];
+                        const esUltimoTramo = i === visibles.length - 1;
+                        const bx = esUltimoTramo ? cx : xScale(b.rs);
+                        const by = esUltimoTramo ? cy : yScale(b.delta);
                         const opacidad = 0.15 + 0.55 * (i / (visibles.length - 1));
-                        colasSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${xScale(b.rs)}" y2="${yScale(b.delta)}" stroke="${color}" stroke-width="1.5" opacity="${opacidad.toFixed(2)}"/>`;
+                        colasSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${bx}" y2="${by}" stroke="${color}" stroke-width="1.5" opacity="${opacidad.toFixed(2)}"/>`;
                     }
                     for (let i = 0; i < visibles.length - 1; i++) {
-                        const p = visibles[i];
-                        colasSvg += `<circle cx="${xScale(p.rs)}" cy="${yScale(p.delta)}" r="2" fill="${color}" opacity="0.45"/>`;
+                        const pt = visibles[i];
+                        colasSvg += `<circle cx="${xScale(pt.rs)}" cy="${yScale(pt.delta)}" r="2" fill="${color}" opacity="0.45"/>`;
                     }
                 }
 
-                const cx = xScale(actual.rs), cy = yScale(actual.delta);
                 const label = sector.length > 16 ? sector.slice(0, 15) + '…' : sector;
                 const arriba = cy > H / 2;
                 const signo = (actual.delta ?? 0) > 0 ? '+' : '';
 
-                const bucket = Math.round(cx / 36);
+                const bucket = Math.round(cx / 28);
                 const nivel = bucketOffsets[bucket] ?? 0;
                 bucketOffsets[bucket] = nivel + 1;
                 const dir = arriba ? -1 : 1;
-                const labelY = (arriba ? cy - 9 : cy + 16) + dir * nivel * 10;
+                let labelY = (arriba ? cy - 9 : cy + 16) + dir * nivel * 12;
+
+                // El apilado vertical para no pisar nombres (arriba) podía, con
+                // varios sectores juntos cerca de la línea del medio, empujar la
+                // etiqueta de un sector hacia EL OTRO LADO de esa línea -- y
+                // entonces el nombre terminaba pegado al punto de un sector
+                // vecino, dando la falsa impresión de que un punto "cambió de
+                // color" (bug reportado 2/10, seguía después del primer intento
+                // de arreglo). Esto lo evita: la etiqueta nunca cruza la línea
+                // horizontal (y50) ni la vertical (x0) de su propio punto -- se
+                // queda siempre del mismo lado que su círculo.
+                const MARGEN_LINEA = 5;
+                if (cy < y50) labelY = Math.min(labelY, y50 - MARGEN_LINEA);
+                else labelY = Math.max(labelY, y50 + MARGEN_LINEA);
+
+                // Línea fina que une cada nombre con SU punto -- se dibuja
+                // SIEMPRE (antes solo cuando el apilado desplazaba bastante
+                // la etiqueta), porque el problema no es solo que la
+                // etiqueta se vaya lejos: con dos sectores muy cerca (ej.
+                // Salud y Diversificado, a centímetros uno del otro) cada
+                // nombre puede estar técnicamente al lado de su propio
+                // círculo y aun así, a simple vista, confundirse con el
+                // vecino (bug reportado 2/10, seguía después de los dos
+                // intentos anteriores). La línea deja trazado, sin
+                // ambigüedad, a cuál círculo pertenece cada nombre.
+                const conector = `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${labelY + (arriba ? 2 : -6)}" stroke="${color}" stroke-width="1" stroke-dasharray="1.5,1.5" opacity="0.75"/>`;
 
                 puntosSvg += `
                     <g>
+                        ${conector}
                         <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">
                             <title>${sector}: FR ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
                         </circle>
-                        <text x="${cx}" y="${labelY}" text-anchor="middle" font-size="9" font-family="monospace" fill="#d1d5db">${label}</text>
+                        <text x="${cx}" y="${labelY}" text-anchor="middle" font-size="9" font-family="monospace"
+                              fill="#d1d5db" stroke="#0B0E14" stroke-width="3" stroke-linejoin="round" paint-order="stroke">${label}</text>
                     </g>`;
             }
 
