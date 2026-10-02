@@ -64,6 +64,13 @@
 
         /* Badges chicos de señales nuevas (Radar Score v2) */
         .signal-chip { font-size: 9px; padding: 2px 6px; border-radius: 2px; border: 1px solid; white-space: nowrap; }
+
+        /* En algunos celulares, un toque sobre un botón (ej. "Vender" en
+           Cartera) se interpretaba como "mantener apretado sobre texto" y
+           abría el menú de selección del sistema (Copiar / Seleccionar
+           todo) en vez de activar el botón (reportado 2/10). Esto lo
+           evita para todos los botones de la página. */
+        button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
     </style>
 </head>
 <body class="bg-base text-gray-300 font-sans p-4 md:p-8 min-h-screen relative">
@@ -4131,8 +4138,8 @@
                                 ${encabezadoHtml}
                             </div>
                             <div class="flex flex-col items-end gap-2">
-                                <button onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
-                                <button onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
+                                <button type="button" onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
+                                <button type="button" onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
                             </div>
                         </div>
                         ${balanceRealHtml}
@@ -4220,8 +4227,8 @@
                     </div>
                     <div id="venta-error" class="text-neg hidden"></div>
                     <div class="flex gap-2">
-                        <button onclick="confirmarVenta(${ventaAbierta})" class="flex-1 bg-accent text-base font-bold uppercase py-2 rounded-sm hover:bg-white">Confirmar venta</button>
-                        <button onclick="abrirVenta(${ventaAbierta})" class="px-4 border border-gray-700 text-gray-400 rounded-sm">Cancelar</button>
+                        <button type="button" onclick="confirmarVenta(${ventaAbierta})" class="flex-1 bg-accent text-base font-bold uppercase py-2 rounded-sm hover:bg-white">Confirmar venta</button>
+                        <button type="button" onclick="abrirVenta(${ventaAbierta})" class="px-4 border border-gray-700 text-gray-400 rounded-sm">Cancelar</button>
                     </div>
                     ${p.cantidad ? '<div class="text-[10px] text-gray-600">Si vendés menos que el total, la posición queda abierta con el resto.</div>' : ''}
                 </div>`;
