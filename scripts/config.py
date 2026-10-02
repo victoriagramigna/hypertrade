@@ -302,6 +302,51 @@ SUBCATEGORIAS = {
     "DOW": "Químicos/Otros", "ECL": "Químicos/Otros", "IP": "Químicos/Otros",
     "LIN": "Químicos/Otros", "NUE": "Químicos/Otros", "SHW": "Químicos/Otros",
     "TX": "Químicos/Otros",
+
+    # --- Salud --- (sumado 1/10, a pedido de Victoria)
+    # Farmacéuticas (labs grandes, tradicionales)
+    "ABBV": "Farmacéuticas", "AZN": "Farmacéuticas", "BMY": "Farmacéuticas", "GSK": "Farmacéuticas",
+    "JNJ": "Farmacéuticas", "LLY": "Farmacéuticas", "MRK": "Farmacéuticas", "NVO": "Farmacéuticas",
+    "NVS": "Farmacéuticas", "PFE": "Farmacéuticas",
+    # Biotecnología
+    "AMGN": "Biotecnología", "BIIB": "Biotecnología", "CRSP": "Biotecnología", "GILD": "Biotecnología",
+    "MRNA": "Biotecnología", "REGN": "Biotecnología", "VRTX": "Biotecnología",
+    # Equipos médicos / diagnóstico
+    "ABT": "Equipos médicos/diagnóstico", "ILMN": "Equipos médicos/diagnóstico",
+    "ISRG": "Equipos médicos/diagnóstico", "MDT": "Equipos médicos/diagnóstico",
+    "TEM": "Equipos médicos/diagnóstico", "TMO": "Equipos médicos/diagnóstico",
+    # Distribución / servicios de salud
+    "CAH": "Distribución/servicios de salud", "CVS": "Distribución/servicios de salud",
+    "UNH": "Distribución/servicios de salud",
+
+    # --- Bancos --- (sumado 1/10)
+    "BAC": "Banca EE.UU.", "C": "Banca EE.UU.", "GS": "Banca EE.UU.", "JPM": "Banca EE.UU.",
+    "MS": "Banca EE.UU.", "USB": "Banca EE.UU.", "WFC": "Banca EE.UU.",
+    "BBAR": "Banca LatAm", "BMA": "Banca LatAm", "GGAL": "Banca LatAm", "SUPV": "Banca LatAm",
+    "BBD": "Banca LatAm",
+    "BBVA": "Banca Europa", "BCS": "Banca Europa", "HSBC": "Banca Europa", "ING": "Banca Europa",
+    "LYG": "Banca Europa",
+    "HDB": "Banca Asia", "IBN": "Banca Asia", "KB": "Banca Asia", "NMR": "Banca Asia",
+
+    # --- Fintech --- (sumado 1/10)
+    "MA": "Pagos", "V": "Pagos", "PYPL": "Pagos", "XYZ": "Pagos", "AXP": "Pagos",
+    "NU": "Banca digital/Neobancos", "PAGS": "Banca digital/Neobancos",
+    "COIN": "Cripto/Bróker", "HOOD": "Cripto/Bróker", "IBKR": "Cripto/Bróker", "MSTR": "Cripto/Bróker",
+    "AEG": "Seguros", "AIG": "Seguros",
+    "BX": "Gestión de activos/Datos financieros", "EFX": "Gestión de activos/Datos financieros",
+    "SPGI": "Gestión de activos/Datos financieros", "UPST": "Gestión de activos/Datos financieros",
+
+    # --- Automotriz --- (sumado 1/10)
+    "F": "Fabricantes tradicionales", "GM": "Fabricantes tradicionales", "HMC": "Fabricantes tradicionales",
+    "TM": "Fabricantes tradicionales",
+    "TSLA": "Eléctricos/Lujo", "NIO": "Eléctricos/Lujo", "RACE": "Eléctricos/Lujo",
+    "AAP": "Repuestos y neumáticos", "ORLY": "Repuestos y neumáticos", "GT": "Repuestos y neumáticos",
+    "PCAR": "Camiones y motos", "HOG": "Camiones y motos",
+
+    # --- Aeroespacial --- (sumado 1/10)
+    "BA": "Aviación/Defensa", "LMT": "Aviación/Defensa", "RTX": "Aviación/Defensa",
+    "GE": "Aviación/Defensa", "HWM": "Aviación/Defensa",
+    "RKLB": "Espacio (nuevo)", "SPCE": "Espacio (nuevo)", "SPCX": "Espacio (nuevo)",
 }
 
 BENCHMARK = "SPY"

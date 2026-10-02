@@ -318,6 +318,19 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Vol_rel": round(vol_rel_hoy, 2),
                 "Precio": round(float(precio_hoy), 2),
                 "fecha_evento": fecha_evento_lider,
+                # Mismo desglose con tildes que el Score técnico (Tipo
+                # 'tecnico'), adaptado a los criterios propios de ESTA señal
+                # -- a pedido de Victoria (1/10). Los dos primeros son los
+                # que la disparan (siempre en verde cuando la tarjeta
+                # existe); el resto son señales de apoyo que pueden o no
+                # estar prendidas. Puramente informativo.
+                "Score_detalle": {
+                    "rs_fuerte": True,
+                    "apoya_soporte": True,
+                    "rsi_sano": bool(rsi_sano),
+                    "volumen_fuerte": bool(volumen_confirma),
+                    "sector_mercado_ok": bool(sector_acompana),
+                },
             })
 
         if gap_alcista_activo and _horas_desde(fecha_evento_gap, ahora) <= VENTANA_ALERTA_HORAS:
@@ -336,6 +349,17 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Vol_rel": round(vol_rel_hoy, 2),
                 "Precio": round(float(precio_hoy), 2),
                 "fecha_evento": fecha_evento_gap,
+                # Mismo desglose con tildes que el Score técnico, adaptado a
+                # los criterios propios de ESTA señal -- ver comentario en
+                # 'lider_soporte' arriba. Los primeros tres son los que la
+                # disparan; el resto son señales de apoyo.
+                "Score_detalle": {
+                    "variacion_fuerte": True,
+                    "macrotendencia_ok": True,
+                    "maximo_reciente": True,
+                    "rsi_sano": bool(rsi_sano),
+                    "volumen_fuerte": bool(volumen_confirma),
+                },
             })
 
         if ruptura_confirmada_activa and _horas_desde(fecha_evento_ruptura, ahora) <= VENTANA_ALERTA_HORAS:
@@ -362,6 +386,17 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Vol_rel": round(vol_rel_hoy, 2),
                 "Precio": round(float(precio_hoy), 2),
                 "fecha_evento": fecha_evento_ruptura,
+                # Mismo desglose con tildes que el Score técnico, adaptado a
+                # los criterios propios de ESTA señal -- ver comentario en
+                # 'lider_soporte' arriba. Los primeros dos son los que la
+                # disparan; el resto son señales de apoyo.
+                "Score_detalle": {
+                    "supero_nivel_gap": True,
+                    "volumen_fuerte": True,
+                    "rsi_sano": bool(rsi_sano),
+                    "base_ordenada": bool(base_ordenada),
+                    "sector_mercado_ok": bool(sector_acompana),
+                },
             })
 
     return pd.DataFrame(alertas), historial
