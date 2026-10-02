@@ -115,18 +115,25 @@ def _valor_hace_7_dias(historial: list, sector: str, ahora: datetime):
     return mejor
 
 
-def actualizar_rotacion_sectorial(rs_por_sector: dict, tickers_sector: dict, ahora: datetime) -> list:
+def actualizar_rotacion_sectorial(rs_por_sector: dict, tickers_sector: dict, ahora: datetime) -> tuple:
     """
     rs_por_sector: {sector: RS_Score promedio}, el mismo dato que ya arma
     main.py para "Rotación Sectorial" -- no se recalcula nada de cero.
     tickers_sector: TICKERS de config.py, para contar cuántos tickers tiene
     cada sector (contexto, se muestra en el punto del gráfico).
 
-    Devuelve la lista de puntos para el gráfico (uno por sector) y, de
-    paso, deja logueada cualquier transición de cuadrante nueva.
+    Devuelve (puntos, eventos_nuevos):
+      - puntos: la lista para el gráfico (uno por sector) -- MISMO formato
+        de siempre, lo que ya consumen el dashboard y la Auditoría de
+        Rotación no cambia en nada.
+      - eventos_nuevos: las transiciones de cuadrante detectadas en ESTA
+        corrida (lista vacía si no hubo ninguna). Ya quedan logueadas en
+        RUTA_LOG_TRANSICIONES de todos modos (como siempre); esto solo se
+        agrega (10/2) para que quien llama pueda avisar por Telegram sin
+        tener que releer ese archivo.
     """
     if not rs_por_sector:
-        return []
+        return [], []
 
     historial = _guardar_snapshot_diario(rs_por_sector, ahora)
     estado = _cargar_estado()
@@ -187,4 +194,4 @@ def actualizar_rotacion_sectorial(rs_por_sector: dict, tickers_sector: dict, aho
                  + ", ".join(f"{e['sector']} -> {e['cuadrante_nuevo']}" for e in eventos_nuevos))
         _guardar_estado(estado)
 
-    return sorted(puntos, key=lambda p: p["Sector"])
+    return sorted(puntos, key=lambda p: p["Sector"]), eventos_nuevos

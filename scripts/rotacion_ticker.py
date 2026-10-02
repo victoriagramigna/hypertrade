@@ -111,9 +111,13 @@ def actualizar_rotacion_ticker(df_rs, ahora: datetime) -> dict:
     inventa ni se estima nada (mismo criterio que rotacion_sectorial.py).
 
     Devuelve {"puntos": [...], "recien_a_lideres": [...],
-    "aceleracion_inusual": [...]}.
+    "aceleracion_inusual": [...], "eventos": [...]}. "eventos" (agregado
+    2/10) son las transiciones de cuadrante detectadas en ESTA corrida --
+    mismo dato que ya se logueaba en RUTA_LOG_TRANSICIONES, solo que
+    disponible acá también para poder avisar por Telegram sin releer el
+    archivo. No cambia nada de lo que ya había en este diccionario.
     """
-    vacio = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": []}
+    vacio = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": [], "eventos": []}
     if df_rs is None or df_rs.empty or "Delta_RS_semana" not in df_rs.columns:
         return vacio
 
@@ -184,4 +188,5 @@ def actualizar_rotacion_ticker(df_rs, ahora: datetime) -> dict:
         "puntos": sorted(puntos, key=lambda p: p["Ticker"]),
         "recien_a_lideres": _recien_a_lideres(ahora),
         "aceleracion_inusual": aceleracion_inusual,
+        "eventos": eventos_nuevos,
     }

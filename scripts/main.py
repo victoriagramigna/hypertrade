@@ -32,7 +32,7 @@ from alertas import detectar_alertas
 from contexto import escanear_titulares, evaluar_contexto_macro, recomendacion_final
 from regimen_mercado import evaluar_regimen_mercado
 from historial import cargar_historial, guardar_historial
-from telegram_bot import notificar_alertas, notificar_datos_desactualizados
+from telegram_bot import notificar_alertas, notificar_datos_desactualizados, notificar_cambios_cuadrante
 from macro_local import traer_contexto_macro
 from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
@@ -188,10 +188,10 @@ def main():
     # arriba. Si un sector cambia de cuadrante, queda logueado para que
     # auditoria_rotacion.py lo pueda medir más adelante (ver módulo).
     try:
-        rotacion_sectorial = actualizar_rotacion_sectorial(rs_por_sector, TICKERS, ahora)
+        rotacion_sectorial, eventos_rotacion_sectorial = actualizar_rotacion_sectorial(rs_por_sector, TICKERS, ahora)
     except Exception as e:
         log.error(f"Rotación sectorial falló, no afecta al resto de la corrida: {e}")
-        rotacion_sectorial = []
+        rotacion_sectorial, eventos_rotacion_sectorial = [], []
 
     # 3a-bis. Radar Score v2.1 (compuesto 0-100 -- Distribution Days ya NO
     # se pasa acá, ver nota arriba)
@@ -221,7 +221,7 @@ def main():
         rotacion_ticker = actualizar_rotacion_ticker(df_rs, ahora)
     except Exception as e:
         log.error(f"Rotación por ticker falló, no afecta al resto de la corrida: {e}")
-        rotacion_ticker = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": []}
+        rotacion_ticker = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": [], "eventos": []}
 
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
@@ -464,6 +464,42 @@ def main():
         token = os.environ.get("TELEGRAM_BOT_TOKEN")
         chat_id = os.environ.get("TELEGRAM_CHAT_ID")
         notificar_datos_desactualizados(token, chat_id, desactualizados_universo, fecha_hoy)
+
+    # 9b-ter. Cambios de cuadrante de rotación (sectorial y por ticker) --
+    # pedido de Victoria (2/10): avisar apenas un sector o un ticker CAMBIA
+    # de cuadrante (Líder/Mejorando/Debilitándose/Rezagado), no solo que
+    # quede logueado para la Auditoría de Rotación. No es una alerta nueva
+    # ni cambia ningún cálculo -- son los mismos eventos que
+    # rotacion_sectorial.py / rotacion_ticker.py ya detectan y loguean en
+    # sus propios archivos, esto solo los manda también por Telegram. En
+    # corrida degradada se salta igual que el resto de las notificaciones
+    # (con medio universo caído, un "cambio de cuadrante" podría ser el
+    # dato viejo asomando, no un cambio real).
+    #
+    # Sectores: son pocos (~16), se avisan TODOS los cambios (hacia
+    # cualquier cuadrante). Tickers: es todo el universo -- avisar cada
+    # cambio generaría demasiado ruido (y alguno justo en el límite entre
+    # dos cuadrantes podría cruzar la línea varias veces en el mismo día).
+    # Por pedido de Victoria (2/10), para tickers solo se avisa cuando
+    # ENTRAN a Líder o Mejorando -- mismo criterio que ya usa "Recién a
+    # Líderes" en el dashboard (rotacion_ticker.py). Los eventos hacia
+    # Debilitándose/Rezagado igual quedan logueados en
+    # log_rotacion_ticker.jsonl como siempre, para la Auditoría -- esto
+    # solo decide cuáles se mandan por Telegram.
+    eventos_cuadrante_ticker = [
+        e for e in rotacion_ticker.get("eventos", [])
+        if e.get("cuadrante_nuevo") in ("Líder", "Mejorando")
+    ]
+    if (eventos_rotacion_sectorial or eventos_cuadrante_ticker) and MODO == "produccion" and not corrida_degradada:
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+        enviados_cuadrante = notificar_cambios_cuadrante(
+            token, chat_id, eventos_rotacion_sectorial, eventos_cuadrante_ticker, fecha_hoy)
+        log.info(f"Cambios de cuadrante: {len(eventos_rotacion_sectorial)} sector(es), "
+                 f"{len(eventos_cuadrante_ticker)} ticker(s) -- {enviados_cuadrante} mensaje(s) enviado(s) a Telegram")
+    elif eventos_rotacion_sectorial or eventos_cuadrante_ticker:
+        log.info(f"MODO=test o corrida degradada -- NO se avisan los {len(eventos_rotacion_sectorial)} "
+                 f"cambio(s) de cuadrante sectorial y {len(eventos_cuadrante_ticker)} de ticker de esta corrida")
 
     # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
     # con Victoria, 30/9): se registra en la bitácora para que la

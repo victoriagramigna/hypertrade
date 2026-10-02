@@ -77,6 +77,76 @@ def notificar_alertas(token: str, chat_id: str, alertas: list, fecha: str) -> in
     return enviados
 
 
+LIMITE_CHARS_MENSAJE = 3500  # margen por debajo del límite real de Telegram (4096) para dejar lugar al disclaimer
+
+
+def _formatear_evento_cuadrante_sector(ev: dict) -> str:
+    anterior = ev.get("cuadrante_anterior") or "sin cuadrante todavía"
+    delta = ev.get("delta_7d")
+    delta_txt = f"{delta:+.1f}" if delta is not None else "?"
+    return f"• <b>{ev.get('sector', '?')}</b>: {anterior} → <b>{ev.get('cuadrante_nuevo', '?')}</b> (FR {ev.get('rs_sector', '?')}, 7d {delta_txt})"
+
+
+def _formatear_evento_cuadrante_ticker(ev: dict) -> str:
+    anterior = ev.get("cuadrante_anterior") or "sin cuadrante todavía"
+    delta = ev.get("delta_rs_semana")
+    delta_txt = f"{delta:+.1f}" if delta is not None else "?"
+    return f"• <b>{ev.get('ticker', '?')}</b> ({ev.get('sector', '?')}): {anterior} → <b>{ev.get('cuadrante_nuevo', '?')}</b> (FR {ev.get('rs_score', '?')}, sem {delta_txt})"
+
+
+def notificar_cambios_cuadrante(token: str, chat_id: str, eventos_sectoriales: list, eventos_ticker: list, fecha: str) -> int:
+    """Avisa cuando un sector o un ticker CAMBIÓ de cuadrante de rotación
+    (Líder/Mejorando/Debilitándose/Rezagado) en esta corrida -- mismo dato
+    que ya se ve en el Cuadrante de Rotación del dashboard
+    (rotacion_sectorial.py / rotacion_ticker.py), solo que avisado en el
+    momento en que cambia en vez de depender de ir a mirar el gráfico. No
+    es una señal de compra/venta nueva -- por eso lleva el mismo
+    disclaimer que cualquier otro aviso.
+
+    Se arma en el mínimo de mensajes posible (no uno por cambio) para no
+    saturar el chat, partiendo en varios SOLO si no entra en un mensaje de
+    Telegram (límite real: 4096 caracteres) -- nunca se recorta la lista
+    de cambios, se reparte.
+
+    Ojo (para tener en cuenta si se vuelve ruidoso con el tiempo): si un
+    sector o ticker queda justo en el límite entre dos cuadrantes, puede
+    cruzar la línea para un lado y para el otro entre corridas del mismo
+    día y generar un aviso cada vez -- es el mismo comportamiento que ya
+    tiene el registro en el log de transiciones, esto solo lo hace
+    visible por Telegram también."""
+    if not eventos_sectoriales and not eventos_ticker:
+        return 0
+
+    lineas = [f"🔄 <b>HyperTrade</b> — Cambios de cuadrante — {fecha}"]
+    if eventos_sectoriales:
+        lineas.append("")
+        lineas.append("<b>Sectores:</b>")
+        lineas.extend(_formatear_evento_cuadrante_sector(e) for e in eventos_sectoriales)
+    if eventos_ticker:
+        lineas.append("")
+        lineas.append("<b>Tickers:</b>")
+        lineas.extend(_formatear_evento_cuadrante_ticker(e) for e in eventos_ticker)
+
+    mensajes, actual = [], ""
+    for linea in lineas:
+        candidato = (actual + "\n" + linea) if actual else linea
+        if len(candidato) > LIMITE_CHARS_MENSAJE and actual:
+            mensajes.append(actual)
+            actual = linea
+        else:
+            actual = candidato
+    if actual:
+        mensajes.append(actual)
+
+    enviados = 0
+    total = len(mensajes)
+    for i, msg in enumerate(mensajes, 1):
+        texto = msg + (f"\n\n({i}/{total})" if total > 1 else "") + DISCLAIMER
+        if enviar_mensaje(token, chat_id, texto):
+            enviados += 1
+    return enviados
+
+
 def notificar_datos_desactualizados(token: str, chat_id: str, desactualizados: list, fecha: str) -> bool:
     """Un solo mensaje resumen cuando algún ticker quedó con dato viejo esta
     corrida (ver datos.py) -- así queda claro que esos tickers NO se
