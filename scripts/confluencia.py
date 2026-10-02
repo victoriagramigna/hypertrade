@@ -107,10 +107,13 @@ def detectar_confluencia(df_rs, ahora: datetime) -> list:
         entrada = chips_historial.setdefault(ticker, {})
 
         chips_activos = []
+        chips_prendidos = {}  # clave -> bool, para el desglose con tildes del dashboard
         for clave, (columna, etiqueta) in CHIPS.items():
             if bool(fila.get(columna)):
                 entrada[clave] = ahora.isoformat()
-            if _horas_desde(entrada.get(clave), ahora) <= VENTANA_CHIP_HORAS:
+            prendido = _horas_desde(entrada.get(clave), ahora) <= VENTANA_CHIP_HORAS
+            chips_prendidos[clave] = prendido
+            if prendido:
                 chips_activos.append(etiqueta)
 
         if len(chips_activos) >= CHIPS_MINIMOS:
@@ -135,6 +138,12 @@ def detectar_confluencia(df_rs, ahora: datetime) -> list:
                 "Score": f"{len(chips_activos)}/4 chips",
                 "Score_num": None,
                 "Señales": chips_activos,
+                # Mismo desglose con tildes que el resto de las señales
+                # (ver alertas.py) -- a pedido de Victoria (1/10), faltaba
+                # acá. Los 4 chips son justamente los que ya se muestran
+                # arriba como badges; esto solo los repite en formato
+                # desplegable con su explicación de qué significa cada uno.
+                "Score_detalle": chips_prendidos,
                 "RSI": fila.get("RSI"),
                 "Vol_rel": fila.get("Vol_rel"),
                 "Precio": fila.get("Precio"),
