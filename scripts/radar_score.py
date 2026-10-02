@@ -132,6 +132,15 @@ def calcular_radar_score(
         # Tendencia Semanal (RSI+MACD) -- contexto informativo, no puntúa
         "Tendencia_Semanal", "RSI_Semanal", "MACD_Semanal", "MACD_Señal_Semanal",
         "Vol_Rel_Semanal",
+        # Los 6 ingredientes del Radar Score, cada uno por separado -- antes
+        # se sumaban y se descartaban, solo quedaba el total. A pedido de
+        # Victoria (1/10: "que se explique todo acerca de los datos que
+        # aparecen"), el dashboard necesita poder mostrar de qué se compone
+        # cada Radar Score, no solo el número final. No cambia el cálculo
+        # del score en absoluto, solo deja de tirar el detalle.
+        "Radar_Comp_FR", "Radar_Comp_Contraccion", "Radar_Comp_Volumen",
+        "Radar_Comp_Tendencia", "Radar_Comp_AVWAP", "Radar_Comp_52w",
+        "Radar_Bono_Cruce",
     ]
     if df_rs.empty:
         for c in columnas_nuevas:
@@ -193,6 +202,14 @@ def calcular_radar_score(
             "MACD_Semanal": tendencia_sem.get("macd_semanal"),
             "MACD_Señal_Semanal": tendencia_sem.get("macd_señal_semanal"),
             "Vol_Rel_Semanal": (ind or {}).get("vol_rel_semanal"),
+            # Mismo detalle que arriba (ver comentario en columnas_nuevas)
+            "Radar_Comp_FR": comp_rs,
+            "Radar_Comp_Contraccion": comp_contraccion,
+            "Radar_Comp_Volumen": comp_vol,
+            "Radar_Comp_Tendencia": comp_tendencia,
+            "Radar_Comp_AVWAP": comp_avwap,
+            "Radar_Comp_52w": comp_52w,
+            "Radar_Bono_Cruce": bono_cruce,
         })
 
     df_rs = df_rs.copy()

@@ -290,6 +290,12 @@ def main():
         # leen directo de df_rs (el universo completo), que siempre la tuvo.
         # Puramente informativa, igual que las de arriba.
         "Subcategoria",
+        # Los 6 ingredientes del Radar Score, por separado -- ver
+        # radar_score.py. Mismo motivo que todo lo de arriba: existían pero
+        # no llegaban a la tarjeta de Alertas (bug encontrado 1/10).
+        "Radar_Comp_FR", "Radar_Comp_Contraccion", "Radar_Comp_Volumen",
+        "Radar_Comp_Tendencia", "Radar_Comp_AVWAP", "Radar_Comp_52w",
+        "Radar_Bono_Cruce",
     ]
     columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
     extras_por_ticker = (
