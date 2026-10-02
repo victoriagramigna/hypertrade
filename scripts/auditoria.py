@@ -33,6 +33,11 @@ log = logging.getLogger("radar.auditoria")
 
 RUTA_LOG = "data/log_alertas.jsonl"
 RUTA_TOP30 = "data/top30_semanal.json"
+# Misma auditoría semanal de arriba, ahora también para el Top 30 por RADAR
+# SCORE (el compuesto con volumen/tendencia/AVWAP/52w, no la Fuerza
+# Relativa) -- a pedido de Victoria (1/10): "hay que auditar todo". Archivo
+# aparte, nunca se mezcla con el de Fuerza Relativa.
+RUTA_TOP30_RADAR = "data/top30_semanal_radar.json"
 RUTA_SALIDA = "data/auditoria.json"
 # Casos marcados como sospechosos a posteriori (ej. el bug de dato
 # desactualizado del 21/9 y 28/9 -- ver datos.py). Archivo de SOLO AGREGADO,
@@ -443,41 +448,54 @@ def _por_mes(casos):
 
 # ------------------------------------------------- 2. Top 30 semanal real
 
-def _cargar_top30():
-    if not os.path.exists(RUTA_TOP30):
+def _cargar_top30(ruta=RUTA_TOP30):
+    if not os.path.exists(ruta):
         return []
     try:
-        with open(RUTA_TOP30, "r", encoding="utf-8") as f:
+        with open(ruta, "r", encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, OSError):
         return []
 
 
-def guardar_foto_top30(df_rs, ahora):
-    """Guarda UNA foto por semana (la primera corrida de la semana en que
-    haya datos) del Top 30 de RS, con precios. Devuelve la lista completa."""
-    fotos = _cargar_top30()
-    if df_rs is None or df_rs.empty:
+def _guardar_foto_top30(df_rs, ahora, columna: str, ruta: str, clave_valor: str):
+    """Motor genérico: guarda UNA foto por semana (la primera corrida de la
+    semana en que haya datos) del Top 30 según 'columna' (RS_Score o
+    Radar_Score), con precios. Devuelve la lista completa. Separado por
+    'ruta' -- el historial de Fuerza Relativa y el de Radar Score nunca se
+    mezclan ni se pisan entre sí."""
+    fotos = _cargar_top30(ruta)
+    if df_rs is None or df_rs.empty or columna not in df_rs.columns:
         return fotos
     año, semana, _ = ahora.isocalendar()
     clave = f"{año}-S{semana:02d}"
     if any(f.get("semana") == clave for f in fotos):
         return fotos
 
-    top = df_rs.sort_values("RS_Score", ascending=False).head(TOP_N)
+    top = df_rs.sort_values(columna, ascending=False).head(TOP_N)
     fotos.append({
         "semana": clave,
         "fecha": ahora.date().isoformat(),
         "tickers": [
-            {"ticker": r["Ticker"], "precio": float(r["Precio"]), "rs": float(r["RS_Score"])}
+            {"ticker": r["Ticker"], "precio": float(r["Precio"]), clave_valor: float(r[columna])}
             for _, r in top.iterrows()
         ],
     })
     os.makedirs("data", exist_ok=True)
-    with open(RUTA_TOP30, "w", encoding="utf-8") as f:
+    with open(ruta, "w", encoding="utf-8") as f:
         json.dump(fotos, f, ensure_ascii=False, indent=1)
-    log.info(f"Auditoría: guardada la foto del Top {TOP_N} de la semana {clave}")
+    log.info(f"Auditoría: guardada la foto del Top {TOP_N} ({columna}) de la semana {clave}")
     return fotos
+
+
+def guardar_foto_top30(df_rs, ahora):
+    """Top 30 por Fuerza Relativa (RS Score) -- el de siempre."""
+    return _guardar_foto_top30(df_rs, ahora, "RS_Score", RUTA_TOP30, "rs")
+
+
+def guardar_foto_top30_radar(df_rs, ahora):
+    """Top 30 por Radar Score -- el compuesto con volumen/tendencia/AVWAP/etc."""
+    return _guardar_foto_top30(df_rs, ahora, "Radar_Score", RUTA_TOP30_RADAR, "radar")
 
 
 def _ret_desde_fecha(serie, fecha, h, precio_entrada=None):
@@ -496,7 +514,10 @@ def _ret_desde_fecha(serie, fecha, h, precio_entrada=None):
     return _ret_pct(precio_entrada, float(post.iloc[h - 1]))
 
 
-def evaluar_top30_real(fotos, precios, universo):
+def evaluar_top30_real(fotos, precios, universo, ruta: str = RUTA_TOP30):
+    # OJO: 'ruta' tiene que ser la MISMA que se usó para guardar 'fotos' (ver
+    # guardar_foto_top30 / guardar_foto_top30_radar) -- si no, los resultados
+    # "congelados" de un Top 30 se graban encima del archivo del otro.
     serie_spy = _serie_limpia(precios, "SPY")
     series = {t: _serie_limpia(precios, t) for t in universo}
     salida = []
@@ -525,7 +546,7 @@ def evaluar_top30_real(fotos, precios, universo):
             hubo_congelados = True
         salida.append(fila)
     if hubo_congelados:
-        with open(RUTA_TOP30, "w", encoding="utf-8") as f:
+        with open(ruta, "w", encoding="utf-8") as f:
             json.dump(fotos, f, ensure_ascii=False, indent=1)
     return salida
 
@@ -733,7 +754,17 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
      casos_excluidos_sospechosos) = auditar_señales(precios)
 
     fotos = guardar_foto_top30(df_rs, ahora)
-    top30 = evaluar_top30_real(fotos, precios, universo)
+    top30 = evaluar_top30_real(fotos, precios, universo, ruta=RUTA_TOP30)
+
+    # Mismo mecanismo, ahora para el Top 30 por Radar Score -- a pedido de
+    # Victoria (1/10). Si algo falla acá, no tiene que tirar abajo la
+    # auditoría de Fuerza Relativa de arriba (ya probada hace rato).
+    try:
+        fotos_radar = guardar_foto_top30_radar(df_rs, ahora)
+        top30_radar = evaluar_top30_real(fotos_radar, precios, universo, ruta=RUTA_TOP30_RADAR)
+    except Exception as e:
+        log.error(f"Auditoría: el Top 30 de Radar Score falló (no afecta lo demás): {e}")
+        top30_radar = None
 
     try:
         simulacion = simular_top30(precios, universo)
@@ -767,6 +798,7 @@ def correr_auditoria(precios, df_rs, universo, ahora=None):
         "por_tendencia_semanal": por_tendencia_semanal,
         "detalle": detalle,
         "top30_semanal": top30,
+        "top30_radar_semanal": top30_radar,
         "simulacion_top30": simulacion,
     }
     os.makedirs("data", exist_ok=True)
