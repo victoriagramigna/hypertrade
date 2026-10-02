@@ -2054,7 +2054,9 @@
             // opuestas a las de Warren. La clasificación de cada sector
             // (CUADRANTES, en rotacion_sectorial.py) no cambia -- esto es solo
             // cómo se dibuja.
-            const W = 440, H = 300, PAD = 44;
+            // Más alto que antes (380 en vez de 300, 2/10) -- le da más aire a
+            // la zona del medio, que es donde se amontonan los sectores.
+            const W = 440, H = 380, PAD = 44;
             const maxAbsDelta = Math.max(5, ...puntosVisibles.map(p => Math.abs(p.delta ?? 0)));
             const yMin = -maxAbsDelta * 1.15, yMax = maxAbsDelta * 1.15;
             const xScale = (v) => PAD + (v - 0) / 100 * (W - PAD * 2);
@@ -2085,11 +2087,19 @@
 
             // Varios sectores suelen caer muy juntos (ej. Salud/Energía/Transporte/
             // Materiales/Automotriz todos cerca del centro) y sus nombres se pisaban
-            // entre sí, ilegible incluso ampliando (bug reportado 2/10). Dos arreglos
-            // juntos: 1) las etiquetas que caen muy cerca en X se apilan verticalmente
-            // en vez de superponerse, y 2) abajo del gráfico va una lista siempre
-            // visible con cada sector y su valor -- no depende de distinguir el
-            // nombrecito dentro del gráfico.
+            // entre sí, ilegible incluso ampliando (bug reportado 2/10, sobrevivió a
+            // dos intentos anteriores -- apilar etiquetas y agregarles una línea
+            // conectora no alcanzaba: con 6-8 sectores en un radio de 40px no hay
+            // lugar para tanto texto por más que se lo acomode).
+            //
+            // Arreglo de fondo (2/10): cuando un sector NO tiene a nadie cerca,
+            // se sigue mostrando con su nombre de siempre. Cuando SÍ hay
+            // amontonamiento, esos sectores dejan de mostrar el nombre adentro
+            // del gráfico -- en su lugar llevan un numerito, y ese mismo número
+            // aparece al lado del nombre completo en la lista de abajo
+            // ("Detalle"), que nunca tiene problema de espacio. Nada ambiguo:
+            // un número en el gráfico siempre significa "andá a la lista y
+            // buscá este número", no hay que adivinar cuál nombre es cuál.
             const listaPuntos = [];
             const puntosRender = [];
             for (const sector in recorridos) {
@@ -2107,45 +2117,75 @@
                 });
             }
 
-            // Cuando dos sectores caen prácticamente en el mismo punto exacto (mismo
-            // FR y mismo Δ7d redondeados -- ej. Salud y otro sector vecino), el
-            // círculo de uno tapa por completo al del otro: lo que se ve "encima"
-            // es el color del que se dibujó último, no el del sector cuya etiqueta
-            // quedó más cerca. Eso es lo que reportó Victoria el 2/10 ("salud
-            // aparece verde en el gráfico pero azul en la tabla, al revés para
-            // diversificado") -- no es un error de datos, la tabla de abajo
-            // siempre tiene el valor real de cada sector sin ningún corrimiento.
-            // Arreglo: si el punto de hoy de un sector cae a menos de
-            // RADIO_COLISION px del de otro ya ubicado, se lo separa un poco en
-            // abanico alrededor de su posición real -- así cada sector tiene SU
-            // PROPIO círculo visible, con SU color, y la etiqueta se ancla a esa
-            // misma posición ya separada (no a la original, que seguiría tapada).
-            const RADIO_COLISION = 13;
+            // Separación de los puntos: cuando dos sectores caen prácticamente en
+            // el mismo lugar, antes el círculo de uno tapaba por completo al del
+            // otro -- lo que se veía "encima" era el color del que se dibujó
+            // último, no el del sector más cercano (así fue el bug original de
+            // "salud aparece verde en el gráfico pero azul en la tabla"). Ahora
+            // cada punto busca, en espiral alrededor de su posición real, el
+            // primer lugar libre (sin pisar a otro círculo ya ubicado) --
+            // siempre del mismo lado de las líneas del cuadrante que su posición
+            // real, para no terminar pareciendo de otro cuadrante.
+            const RADIO_COLISION = 12;
+            const MARGEN_LINEA = 4;
             puntosRender.sort((a, b) => a.cx - b.cx || a.cy - b.cy);
-            for (let i = 0; i < puntosRender.length; i++) {
-                const p = puntosRender[i];
-                let colisiones = 0;
-                for (let j = 0; j < i; j++) {
-                    const q = puntosRender[j];
-                    const dx = p.cx - q.cxFinal, dy = p.cy - q.cyFinal;
-                    if (Math.sqrt(dx * dx + dy * dy) < RADIO_COLISION) colisiones++;
+            const colocados = [];
+            for (const p of puntosRender) {
+                const ladoX = p.cx < x0 ? -1 : 1;
+                const ladoY = p.cy < y50 ? -1 : 1;
+                const dentroDelCuadrante = (x, y) => {
+                    const okX = ladoX < 0 ? x <= x0 - MARGEN_LINEA : x >= x0 + MARGEN_LINEA;
+                    const okY = ladoY < 0 ? y <= y50 - MARGEN_LINEA : y >= y50 + MARGEN_LINEA;
+                    return okX && okY && x >= PAD + 2 && x <= W - PAD - 2 && y >= PAD + 2 && y <= H - PAD - 2;
+                };
+                const libre = (x, y) => colocados.every(q => Math.hypot(x - q.x, y - q.y) >= RADIO_COLISION);
+
+                let mejor = { x: p.cx, y: p.cy };
+                let colisiono = !dentroDelCuadrante(p.cx, p.cy) || !libre(p.cx, p.cy);
+                if (colisiono) {
+                    let encontrado = false;
+                    for (let anillo = 1; anillo <= 6 && !encontrado; anillo++) {
+                        const radio = RADIO_COLISION * anillo * 0.85;
+                        const pasos = 8;
+                        for (let i = 0; i < pasos && !encontrado; i++) {
+                            const angulo = (i / pasos) * Math.PI * 2 + anillo * 0.4;
+                            const cand = { x: p.cx + Math.cos(angulo) * radio, y: p.cy + Math.sin(angulo) * radio };
+                            if (dentroDelCuadrante(cand.x, cand.y) && libre(cand.x, cand.y)) {
+                                mejor = cand;
+                                encontrado = true;
+                            }
+                        }
+                    }
+                    // Si no encontró lugar 100% libre (cuadrante muy cargado), se
+                    // queda con el intento más alejado -- mejor casi-separado que
+                    // exactamente encima de otro.
+                    if (!encontrado) {
+                        const radio = RADIO_COLISION * 6 * 0.85;
+                        mejor = { x: p.cx + Math.cos(Math.PI / 4) * radio, y: p.cy + Math.sin(Math.PI / 4) * radio };
+                        mejor.x = Math.min(Math.max(mejor.x, PAD + 2), W - PAD - 2);
+                        mejor.y = Math.min(Math.max(mejor.y, PAD + 2), H - PAD - 2);
+                    }
                 }
-                if (colisiones === 0) {
-                    p.cxFinal = p.cx;
-                    p.cyFinal = p.cy;
-                } else {
-                    // Reparte en abanico (ángulos distintos según cuántas colisiones
-                    // ya tuvo) para que no se vuelvan a superponer entre sí.
-                    const angulo = (colisiones - 1) * (Math.PI * 2 / 6) + Math.PI / 6;
-                    p.cxFinal = p.cx + Math.cos(angulo) * RADIO_COLISION;
-                    p.cyFinal = p.cy + Math.sin(angulo) * RADIO_COLISION;
-                }
+                p.cxFinal = mejor.x;
+                p.cyFinal = mejor.y;
+                p.tuvoColision = colisiono;
+                colocados.push({ x: mejor.x, y: mejor.y });
             }
 
-            const bucketOffsets = {};
+            // Numeración: solo para los que tuvieron que correrse (es decir, los
+            // que estaban amontonados) -- en el mismo orden que la lista de abajo,
+            // para que sea fácil ubicar "el 3" tanto en el gráfico como en la
+            // lista.
+            const ordenCuadrante = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
+            const conColision = puntosRender.filter(p => p.tuvoColision)
+                .sort((a, b) => (ordenCuadrante[a.actual.cuadrante] ?? 9) - (ordenCuadrante[b.actual.cuadrante] ?? 9) || b.actual.rs - a.actual.rs);
+            const numeroPorSector = {};
+            conColision.forEach((p, i) => { numeroPorSector[p.sector] = i + 1; });
+
             let colasSvg = '', puntosSvg = '';
             for (const p of puntosRender) {
                 const { sector, visibles, actual, color, cxFinal: cx, cyFinal: cy } = p;
+                const numero = numeroPorSector[sector];
 
                 // La cola: línea que conecta las semanas anteriores, cada vez más
                 // tenue hacia atrás, terminando en la posición YA separada de hoy
@@ -2165,53 +2205,32 @@
                     }
                 }
 
-                const label = sector.length > 16 ? sector.slice(0, 15) + '…' : sector;
-                const arriba = cy > H / 2;
                 const signo = (actual.delta ?? 0) > 0 ? '+' : '';
+                const titulo = `<title>${sector}: FR ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>`;
 
-                const bucket = Math.round(cx / 28);
-                const nivel = bucketOffsets[bucket] ?? 0;
-                bucketOffsets[bucket] = nivel + 1;
-                const dir = arriba ? -1 : 1;
-                let labelY = (arriba ? cy - 9 : cy + 16) + dir * nivel * 12;
-
-                // El apilado vertical para no pisar nombres (arriba) podía, con
-                // varios sectores juntos cerca de la línea del medio, empujar la
-                // etiqueta de un sector hacia EL OTRO LADO de esa línea -- y
-                // entonces el nombre terminaba pegado al punto de un sector
-                // vecino, dando la falsa impresión de que un punto "cambió de
-                // color" (bug reportado 2/10, seguía después del primer intento
-                // de arreglo). Esto lo evita: la etiqueta nunca cruza la línea
-                // horizontal (y50) ni la vertical (x0) de su propio punto -- se
-                // queda siempre del mismo lado que su círculo.
-                const MARGEN_LINEA = 5;
-                if (cy < y50) labelY = Math.min(labelY, y50 - MARGEN_LINEA);
-                else labelY = Math.max(labelY, y50 + MARGEN_LINEA);
-
-                // Línea fina que une cada nombre con SU punto -- se dibuja
-                // SIEMPRE (antes solo cuando el apilado desplazaba bastante
-                // la etiqueta), porque el problema no es solo que la
-                // etiqueta se vaya lejos: con dos sectores muy cerca (ej.
-                // Salud y Diversificado, a centímetros uno del otro) cada
-                // nombre puede estar técnicamente al lado de su propio
-                // círculo y aun así, a simple vista, confundirse con el
-                // vecino (bug reportado 2/10, seguía después de los dos
-                // intentos anteriores). La línea deja trazado, sin
-                // ambigüedad, a cuál círculo pertenece cada nombre.
-                const conector = `<line x1="${cx}" y1="${cy}" x2="${cx}" y2="${labelY + (arriba ? 2 : -6)}" stroke="${color}" stroke-width="1" stroke-dasharray="1.5,1.5" opacity="0.75"/>`;
-
-                puntosSvg += `
-                    <g>
-                        ${conector}
-                        <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">
-                            <title>${sector}: FR ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
-                        </circle>
-                        <text x="${cx}" y="${labelY}" text-anchor="middle" font-size="9" font-family="monospace"
-                              fill="#d1d5db" stroke="#0B0E14" stroke-width="3" stroke-linejoin="round" paint-order="stroke">${label}</text>
-                    </g>`;
+                if (numero != null) {
+                    // Amontonado: círculo un poco más grande con el número adentro,
+                    // sin nombre -- el nombre completo está en la lista de abajo,
+                    // bajo el mismo número.
+                    puntosSvg += `
+                        <g>
+                            <circle cx="${cx}" cy="${cy}" r="8" fill="${color}" stroke="#0B0E14" stroke-width="1.5">${titulo}</circle>
+                            <text x="${cx}" y="${cy + 3}" text-anchor="middle" font-size="8" font-weight="bold" font-family="monospace" fill="#0B0E14">${numero}</text>
+                        </g>`;
+                } else {
+                    // Sector sin nadie cerca: nombre de siempre, al lado del punto.
+                    const label = sector.length > 16 ? sector.slice(0, 15) + '…' : sector;
+                    const arriba = cy > H / 2;
+                    const labelY = arriba ? cy - 10 : cy + 17;
+                    puntosSvg += `
+                        <g>
+                            <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">${titulo}</circle>
+                            <text x="${cx}" y="${labelY}" text-anchor="middle" font-size="9" font-family="monospace"
+                                  fill="#d1d5db" stroke="#0B0E14" stroke-width="3" stroke-linejoin="round" paint-order="stroke">${label}</text>
+                        </g>`;
+                }
             }
 
-            const ordenCuadrante = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
             const listaOrdenada = [...listaPuntos].sort((a, b) =>
                 (ordenCuadrante[a.cuadrante] ?? 9) - (ordenCuadrante[b.cuadrante] ?? 9) || b.rs - a.rs
             );
@@ -2220,8 +2239,13 @@
                     ${listaOrdenada.map(p => {
                         const color = COLOR[p.cuadrante] ?? '#9ca3af';
                         const signo = (p.delta ?? 0) > 0 ? '+' : '';
+                        const numero = numeroPorSector[p.sector];
+                        const prefijoNumero = numero != null
+                            ? `<span class="shrink-0 inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-gray-700 text-gray-200 text-[8px] font-bold">${numero}</span>`
+                            : '';
                         return `<div class="flex items-center gap-1.5 cursor-pointer hover:text-accent" onclick="irASectorDetalle('${p.sector.replace(/'/g, "\\'")}')">
                             <span class="w-2 h-2 rounded-full inline-block shrink-0" style="background:${color}"></span>
+                            ${prefijoNumero}
                             <span class="text-gray-300 truncate">${p.sector}</span>
                             <span class="text-gray-600 shrink-0">FR ${p.rs} · ${signo}${p.delta}</span>
                         </div>`;
@@ -2252,7 +2276,7 @@
                 </div>
                 ${controlAnimacion}
                 ${hayRecorridoLargo ? '<div class="font-mono text-[10px] text-gray-600 mt-2">La cola muestra el recorrido de las últimas semanas -- de dónde viene cada sector, no solo dónde está parado hoy.</div>' : ''}
-                <div class="font-mono text-[9px] uppercase tracking-widest text-gray-600 mt-4 pt-3 border-t border-base">Detalle (por si se pisan los nombres en el gráfico)</div>
+                <div class="font-mono text-[9px] uppercase tracking-widest text-gray-600 mt-4 pt-3 border-t border-base">Detalle (los números del círculo acá abajo son los mismos del gráfico, para los sectores muy juntos)</div>
                 ${listaSectoresHtml}
                 ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">Todavía juntando historial de 7 días: ${sinHistorial.map(p => p.Sector).join(', ')}.</div>` : ''}
             `;
