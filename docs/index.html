@@ -2172,12 +2172,25 @@
                 colocados.push({ x: mejor.x, y: mejor.y });
             }
 
-            // Numeración: solo para los que tuvieron que correrse (es decir, los
-            // que estaban amontonados) -- en el mismo orden que la lista de abajo,
-            // para que sea fácil ubicar "el 3" tanto en el gráfico como en la
-            // lista.
+            // Numeración: NO se decide por si el CÍRCULO se tocaba con otro (eso
+            // alcanza para separar los puntos, pero un nombre de sector ocupa
+            // mucho más ancho que el círculo -- dos puntos a 20-30px, sin tocarse
+            // como círculos, igual hacían chocar sus textos). Se decide según si
+            // el NOMBRE de este sector, puesto al lado de su punto, invadiría el
+            // espacio de otro punto cercano -- usando un ancho estimado según la
+            // longitud de cada nombre (un nombre largo como "Diversificado"
+            // necesita más aire alrededor que uno corto como "Agro").
+            const medioAncho = (s) => Math.min(16, s.length) * 2.7 + 7;
+            for (const p of puntosRender) {
+                p.amontonado = puntosRender.some(q => {
+                    if (q === p) return false;
+                    const distNecesaria = medioAncho(p.sector) + medioAncho(q.sector);
+                    return Math.hypot(p.cxFinal - q.cxFinal, p.cyFinal - q.cyFinal) < distNecesaria;
+                });
+            }
+
             const ordenCuadrante = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
-            const conColision = puntosRender.filter(p => p.tuvoColision)
+            const conColision = puntosRender.filter(p => p.amontonado)
                 .sort((a, b) => (ordenCuadrante[a.actual.cuadrante] ?? 9) - (ordenCuadrante[b.actual.cuadrante] ?? 9) || b.actual.rs - a.actual.rs);
             const numeroPorSector = {};
             conColision.forEach((p, i) => { numeroPorSector[p.sector] = i + 1; });
