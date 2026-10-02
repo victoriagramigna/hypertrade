@@ -207,6 +207,9 @@ TICKERS = {
     "KEEL": "Tecnología",  # Keel Infrastructure Corp -- nuevo nombre de Bitfarms tras
                             # re-domiciliarse a EE.UU. (abr. 2026), sigue en NASDAQ,
                             # mismo grupo que HUT/IREN/RIOT (mineras BTC / data centers IA)
+    "NBIS": "Tecnología",  # Nebius Group -- cómputo en la nube para IA (mismo
+                            # grupo que CRWV/IREN), pedido por Victoria (oct. 2026).
+                            # Ratio de CEDEAR (27:1) confirmado, ver RATIOS_CEDEAR.
 }
 
 # --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
@@ -473,6 +476,8 @@ RATIOS_CEDEAR = {
     "TGT": 24, "TX": 4, "UBER": 2, "UNH": 33, "URA": 5, "V": 18, "VALE": 2,
     "VIST": 3, "WFC": 5, "WMT": 18, "XLE": 2, "XLK": 46, "XOM": 10, "XYZ": 20,
     "ZM": 47,
+    "NBIS": 27,  # Nebius Group -- ratio 27:1 confirmado (listado de ratios +
+                 # PDF oficial de BYMA), oct. 2026
     # --- Ratios de ADR (no CEDEAR) para acciones argentinas que cotizan
     # directo en NYSE -- misma lógica de brecha, referencia distinta al
     # dólar CCL en vez del panel de CEDEARs de BYMA.
