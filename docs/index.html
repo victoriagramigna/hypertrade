@@ -2248,7 +2248,7 @@
                 (ordenCuadrante[a.cuadrante] ?? 9) - (ordenCuadrante[b.cuadrante] ?? 9) || b.rs - a.rs
             );
             const listaSectoresHtml = `
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-1 font-mono text-[10px] mt-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-1.5 font-mono text-[10px] mt-3">
                     ${listaOrdenada.map(p => {
                         const color = COLOR[p.cuadrante] ?? '#9ca3af';
                         const signo = (p.delta ?? 0) > 0 ? '+' : '';
@@ -2259,8 +2259,8 @@
                         return `<div class="flex items-center gap-1.5 cursor-pointer hover:text-accent" onclick="irASectorDetalle('${p.sector.replace(/'/g, "\\'")}')">
                             <span class="w-2 h-2 rounded-full inline-block shrink-0" style="background:${color}"></span>
                             ${prefijoNumero}
-                            <span class="text-gray-300 truncate">${p.sector}</span>
-                            <span class="text-gray-600 shrink-0">FR ${p.rs} · ${signo}${p.delta}</span>
+                            <span class="text-gray-300">${p.sector}</span>
+                            <span class="text-gray-600 shrink-0 ml-auto">FR ${p.rs} · ${signo}${p.delta}</span>
                         </div>`;
                     }).join('')}
                 </div>`;
