@@ -53,6 +53,7 @@ from amplitud_historial import registrar_y_obtener_serie
 from cuidados import puntos_de_cuidado
 from confluencia import detectar_confluencia
 from rotacion_sectorial import actualizar_rotacion_sectorial
+from rotacion_ticker import actualizar_rotacion_ticker
 from auditoria_rotacion import correr_auditoria_rotacion
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -208,6 +209,20 @@ def main():
         df_rs["Delta_RS_semana"] = df_rs["Ticker"].map(lambda t: rs_deltas_por_ticker.get(t, {}).get("Delta_RS_semana"))
         df_rs["Delta_RS_mes"] = df_rs["Ticker"].map(lambda t: rs_deltas_por_ticker.get(t, {}).get("Delta_RS_mes"))
 
+    # 3a-quater. Cuadrante de Rotación por TICKER (Líder/Mejorando/
+    # Debilitándose/Rezagado) -- misma idea que la Rotación Sectorial de
+    # 3a, pero para cada ticker individual en vez del promedio del sector
+    # (pedido de Victoria, 2/10, viendo la versión "Warren Bife" con
+    # buscador de ticker). Reutiliza Delta_RS_semana, que recién se
+    # calculó arriba -- no agrega ningún cálculo nuevo. Si Delta_RS_semana
+    # no está disponible (corrida degradada, o todavía no hay 1 semana de
+    # historial), simplemente no hay cuadrante por ticker todavía.
+    try:
+        rotacion_ticker = actualizar_rotacion_ticker(df_rs, ahora)
+    except Exception as e:
+        log.error(f"Rotación por ticker falló, no afecta al resto de la corrida: {e}")
+        rotacion_ticker = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": []}
+
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
     # El benchmark (SPY) nunca aparece en df_rs -- no tiene sentido rankearlo
@@ -359,6 +374,7 @@ def main():
         "ranking": df_rs.to_dict(orient="records") if not df_rs.empty else [],
         "rs_por_sector": rs_por_sector,
         "rotacion_sectorial": rotacion_sectorial,
+        "rotacion_ticker": rotacion_ticker,
         "regimen_mercado": regimen,
         "regimen_score": regimen_score,
         "alertas": recomendaciones,
