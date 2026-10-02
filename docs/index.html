@@ -220,6 +220,74 @@
             </div>
             <div id="quadrant-chart" class="bg-surface p-4 rounded-sm border border-surface"></div>
         </section>
+        <!-- 4c. Cuadrante de Rotación por TICKER -- mismo cuadrante, pero para
+             buscar un ticker puntual en vez de mirar el sector entero (pedido
+             de Victoria, 2/10, viendo la versión de "Warren Bife"). -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de Rotación por Ticker</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-4 leading-relaxed">
+                Mismo cuadrante que el de arriba (misma Fuerza Relativa, mismo umbral, mismos 4 cuadrantes), pero por TICKER individual
+                en vez de por sector completo. Buscá un ticker para ver dónde está parado hoy y su recorrido de las últimas semanas --
+                los puntos grises de fondo son el resto del universo, solo para dar contexto de dónde está la mayoría.
+            </div>
+            <div class="mb-3">
+                <details>
+                    <summary class="cursor-pointer font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">
+                        ¿Cómo se lee este ciclo? (tocá para ver)
+                    </summary>
+                    <div class="mt-1.5 font-mono text-[11px] text-gray-500 leading-relaxed">
+                        Una forma de interpretar los 4 cuadrantes es como etapas de un ciclo, no como casilleros sueltos -- un ticker suele
+                        recorrerlas en este orden:<br>
+                        <span class="text-neg font-bold">Rezagado</span> (acumulación: todavía débil, pero algunos empiezan a comprar sin
+                        que se note) →
+                        <span class="text-accent font-bold">Mejorando</span> (expansión: ya hay suficiente interés comprador como para que
+                        empiece a mostrar fuerza) →
+                        <span class="text-pos font-bold">Líder</span> (liderazgo: fuerte y acompañado, el mercado en general lo nota y compra) →
+                        <span class="text-blueAlert font-bold">Debilitándose</span> (distribución: sigue fuerte pero algunos ya están tomando
+                        ganancia) → y de nuevo a <span class="text-neg font-bold">Rezagado</span> cuando se termina de enfriar.<br>
+                        No es una regla fija -- un ticker puede saltearse etapas o volver atrás -- pero ayuda a no mirar el cuadrante como
+                        una foto aislada, sino como un recorrido.
+                    </div>
+                </details>
+            </div>
+            <div class="mb-3 flex flex-wrap items-center gap-2">
+                <input id="rotacion-ticker-buscador" list="rotacion-ticker-lista" type="text" placeholder="Buscar ticker (ej. XLK, AAPL)..."
+                    class="w-full sm:w-64 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
+                    oninput="renderRotacionTicker(rotacionTickerUltimoData)">
+                <datalist id="rotacion-ticker-lista"></datalist>
+                <div class="flex rounded-sm border border-surface overflow-hidden font-mono text-[10px] uppercase">
+                    <button onclick="setRotacionTickerFiltro('todos')" id="rtf-todos" class="px-2.5 py-1.5">Todos</button>
+                    <button onclick="setRotacionTickerFiltro('acciones')" id="rtf-acciones" class="px-2.5 py-1.5 border-l border-surface">Acciones</button>
+                    <button onclick="setRotacionTickerFiltro('etfs')" id="rtf-etfs" class="px-2.5 py-1.5 border-l border-surface">ETFs</button>
+                </div>
+            </div>
+            <div id="ticker-quadrant-chart" class="bg-surface p-4 rounded-sm border border-surface"></div>
+
+            <div class="mt-5">
+                <details>
+                    <summary class="cursor-pointer font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">
+                        ¿Qué significan las tablas de abajo? (tocá para ver)
+                    </summary>
+                    <div class="mt-1.5 font-mono text-[11px] text-gray-500 leading-relaxed">
+                        <span class="text-gray-300">Recién a Líderes:</span> tickers que en los últimos 10 días pasaron a estar en el cuadrante
+                        Líder o Mejorando -- una entrada reciente, no necesariamente consolidada todavía.<br>
+                        <span class="text-gray-300">Aceleración inusual:</span> los tickers cuyo Fuerza Relativa subió más en la última semana, sea
+                        cual sea el cuadrante en el que estén hoy.
+                    </div>
+                </details>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
+                <div>
+                    <div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mb-2">Recién a Líderes / Mejorando</div>
+                    <div id="rotacion-recien-lideres" class="bg-surface p-3 rounded-sm border border-surface space-y-3"></div>
+                </div>
+                <div>
+                    <div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mb-2">Aceleración inusual (7 días)</div>
+                    <div id="rotacion-aceleracion-inusual" class="bg-surface p-3 rounded-sm border border-surface space-y-3"></div>
+                </div>
+            </div>
+        </section>
         <!-- 5. Detalle por Sector (Ranking) -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Universo Técnico <span id="universo-total-count" class="text-gray-500 normal-case"></span></h2>
@@ -1589,6 +1657,11 @@
             // Renderizado del Cuadrante de Rotación Sectorial (no toca ni reemplaza el bloque de arriba)
             renderCuadranteRotacion(data);
 
+            // Renderizado del Cuadrante de Rotación por Ticker (buscador individual
+            // + tablas "Recién a Líderes"/"Aceleración inusual") -- no toca ni
+            // reemplaza el cuadrante sectorial de arriba.
+            renderRotacionTicker(data);
+
             // Renderizado de Detalle por Sector
             const sectorsDetail = document.getElementById('sectors-detail');
             document.getElementById('universo-total-count').textContent = `(${rankingArray.length})`;
@@ -1776,6 +1849,90 @@
             return 'Rezagado';
         }
 
+        // Historial diario de RS Score POR TICKER (data/rs_score_historial.jsonl --
+        // ya se guarda desde el 1/10 para los Δ RS día/semana/mes). Se reutiliza
+        // acá para dibujar la "cola" del ticker que se busque en el cuadrante por
+        // ticker -- a propósito, solo del ticker buscado (no de todo el
+        // universo): como explicó Warren en su video, dibujar el recorrido de
+        // cientos de tickers a la vez sería ilegible y pesado.
+        const ROTACION_TICKER_HISTORIAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_score_historial.jsonl';
+        let rotacionTickerHistorialCache = null;  // array [{fecha, rs: {ticker: valor}}], ordenado por fecha
+        let rotacionTickerAnimIndex = null;
+        let rotacionTickerAnimTimer = null;
+
+        async function fetchRotacionTickerHistorial() {
+            try {
+                const resp = await fetch(`${ROTACION_TICKER_HISTORIAL_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) { rotacionTickerHistorialCache = []; return; }
+                const texto = await resp.text();
+                rotacionTickerHistorialCache = texto.split('\n').map(l => l.trim()).filter(Boolean)
+                    .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
+                    .filter(Boolean)
+                    .sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''));
+            } catch (e) {
+                rotacionTickerHistorialCache = rotacionTickerHistorialCache ?? [];
+            }
+            if (rotacionTickerUltimoData) renderRotacionTicker(rotacionTickerUltimoData);
+        }
+
+        function _valorCercanoTicker(historial, ticker, fechaObjetivo, toleranciaDias) {
+            let mejor = null, mejorDist = null;
+            for (const fila of historial) {
+                if (!fila.fecha) continue;
+                const f = new Date(fila.fecha + 'T12:00:00');
+                const dist = Math.abs((f - fechaObjetivo) / 86400000);
+                if (dist <= toleranciaDias && (mejorDist === null || dist < mejorDist)) {
+                    const v = fila.rs?.[ticker];
+                    if (v != null) { mejor = { fecha: fila.fecha, rs: v }; mejorDist = dist; }
+                }
+            }
+            return mejor;
+        }
+
+        // Igual que construirRecorridoSemanal, pero para UN solo ticker (no todo
+        // el universo) -- hasta 8 puntos semanales con su RS y su delta de 7 días.
+        function construirRecorridoSemanalTicker(historial, ticker) {
+            if (!historial || historial.length === 0) return [];
+            const ultimaFecha = new Date(historial[historial.length - 1].fecha + 'T12:00:00');
+            const anclas = [];
+            for (let i = 7; i >= 0; i--) {
+                const f = new Date(ultimaFecha);
+                f.setDate(f.getDate() - i * 7);
+                anclas.push(f);
+            }
+            const puntos = [];
+            for (const ancla of anclas) {
+                const actual = _valorCercanoTicker(historial, ticker, ancla, 2);
+                if (!actual) continue;
+                const anclaPrevia = new Date(ancla); anclaPrevia.setDate(anclaPrevia.getDate() - 7);
+                const previo = _valorCercanoTicker(historial, ticker, anclaPrevia, 2);
+                if (!previo) continue;
+                const delta = Math.round((actual.rs - previo.rs) * 10) / 10;
+                puntos.push({ fecha: actual.fecha, rs: actual.rs, delta, cuadrante: _cuadranteDe(actual.rs, delta) });
+            }
+            return puntos;
+        }
+
+        function toggleAnimacionRotacionTicker() {
+            if (rotacionTickerAnimTimer) {
+                clearInterval(rotacionTickerAnimTimer);
+                rotacionTickerAnimTimer = null;
+                rotacionTickerAnimIndex = null;
+                renderRotacionTicker(rotacionTickerUltimoData);
+                return;
+            }
+            rotacionTickerAnimIndex = 0;
+            rotacionTickerAnimTimer = setInterval(() => {
+                rotacionTickerAnimIndex++;
+                if (rotacionTickerAnimIndex >= 7) {
+                    clearInterval(rotacionTickerAnimTimer);
+                    rotacionTickerAnimTimer = null;
+                }
+                renderRotacionTicker(rotacionTickerUltimoData);
+            }, 700);
+            renderRotacionTicker(rotacionTickerUltimoData);
+        }
+
         // Arma, para cada sector, hasta 8 puntos semanales (hoy, hoy-7, hoy-14...)
         // con su RS y su delta de 7 días, calculados con el mismo criterio que el
         // backend. Solo quedan los puntos donde ya se puede calcular el delta.
@@ -1881,17 +2038,24 @@
                 for (let i = 0; i <= hasta; i++) puntosVisibles.push(r[i]);
             }
 
+            // Mismo formato que "Warren Bife" (a pedido de Victoria, 2/10): eje X
+            // = Fuerza Relativa (fuerte a la derecha), eje Y = cambio en 7 días
+            // (mejoró arriba) -- antes estaba al revés (RS en el eje Y, delta en
+            // el X), lo que dejaba Debilitándose y Mejorando en las esquinas
+            // opuestas a las de Warren. La clasificación de cada sector
+            // (CUADRANTES, en rotacion_sectorial.py) no cambia -- esto es solo
+            // cómo se dibuja.
             const W = 440, H = 300, PAD = 44;
             const maxAbsDelta = Math.max(5, ...puntosVisibles.map(p => Math.abs(p.delta ?? 0)));
-            const xMin = -maxAbsDelta * 1.15, xMax = maxAbsDelta * 1.15;
-            const xScale = (v) => PAD + (v - xMin) / (xMax - xMin) * (W - PAD * 2);
-            const yScale = (v) => H - PAD - (v - 0) / 100 * (H - PAD * 2);
-            const x0 = xScale(0), y50 = yScale(50);
+            const yMin = -maxAbsDelta * 1.15, yMax = maxAbsDelta * 1.15;
+            const xScale = (v) => PAD + (v - 0) / 100 * (W - PAD * 2);
+            const yScale = (v) => H - PAD - (v - yMin) / (yMax - yMin) * (H - PAD * 2);
+            const x0 = xScale(50), y50 = yScale(0);
 
             const zonas = `
                 <rect x="${x0}" y="${PAD}" width="${W - PAD - x0}" height="${y50 - PAD}" fill="${COLOR['Líder']}" opacity="0.07"/>
-                <rect x="${PAD}" y="${PAD}" width="${x0 - PAD}" height="${y50 - PAD}" fill="${COLOR['Debilitándose']}" opacity="0.07"/>
-                <rect x="${x0}" y="${y50}" width="${W - PAD - x0}" height="${H - PAD - y50}" fill="${COLOR['Mejorando']}" opacity="0.07"/>
+                <rect x="${PAD}" y="${PAD}" width="${x0 - PAD}" height="${y50 - PAD}" fill="${COLOR['Mejorando']}" opacity="0.07"/>
+                <rect x="${x0}" y="${y50}" width="${W - PAD - x0}" height="${H - PAD - y50}" fill="${COLOR['Debilitándose']}" opacity="0.07"/>
                 <rect x="${PAD}" y="${y50}" width="${x0 - PAD}" height="${H - PAD - y50}" fill="${COLOR['Rezagado']}" opacity="0.07"/>`;
 
             const ejes = `
@@ -1901,16 +2065,25 @@
 
             const etiquetasCuadrante = `
                 <text x="${W - PAD - 4}" y="${PAD + 14}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Líder']}">LÍDER</text>
-                <text x="${PAD + 4}" y="${PAD + 14}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
-                <text x="${W - PAD - 4}" y="${H - PAD - 6}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Mejorando']}">MEJORANDO</text>
+                <text x="${PAD + 4}" y="${PAD + 14}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Mejorando']}">MEJORANDO</text>
+                <text x="${W - PAD - 4}" y="${H - PAD - 6}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
                 <text x="${PAD + 4}" y="${H - PAD - 6}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Rezagado']}">REZAGADO</text>`;
 
             const ejesTexto = `
-                <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← empeoró 7d    mejoró 7d →</text>
-                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">FR fuerte</text>
-                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">FR débil</text>`;
+                <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← FR débil    FR fuerte →</text>
+                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">mejoró 7d</text>
+                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">empeoró 7d</text>`;
 
+            // Varios sectores suelen caer muy juntos (ej. Salud/Energía/Transporte/
+            // Materiales/Automotriz todos cerca del centro) y sus nombres se pisaban
+            // entre sí, ilegible incluso ampliando (bug reportado 2/10). Dos arreglos
+            // juntos: 1) las etiquetas que caen muy cerca en X se apilan verticalmente
+            // en vez de superponerse, y 2) abajo del gráfico va una lista siempre
+            // visible con cada sector y su valor -- no depende de distinguir el
+            // nombrecito dentro del gráfico.
+            const bucketOffsets = {};
             let colasSvg = '', puntosSvg = '';
+            const listaPuntos = [];
             for (const sector in recorridos) {
                 const r = recorridos[sector];
                 const hasta = Math.min(idxMostrar, r.length - 1);
@@ -1919,32 +2092,57 @@
 
                 const actual = visibles[visibles.length - 1];
                 const color = COLOR[actual.cuadrante] ?? '#9ca3af';
+                listaPuntos.push({ sector, ...actual });
 
                 // La cola: línea que conecta las semanas anteriores, cada vez más tenue hacia atrás.
                 if (visibles.length > 1) {
                     for (let i = 1; i < visibles.length; i++) {
                         const a = visibles[i - 1], b = visibles[i];
                         const opacidad = 0.15 + 0.55 * (i / (visibles.length - 1));
-                        colasSvg += `<line x1="${xScale(a.delta)}" y1="${yScale(a.rs)}" x2="${xScale(b.delta)}" y2="${yScale(b.rs)}" stroke="${color}" stroke-width="1.5" opacity="${opacidad.toFixed(2)}"/>`;
+                        colasSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${xScale(b.rs)}" y2="${yScale(b.delta)}" stroke="${color}" stroke-width="1.5" opacity="${opacidad.toFixed(2)}"/>`;
                     }
                     for (let i = 0; i < visibles.length - 1; i++) {
                         const p = visibles[i];
-                        colasSvg += `<circle cx="${xScale(p.delta)}" cy="${yScale(p.rs)}" r="2" fill="${color}" opacity="0.45"/>`;
+                        colasSvg += `<circle cx="${xScale(p.rs)}" cy="${yScale(p.delta)}" r="2" fill="${color}" opacity="0.45"/>`;
                     }
                 }
 
-                const cx = xScale(actual.delta), cy = yScale(actual.rs);
+                const cx = xScale(actual.rs), cy = yScale(actual.delta);
                 const label = sector.length > 16 ? sector.slice(0, 15) + '…' : sector;
                 const arriba = cy > H / 2;
                 const signo = (actual.delta ?? 0) > 0 ? '+' : '';
+
+                const bucket = Math.round(cx / 36);
+                const nivel = bucketOffsets[bucket] ?? 0;
+                bucketOffsets[bucket] = nivel + 1;
+                const dir = arriba ? -1 : 1;
+                const labelY = (arriba ? cy - 9 : cy + 16) + dir * nivel * 10;
+
                 puntosSvg += `
                     <g>
                         <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="#0B0E14" stroke-width="1.5">
                             <title>${sector}: FR ${actual.rs} · 7d ${signo}${actual.delta} · ${actual.cuadrante ?? '—'}</title>
                         </circle>
-                        <text x="${cx}" y="${arriba ? cy - 9 : cy + 16}" text-anchor="middle" font-size="9" font-family="monospace" fill="#d1d5db">${label}</text>
+                        <text x="${cx}" y="${labelY}" text-anchor="middle" font-size="9" font-family="monospace" fill="#d1d5db">${label}</text>
                     </g>`;
             }
+
+            const ordenCuadrante = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
+            const listaOrdenada = [...listaPuntos].sort((a, b) =>
+                (ordenCuadrante[a.cuadrante] ?? 9) - (ordenCuadrante[b.cuadrante] ?? 9) || b.rs - a.rs
+            );
+            const listaSectoresHtml = `
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-1 font-mono text-[10px] mt-3">
+                    ${listaOrdenada.map(p => {
+                        const color = COLOR[p.cuadrante] ?? '#9ca3af';
+                        const signo = (p.delta ?? 0) > 0 ? '+' : '';
+                        return `<div class="flex items-center gap-1.5 cursor-pointer hover:text-accent" onclick="irASectorDetalle('${p.sector.replace(/'/g, "\\'")}')">
+                            <span class="w-2 h-2 rounded-full inline-block shrink-0" style="background:${color}"></span>
+                            <span class="text-gray-300 truncate">${p.sector}</span>
+                            <span class="text-gray-600 shrink-0">FR ${p.rs} · ${signo}${p.delta}</span>
+                        </div>`;
+                    }).join('')}
+                </div>`;
 
             const semanaLabel = idxMostrar === maxSemanas - 1
                 ? (rotacionAnimIndex == null ? '' : `Semana ${idxMostrar + 1}/${maxSemanas} (hoy)`)
@@ -1970,8 +2168,242 @@
                 </div>
                 ${controlAnimacion}
                 ${hayRecorridoLargo ? '<div class="font-mono text-[10px] text-gray-600 mt-2">La cola muestra el recorrido de las últimas semanas -- de dónde viene cada sector, no solo dónde está parado hoy.</div>' : ''}
+                <div class="font-mono text-[9px] uppercase tracking-widest text-gray-600 mt-4 pt-3 border-t border-base">Detalle (por si se pisan los nombres en el gráfico)</div>
+                ${listaSectoresHtml}
                 ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">Todavía juntando historial de 7 días: ${sinHistorial.map(p => p.Sector).join(', ')}.</div>` : ''}
             `;
+        }
+
+        // ============ CUADRANTE DE ROTACIÓN POR TICKER ============
+        let rotacionTickerUltimoData = null;
+        let rotacionTickerFiltro = 'todos'; // 'todos' | 'acciones' | 'etfs' -- igual que el toggle de Warren
+
+        function setRotacionTickerFiltro(valor) {
+            rotacionTickerFiltro = valor;
+            renderRotacionTicker(rotacionTickerUltimoData);
+        }
+
+        function renderRotacionTicker(data) {
+            const cont = document.getElementById('ticker-quadrant-chart');
+            if (!cont || !data) return;
+            rotacionTickerUltimoData = data;
+
+            const rt = data?.rotacion_ticker ?? { puntos: [], recien_a_lideres: [], aceleracion_inusual: [] };
+            const puntos = rt.puntos ?? [];
+
+            // Datalist del buscador -- se repuebla cada vez, pero es liviano (un puñado de cientos de tickers)
+            const lista = document.getElementById('rotacion-ticker-lista');
+            if (lista) {
+                lista.innerHTML = puntos.map(p => `<option value="${p.Ticker}">`).join('');
+            }
+
+            if (puntos.length === 0) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Sin datos todavía.</div>';
+                renderTablasRotacionTicker(rt);
+                return;
+            }
+
+            const COLOR = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
+            const buscador = document.getElementById('rotacion-ticker-buscador');
+            const buscado = (buscador?.value ?? '').trim().toUpperCase();
+            const seleccionado = buscado ? puntos.find(p => p.Ticker.toUpperCase() === buscado) : null;
+
+            const puntosHoy = puntos.filter(p => p.Cuadrante);
+            const sinHistorial = puntos.filter(p => !p.Cuadrante);
+
+            if (puntosHoy.length === 0) {
+                cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-2 border border-dashed border-surface rounded-sm">
+                    Todavía juntando historial (hace falta guardar 1 semana de Fuerza Relativa por ticker antes de poder ubicar cada uno en un cuadrante).
+                </div>`;
+                renderTablasRotacionTicker(rt);
+                return;
+            }
+
+            // Mismo formato que el cuadrante por sector (y que "Warren Bife"):
+            // eje X = Fuerza Relativa (fuerte a la derecha), eje Y = cambio en 7
+            // días (mejoró arriba).
+            const W = 440, H = 300, PAD = 44;
+            const maxAbsDelta = Math.max(5, ...puntosHoy.map(p => Math.abs(p.Delta_RS_semana ?? 0)));
+            const yMin = -maxAbsDelta * 1.15, yMax = maxAbsDelta * 1.15;
+            const xScale = (v) => PAD + (v - 0) / 100 * (W - PAD * 2);
+            const yScale = (v) => H - PAD - (v - yMin) / (yMax - yMin) * (H - PAD * 2);
+            const x0 = xScale(50), y50 = yScale(0);
+
+            // Toggle Acciones/ETFs (a pedido de Victoria, igual que hace Warren) --
+            // filtra la nube de fondo y el ticker destacado; el buscador sigue
+            // encontrando cualquier ticker esté o no filtrado.
+            const filtro = rotacionTickerFiltro; // 'todos' | 'acciones' | 'etfs'
+            const puntosFiltrados = puntosHoy.filter(p =>
+                filtro === 'todos' || (filtro === 'etfs' ? p.Es_ETF : !p.Es_ETF)
+            );
+            for (const [id, val] of [['rtf-todos', 'todos'], ['rtf-acciones', 'acciones'], ['rtf-etfs', 'etfs']]) {
+                const btn = document.getElementById(id);
+                if (!btn) continue;
+                btn.className = (val === filtro)
+                    ? 'px-2.5 py-1.5 bg-accent text-base font-bold' + (id !== 'rtf-todos' ? ' border-l border-surface' : '')
+                    : 'px-2.5 py-1.5 text-gray-400 hover:text-gray-200' + (id !== 'rtf-todos' ? ' border-l border-surface' : '');
+            }
+
+            const zonas = `
+                <rect x="${x0}" y="${PAD}" width="${W - PAD - x0}" height="${y50 - PAD}" fill="${COLOR['Líder']}" opacity="0.07"/>
+                <rect x="${PAD}" y="${PAD}" width="${x0 - PAD}" height="${y50 - PAD}" fill="${COLOR['Mejorando']}" opacity="0.07"/>
+                <rect x="${x0}" y="${y50}" width="${W - PAD - x0}" height="${H - PAD - y50}" fill="${COLOR['Debilitándose']}" opacity="0.07"/>
+                <rect x="${PAD}" y="${y50}" width="${x0 - PAD}" height="${H - PAD - y50}" fill="${COLOR['Rezagado']}" opacity="0.07"/>`;
+
+            const ejes = `
+                <line x1="${PAD}" y1="${y50}" x2="${W - PAD}" y2="${y50}" stroke="#2a3040" stroke-width="1"/>
+                <line x1="${x0}" y1="${PAD}" x2="${x0}" y2="${H - PAD}" stroke="#2a3040" stroke-width="1"/>
+                <rect x="${PAD}" y="${PAD}" width="${W - PAD * 2}" height="${H - PAD * 2}" fill="none" stroke="#2a3040" stroke-width="1"/>`;
+
+            const etiquetasCuadrante = `
+                <text x="${W - PAD - 4}" y="${PAD + 14}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Líder']}">LÍDER</text>
+                <text x="${PAD + 4}" y="${PAD + 14}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Mejorando']}">MEJORANDO</text>
+                <text x="${W - PAD - 4}" y="${H - PAD - 6}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
+                <text x="${PAD + 4}" y="${H - PAD - 6}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Rezagado']}">REZAGADO</text>`;
+
+            const ejesTexto = `
+                <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← FR débil    FR fuerte →</text>
+                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">mejoró 7d</text>
+                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">empeoró 7d</text>`;
+
+            // El resto del universo (filtrado por Acciones/ETFs si corresponde):
+            // puntitos grises de fondo, solo para dar contexto de dónde está la mayoría.
+            let fondoSvg = '';
+            for (const p of puntosFiltrados) {
+                if (seleccionado && p.Ticker === seleccionado.Ticker) continue;
+                fondoSvg += `<circle cx="${xScale(p.RS_Score)}" cy="${yScale(p.Delta_RS_semana)}" r="2.5" fill="#6b7280" opacity="0.35"><title>${p.Ticker}: FR ${p.RS_Score} · 7d ${(p.Delta_RS_semana ?? 0) > 0 ? '+' : ''}${p.Delta_RS_semana}</title></circle>`;
+            }
+
+            // Cola del ticker buscado -- a propósito, solo de este ticker (ver
+            // comentario arriba de ROTACION_TICKER_HISTORIAL_URL). El punto más
+            // nuevo del historial se pisa por el dato de hoy (en vivo).
+            let destacadoSvg = '', controlAnimacionTicker = '';
+            if (seleccionado && seleccionado.Cuadrante) {
+                const color = COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
+                let recorrido = construirRecorridoSemanalTicker(rotacionTickerHistorialCache ?? [], seleccionado.Ticker);
+                const puntoHoy = { fecha: 'hoy', rs: seleccionado.RS_Score, delta: seleccionado.Delta_RS_semana, cuadrante: seleccionado.Cuadrante };
+                if (recorrido.length === 0) {
+                    recorrido = [puntoHoy];
+                } else {
+                    const ultimo = recorrido[recorrido.length - 1];
+                    if (Math.abs(ultimo.rs - seleccionado.RS_Score) < 0.05 && Math.abs((ultimo.delta ?? 0) - (seleccionado.Delta_RS_semana ?? 0)) < 0.05) {
+                        recorrido[recorrido.length - 1] = puntoHoy;
+                    } else {
+                        recorrido.push(puntoHoy);
+                    }
+                }
+
+                const hayRecorridoLargo = recorrido.length > 1;
+                const idxMostrar = rotacionTickerAnimIndex == null ? recorrido.length - 1 : Math.min(rotacionTickerAnimIndex, recorrido.length - 1);
+                const visibles = recorrido.slice(0, idxMostrar + 1);
+
+                if (visibles.length > 1) {
+                    for (let i = 1; i < visibles.length; i++) {
+                        const a = visibles[i - 1], b = visibles[i];
+                        const opacidad = 0.2 + 0.6 * (i / (visibles.length - 1));
+                        destacadoSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${xScale(b.rs)}" y2="${yScale(b.delta)}" stroke="${color}" stroke-width="2" opacity="${opacidad.toFixed(2)}"/>`;
+                    }
+                    for (let i = 0; i < visibles.length - 1; i++) {
+                        const p = visibles[i];
+                        destacadoSvg += `<circle cx="${xScale(p.rs)}" cy="${yScale(p.delta)}" r="2.5" fill="${color}" opacity="0.5"/>`;
+                    }
+                }
+
+                const actual = visibles[visibles.length - 1];
+                const cx = xScale(actual.rs), cy = yScale(actual.delta);
+                const arriba = cy > H / 2;
+                destacadoSvg += `
+                    <circle cx="${cx}" cy="${cy}" r="7" fill="${color}" stroke="#0B0E14" stroke-width="2"/>
+                    <text x="${cx}" y="${arriba ? cy - 12 : cy + 18}" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#fff">${seleccionado.Ticker}</text>`;
+
+                if (hayRecorridoLargo) {
+                    const semanaLabel = idxMostrar === recorrido.length - 1
+                        ? (rotacionTickerAnimIndex == null ? '' : `Semana ${idxMostrar + 1}/${recorrido.length} (hoy)`)
+                        : `Semana ${idxMostrar + 1}/${recorrido.length}`;
+                    controlAnimacionTicker = `
+                        <div class="flex items-center gap-3 mt-3 font-mono text-[10px]">
+                            <button onclick="toggleAnimacionRotacionTicker()" class="px-3 py-1 rounded-sm border border-gray-700 text-gray-300 hover:border-accent hover:text-accent">
+                                ${rotacionTickerAnimTimer ? '⏸ Pausar' : '▶ Reproducir recorrido'}
+                            </button>
+                            <span class="text-gray-500">${semanaLabel || 'Recorrido de las últimas ' + recorrido.length + ' semanas'}</span>
+                        </div>`;
+                }
+            }
+
+            let infoSeleccionado = '';
+            if (buscado && !seleccionado) {
+                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-500 mt-3">No encontramos "${buscado}" en el universo (o todavía no tiene una semana de historial).</div>`;
+            } else if (seleccionado && !seleccionado.Cuadrante) {
+                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-500 mt-3">${seleccionado.Ticker} todavía está juntando historial -- hace falta 1 semana de Fuerza Relativa para ubicarlo en un cuadrante.</div>`;
+            } else if (seleccionado) {
+                const color = COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
+                const signo = (seleccionado.Delta_RS_semana ?? 0) > 0 ? '+' : '';
+                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-300 mt-3">
+                    <span style="color:${color}" class="font-bold">${seleccionado.Cuadrante}</span> ·
+                    Fuerza Relativa: ${seleccionado.RS_Score} ·
+                    Cambio 7d: ${signo}${seleccionado.Delta_RS_semana} ·
+                    ${seleccionado.Sobre_SMA50 == null ? '' : (seleccionado.Sobre_SMA50 ? 'sobre su SMA50' : 'bajo su SMA50')}
+                </div>`;
+            }
+
+            cont.innerHTML = `
+                <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cuadrante de rotación por ticker">
+                    ${zonas}${ejes}${etiquetasCuadrante}${ejesTexto}${fondoSvg}${destacadoSvg}
+                </svg>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Debilitándose']}"></span> Debilitándose: fuerte pero empeorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
+                </div>
+                ${infoSeleccionado}
+                ${controlAnimacionTicker}
+                ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${sinHistorial.length} ticker(s) todavía juntando historial.</div>` : ''}
+            `;
+
+            renderTablasRotacionTicker(rt);
+        }
+
+        function _filaRotacionTickerHtml(ev, { conEvolucion }) {
+            const COLOR_TXT = { 'Líder': 'text-pos', 'Mejorando': 'text-accent', 'Debilitándose': 'text-blueAlert', 'Rezagado': 'text-neg' };
+            const desde = ev.dias_desde === 0 ? 'hoy' : `hace ${ev.dias_desde}d`;
+            const evolucion = conEvolucion ? `${ev.cuadrante_anterior ?? '—'} → ${ev.cuadrante_nuevo}` : '';
+            return `
+                <div class="flex justify-between items-baseline font-mono text-[11px] border-b border-base pb-1 last:border-0 last:pb-0">
+                    <span class="text-gray-200 cursor-pointer hover:text-accent" onclick="document.getElementById('rotacion-ticker-buscador').value='${ev.ticker || ev.Ticker}'; renderRotacionTicker(rotacionTickerUltimoData); document.getElementById('ticker-quadrant-chart').scrollIntoView({behavior:'smooth', block:'center'});">${ev.ticker || ev.Ticker}</span>
+                    <span class="text-gray-500">FR ${ev.rs_score ?? ev.RS_Score}</span>
+                    ${conEvolucion ? `<span class="${COLOR_TXT[ev.cuadrante_nuevo] ?? ''}">${evolucion}</span><span class="text-gray-600">${desde}</span>` : `<span class="text-pos">+${ev.Delta_RS_semana}</span>`}
+                </div>`;
+        }
+
+        function renderTablasRotacionTicker(rt) {
+            const contLideres = document.getElementById('rotacion-recien-lideres');
+            const contAceleracion = document.getElementById('rotacion-aceleracion-inusual');
+            if (!contLideres || !contAceleracion) return;
+
+            const recien = rt.recien_a_lideres ?? [];
+            const acciones = recien.filter(e => !e.es_etf);
+            const etfs = recien.filter(e => e.es_etf);
+            if (recien.length === 0) {
+                contLideres.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Sin entradas nuevas en los últimos 10 días.</div>';
+            } else {
+                contLideres.innerHTML = `
+                    ${acciones.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mb-1">Acciones</div>${acciones.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
+                    ${etfs.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mt-3 mb-1">ETFs</div>${etfs.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
+                `;
+            }
+
+            const acel = rt.aceleracion_inusual ?? [];
+            const acelAcciones = acel.filter(p => !p.Es_ETF);
+            const acelEtfs = acel.filter(p => p.Es_ETF);
+            if (acel.length === 0) {
+                contAceleracion.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Sin datos todavía.</div>';
+            } else {
+                contAceleracion.innerHTML = `
+                    ${acelAcciones.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mb-1">Acciones</div>${acelAcciones.map(p => _filaRotacionTickerHtml(p, { conEvolucion: false })).join('')}` : ''}
+                    ${acelEtfs.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mt-3 mb-1">ETFs</div>${acelEtfs.map(p => _filaRotacionTickerHtml(p, { conEvolucion: false })).join('')}` : ''}
+                `;
+            }
         }
 
         // ============ SOLAPAS ============
@@ -3904,6 +4336,7 @@
         // Refresco automático
         fetchRadarData();
         fetchRotacionHistorial();
+        fetchRotacionTickerHistorial();
         renderCartera();
         setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
     </script>
