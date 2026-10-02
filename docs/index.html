@@ -417,6 +417,15 @@
             <div id="aud-top30" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
         </section>
 
+        <!-- Mismo mecanismo de arriba, ahora para el Top 30 por Radar Score
+             -- a pedido de Victoria (1/10: "hay que auditar todo"). Recién
+             arranca hoy, así que tarda semanas en juntar casos medibles. -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Top 30 Radar Score de cada semana</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Mismo mecanismo que arriba, pero para el Top 30 por Radar Score en vez de por Fuerza Relativa. Arrancó a registrarse recién el 1/10 -- hasta que no pasen varias semanas, no hay mucho para mostrar todavía.</p>
+            <div id="aud-top30-radar" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
+        </section>
+
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Simulación hacia atrás <span class="text-gray-500 normal-case">(orientativa)</span></h2>
             <div id="aud-simulacion" class="p-4 rounded-sm border border-dashed border-gray-600"></div>
@@ -2635,6 +2644,35 @@
                         <span class="text-right text-gray-400">${w[`verdes${h}`] ?? '—'}/${w[`medidos${h}`] ?? '—'}</span>
                     </div>`;
                 }).join('') + '<div class="font-mono text-[10px] text-gray-600 pt-2">✓ = esa semana el Top 30 le ganó al promedio del universo.</div>';
+            }
+
+            // --- Top 30 Radar Score semanal real (mismo mecanismo de arriba,
+            // ver guardar_foto_top30_radar/evaluar_top30_real en auditoria.py)
+            const topRadar = d.top30_radar_semanal ?? [];
+            const contTopRadar = document.getElementById('aud-top30-radar');
+            if (contTopRadar) {
+                if (topRadar.length === 0) {
+                    contTopRadar.innerHTML = '<div class="text-gray-500 font-mono text-xs">Todavía no hay fotos guardadas. La primera se guarda en la próxima corrida.</div>';
+                } else {
+                    contTopRadar.innerHTML = `
+                        <div class="grid grid-cols-5 gap-2 font-mono text-[9px] uppercase text-gray-500 pb-1 border-b border-base">
+                            <span>Semana</span><span class="text-right">Top 30</span><span class="text-right">Universo</span><span class="text-right">SPY</span><span class="text-right">En verde</span>
+                        </div>` + topRadar.map(w => {
+                        const t = w[`top${h}`];
+                        const fecha = new Date(w.fecha + 'T12:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'});
+                        if (t == null) {
+                            return `<div class="grid grid-cols-5 gap-2 font-mono text-xs py-1"><span class="text-white">${fecha}</span><span class="col-span-4 text-right text-gray-600">faltan ruedas para medir a ${h}</span></div>`;
+                        }
+                        const gano = w[`univ${h}`] != null && t > w[`univ${h}`];
+                        return `<div class="grid grid-cols-5 gap-2 font-mono text-xs py-1 border-b border-base/50 last:border-0">
+                            <span class="text-white">${fecha} ${gano ? '<span class="text-pos">✓</span>' : ''}</span>
+                            <span class="text-right font-bold">${audPct(t)}</span>
+                            <span class="text-right">${audPct(w[`univ${h}`])}</span>
+                            <span class="text-right">${audPct(w[`spy${h}`])}</span>
+                            <span class="text-right text-gray-400">${w[`verdes${h}`] ?? '—'}/${w[`medidos${h}`] ?? '—'}</span>
+                        </div>`;
+                    }).join('') + '<div class="font-mono text-[10px] text-gray-600 pt-2">✓ = esa semana el Top 30 le ganó al promedio del universo.</div>';
+                }
             }
 
             // --- Simulación
