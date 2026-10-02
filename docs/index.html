@@ -149,17 +149,23 @@
 
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
             <section>
-                <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
-                    <input type="text" id="alertas-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Filtrar por ticker (opcional)">
-                </div>
-                <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
-                    <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
-                    <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm">
-                        <option value="nuevas">Más reciente</option>
-                        <option value="tipo">Por tipo (compras primero)</option>
-                        <option value="radar">Radar Score</option>
-                        <option value="fuerza_relativa">Fuerza Relativa</option>
-                    </select>
+                <!-- Cabecera pegajosa (sticky): buscador + contador + orden quedan
+                     visibles arriba mientras se scrolea la lista de tarjetas, en vez
+                     de desaparecer -- a pedido de Victoria (1/10), para no perder de
+                     vista el buscador/orden en listas largas de alertas. -->
+                <div class="sticky top-0 z-10 bg-base -mx-4 px-4 md:-mx-8 md:px-8 pt-2 pb-1">
+                    <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
+                        <input type="text" id="alertas-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Filtrar por ticker (opcional)">
+                    </div>
+                    <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
+                        <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
+                        <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm">
+                            <option value="nuevas">Más reciente</option>
+                            <option value="tipo">Por tipo (compras primero)</option>
+                            <option value="radar">Radar Score</option>
+                            <option value="fuerza_relativa">Fuerza Relativa</option>
+                        </select>
+                    </div>
                 </div>
                 <!-- 4. Contenedor de Alertas -->
                 <div id="alerts-container" class="grid grid-cols-1 gap-4"></div>
@@ -1033,40 +1039,80 @@
                     </div>`;
                 }
 
-                // Desglose de los 7 ingredientes del score técnico (Tipo ===
-                // 'tecnico', estados Confirmado/Recién cruzó/Sacudón/etc.) --
-                // antes solo se veía el número "3/7" sin decir cuáles de los 7
-                // prendieron. No cambia el score, solo lo hace visible.
+                // Desglose con tildes de los criterios de cada señal -- antes
+                // esto solo existía para el flujo técnico (Tipo 'tecnico',
+                // el "3/7"); a pedido de Victoria (1/10) se suma el mismo
+                // tipo de checklist para las otras 3 señales, cada una con
+                // SUS PROPIOS criterios (no el 0-7, que es solo del flujo
+                // técnico). No cambia ningún cálculo, solo lo hace visible.
                 let scoreDetalleHtml = '';
                 if (scoreDetalle) {
-                    const items = [
-                        ['cruce_sma50', 'Cruce SMA50', 'El precio cruzó hacia arriba su media móvil de 50 días hoy (o viene de ese cruce reciente).'],
-                        ['volumen_fuerte', 'Volumen fuerte', `Volumen de hoy más de ${VOLUMEN_RELATIVO_MINIMO_JS}x su promedio de 20 días -- confirma que hubo interés real detrás del movimiento, no un día flojo.`],
-                        ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia (ni sobrecomprado ni débil) -- hay margen antes de que la suba esté "agotada".'],
-                        ['base_ordenada', 'Base ordenada', 'La volatilidad de los últimos 30 días es más baja que la histórica -- veía consolidando antes de moverse, no salvaje.'],
-                        ['sector_mercado_ok', 'Sector + mercado OK', 'El sector tiene fuerza relativa sana y el mercado en general (SPY) está por encima de su SMA50.'],
-                        ['vcp_valido', 'VCP válido', 'Se detectó un patrón de contracción de volatilidad (rango de precio comprimiéndose en olas) -- setup típico previo a una ruptura.'],
-                        ['rsi_semanal_cruzo', 'RSI semanal cruzó', 'En la vela SEMANAL (no diaria), el RSI cruzó hacia arriba su propia media de 14 semanas -- confirmación de más largo plazo.'],
-                    ];
-                    // <details>/<summary> en vez de title="..." -- el tooltip nativo
-                    // del navegador (title) depende de mantener tocado en celular y
-                    // es inconsistente entre Android/iOS/navegadores. <details> es un
-                    // elemento HTML estándar: tocar/clickear el ítem despliega la
-                    // explicación debajo, igual en cualquier dispositivo, sin JS extra.
-                    const filas = items.map(([clave, nombre, explicacion]) => {
-                        const prendido = !!scoreDetalle[clave];
-                        return `<details>
-                            <summary class="flex items-center gap-1.5 cursor-pointer select-none list-none marker:content-none [&::-webkit-details-marker]:hidden">
-                                <span class="${prendido ? 'text-pos' : 'text-gray-600'}">${prendido ? '✅' : '✖️'}</span>
-                                <span class="${prendido ? 'text-gray-300' : 'text-gray-600'}">${nombre}</span>
-                            </summary>
-                            <div class="text-gray-500 text-[10px] pl-5 pt-0.5 pb-1 leading-snug normal-case">${explicacion}</div>
-                        </details>`;
-                    }).join('');
-                    scoreDetalleHtml = `<div class="mt-2 pt-2 border-t border-base">
-                        <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-1.5">Score técnico -- detalle (tocá cada uno para ver qué significa)</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">${filas}</div>
-                    </div>`;
+                    const itemsPorTipo = {
+                        tecnico: {
+                            titulo: 'Score técnico -- detalle (tocá cada uno para ver qué significa)',
+                            items: [
+                                ['cruce_sma50', 'Cruce SMA50', 'El precio cruzó hacia arriba su media móvil de 50 días hoy (o viene de ese cruce reciente).'],
+                                ['volumen_fuerte', 'Volumen fuerte', `Volumen de hoy más de ${VOLUMEN_RELATIVO_MINIMO_JS}x su promedio de 20 días -- confirma que hubo interés real detrás del movimiento, no un día flojo.`],
+                                ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia (ni sobrecomprado ni débil) -- hay margen antes de que la suba esté "agotada".'],
+                                ['base_ordenada', 'Base ordenada', 'La volatilidad de los últimos 30 días es más baja que la histórica -- veía consolidando antes de moverse, no salvaje.'],
+                                ['sector_mercado_ok', 'Sector + mercado OK', 'El sector tiene fuerza relativa sana y el mercado en general (SPY) está por encima de su SMA50.'],
+                                ['vcp_valido', 'VCP válido', 'Se detectó un patrón de contracción de volatilidad (rango de precio comprimiéndose en olas) -- setup típico previo a una ruptura.'],
+                                ['rsi_semanal_cruzo', 'RSI semanal cruzó', 'En la vela SEMANAL (no diaria), el RSI cruzó hacia arriba su propia media de 14 semanas -- confirmación de más largo plazo.'],
+                            ],
+                        },
+                        lider_soporte: {
+                            titulo: 'Líder apoyando en soporte -- detalle',
+                            items: [
+                                ['rs_fuerte', 'Fuerza Relativa alta', 'La Fuerza Relativa de este ticker está por encima del umbral que lo marca como líder (esto es lo que disparó la señal).'],
+                                ['apoya_soporte', 'Apoya en soporte (SMA50)', 'El precio está cerca de su media móvil de 50 días sin haberla roto -- el soporte que está testeando (esto es lo que disparó la señal).'],
+                                ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia -- no llega sobrecomprado al soporte.'],
+                                ['volumen_fuerte', 'Volumen fuerte', `Volumen de hoy más de ${VOLUMEN_RELATIVO_MINIMO_JS}x su promedio de 20 días.`],
+                                ['sector_mercado_ok', 'Sector + mercado OK', 'El sector tiene fuerza relativa sana y el mercado en general (SPY) está por encima de su SMA50.'],
+                            ],
+                        },
+                        gap_alcista: {
+                            titulo: 'Gap alcista con macrotendencia -- detalle',
+                            items: [
+                                ['variacion_fuerte', 'Salto de precio fuerte', 'El precio subió hoy más del umbral mínimo de variación diaria (esto es lo que disparó la señal).'],
+                                ['macrotendencia_ok', 'Macrotendencia a favor', 'El precio de ayer estaba por encima de su media móvil de 200 días -- tendencia de fondo alcista (esto es lo que disparó la señal).'],
+                                ['maximo_reciente', 'Máximo reciente', 'El cierre de hoy es el más alto de los últimos días (ventana de referencia) -- proxy de ruptura (esto es lo que disparó la señal).'],
+                                ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia -- no llega sobrecomprado al salto.'],
+                                ['volumen_fuerte', 'Volumen fuerte', `Volumen de hoy más de ${VOLUMEN_RELATIVO_MINIMO_JS}x su promedio de 20 días.`],
+                            ],
+                        },
+                        ruptura_confirmada: {
+                            titulo: 'Gap alcista, ahora con volumen -- detalle',
+                            items: [
+                                ['supero_nivel_gap', 'Superó el nivel del Gap anterior', 'El precio volvió a superar el nivel del episodio de Gap alcista previo (esto es lo que disparó la señal).'],
+                                ['volumen_fuerte', 'Volumen fuerte', 'Esta vez con volumen alto de verdad, no solo el salto de precio (esto es lo que disparó la señal).'],
+                                ['rsi_sano', 'RSI sano', 'RSI(14) en una zona intermedia -- no llega sobrecomprado a la ruptura.'],
+                                ['base_ordenada', 'Base ordenada', 'La volatilidad reciente es más baja que la histórica.'],
+                                ['sector_mercado_ok', 'Sector + mercado OK', 'El sector tiene fuerza relativa sana y el mercado en general (SPY) está por encima de su SMA50.'],
+                            ],
+                        },
+                    };
+                    const config = itemsPorTipo[tipo];
+                    if (config) {
+                        // <details>/<summary> en vez de title="..." -- el tooltip nativo
+                        // del navegador (title) depende de mantener tocado en celular y
+                        // es inconsistente entre Android/iOS/navegadores. <details> es un
+                        // elemento HTML estándar: tocar/clickear el ítem despliega la
+                        // explicación debajo, igual en cualquier dispositivo, sin JS extra.
+                        const filas = config.items.map(([clave, nombre, explicacion]) => {
+                            const prendido = !!scoreDetalle[clave];
+                            return `<details>
+                                <summary class="flex items-center gap-1.5 cursor-pointer select-none list-none marker:content-none [&::-webkit-details-marker]:hidden">
+                                    <span class="${prendido ? 'text-pos' : 'text-gray-600'}">${prendido ? '✅' : '✖️'}</span>
+                                    <span class="${prendido ? 'text-gray-300' : 'text-gray-600'}">${nombre}</span>
+                                </summary>
+                                <div class="text-gray-500 text-[10px] pl-5 pt-0.5 pb-1 leading-snug normal-case">${explicacion}</div>
+                            </details>`;
+                        }).join('');
+                        scoreDetalleHtml = `<div class="mt-2 pt-2 border-t border-base">
+                            <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-1.5">${config.titulo}</div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">${filas}</div>
+                        </div>`;
+                    }
                 }
 
                 // Narrativa al pie -- el texto de radar_score.py/narrativa.py
