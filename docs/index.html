@@ -797,9 +797,18 @@
                     </div>
                 </div>
 
+                <div class="mt-3 bg-base p-3 rounded-sm border border-gray-800 font-mono text-[11px] space-y-1.5">
+                    <div>${betaHtml(tickerData?.Beta)}</div>
+                    <div>${goldenCrossHtml((currentRadarData?.golden_cross ?? []).find(g => g.Ticker === tickerData.Ticker))}</div>
+                    ${(() => {
+                        const sqHtml = squeezeHtml((currentRadarData?.squeeze ?? []).find(s => s.Ticker === tickerData.Ticker));
+                        return sqHtml ? `<div>${sqHtml}</div>` : '';
+                    })()}
+                </div>
+
                 ${semanalPanelHtml(tickerData)}
             `;
-            
+
             modal.classList.remove('hidden');
         }
 
@@ -1679,6 +1688,16 @@
             renderRotacionTicker(data);
 
             // Renderizado de Detalle por Sector
+            // Golden/Death Cross y Squeeze viven en arrays propios del JSON
+            // (golden_cross.py / bollinger_squeeze.py, ver main.py) -- se
+            // armma un mapa por ticker una sola vez acá para no recorrer la
+            // lista entera por cada fila de la tabla.
+            const goldenCrossPorTicker = Object.fromEntries(
+                (data?.golden_cross ?? []).map(g => [g.Ticker, g])
+            );
+            const squeezePorTicker = Object.fromEntries(
+                (data?.squeeze ?? []).map(s => [s.Ticker, s])
+            );
             const sectorsDetail = document.getElementById('sectors-detail');
             document.getElementById('universo-total-count').textContent = `(${rankingArray.length})`;
             if (rankingArray.length === 0) {
@@ -1744,7 +1763,15 @@
                         const s200V = ticker?.SMA200 != null ? `$${ticker.SMA200.toFixed(2)} (${ticker['Dist_SMA200_%'] > 0 ? '+' : ''}${ticker['Dist_SMA200_%'].toFixed(1)}%)` : 'sin datos aún';
                         const rsiV = ticker?.RSI != null ? ticker.RSI.toFixed(1) : '—';
                         const volV = ticker?.Vol_rel != null ? ticker.Vol_rel.toFixed(2) + 'x' : '—';
-                        
+
+                        // Beta vs. SPY + Golden/Death Cross + Squeeze de
+                        // Bollinger -- cada línea lleva su propia
+                        // explicación en criollo siempre visible (ver
+                        // helpers betaHtml/goldenCrossHtml/squeezeHtml).
+                        const betaLineaHtml = betaHtml(ticker?.Beta);
+                        const goldenCrossLineaHtml = goldenCrossHtml(goldenCrossPorTicker[tickerName]);
+                        const squeezeLineaHtml = squeezeHtml(squeezePorTicker[tickerName]);
+
                         return `
                             <div class="ticker-row py-2 border-b border-base/50 font-mono text-sm hover:bg-base/40 px-2 -mx-2 transition-colors">
                                 <div class="flex flex-wrap md:flex-nowrap items-center">
@@ -1780,6 +1807,9 @@
                                     <span>Δmes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                                 </div>
                                 ${perfilFuerzaHtml}
+                                <div class="font-mono text-[9px] text-gray-500 mt-1">${betaLineaHtml}</div>
+                                <div class="font-mono text-[9px] mt-0.5">${goldenCrossLineaHtml}</div>
+                                ${squeezeLineaHtml ? `<div class="font-mono text-[9px] mt-0.5">${squeezeLineaHtml}</div>` : ''}
                             </div>
                         `;
                     }).join('');
@@ -3030,6 +3060,61 @@
             const sector = ticker?.Sector ?? '—';
             const sub = ticker?.Subcategoria;
             return sub ? `${sector} <span class="text-gray-600">· ${sub}</span>` : sector;
+        }
+
+        // ============ BETA vs. SPY (informativo, ver rs_score.py) ============
+        // NO es una señal de compra/venta -- describe qué tan "exagerado"
+        // se mueve el ticker respecto al mercado. El texto explica el
+        // número en criollo siempre, no solo en un tooltip (regla de
+        // Victoria: todo elemento de la interfaz lleva su explicación
+        // siempre visible, no solo al pasar el mouse).
+        function betaHtml(beta) {
+            if (beta == null) return '<span class="text-gray-700">Beta: sin datos aún</span>';
+            let lectura;
+            if (beta > 1.3) lectura = 'se mueve bastante más que el mercado';
+            else if (beta > 1.05) lectura = 'se mueve algo más que el mercado';
+            else if (beta >= 0.8) lectura = 'se mueve parecido al mercado';
+            else if (beta >= 0) lectura = 'se mueve menos que el mercado (más defensivo)';
+            else lectura = 'tiende a moverse al revés del mercado';
+            return `<span class="text-gray-400">Beta <span class="text-white font-bold">${beta.toFixed(2)}</span> (${lectura})</span>`;
+        }
+
+        // ============ GOLDEN CROSS / DEATH CROSS (ver golden_cross.py) ============
+        // gc viene de data.golden_cross, buscado por ticker (puede ser
+        // null si todavía no hay 200 ruedas de historia). El estado CRUDO
+        // se muestra siempre (no se pierde visibilidad mientras se
+        // confirma) -- la etiqueta aclara si ya está confirmado o todavía
+        // sosteniéndose los días necesarios.
+        function goldenCrossHtml(gc) {
+            if (!gc || gc.Estado_Crudo == null) {
+                return '<span class="text-gray-700">Cruce SMA50/200: sin datos aún</span>';
+            }
+            const esAlcista = gc.Estado_Crudo === 'alcista';
+            const color = esAlcista ? 'text-pos' : 'text-neg';
+            const base = esAlcista
+                ? 'SMA50 por encima de SMA200 (tendencia de fondo alcista)'
+                : 'SMA50 por debajo de SMA200 (tendencia de fondo bajista)';
+            const sufijo = gc.Confirmado
+                ? ' -- confirmado'
+                : ` -- confirmando (día ${gc.Dias_En_Estado}/${gc.Dias_Para_Confirmar}, para filtrar un posible vaivén de lateralización)`;
+            return `<span class="${color}">${base}${sufijo}</span>`;
+        }
+
+        // ============ SQUEEZE DE BOLLINGER (ver bollinger_squeeze.py) ============
+        // sq viene de data.squeeze, buscado por ticker. El squeeze por sí
+        // solo NO dice para qué lado va a romper -- solo cuando hay
+        // liberación (ruptura de banda con volumen) se puede leer una
+        // dirección, y ahí sí se resalta con color.
+        function squeezeHtml(sq) {
+            if (!sq || sq.Squeeze_Comprimido == null) return '';
+            if (sq.Liberacion_Hoy) {
+                const color = sq.Liberacion_Hoy === 'alcista' ? 'text-pos' : 'text-neg';
+                return `<span class="${color} font-bold">⚡ Liberación de squeeze ${sq.Liberacion_Hoy} hoy (venía comprimido, rompió la banda con volumen)</span>`;
+            }
+            if (sq.Squeeze_Comprimido) {
+                return `<span class="text-accent">Bandas de Bollinger comprimidas hace ${sq.Dias_En_Squeeze} rueda(s) -- suele preceder un movimiento fuerte, todavía sin dirección definida</span>`;
+            }
+            return '';
         }
 
         // ============ DATOS EN VELA SEMANAL (informativo) ============
