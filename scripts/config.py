@@ -210,6 +210,48 @@ TICKERS = {
     "NBIS": "Tecnología",  # Nebius Group -- cómputo en la nube para IA (mismo
                             # grupo que CRWV/IREN), pedido por Victoria (oct. 2026).
                             # Ratio de CEDEAR (27:1) confirmado, ver RATIOS_CEDEAR.
+    "ONDS": "Tecnología",  # Ondas Holdings -- drones y redes inalámbricas,
+                            # pedido por Victoria (oct. 2026). Ratio 2:1
+                            # confirmado, ver RATIOS_CEDEAR.
+    # --- Tanda de octubre 2026: comparado contra el listado completo de
+    # CEDEARs de BYMA que trajo Victoria, descartando los de bajo volumen
+    # (ARCO, FMX, ITUB, E, GLNG, CAAP, CX, SUZ, GFI, KGC, TRVV) y los que
+    # se buscaron pero NO tienen CEDEAR en BYMA (CMG, LOW, YUM -- se
+    # verificó contra el PDF oficial, no están listados pese a ser pedidos).
+    "CSCO": "Tecnología",   # Cisco Systems
+    "ASML": "Tecnología",   # ASML Holding -- máquinas de litografía para semis
+    "ANET": "Tecnología",   # Arista Networks
+    "CLS": "Tecnología",    # Celestica
+    "SWKS": "Tecnología",   # Skyworks Solutions
+    "NTES": "Tecnología",   # NetEase
+    "ANF": "Consumo",       # Abercrombie & Fitch
+    "TCOM": "Consumo",      # Trip.com Group -- distinto de TRIP (Tripadvisor)
+    "SYY": "Consumo",       # Sysco
+    "SCHW": "Fintech",      # Charles Schwab
+    "SAN": "Bancos",        # Banco Santander -- ratio sin confirmar (ver RATIOS_CEDEAR)
+    "MMC": "Fintech",       # Marsh & McLennan -- seguros/consultoría de riesgo
+    "FISV": "Fintech",      # Fiserv
+    "NEE": "Energía",       # NextEra Energy
+    "DAL": "Transporte",    # Delta Air Lines
+    "FDX": "Transporte",    # FedEx
+    "DD": "Materiales",     # DuPont de Nemours
+    "STLA": "Automotriz",   # Stellantis (Chrysler/Fiat/Peugeot)
+    "FCX": "Materiales",    # Freeport-McMoRan, cobre
+    "BNG": "Agro",          # Bunge, agronegocios
+    "HIMS": "Salud",        # Hims & Hers Health
+    "SPY": "ETF",           # SPDR S&P 500 -- ya tenía ratio cargado en
+                             # RATIOS_CEDEAR pero faltaba acá en TICKERS
+    "IVV": "ETF",           # iShares Core S&P 500
+    "VEA": "ETF",           # Vanguard FTSE Developed Markets
+    "EFA": "ETF",           # iShares MSCI EAFE
+    "IBIT": "ETF",          # iShares Bitcoin Trust
+    "SLV": "ETF",           # iShares Silver Trust
+    "USO": "ETF",           # United States Oil Fund
+    "XLY": "ETF",           # Consumer Discretionary Select Sector SPDR
+    "XLP": "ETF",           # Consumer Staples Select Sector SPDR
+    "XLB": "ETF",           # Materials Select Sector SPDR
+    "XLC": "ETF",           # Communication Services Select Sector SPDR
+    "XLRE": "ETF",          # Real Estate Select Sector SPDR
 }
 
 # --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
@@ -254,6 +296,12 @@ SUBCATEGORIAS = {
     "SKHY": "Minería cripto/Data center",
     # Espacio / Cuántica (emergente)
     "ASTS": "Espacio/Cuántica", "RGTI": "Espacio/Cuántica", "SATL": "Espacio/Cuántica",
+    # Agregados tanda oct. 2026
+    "ASML": "Semiconductores", "SWKS": "Semiconductores",
+    "CSCO": "Telecom (equipos)", "ANET": "Telecom (equipos)",
+    "CLS": "Hardware/Mega Cap",
+    "NTES": "Internet/Medios",
+    "NBIS": "Minería cripto/Data center",
 
     # --- Consumo ---
     # Consumo Básico (defensivo -- la gente lo sigue comprando en cualquier contexto)
@@ -272,6 +320,8 @@ SUBCATEGORIAS = {
     "ROST": "Consumo Discrecional", "SBUX": "Consumo Discrecional", "SE": "Consumo Discrecional",
     "TGT": "Consumo Discrecional", "TJX": "Consumo Discrecional", "TRIP": "Consumo Discrecional",
     "UBER": "Consumo Discrecional", "URBN": "Consumo Discrecional",
+    "ANF": "Consumo Discrecional", "TCOM": "Consumo Discrecional",
+    "SYY": "Consumo Básico",
 
     # --- Energía ---
     # Petróleo y Gas
@@ -304,7 +354,8 @@ SUBCATEGORIAS = {
     "AVY": "Químicos/Otros", "B": "Químicos/Otros", "BAK": "Químicos/Otros",
     "DOW": "Químicos/Otros", "ECL": "Químicos/Otros", "IP": "Químicos/Otros",
     "LIN": "Químicos/Otros", "NUE": "Químicos/Otros", "SHW": "Químicos/Otros",
-    "TX": "Químicos/Otros",
+    "TX": "Químicos/Otros", "DD": "Químicos/Otros",
+    "FCX": "Minería/Metales",
 
     # --- Salud --- (sumado 1/10, a pedido de Victoria)
     # Farmacéuticas (labs grandes, tradicionales)
@@ -320,28 +371,28 @@ SUBCATEGORIAS = {
     "TEM": "Equipos médicos/diagnóstico", "TMO": "Equipos médicos/diagnóstico",
     # Distribución / servicios de salud
     "CAH": "Distribución/servicios de salud", "CVS": "Distribución/servicios de salud",
-    "UNH": "Distribución/servicios de salud",
+    "UNH": "Distribución/servicios de salud", "HIMS": "Distribución/servicios de salud",
 
     # --- Bancos --- (sumado 1/10)
     "BAC": "Banca EE.UU.", "C": "Banca EE.UU.", "GS": "Banca EE.UU.", "JPM": "Banca EE.UU.",
-    "MS": "Banca EE.UU.", "USB": "Banca EE.UU.", "WFC": "Banca EE.UU.",
+    "MS": "Banca EE.UU.", "USB": "Banca EE.UU.", "WFC": "Banca EE.UU.", "SCHW": "Banca EE.UU.",
     "BBAR": "Banca LatAm", "BMA": "Banca LatAm", "GGAL": "Banca LatAm", "SUPV": "Banca LatAm",
     "BBD": "Banca LatAm",
     "BBVA": "Banca Europa", "BCS": "Banca Europa", "HSBC": "Banca Europa", "ING": "Banca Europa",
-    "LYG": "Banca Europa",
+    "LYG": "Banca Europa", "SAN": "Banca Europa",
     "HDB": "Banca Asia", "IBN": "Banca Asia", "KB": "Banca Asia", "NMR": "Banca Asia",
 
     # --- Fintech --- (sumado 1/10)
-    "MA": "Pagos", "V": "Pagos", "PYPL": "Pagos", "XYZ": "Pagos", "AXP": "Pagos",
+    "MA": "Pagos", "V": "Pagos", "PYPL": "Pagos", "XYZ": "Pagos", "AXP": "Pagos", "FISV": "Pagos",
     "NU": "Banca digital/Neobancos", "PAGS": "Banca digital/Neobancos",
     "COIN": "Cripto/Bróker", "HOOD": "Cripto/Bróker", "IBKR": "Cripto/Bróker", "MSTR": "Cripto/Bróker",
-    "AEG": "Seguros", "AIG": "Seguros",
+    "AEG": "Seguros", "AIG": "Seguros", "MMC": "Seguros",
     "BX": "Gestión de activos/Datos financieros", "EFX": "Gestión de activos/Datos financieros",
     "SPGI": "Gestión de activos/Datos financieros", "UPST": "Gestión de activos/Datos financieros",
 
     # --- Automotriz --- (sumado 1/10)
     "F": "Fabricantes tradicionales", "GM": "Fabricantes tradicionales", "HMC": "Fabricantes tradicionales",
-    "TM": "Fabricantes tradicionales",
+    "TM": "Fabricantes tradicionales", "STLA": "Fabricantes tradicionales",
     "TSLA": "Eléctricos/Lujo", "NIO": "Eléctricos/Lujo", "RACE": "Eléctricos/Lujo",
     "AAP": "Repuestos y neumáticos", "ORLY": "Repuestos y neumáticos", "GT": "Repuestos y neumáticos",
     "PCAR": "Camiones y motos", "HOG": "Camiones y motos",
@@ -428,7 +479,11 @@ ARCHIVO_HISTORIAL = "data/historial_alertas.json"
 # IMPORTANTE: los ratios cambian ocasionalmente por decisiones corporativas
 # (splits) -- conviene re-chequear contra BYMA cada tanto, no son eternos.
 RATIOS_CEDEAR = {
-    "SPY": 20, "TSLA": 15, "QQQ": 20, "NVDA": 24, "BABA": 9, "OKLO": 28,
+    "SPY": 60,  # corregido de 20 a 60 (oct. 2026) -- Victoria lo verificó
+                # contra el precio real del CEDEAR en su bróker ($20.880 ARS
+                # vs SPY USD 769,64 y CCL $1.627,61 -> da 60:1, no 20:1;
+                # probablemente quedó desactualizado desde un split de BYMA
+    "TSLA": 15, "QQQ": 20, "NVDA": 24, "BABA": 9, "OKLO": 28,
     "AAPL": 20, "JMIA": 1, "SATL": 1, "CRWV": 27, "TEM": 12, "LAC": 1,
     "TSM": 9,  # Taiwan Semiconductor -- faltaba, lo pidió Victoria para Mi Cartera
     "SPCE": 2,  # Virgin Galactic -- ratio 1:2 según Banco Comafi (29/9). Ojo:
@@ -478,6 +533,17 @@ RATIOS_CEDEAR = {
     "ZM": 47,
     "NBIS": 27,  # Nebius Group -- ratio 27:1 confirmado (listado de ratios +
                  # PDF oficial de BYMA), oct. 2026
+    "ONDS": 2,   # Ondas Holdings -- ratio 2:1 confirmado (PDF oficial de BYMA), oct. 2026
+    # --- Tanda de octubre 2026 (ratios del PDF oficial de BYMA, mismo listado
+    # completo que trajo Victoria). SAN queda afuera: el PDF lo muestra como
+    # "1:4", un formato distinto al resto de la tabla (no confirmado si es
+    # una fracción real o un error de formato de la fuente) -- entra al
+    # universo técnico igual, pero sin ratio hasta confirmar.
+    "CSCO": 5, "ASML": 146, "ANET": 29, "CLS": 20, "SWKS": 21, "NTES": 14,
+    "ANF": 1, "TCOM": 2, "SYY": 8, "SCHW": 13, "MMC": 16, "FISV": 11,
+    "NEE": 19, "DAL": 8, "FDX": 10, "DD": 5, "STLA": 5, "FCX": 3, "BNG": 5,
+    "HIMS": 4, "IVV": 692, "VEA": 10, "EFA": 18, "IBIT": 10, "SLV": 6,
+    "USO": 15, "XLY": 43, "XLP": 16, "XLB": 18, "XLC": 19, "XLRE": 9,
     # --- Ratios de ADR (no CEDEAR) para acciones argentinas que cotizan
     # directo en NYSE -- misma lógica de brecha, referencia distinta al
     # dólar CCL en vez del panel de CEDEARs de BYMA.
