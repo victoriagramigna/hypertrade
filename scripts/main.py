@@ -32,7 +32,8 @@ from alertas import detectar_alertas
 from contexto import escanear_titulares, evaluar_contexto_macro, recomendacion_final
 from regimen_mercado import evaluar_regimen_mercado
 from historial import cargar_historial, guardar_historial
-from telegram_bot import notificar_alertas, notificar_datos_desactualizados, notificar_cambios_cuadrante
+from telegram_bot import (notificar_alertas, notificar_datos_desactualizados, notificar_cambios_cuadrante,
+                           notificar_golden_cross, notificar_squeeze)
 from macro_local import traer_contexto_macro
 from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
@@ -55,6 +56,10 @@ from confluencia import detectar_confluencia
 from rotacion_sectorial import actualizar_rotacion_sectorial
 from rotacion_ticker import actualizar_rotacion_ticker
 from auditoria_rotacion import correr_auditoria_rotacion
+from golden_cross import actualizar_golden_cross
+from bollinger_squeeze import actualizar_squeeze
+from auditoria_golden_cross import correr_auditoria_golden_cross
+from auditoria_squeeze import correr_auditoria_squeeze
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -223,6 +228,26 @@ def main():
         log.error(f"Rotación por ticker falló, no afecta al resto de la corrida: {e}")
         rotacion_ticker = {"puntos": [], "recien_a_lideres": [], "aceleracion_inusual": [], "eventos": []}
 
+    # 3a-quinquies. Golden Cross / Death Cross (SMA50 vs. SMA200, con
+    # confirmación con demora -- ver golden_cross.py) y Squeeze de
+    # Bollinger (compresión + liberación con volumen -- ver
+    # bollinger_squeeze.py). Las dos reutilizan columnas que rs_score.py
+    # YA calcula para todo el universo (SMA50/SMA200/BB_*), no agregan
+    # ningún cálculo de precio nuevo. Cada una con su propio estado y
+    # bitácora, totalmente separadas de la Auditoría de siempre -- ver
+    # charla con Victoria sobre Beta/Golden-Cross/Squeeze.
+    try:
+        golden_cross = actualizar_golden_cross(df_rs, ahora)
+    except Exception as e:
+        log.error(f"Golden/Death Cross falló, no afecta al resto de la corrida: {e}")
+        golden_cross = {"puntos": [], "eventos": []}
+
+    try:
+        squeeze = actualizar_squeeze(df_rs, ahora)
+    except Exception as e:
+        log.error(f"Squeeze de Bollinger falló, no afecta al resto de la corrida: {e}")
+        squeeze = {"puntos": [], "eventos": []}
+
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
     # El benchmark (SPY) nunca aparece en df_rs -- no tiene sentido rankearlo
@@ -311,6 +336,10 @@ def main():
         "Radar_Comp_FR", "Radar_Comp_Contraccion", "Radar_Comp_Volumen",
         "Radar_Comp_Tendencia", "Radar_Comp_AVWAP", "Radar_Comp_52w",
         "Radar_Bono_Cruce",
+        # Beta vs. SPY y Bollinger Bands (ver rs_score.py) -- puramente
+        # informativas, no tocan el Radar Score ni la Recomendación de
+        # ninguna alerta, solo viajan junto para mostrarse en la tarjeta.
+        "Beta", "BB_SMA20", "BB_Upper", "BB_Lower", "BB_Bandwidth_%", "Squeeze_Comprimido",
     ]
     columnas_extra_presentes = [c for c in columnas_extra_narrativa if c in df_rs.columns]
     extras_por_ticker = (
@@ -375,6 +404,8 @@ def main():
         "rs_por_sector": rs_por_sector,
         "rotacion_sectorial": rotacion_sectorial,
         "rotacion_ticker": rotacion_ticker,
+        "golden_cross": golden_cross["puntos"],
+        "squeeze": squeeze["puntos"],
         "regimen_mercado": regimen,
         "regimen_score": regimen_score,
         "alertas": recomendaciones,
@@ -501,6 +532,32 @@ def main():
         log.info(f"MODO=test o corrida degradada -- NO se avisan los {len(eventos_rotacion_sectorial)} "
                  f"cambio(s) de cuadrante sectorial y {len(eventos_cuadrante_ticker)} de ticker de esta corrida")
 
+    # 9b-quater. Golden Cross / Death Cross confirmados -- mismo criterio
+    # de corrida degradada que el resto: con medio universo caído, un
+    # "cruce confirmado" podría estar armado con SMA50/SMA200 de datos
+    # incompletos.
+    eventos_golden_cross = golden_cross.get("eventos", [])
+    if eventos_golden_cross and MODO == "produccion" and not corrida_degradada:
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+        enviados_gc = notificar_golden_cross(token, chat_id, eventos_golden_cross, fecha_hoy)
+        log.info(f"Golden/Death Cross: {len(eventos_golden_cross)} confirmado(s) -- {enviados_gc} mensaje(s) enviado(s) a Telegram")
+    elif eventos_golden_cross:
+        log.info(f"MODO=test o corrida degradada -- NO se avisan los {len(eventos_golden_cross)} "
+                 f"cruce(s) confirmado(s) de esta corrida")
+
+    # 9b-quinquies. Liberaciones de squeeze confirmadas (banda + volumen).
+    # Mismo criterio de corrida degradada.
+    eventos_squeeze = squeeze.get("eventos", [])
+    if eventos_squeeze and MODO == "produccion" and not corrida_degradada:
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+        enviados_sq = notificar_squeeze(token, chat_id, eventos_squeeze, fecha_hoy)
+        log.info(f"Squeeze: {len(eventos_squeeze)} liberación(es) confirmada(s) -- {enviados_sq} mensaje(s) enviado(s) a Telegram")
+    elif eventos_squeeze:
+        log.info(f"MODO=test o corrida degradada -- NO se avisan las {len(eventos_squeeze)} "
+                 f"liberación(es) de squeeze de esta corrida")
+
     # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
     # con Victoria, 30/9): se registra en la bitácora para que la
     # Auditoría la mida con el tiempo, pero todavía NO aparece como
@@ -543,6 +600,20 @@ def main():
         correr_auditoria_rotacion(precios, TICKERS, BENCHMARK, ahora)
     except Exception as e:
         log.error(f"Auditoría de rotación sectorial falló, no afecta al resto de la corrida: {e}")
+
+    # 9c-quater. Auditoría de Golden Cross / Death Cross -- ver
+    # auditoria_golden_cross.py. Completamente separada de la Auditoría de
+    # siempre y de la de Rotación: no toca ninguna medición existente.
+    try:
+        correr_auditoria_golden_cross(precios, BENCHMARK, ahora)
+    except Exception as e:
+        log.error(f"Auditoría de Golden/Death Cross falló, no afecta al resto de la corrida: {e}")
+
+    # 9c-quinquies. Auditoría de Squeeze Release -- ver auditoria_squeeze.py.
+    try:
+        correr_auditoria_squeeze(precios, BENCHMARK, ahora)
+    except Exception as e:
+        log.error(f"Auditoría de Squeeze falló, no afecta al resto de la corrida: {e}")
 
     # 9d. Evaluación del sistema -- responde si el Radar Score y sus
     # señales individuales realmente anticipan un movimiento rentable.

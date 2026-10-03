@@ -147,6 +147,87 @@ def notificar_cambios_cuadrante(token: str, chat_id: str, eventos_sectoriales: l
     return enviados
 
 
+def _formatear_evento_golden_cross(ev: dict) -> str:
+    emoji = "🟢" if ev.get("tipo") == "Golden Cross" else "🔴"
+    anterior = ev.get("estado_anterior_confirmado") or "sin estado previo"
+    return (f"{emoji} <b>{ev.get('ticker', '?')}</b> ({ev.get('sector', '?')}): "
+            f"<b>{ev.get('tipo', '?')}</b> confirmado (SMA50 {ev.get('sma50', '?')} / "
+            f"SMA200 {ev.get('sma200', '?')}, venía de {anterior})")
+
+
+def notificar_golden_cross(token: str, chat_id: str, eventos: list, fecha: str) -> int:
+    """Avisa cuando un Golden Cross o Death Cross queda CONFIRMADO (ver
+    golden_cross.py -- solo después de sostenerse DIAS_CONFIRMACION ruedas,
+    para no avisar un cruce que la lateralización deshace al día siguiente).
+    Mismo criterio anti-spam que notificar_cambios_cuadrante: un mensaje por
+    corrida, partido solo si no entra en el límite de Telegram."""
+    if not eventos:
+        return 0
+
+    lineas = [f"⚔️ <b>HyperTrade</b> — Golden/Death Cross confirmado — {fecha}"]
+    lineas.append("")
+    lineas.extend(_formatear_evento_golden_cross(e) for e in eventos)
+
+    mensajes, actual = [], ""
+    for linea in lineas:
+        candidato = (actual + "\n" + linea) if actual else linea
+        if len(candidato) > LIMITE_CHARS_MENSAJE and actual:
+            mensajes.append(actual)
+            actual = linea
+        else:
+            actual = candidato
+    if actual:
+        mensajes.append(actual)
+
+    enviados = 0
+    total = len(mensajes)
+    for i, msg in enumerate(mensajes, 1):
+        texto = msg + (f"\n\n({i}/{total})" if total > 1 else "") + DISCLAIMER
+        if enviar_mensaje(token, chat_id, texto):
+            enviados += 1
+    return enviados
+
+
+def _formatear_evento_squeeze(ev: dict) -> str:
+    emoji = "🟢" if ev.get("direccion") == "alcista" else "🔴"
+    vol_rel = ev.get("vol_rel")
+    vol_txt = f"{vol_rel:.1f}x" if vol_rel is not None else "?"
+    return (f"{emoji} <b>{ev.get('ticker', '?')}</b> ({ev.get('sector', '?')}): liberación de squeeze "
+            f"<b>{ev.get('direccion', '?')}</b> (precio {ev.get('precio', '?')}, volumen {vol_txt} el promedio)")
+
+
+def notificar_squeeze(token: str, chat_id: str, eventos: list, fecha: str) -> int:
+    """Avisa cuando se confirma una liberación de squeeze de Bollinger
+    (ver bollinger_squeeze.py -- ruptura de banda con volumen que confirma,
+    viniendo de una compresión reciente). Mismo criterio anti-spam que las
+    demás notificaciones de esta app."""
+    if not eventos:
+        return 0
+
+    lineas = [f"🎯 <b>HyperTrade</b> — Liberación de squeeze — {fecha}"]
+    lineas.append("")
+    lineas.extend(_formatear_evento_squeeze(e) for e in eventos)
+
+    mensajes, actual = [], ""
+    for linea in lineas:
+        candidato = (actual + "\n" + linea) if actual else linea
+        if len(candidato) > LIMITE_CHARS_MENSAJE and actual:
+            mensajes.append(actual)
+            actual = linea
+        else:
+            actual = candidato
+    if actual:
+        mensajes.append(actual)
+
+    enviados = 0
+    total = len(mensajes)
+    for i, msg in enumerate(mensajes, 1):
+        texto = msg + (f"\n\n({i}/{total})" if total > 1 else "") + DISCLAIMER
+        if enviar_mensaje(token, chat_id, texto):
+            enviados += 1
+    return enviados
+
+
 def notificar_datos_desactualizados(token: str, chat_id: str, desactualizados: list, fecha: str) -> bool:
     """Un solo mensaje resumen cuando algún ticker quedó con dato viejo esta
     corrida (ver datos.py) -- así queda claro que esos tickers NO se

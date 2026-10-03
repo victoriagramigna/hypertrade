@@ -21,6 +21,32 @@ from config import SUBCATEGORIAS
 UMBRAL_FUERTE = 70   # RS Score (de cualquiera de los dos) a partir de acá se considera "fuerte"
 UMBRAL_DEBIL = 50    # por debajo de acá se considera "débil"
 
+# Bollinger Bands -- banda de SMA20 +/- 2 desvíos estándar del precio.
+# BB_Bandwidth_% (ancho de la banda, como % de la SMA20) es lo que se usa
+# para detectar "squeeze" (compresión): cuando el ancho de HOY está entre
+# los más chicos de los últimos VENTANA_SQUEEZE_PERCENTIL días, el precio
+# está comprimido -- históricamente suele preceder a un movimiento fuerte
+# (para cualquiera de los dos lados, el squeeze por sí solo no dice la
+# dirección -- ver bollinger_squeeze.py para la señal de "liberación" que
+# sí la define).
+VENTANA_BOLLINGER = 20
+DESVIOS_BOLLINGER = 2
+# Ventana para juzgar si el ancho de HOY es "chico" en términos históricos
+# -- ~6 meses de ruedas, para no comparar contra un régimen de volatilidad
+# demasiado viejo.
+VENTANA_SQUEEZE_PERCENTIL = 120
+PERCENTIL_SQUEEZE = 20   # ancho de hoy entre el 20% más chico de la ventana = squeeze
+
+# Beta vs. benchmark (SPY) -- NO es una señal de compra/venta, es un dato de
+# contexto (qué tan "exagerado" se mueve el ticker respecto al mercado). Por
+# eso no tiene demora de confirmación ni bitácora propia (ver charla con
+# Victoria sobre Beta/Golden-Cross/Squeeze): no hace una predicción que
+# después haya que auditar, solo describe volatilidad relativa histórica.
+# Ventana de ~6 meses de rendimientos diarios (mismo horizonte que Ret_6m_%)
+# -- suficiente para que no lo mueva un solo día raro, sin ser tan largo
+# que mezcle un régimen de volatilidad viejo con el actual.
+VENTANA_BETA = 126
+
 
 def _rsi(serie, periodo=14):
     delta = serie.diff()
@@ -62,6 +88,10 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
     bench = precios[benchmark].dropna()
     volumenes = volumenes or {}
     precios_ohlc = precios_ohlc or {}
+
+    # Rendimientos diarios del benchmark -- se calculan una sola vez acá
+    # afuera del loop (no por ticker) porque son siempre los mismos.
+    ret_bench_diario = bench.pct_change().dropna()
 
     def rendimiento(serie, dias):
         if len(serie) <= dias:
@@ -131,6 +161,60 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
         rsi_serie = _rsi(close, 14)
         rsi_hoy = rsi_serie.iloc[-1] if len(rsi_serie.dropna()) > 0 else None
         fila["RSI"] = round(float(rsi_hoy), 1) if rsi_hoy is not None and pd.notna(rsi_hoy) else None
+
+        # Beta vs. benchmark -- cov(retorno ticker, retorno benchmark) /
+        # var(retorno benchmark), sobre los últimos VENTANA_BETA días en los
+        # que AMBOS tienen dato (intersección de fechas, por si alguno tiene
+        # algún hueco puntual). Sin esa cantidad de datos en común, mejor no
+        # medir que medir mal -- queda en None, no en un número con poca base.
+        ret_ticker_diario = close.pct_change().dropna()
+        fechas_comunes = ret_ticker_diario.index.intersection(ret_bench_diario.index)
+        if len(fechas_comunes) >= VENTANA_BETA:
+            fechas_ventana = fechas_comunes[-VENTANA_BETA:]
+            r_ticker = ret_ticker_diario.loc[fechas_ventana]
+            r_bench = ret_bench_diario.loc[fechas_ventana]
+            varianza_bench = r_bench.var()
+            if pd.notna(varianza_bench) and varianza_bench > 0:
+                beta = r_ticker.cov(r_bench) / varianza_bench
+                fila["Beta"] = round(float(beta), 2) if pd.notna(beta) else None
+            else:
+                fila["Beta"] = None
+        else:
+            fila["Beta"] = None
+
+        # Bollinger Bands + detección de squeeze (ver constantes arriba).
+        sma20_serie = close.rolling(VENTANA_BOLLINGER).mean()
+        std20_serie = close.rolling(VENTANA_BOLLINGER).std()
+        sma20_hoy, std20_hoy = sma20_serie.iloc[-1], std20_serie.iloc[-1]
+        if pd.notna(sma20_hoy) and pd.notna(std20_hoy) and sma20_hoy > 0:
+            bb_upper = sma20_hoy + DESVIOS_BOLLINGER * std20_hoy
+            bb_lower = sma20_hoy - DESVIOS_BOLLINGER * std20_hoy
+            bb_bandwidth = (bb_upper - bb_lower) / sma20_hoy * 100
+            fila["BB_SMA20"] = round(float(sma20_hoy), 2)
+            fila["BB_Upper"] = round(float(bb_upper), 2)
+            fila["BB_Lower"] = round(float(bb_lower), 2)
+            fila["BB_Bandwidth_%"] = round(float(bb_bandwidth), 2)
+
+            # Squeeze: el ancho de HOY, comparado contra los últimos
+            # VENTANA_SQUEEZE_PERCENTIL días de ancho -- ¿está entre el
+            # PERCENTIL_SQUEEZE% más chico de ese tramo? Hace falta la
+            # ventana completa de historial para que la comparación tenga
+            # sentido; si no alcanza, queda en None (ni squeeze ni no-squeeze,
+            # directamente "no medido todavía").
+            bandwidth_serie = ((sma20_serie + DESVIOS_BOLLINGER * std20_serie)
+                                - (sma20_serie - DESVIOS_BOLLINGER * std20_serie)) / sma20_serie * 100
+            bandwidth_historico = bandwidth_serie.dropna().iloc[-VENTANA_SQUEEZE_PERCENTIL:]
+            if len(bandwidth_historico) >= VENTANA_SQUEEZE_PERCENTIL:
+                umbral_squeeze = bandwidth_historico.quantile(PERCENTIL_SQUEEZE / 100)
+                fila["Squeeze_Comprimido"] = bool(bb_bandwidth <= umbral_squeeze)
+            else:
+                fila["Squeeze_Comprimido"] = None
+        else:
+            fila["BB_SMA20"] = None
+            fila["BB_Upper"] = None
+            fila["BB_Lower"] = None
+            fila["BB_Bandwidth_%"] = None
+            fila["Squeeze_Comprimido"] = None
 
         if ticker in volumenes:
             vol = volumenes[ticker].dropna()
