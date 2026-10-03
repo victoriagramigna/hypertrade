@@ -749,6 +749,7 @@
                         <h2 class="text-4xl font-bold text-white uppercase tracking-tight">${tickerData.Ticker}</h2>
                         <span class="text-sm font-mono text-accent uppercase tracking-widest">${tickerData.Sector ?? '—'}</span>
                         ${tickerData.Subcategoria ? `<span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest ml-2">· ${tickerData.Subcategoria}</span>` : ''}
+                        <div class="mt-1 font-mono text-xs">${tradingViewLinkHtml(tickerData.Ticker, '📈 Ver gráfico en TradingView ↗')}</div>
                     </div>
                     <div class="text-right">
                         <div class="text-3xl font-mono text-white">$${tickerData.Precio?.toFixed(2) ?? '—'}</div>
@@ -1810,6 +1811,7 @@
                                 <div class="font-mono text-[9px] text-gray-500 mt-1">${betaLineaHtml}</div>
                                 <div class="font-mono text-[9px] mt-0.5">${goldenCrossLineaHtml}</div>
                                 ${squeezeLineaHtml ? `<div class="font-mono text-[9px] mt-0.5">${squeezeLineaHtml}</div>` : ''}
+                                <div class="font-mono text-[9px] mt-0.5">${tradingViewLinkHtml(tickerName)}</div>
                             </div>
                         `;
                     }).join('');
@@ -3060,6 +3062,22 @@
             const sector = ticker?.Sector ?? '—';
             const sub = ticker?.Subcategoria;
             return sub ? `${sector} <span class="text-gray-600">· ${sub}</span>` : sector;
+        }
+
+        // ============ LINK A TRADINGVIEW (a pedido de Victoria, 3/10) ============
+        // Abre el símbolo directo en TradingView, en pestaña nueva, para
+        // poder mirar el gráfico de velas real de cualquier ticker sin
+        // salir de HyperTrade. A propósito NO apunta a un chart guardado
+        // de una cuenta puntual (sería frágil -- se rompe si esa persona
+        // renombra o borra ese layout) -- así funciona para cualquiera que
+        // abra la app, siempre, aunque no traiga el indicador AIO Pro
+        // puesto automáticamente (eso Victoria lo carga a mano en su
+        // cuenta de TradingView si quiere verlo con sus propios indicadores).
+        function tradingViewUrl(ticker) {
+            return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(ticker)}`;
+        }
+        function tradingViewLinkHtml(ticker, texto = '📈 Ver gráfico') {
+            return `<a href="${tradingViewUrl(ticker)}" target="_blank" rel="noopener" class="text-accent hover:underline" onclick="event.stopPropagation()">${texto}</a>`;
         }
 
         // ============ BETA vs. SPY (informativo, ver rs_score.py) ============
