@@ -60,6 +60,7 @@ from golden_cross import actualizar_golden_cross
 from bollinger_squeeze import actualizar_squeeze
 from auditoria_golden_cross import correr_auditoria_golden_cross
 from auditoria_squeeze import correr_auditoria_squeeze
+from niveles_seguimiento import procesar_niveles
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -557,6 +558,15 @@ def main():
     elif eventos_squeeze:
         log.info(f"MODO=test o corrida degradada -- NO se avisan las {len(eventos_squeeze)} "
                  f"liberación(es) de squeeze de esta corrida")
+
+    # 9b-sexies. Avisos de niveles en seguimiento (ver niveles_seguimiento.py).
+    # ADITIVO: no usa ni modifica ninguna señal del radar ni la Auditoría; baja
+    # sus propios precios. Aparte de los demás avisos, si falla no tumba la
+    # corrida.
+    try:
+        procesar_niveles(MODO, os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"))
+    except Exception as e:
+        log.warning(f"Niveles de seguimiento: falló esta pasada ({e}) -- se sigue con el resto de la corrida")
 
     # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
     # con Victoria, 30/9): se registra en la bitácora para que la
