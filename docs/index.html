@@ -3698,54 +3698,76 @@
             }));
         }
 
-        async function sincronizarConGithub(posiciones) {
+        // CAMBIO (4/10): error 409 al sincronizar. Causa: cada guardado dispara
+        // una sincronización "fire-and-forget"; si dos salían casi juntas (ej:
+        // agregar una compra y el recálculo del stop), la segunda usaba el sha
+        // viejo del archivo y GitHub la rechazaba con 409 (conflicto -- no es
+        // un problema del token). Ahora (1) las sincronizaciones se hacen de a
+        // una, en fila; (2) el sha se lee sin caché; (3) si igual hay 409, se
+        // vuelve a leer el sha y se reintenta (hasta 3 veces).
+        let _syncCola = Promise.resolve();
+        function sincronizarConGithub(posiciones) {
+            _syncCola = _syncCola
+                .then(() => _sincronizarConGithubUnaVez(posiciones))
+                .catch(() => {});
+            return _syncCola;
+        }
+
+        async function _sincronizarConGithubUnaVez(posiciones) {
             const token = cargarTokenGithub();
             const statusEl = document.getElementById('sync-status');
             if (!token) return; // sin token conectado -- usar el botón de exportar manual
 
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH_CARTERA}`;
-
-                // 1. Traer el sha actual del archivo (si existe) -- la API de
-                // GitHub lo exige para poder actualizar un archivo existente
-                let sha = null;
-                const getResp = await fetch(apiUrl, {
-                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
-                });
-                if (getResp.ok) {
-                    const info = await getResp.json();
-                    sha = info.sha;
-                } else if (getResp.status !== 404) {
-                    throw new Error(`No se pudo leer el archivo actual (HTTP ${getResp.status})`);
-                }
+                const headersLectura = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
 
                 // 2. Armar el contenido nuevo, codificado en base64 (lo que pide la API)
                 const contenido = JSON.stringify(_posicionesParaExportar(posiciones), null, 2);
                 const contenidoB64 = btoa(unescape(encodeURIComponent(contenido)));
 
-                const putBody = {
-                    message: `Sync cartera desde dashboard (${new Date().toISOString()})`,
-                    content: contenidoB64,
-                };
-                if (sha) putBody.sha = sha;
+                let putResp = null;
+                for (let intento = 0; intento < 3; intento++) {
+                    // 1. Traer el sha actual del archivo (si existe), SIN caché --
+                    // la API de GitHub lo exige para poder actualizar un archivo existente
+                    let sha = null;
+                    const getResp = await fetch(`${apiUrl}?t=${Date.now()}`, { headers: headersLectura, cache: 'no-store' });
+                    if (getResp.ok) {
+                        const info = await getResp.json();
+                        sha = info.sha;
+                    } else if (getResp.status !== 404) {
+                        throw new Error(`No se pudo leer el archivo actual (HTTP ${getResp.status})`);
+                    }
 
-                const putResp = await fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: 'application/vnd.github+json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(putBody),
-                });
+                    const putBody = {
+                        message: `Sync cartera desde dashboard (${new Date().toISOString()})`,
+                        content: contenidoB64,
+                    };
+                    if (sha) putBody.sha = sha;
+
+                    putResp = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            Accept: 'application/vnd.github+json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(putBody),
+                    });
+                    if (putResp.status !== 409 && putResp.status !== 422) break; // solo se reintenta ante conflicto
+                    await new Promise(r => setTimeout(r, 700));
+                }
 
                 if (statusEl) {
                     if (putResp.ok) {
                         const ahora = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
                         statusEl.textContent = `Última sincronización: ${ahora}`;
                         statusEl.classList.remove('text-neg');
-                    } else {
+                    } else if (putResp.status === 401 || putResp.status === 403) {
                         statusEl.textContent = `⚠ Error al sincronizar (HTTP ${putResp.status}) -- revisá el token`;
+                        statusEl.classList.add('text-neg');
+                    } else {
+                        statusEl.textContent = `⚠ Error al sincronizar (HTTP ${putResp.status}) -- reintentá en un momento`;
                         statusEl.classList.add('text-neg');
                     }
                 }
