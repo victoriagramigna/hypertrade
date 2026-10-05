@@ -1,12 +1,92 @@
 {
- "generado_utc": "2026-10-05T14:01:44.128579+00:00",
+ "generado_utc": "2026-10-05T14:31:34.983149+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 15,
  "horizontes": [
   10,
   20
  ],
- "casos_total": 0,
- "resumen_tipos": [],
- "detalle": []
+ "casos_total": 4,
+ "resumen_tipos": [
+  {
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "casos_total": 2,
+   "horizontes": {
+    "10": {
+     "n": 0,
+     "pendientes": 2,
+     "confiable": false
+    },
+    "20": {
+     "n": 0,
+     "pendientes": 2,
+     "confiable": false
+    }
+   }
+  },
+  {
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "casos_total": 2,
+   "horizontes": {
+    "10": {
+     "n": 0,
+     "pendientes": 2,
+     "confiable": false
+    },
+    "20": {
+     "n": 0,
+     "pendientes": 2,
+     "confiable": false
+    }
+   }
+  }
+ ],
+ "detalle": [
+  {
+   "ticker": "AI",
+   "sector": "Tecnología",
+   "fecha": "2026-10-05",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 10.29,
+   "sma200": 10.24,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "CLS",
+   "sector": "Tecnología",
+   "fecha": "2026-10-05",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 331.74,
+   "sma200": 331.17,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AIG",
+   "sector": "Fintech",
+   "fecha": "2026-10-05",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 76.14,
+   "sma200": 76.14,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "ITA",
+   "sector": "ETF",
+   "fecha": "2026-10-05",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 229.98,
+   "sma200": 230.07,
+   "r10": null,
+   "r20": null
+  }
+ ]
 }
