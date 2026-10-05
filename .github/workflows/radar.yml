@@ -72,7 +72,11 @@ jobs:
           # cada corrida pero nunca se guardaban en el repo, así que la corrida
           # siguiente arrancaba de cero y "nuevos ingresos al Top 30" y "Δ RS
           # día/semana/mes" nunca tenían un día anterior contra el cual comparar.
-          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json data/chips_historial.json data/rs_sector_historial.jsonl data/rotacion_sectorial_estado.json data/log_rotacion_sectorial.jsonl data/auditoria_rotacion.json data/auditoria_rotacion_resultados.jsonl data/top30_diario.jsonl data/rs_score_historial.jsonl data/amplitud_historial.jsonl data/top30_radar_diario.jsonl data/top30_semanal_radar.json data/rotacion_ticker_estado.json data/log_rotacion_ticker.jsonl; do
+          # 4/10: faltaban los archivos de Golden Cross y Squeeze. Se calculaban en
+          # cada corrida pero nunca se guardaban en el repo, así que el estado
+          # ("estaba en squeeze ayer", días en estado) arrancaba de cero cada vez
+          # y ninguna liberación/cruce podía detectarse ni auditarse.
+          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json data/chips_historial.json data/rs_sector_historial.jsonl data/rotacion_sectorial_estado.json data/log_rotacion_sectorial.jsonl data/auditoria_rotacion.json data/auditoria_rotacion_resultados.jsonl data/top30_diario.jsonl data/rs_score_historial.jsonl data/amplitud_historial.jsonl data/top30_radar_diario.jsonl data/top30_semanal_radar.json data/rotacion_ticker_estado.json data/log_rotacion_ticker.jsonl data/squeeze_estado.json data/log_squeeze.jsonl data/auditoria_squeeze.json data/auditoria_squeeze_resultados.jsonl data/golden_cross_estado.json data/log_golden_cross.jsonl data/auditoria_golden_cross.json data/auditoria_golden_cross_resultados.jsonl; do
             if [ -f "$f" ]; then
               git add "$f"
             fi
