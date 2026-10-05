@@ -110,6 +110,13 @@ def actualizar_squeeze(df_rs, ahora) -> dict:
                 liberacion = "bajista"
 
         if liberacion is not None:
+            # Distancia de ruptura (4/10): cuánto se pasó el precio de la banda
+            # que rompió, en %. Solo informativo para el aviso; no cambia cuándo
+            # se detecta una liberación ni lo que mide la Auditoría.
+            if liberacion == "alcista":
+                dist_ruptura = (precio - bb_upper) / bb_upper * 100
+            else:
+                dist_ruptura = (bb_lower - precio) / bb_lower * 100
             evento = {
                 "timestamp": hoy_iso,
                 "ticker": ticker,
@@ -120,6 +127,8 @@ def actualizar_squeeze(df_rs, ahora) -> dict:
                 "bb_lower": bb_lower,
                 "vol_rel": vol_rel,
                 "dias_en_squeeze_previos": previo.get("dias_en_squeeze", 0),
+                "dist_ruptura_pct": round(dist_ruptura, 2),
+                "sma50": fila.get("SMA50"),
             }
             eventos_nuevos.append(evento)
             # Una vez liberado, se resetea -- si vuelve a comprimirse más

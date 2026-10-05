@@ -189,11 +189,34 @@ def notificar_golden_cross(token: str, chat_id: str, eventos: list, fecha: str) 
 
 
 def _formatear_evento_squeeze(ev: dict) -> str:
-    emoji = "🟢" if ev.get("direccion") == "alcista" else "🔴"
+    alcista = ev.get("direccion") == "alcista"
+    emoji = "🟢" if alcista else "🔴"
+    precio = ev.get("precio")
     vol_rel = ev.get("vol_rel")
     vol_txt = f"{vol_rel:.1f}x" if vol_rel is not None else "?"
-    return (f"{emoji} <b>{ev.get('ticker', '?')}</b> ({ev.get('sector', '?')}): liberación de squeeze "
-            f"<b>{ev.get('direccion', '?')}</b> (precio {ev.get('precio', '?')}, volumen {vol_txt} el promedio)")
+    banda = ev.get("bb_upper") if alcista else ev.get("bb_lower")
+    dist = ev.get("dist_ruptura_pct")
+
+    lineas = [f"{emoji} <b>{ev.get('ticker', '?')}</b> ({ev.get('sector', '?')}): liberación de squeeze "
+              f"<b>{ev.get('direccion', '?')}</b>"]
+    detalle = f"   Cerró en {precio}"
+    if dist is not None and banda is not None:
+        lado = "arriba" if alcista else "abajo"
+        detalle += f", {abs(dist):.2f}% por {lado} de la banda ({banda})"
+    detalle += f" · volumen {vol_txt} el promedio"
+    lineas.append(detalle)
+
+    # Stop de referencia solo para la liberación alcista (la app sugiere stops
+    # para posiciones compradas). Misma regla que Mi Cartera: -8% desde el
+    # precio, o la SMA50 -2% si protege más.
+    if alcista and precio:
+        stop = precio * 0.92
+        sma50 = ev.get("sma50")
+        if sma50 is not None and sma50 < precio:
+            stop = max(stop, sma50 * 0.98)
+        riesgo = (stop / precio - 1) * 100
+        lineas.append(f"   Stop de referencia: {stop:.2f} ({riesgo:.1f}%) -- el mismo criterio que usa Mi Cartera")
+    return "\n".join(lineas)
 
 
 def notificar_squeeze(token: str, chat_id: str, eventos: list, fecha: str) -> int:
