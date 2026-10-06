@@ -304,6 +304,25 @@
                 </div>
             </div>
         </section>
+        <!-- 4d. Buscador por sector / subcategoría / tema (pedido de Victoria, 6/10).
+             Solo lee datos que ya están en el ranking: no toca ninguna señal. -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Buscador por sector, subcategoría o tema</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Escribí lo que buscás (ej. <span class="text-gray-300">semiconductores</span>, <span class="text-gray-300">bancos</span>,
+                <span class="text-gray-300">brasil</span>, <span class="text-gray-300">oro</span>, <span class="text-gray-300">software</span>)
+                y aparecen todos los tickers del universo que encajan, ordenados por Fuerza Relativa. Busca en el ticker, el sector, la subcategoría
+                y en algunas palabras clave de tema (los ETFs sectoriales aparecen con su tema: SMH con semiconductores, GDX con oro, etc.).
+                Si varias palabras, tienen que cumplirse todas. Es solo para ubicar tickers: no es una recomendación.
+            </div>
+            <div class="mb-3 flex flex-wrap items-center gap-2">
+                <input id="buscador-subclase" type="text" placeholder="Buscar sector / subcategoría / tema..."
+                    class="w-full sm:w-72 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
+                    oninput="renderBuscadorSubclase(buscadorSubclaseData)">
+                <div id="buscador-subclase-chips" class="flex flex-wrap gap-1.5"></div>
+            </div>
+            <div id="buscador-subclase-resultado" class="bg-surface p-3 rounded-sm border border-surface font-mono text-xs"></div>
+        </section>
         <!-- 5. Detalle por Sector (Ranking) -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Universo Técnico <span id="universo-total-count" class="text-gray-500 normal-case"></span></h2>
@@ -313,6 +332,8 @@
                     <span class="text-white">promedio de sus propios pares</span> del sector, no contra el mercado -- sirve para distinguir
                     si un ticker es fuerte por mérito propio o solo porque todo su sector viene subiendo junto (caso YPF: puede ganarle al
                     SPY sin ser el más fuerte dentro de Energía). Cuando aparecen los dos, la línea de abajo (↳) resume qué combinación es.
+                    <br>Dentro de cada sector con subcategorías (ej. Tecnología), los tickers van agrupados por subcategoría: arriba la más fuerte
+                    (según el promedio de Fuerza Relativa de sus tickers, que se ve a la derecha del título del grupo) y, dentro de cada grupo, de mayor a menor Fuerza Relativa.
                 </div>
                 <div id="sectors-detail" class="space-y-6"></div>
             </section>
@@ -1701,6 +1722,7 @@
             );
             const sectorsDetail = document.getElementById('sectors-detail');
             document.getElementById('universo-total-count').textContent = `(${rankingArray.length})`;
+            try { renderBuscadorSubclase(data); } catch (e) { console.warn('buscador subclase', e); }
             if (rankingArray.length === 0) {
                 sectorsDetail.innerHTML = '<div class="text-gray-500 font-mono text-sm p-4 border border-dashed border-surface rounded-sm">Universo técnico vacío.</div>';
             } else {
@@ -1712,7 +1734,7 @@
                 }, {});
 
                 sectorsDetail.innerHTML = Object.keys(groupedBySector).sort().map(sector => {
-                    const rows = groupedBySector[sector].sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0)).map(ticker => {
+                    const filaTicker = (ticker) => {
                         const rsScore = ticker?.RS_Score ?? 0;
                         const precio = ticker?.Precio ?? 0;
                         const tickerName = ticker?.Ticker ?? '—';
@@ -1814,7 +1836,27 @@
                                 <div class="font-mono text-[9px] mt-0.5">${tradingViewLinkHtml(tickerName)}</div>
                             </div>
                         `;
-                    }).join('');
+                    };
+
+                    // Orden: por Fuerza Relativa. Si el sector tiene subcategorías, se agrupa por
+                    // subcategoría (la más fuerte primero, según el promedio de FR de sus tickers),
+                    // con un encabezado por grupo; dentro de cada grupo, por FR. Los sin subcategoría van al final.
+                    const listaSector = groupedBySector[sector].sort((x, y) => (y?.RS_Score ?? 0) - (x?.RS_Score ?? 0));
+                    let rows;
+                    if (!listaSector.some(t => t?.Subcategoria)) {
+                        rows = listaSector.map(filaTicker).join('');
+                    } else {
+                        const grupos = {};
+                        listaSector.forEach(t => { const k = t?.Subcategoria ?? '(sin subcategoría)'; (grupos[k] = grupos[k] || []).push(t); });
+                        const prom = g => g.reduce((acc, t) => acc + (t?.RS_Score ?? 0), 0) / g.length;
+                        rows = Object.entries(grupos)
+                            .sort((p, q) => (p[0].startsWith('(sin') ? 1 : 0) - (q[0].startsWith('(sin') ? 1 : 0) || prom(q[1]) - prom(p[1]))
+                            .map(([nombre, g]) => `
+                                <div class="sticky top-0 z-10 bg-surface flex items-baseline justify-between font-mono text-[10px] uppercase tracking-widest text-accent border-b border-accent/40 pt-3 pb-1 first:pt-0">
+                                    <span>${nombre} <span class="text-gray-500 normal-case">(${g.length})</span></span>
+                                    <span class="text-gray-500 normal-case">FR prom. ${prom(g).toFixed(0)}</span>
+                                </div>${g.map(filaTicker).join('')}`).join('');
+                    }
 
                     const sectorScoreRaw = rsPorSector[sector];
                     const sectorScoreDisplay = typeof sectorScoreRaw === 'number' ? sectorScoreRaw.toFixed(1) : '—';
@@ -3051,6 +3093,63 @@
             if (v == null) return '<span class="text-gray-700">—</span>';
             const color = v > 0 ? 'text-pos' : (v < 0 ? 'text-neg' : 'text-gray-500');
             return `<span class="${color}">${v > 0 ? '+' : ''}${Number(v).toFixed(1)}</span>`;
+        }
+
+        // ============ BUSCADOR POR SECTOR / SUBCATEGORÍA / TEMA (6/10) ============
+        // Informativo: solo filtra el ranking que ya existe. Las palabras clave
+        // extra cubren lo que la subcategoría simple no puede (ETFs, país).
+        let buscadorSubclaseData = null;
+        const TEMAS_EXTRA = {
+            SMH: 'semiconductores chips', XLK: 'tecnologia', QQQ: 'tecnologia nasdaq', TQQQ: 'tecnologia nasdaq apalancado',
+            GDX: 'oro mineria metales', GLD: 'oro metales', SLV: 'plata metales', COPX: 'cobre mineria metales', XME: 'mineria metales',
+            URA: 'uranio renovables energia', ICLN: 'renovables energia limpia', XLE: 'petroleo gas energia', USO: 'petroleo energia',
+            XLF: 'bancos finanzas', XLV: 'salud', IBB: 'biotecnologia salud', ITA: 'aeroespacial defensa', CIBR: 'ciberseguridad software',
+            XLU: 'utilities electricas', XLRE: 'inmobiliario real estate', XLI: 'industriales', XLB: 'materiales', XLP: 'consumo basico',
+            XLY: 'consumo discrecional', XLC: 'comunicaciones internet medios', ARKK: 'innovacion tecnologia', IBIT: 'cripto bitcoin',
+            ETHA: 'cripto ethereum', EWZ: 'brasil latam', ILF: 'latam brasil', EWJ: 'japon asia', EWY: 'corea asia', FXI: 'china asia',
+            EEM: 'emergentes', IEMG: 'emergentes', VEA: 'desarrollados europa japon', EFA: 'desarrollados europa japon', ACWI: 'global mundo',
+            SPY: 'sp500 indice eeuu', IVV: 'sp500 indice eeuu', DIA: 'dow jones indice eeuu', IWM: 'small caps indice eeuu', RSP: 'sp500 equal weight',
+            TSM: 'taiwan chips foundry', ASML: 'europa holanda chips', ARM: 'chips diseno', NVDA: 'chips ia gpu', AMD: 'chips ia gpu', MU: 'memoria chips ia',
+            SNDK: 'memoria almacenamiento chips', WDC: 'memoria almacenamiento',
+            PBR: 'brasil', VALE: 'brasil', ITUB: 'brasil', BBD: 'brasil', ABEV: 'brasil', BSBR: 'brasil', ERJ: 'brasil', GGB: 'brasil', SBS: 'brasil',
+            SUZ: 'brasil', EBR: 'brasil', STNE: 'brasil', XP: 'brasil', PAGS: 'brasil', NU: 'brasil latam', UGP: 'brasil', ARCO: 'latam', MELI: 'latam argentina',
+            YPF: 'argentina', GGAL: 'argentina', BMA: 'argentina', BBAR: 'argentina', SUPV: 'argentina', PAM: 'argentina', TGS: 'argentina', VIST: 'argentina',
+            NEM: 'oro', AEM: 'oro', KGC: 'oro', GFI: 'oro', HMY: 'oro', HL: 'plata', CDE: 'plata', PAAS: 'plata', SCCO: 'cobre', FCX: 'cobre', LAC: 'litio', MP: 'tierras raras', CCJ: 'uranio', NXE: 'uranio',
+            EDN: 'argentina', LOMA: 'argentina', CEPU: 'argentina', TEN: 'argentina', AGRO: 'argentina', BIOX: 'argentina'
+        };
+        const _norm = x => String(x ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        function renderBuscadorSubclase(data) {
+            buscadorSubclaseData = data;
+            const out = document.getElementById('buscador-subclase-resultado');
+            const chipsEl = document.getElementById('buscador-subclase-chips');
+            if (!out) return;
+            const ranking = data?.ranking ?? [];
+            const inp = document.getElementById('buscador-subclase');
+            // chips con las subcategorías existentes (para no tener que adivinar el nombre)
+            if (chipsEl && !chipsEl.dataset.listo && ranking.length) {
+                const subs = [...new Set(ranking.map(r => r?.Subcategoria).filter(Boolean))].sort();
+                chipsEl.innerHTML = subs.map(sb => `<button class="px-2 py-0.5 border border-surface rounded-sm text-[10px] text-gray-400 hover:text-accent hover:border-accent" onclick="document.getElementById('buscador-subclase').value='${sb.replace(/'/g, "\\'")}'; renderBuscadorSubclase(buscadorSubclaseData)">${sb}</button>`).join('');
+                chipsEl.dataset.listo = '1';
+            }
+            const palabras = _norm(inp?.value).split(/\s+/).filter(Boolean);
+            if (!palabras.length) { out.innerHTML = '<span class="text-gray-500">Escribí algo o tocá una subcategoría de arriba.</span>'; return; }
+            const hits = ranking.filter(r => {
+                const h = _norm([r?.Ticker, r?.Sector, r?.Subcategoria, TEMAS_EXTRA[r?.Ticker]].join(' '));
+                return palabras.every(w => h.includes(w));
+            }).sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0));
+            if (!hits.length) { out.innerHTML = '<span class="text-gray-500">Sin coincidencias en el universo.</span>'; return; }
+            out.innerHTML = `<div class="text-gray-500 mb-2">${hits.length} ticker(s) · ordenados por Fuerza Relativa</div>` + hits.map(r => {
+                const rs = r?.RS_Score, rad = r?.Radar_Score, rsi = r?.RSI;
+                const px = typeof r?.Precio === 'number' ? r.Precio.toFixed(2) : '—';
+                return `<div class="flex flex-wrap items-center gap-x-4 py-1 border-b border-base/50">
+                    <span class="w-16 font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${r.Ticker}')">${r.Ticker}</span>
+                    <span class="w-20 text-right text-gray-400">${px}</span>
+                    <span class="text-gray-500">RS <span class="text-white">${rs != null ? rs.toFixed(0) : '—'}</span></span>
+                    <span class="text-gray-500">RADAR <span class="text-accent">${rad != null ? rad.toFixed(0) : '—'}</span></span>
+                    <span class="text-gray-500">RSI <span class="text-gray-300">${rsi != null ? rsi.toFixed(0) : '—'}</span></span>
+                    <span class="text-[10px] uppercase text-gray-600 truncate">${sectorSubHtml(r)}</span>
+                </div>`;
+            }).join('');
         }
 
         // Sector + subcategoría chiquita al lado del ticker (a pedido de
