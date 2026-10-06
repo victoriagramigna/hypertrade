@@ -1687,6 +1687,65 @@
             return `<button type="button" onclick="toggleSemillero('${ticker}')" class="text-accent text-lg leading-none ml-2" title="${on ? 'Sacar de El Semillero' : 'Agregar a El Semillero (tus favoritos)'}">${on ? '★' : '☆'}</button>`;
         }
 
+        // Por qué seguimos cada activo y qué significa cada dato según ese objetivo (texto fijo, informativo).
+        const SEMILLERO_OBJETIVO = {
+            HIMS: ['analista', 'Niveles de un analista (@abdulsalam1428): ruptura de un triángulo y zona de soporte.'],
+            GOOGL: ['analista', 'Niveles de un analista (@abdulsalam1428): ruptura de un triángulo simétrico.'],
+            NOW: ['analista', 'Niveles de un analista (@abdulsalam1428): ruptura de una bandera alcista y soportes.'],
+            PATH: ['analista', 'Niveles de un analista (@abdulsalam1428): zona de oferta y media de 200.'],
+            TSLA: ['cartera', 'Posición tuya en Mi Cartera: zona de resistencia 375 a 394 y tu stop.'],
+            SHOP: ['cartera', 'Posición tuya en Mi Cartera: seguimos tu stop y los niveles cercanos.'],
+            AMZN: ['cartera', 'Posición tuya en Mi Cartera: seguimos tu stop y los niveles cercanos.'],
+            IBIT: ['tendencia', 'Miramos si sostiene su media de 50 ruedas, que junto a la de 200 mantiene el golden cross.'],
+            UGP: ['entrada', 'Subió hasta una zona de oferta: miramos si la supera o si retrocede hacia sus apoyos.'],
+            HPQ: ['entrada', 'Seguimiento de posible entrada: esperamos un retroceso a una zona de apoyo.'],
+            TEM: ['entrada', 'Seguimiento de posible entrada: cayó con fuerza (-10,9% el 6/10) tras subir mucho; miramos dónde encuentra apoyo.'],
+            CAT: ['entrada', 'Seguimiento de posible entrada: rompió hacia arriba sus medias; miramos si retrocede a un apoyo.'],
+            MU: ['entrada', 'Seguimiento de posible entrada, a partir de un tuit de Warren Bife (opinión de un tercero, no una señal).'],
+        };
+        const SEMILLERO_SIGNIFICADOS = {
+            entrada: [
+                ['Las 5 condiciones (✓/✗)', 'Es el checklist de entrada: con las 5 en ✓, el activo está en un lugar razonable para mirar una posible entrada.'],
+                ['Zona de demanda', 'Rango donde ya hubo compradores fuertes: es el apoyo al que esperaríamos que retroceda el precio.'],
+                ['Nivel más cercano abajo', 'Posible lugar de retroceso o apoyo.'],
+                ['Zona de oferta / nivel más cercano arriba', 'Techo cercano: ahí podrían aparecer vendedores. Cuanto más cerca está, menos margen hay hasta él.'],
+                ['Volumen', 'Un retroceso con poco volumen (menos de 1x) es más sano; con más de 1,5x hay ventas fuertes.'],
+                ['Dónde falla la idea', 'Un cierre diario bajo el piso de la zona de demanda: la idea de apoyo se invalida.'],
+            ],
+            cartera: [
+                ['Las 5 condiciones (✓/✗)', 'Solo informativas: muestran si el activo sigue fuerte. No son una orden.'],
+                ['Tu stop (nivel cargado a mano)', 'El precio donde decidiste que la idea deja de valer. Se avisa por Telegram al tocarlo.'],
+                ['Zona de demanda', 'Un posible apoyo antes de llegar a tu stop.'],
+                ['Zona de oferta / nivel más cercano arriba', 'Techo cercano o posible objetivo parcial: ahí podrían aparecer vendedores.'],
+                ['Volumen', 'Una caída con más de 1,5x es más preocupante que una con poco volumen.'],
+            ],
+            analista: [
+                ['Nivel cargado a mano arriba', 'El precio que el analista pide superar y sostener para confirmar su escenario.'],
+                ['Nivel cargado a mano abajo', 'El soporte: si lo pierde con un cierre, el escenario del analista se debilita.'],
+                ['Las 5 condiciones y las zonas', 'Informativas: muestran si el activo está fuerte y dónde hay apoyos y techos cercanos.'],
+                ['Volumen', 'Una ruptura con más de 1,5x es más confiable que una con poco volumen.'],
+            ],
+            tendencia: [
+                ['Media de 50 ruedas', 'Mientras el precio la sostenga, la tendencia sigue sana; si la pierde, la tendencia se debilita.'],
+                ['Las 5 condiciones y las zonas', 'Informativas: muestran si el activo está fuerte y dónde hay apoyos y techos cercanos.'],
+                ['Volumen', 'Una caída con más de 1,5x es más preocupante que una con poco volumen.'],
+            ],
+            favorito: [
+                ['Las 5 condiciones (✓/✗)', 'Muestran qué le falta al activo para estar en zona de interés.'],
+                ['Zonas y niveles', 'Apoyos (abajo) y techos (arriba) cercanos, con su distancia al precio.'],
+                ['Volumen', 'Menos de 1x es poco interés; más de 1,5x es un movimiento con fuerza.'],
+            ],
+        };
+        function semilleroObjetivoHtml(t) {
+            const [tipo, porque] = SEMILLERO_OBJETIVO[t] ?? ['favorito', 'Agregado por vos a tu lista de favoritos.'];
+            const filas = (SEMILLERO_SIGNIFICADOS[tipo] ?? []).map(([a, b]) => `<li><span class="text-gray-300">${a}:</span> ${b}</li>`).join('');
+            return `<div class="font-mono text-[10px] mt-2 pt-2 border-t border-gray-800 leading-relaxed">
+                <div><span class="text-accent font-bold">Por qué lo seguimos:</span> <span class="text-gray-300">${porque}</span></div>
+                <div class="text-gray-400 font-bold mt-1">Qué significa cada dato, para este objetivo</div>
+                <ul class="list-disc pl-4 text-gray-500">${filas}</ul>
+            </div>`;
+        }
+
         function renderSemillero(data) {
             const cont = document.getElementById('semillero-container');
             const countEl = document.getElementById('semillero-count');
@@ -1757,6 +1816,7 @@
                         <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
                         <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">${zonaTxt}<br>${ofeTxt}</div>
                         ${nivelesBloque}
+                        ${semilleroObjetivoHtml(t)}
                     </div>`;
             }).join('');
         }
