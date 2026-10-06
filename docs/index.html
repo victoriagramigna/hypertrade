@@ -273,6 +273,45 @@
             <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
 
+        <!-- El Semillero: favoritos de Victoria (se guardan en este navegador). Informativo. -->
+        <section class="mb-6" id="semillero-section">
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">⭐ El Semillero <span id="semillero-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Tu lista de activos favoritos para seguir de cerca, mientras "crecen" hasta un buen lugar de entrada.
+                Se marcan con la <span class="text-accent">☆</span> de cualquier tarjeta de Zonas de interés o escribiendo el ticker acá abajo.
+                Cada uno muestra <span class="text-white">cuáles de las 5 condiciones cumple hoy (✓) y cuáles le faltan (✗)</span>, así ves qué le falta para entrar en zona de interés.
+                Se guarda <span class="text-white">solo en este dispositivo y navegador</span> (en el celular y en la computadora son listas separadas).
+                No avisa por Telegram: es una lista para mirar, no una señal de compra.
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+                <input type="text" id="semillero-input" class="bg-surface border border-gray-700 text-white font-mono text-sm px-3 py-1.5 rounded-sm uppercase w-40 focus:outline-none focus:border-accent" placeholder="Ticker">
+                <button id="semillero-add" class="bg-surface border border-accent text-accent font-mono text-xs px-3 py-1.5 rounded-sm">Agregar</button>
+                <span id="semillero-msg" class="font-mono text-[10px] text-gray-500"></span>
+            </div>
+            <div id="semillero-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
+            <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
+        </section>
+
+        <!-- Zonas de interés (zonas_smc.py): oferta/demanda + FVG. Informativo, NO es señal de compra. -->
+        <section class="mb-6" id="zonas-interes-section">
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-pos uppercase text-sm font-bold tracking-widest">📍 Zonas de interés <span id="zonas-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Activos que hoy están en una <span class="text-white">zona de demanda</span> (un lugar donde el precio ya arrancó fuerte hacia arriba y
+                donde podrían volver compradores) <span class="text-white">y</span> cumplen 4 filtros más:
+                precio sobre sus medias de 50 y 200 ruedas, fuerza relativa (RS) de 70 o más, volumen bajo (menos de 1x su promedio) y RSI menor a 70.
+                Es un <span class="text-white">mapa de lugares para mirar, no una señal de compra</span>: cada tarjeta dice dónde la idea deja de valer.
+                Se actualiza con velas cerradas; una zona que deja de cumplir pasa a <span class="text-gray-400">"Ya no está activa"</span> y se muestra 7 días con el motivo.
+                Guía completa: <a class="underline text-accent" href="https://claude.ai/artifact/Aia6RJvzhtuNAj6Kb3WUT6" target="_blank" rel="noopener">Cómo leer una zona de entrada</a>.
+            </div>
+            <div id="zonas-contexto" class="font-mono text-[11px] mb-3"></div>
+            <div id="zonas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
+            <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
+        </section>
+
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
             <section>
                 <!-- Cabecera pegajosa (sticky): buscador + contador + orden quedan
@@ -1544,6 +1583,187 @@
             }).join('');
         }
 
+        // ============ EL SEMILLERO (favoritos, guardados en este navegador) ============
+        const SEMILLERO_KEY = 'el_semillero';
+        function semilleroLeer() {
+            try { const a = JSON.parse(localStorage.getItem(SEMILLERO_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+            catch (e) { return []; }
+        }
+        function semilleroGuardar(lista) {
+            try { localStorage.setItem(SEMILLERO_KEY, JSON.stringify(lista)); } catch (e) {}
+        }
+        function toggleSemillero(ticker) {
+            let l = semilleroLeer();
+            l = l.includes(ticker) ? l.filter(t => t !== ticker) : [...l, ticker];
+            semilleroGuardar(l);
+            renderSemillero(currentRadarData);
+            renderZonasInteres(currentRadarData);
+        }
+        function agregarSemillero() {
+            const inp = document.getElementById('semillero-input');
+            const msg = document.getElementById('semillero-msg');
+            const t = (inp.value || '').trim().toUpperCase();
+            if (!t) return;
+            const existe = (currentRadarData?.ranking ?? []).some(r => r.Ticker === t);
+            if (!existe) { msg.textContent = `${t} no está en el universo del radar.`; return; }
+            if (semilleroLeer().includes(t)) { msg.textContent = `${t} ya está en El Semillero.`; return; }
+            semilleroGuardar([...semilleroLeer(), t]);
+            inp.value = ''; msg.textContent = `${t} agregado.`;
+            renderSemillero(currentRadarData);
+            renderZonasInteres(currentRadarData);
+        }
+        function estrellaSemillero(ticker) {
+            const on = semilleroLeer().includes(ticker);
+            return `<button type="button" onclick="toggleSemillero('${ticker}')" class="text-accent text-lg leading-none ml-2" title="${on ? 'Sacar de El Semillero' : 'Agregar a El Semillero (tus favoritos)'}">${on ? '★' : '☆'}</button>`;
+        }
+
+        function renderSemillero(data) {
+            const cont = document.getElementById('semillero-container');
+            const countEl = document.getElementById('semillero-count');
+            if (!cont) return;
+            const lista = semilleroLeer();
+            countEl.textContent = `(${lista.length})`;
+            if (lista.length === 0) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay favoritos. Tocá la ☆ de una tarjeta o escribí un ticker arriba.</div>';
+                return;
+            }
+            const ranking = Object.fromEntries((data?.ranking ?? []).map(r => [r.Ticker, r]));
+            const zonas = Object.fromEntries((data?.zonas ?? []).map(z => [z.Ticker, z]));
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+            const etiquetas = {
+                toca_demanda: 'Toca una zona de demanda',
+                sobre_sma50_y_sma200: 'Sobre sus medias de 50 y 200',
+                rs_alto: 'Fuerza relativa (RS) de 70 o más',
+                volumen_bajo: 'Volumen menor a 1x su promedio',
+                rsi_no_sobrecomprado: 'RSI menor a 70',
+            };
+            cont.innerHTML = lista.map(t => {
+                const r = ranking[t], z = zonas[t];
+                if (!r) return `<div class="bg-[#151b2b] border-l-4 border-gray-600 p-3 rounded-r-sm font-mono text-xs text-gray-500">${t} -- sin datos en esta corrida ${estrellaSemillero(t)}</div>`;
+                const cond = z?.Condiciones ?? {};
+                const claves = Object.keys(etiquetas);
+                const cumple = claves.filter(k => cond[k]).length;
+                const chips = claves.map(k => `<div class="${cond[k] ? 'text-pos' : 'text-gray-500'}">${cond[k] ? '✓' : '✗'} ${etiquetas[k]}</div>`).join('');
+                const activa = z?.Estado_Zona === 'activa';
+                const estado = activa
+                    ? '<span class="text-pos font-bold">EN ZONA DE INTERÉS AHORA</span>'
+                    : (z?.Estado_Zona === 'inactiva' ? '<span class="text-gray-400 font-bold">Estuvo en zona de interés y ya no lo está</span>'
+                        : `<span class="text-gray-400">Cumple ${cumple} de 5 condiciones</span>`);
+                const dem = z?.Zona_Demanda, ofe = z?.Zona_Oferta;
+                const zonaTxt = dem
+                    ? `Zona de demanda más cercana: <span class="text-white">${f(dem.piso)} a ${f(dem.techo)}</span> (${z['Dist_Demanda_%'] === 0 ? 'el precio está dentro' : f(z['Dist_Demanda_%'], 1) + '% por debajo del precio'}).`
+                    : 'Sin zona de demanda marcada por debajo.';
+                const ofeTxt = ofe
+                    ? `Zona de oferta más cercana: <span class="text-white">${f(ofe.piso)} a ${f(ofe.techo)}</span> (${z['Dist_Oferta_%'] === 0 ? 'el precio está dentro' : f(z['Dist_Oferta_%'], 1) + '% por encima'}).`
+                    : 'Sin zona de oferta marcada por encima.';
+                return `
+                    <div class="bg-[#151b2b] border-l-4 ${activa ? 'border-pos' : 'border-accent'} p-3 rounded-r-sm">
+                        <div class="flex justify-between items-start">
+                            <span class="text-lg font-bold text-white">${logoInline(t, 22)}${t}${nombreChico(t)}</span>
+                            <span class="flex items-center"><span class="font-mono text-[10px] text-gray-500 uppercase">${r.Sector ?? '—'}</span>${estrellaSemillero(t)}</span>
+                        </div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-0.5">Precio <span class="text-white">${f(r.Precio)}</span> · RS ${f(r.RS_Score, 0)} · RSI ${f(r.RSI, 1)} · Vol. ${f(r.Vol_rel)}x</div>
+                        <div class="font-mono text-[10px] mt-1">${estado}</div>
+                        <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">${zonaTxt}<br>${ofeTxt}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        // ============ ZONAS DE INTERÉS (ver zonas_smc.py) ============
+        // Lee data.zonas (un punto por ticker). Informativo: no es señal de compra.
+        function renderZonasInteres(data) {
+            const cont = document.getElementById('zonas-container');
+            const countEl = document.getElementById('zonas-count');
+            const ctxEl = document.getElementById('zonas-contexto');
+            if (!cont) return;
+            const puntos = (data?.zonas ?? []).filter(z => z?.Estado_Zona === 'activa' || z?.Estado_Zona === 'inactiva');
+            const ranking = Object.fromEntries((data?.ranking ?? []).map(r => [r.Ticker, r]));
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+
+            const reg = data?.regimen_score;
+            if (reg && reg.score != null) {
+                const col = REGIMEN_COLORES[colorRegimen(reg.score)];
+                ctxEl.innerHTML = `<span class="text-gray-500">Contexto del mercado hoy:</span> <span class="font-bold" style="color:${col}">${reg.score}/100 · ${reg.banda ?? ''}</span>
+                    <span class="text-gray-500">-- cuanto más alto, mejor acompaña el mercado en general a cualquier idea de entrada (detalle en Inicio).</span>`;
+            } else {
+                ctxEl.innerHTML = '';
+            }
+
+            const activas = puntos.filter(z => z.Estado_Zona === 'activa')
+                .sort((a, b) => (ranking[b.Ticker]?.RS_Score ?? 0) - (ranking[a.Ticker]?.RS_Score ?? 0));
+            const inactivas = puntos.filter(z => z.Estado_Zona === 'inactiva')
+                .sort((a, b) => String(b.Salida_Zona?.fecha ?? '').localeCompare(String(a.Salida_Zona?.fecha ?? '')));
+            countEl.textContent = `(${activas.length} activas · ${inactivas.length} que dejaron de estarlo)`;
+
+            if (puntos.length === 0) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Ningún activo cumple hoy todas las condiciones a la vez. Es normal: el filtro es exigente a propósito. Los avisos se registran con la vela cerrada (después de las 17:30 ART).</div>';
+                return;
+            }
+
+            const fechaCorta = iso => { try { const [y, m, d] = String(iso).slice(0, 10).split('-'); return `${d}/${m}`; } catch (e) { return ''; } };
+
+            const tarjeta = (z, activa) => {
+                const r = ranking[z.Ticker] ?? {};
+                const dem = z.Zona_Demanda, ofe = z.Zona_Oferta;
+                const precio = r.Precio;
+                const distPiso = (dem && precio) ? (dem.piso - precio) / precio * 100 : null;
+                const distOfe = (ofe && precio) ? (ofe.piso - precio) / precio * 100 : null;
+                const parcial = z.Dato_Parcial ? '<span class="text-accent" title="La vela de hoy todavía no cerró: el estado se confirma con el cierre.">· dato del día sin cerrar</span>' : '';
+                let cuerpo;
+                if (activa) {
+                    const ent = z.Entrada_Zona?.fecha ? `Activa desde el ${fechaCorta(z.Entrada_Zona.fecha)}. ` : '';
+                    cuerpo = `
+                        <div class="font-mono text-[10px] text-gray-400 mt-2 leading-relaxed">
+                            ${ent}Cumple las 5 condiciones: toca una zona de demanda, está sobre sus medias de 50 y 200, RS ${f(r.RS_Score, 0)} (mín. 70),
+                            volumen ${f(r.Vol_rel)}x (menos de 1x) y RSI ${f(r.RSI, 1)} (menos de 70).
+                        </div>
+                        <div class="grid grid-cols-1 gap-1 mt-2 font-mono text-[10px]">
+                            <div><span class="text-gray-500">Zona de demanda (${dem?.tipo ?? '—'}):</span> <span class="text-white">${f(dem?.piso)} a ${f(dem?.techo)}</span>
+                                <span class="text-gray-600">-- rango de precios donde ya hubo compradores fuertes${dem?.desde ? ' (desde ' + fechaCorta(dem.desde) + ')' : ''}.</span></div>
+                            <div><span class="text-gray-500">Dónde falla la idea:</span> <span class="text-neg">un cierre diario bajo ${f(dem?.piso)}</span>
+                                <span class="text-gray-600">(${distPiso != null ? f(Math.abs(distPiso), 1) + '% abajo del precio' : ''}). Una mecha que vuelve a subir no cuenta.</span></div>
+                            <div><span class="text-gray-500">Techo más cercano (zona de oferta):</span>
+                                ${ofe ? `<span class="text-white">${f(ofe.piso)} a ${f(ofe.techo)}</span> <span class="text-gray-600">-- ${distOfe != null && distOfe > 0 ? f(distOfe, 1) + '% arriba del precio; ahí podrían aparecer vendedores' : 'el precio ya está dentro de esa zona'}.</span>`
+                                      : '<span class="text-gray-400">sin zona de oferta marcada por encima</span> <span class="text-gray-600">-- no hay un techo claro en el gráfico.</span>'}</div>
+                        </div>`;
+                } else {
+                    const sal = z.Salida_Zona ?? {};
+                    const inval = sal.motivo === 'invalidada';
+                    const razones = (sal.razones ?? []).map(t => `<li>${t}</li>`).join('');
+                    cuerpo = `
+                        <div class="font-mono text-[10px] mt-2 ${inval ? 'text-neg' : 'text-gray-400'} font-bold">
+                            Ya no está activa desde el ${fechaCorta(sal.fecha)}${inval ? ' -- la idea se invalidó' : ''}
+                        </div>
+                        <ul class="font-mono text-[10px] text-gray-400 mt-1 list-disc pl-4 leading-relaxed">${razones}</ul>
+                        <div class="font-mono text-[10px] text-gray-600 mt-1">
+                            ${z.Entrada_Zona?.fecha ? 'Había entrado el ' + fechaCorta(z.Entrada_Zona.fecha) + ' con el precio en ' + f(z.Entrada_Zona.precio) + '. ' : ''}
+                            ${inval ? '' : 'Que ya no cumpla no siempre es malo: si el precio subió y se alejó de la zona, la idea pudo funcionar. Mirá el motivo.'}
+                        </div>`;
+                }
+                return `
+                    <div class="bg-[#151b2b] border-l-4 ${activa ? 'border-pos' : 'border-gray-600 opacity-80'} p-3 rounded-r-sm">
+                        <div class="flex justify-between items-start">
+                            <span class="text-lg font-bold text-white">${logoInline(z.Ticker, 22)}${z.Ticker}${nombreChico(z.Ticker)}</span>
+                            <span class="flex items-center"><span class="font-mono text-[10px] text-gray-500 uppercase">${z.Sector ?? '—'}</span>${estrellaSemillero(z.Ticker)}</span>
+                        </div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-0.5">
+                            <span class="${activa ? 'text-pos' : 'text-gray-400'} font-bold">${activa ? 'ACTIVA' : 'YA NO ESTÁ ACTIVA'}</span>
+                            · Precio <span class="text-white">${f(precio)}</span> ${parcial}
+                        </div>
+                        ${cuerpo}
+                    </div>`;
+            };
+
+            cont.innerHTML = activas.map(z => tarjeta(z, true)).join('') + inactivas.map(z => tarjeta(z, false)).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const b = document.getElementById('semillero-add'), i = document.getElementById('semillero-input');
+            if (b) b.addEventListener('click', agregarSemillero);
+            if (i) i.addEventListener('keydown', e => { if (e.key === 'Enter') agregarSemillero(); });
+        });
+
         function renderDashboard(data) {
             // Timestamp y 24hs format
             const fechaGenerado = data?.generado_utc;
@@ -1645,6 +1865,8 @@
             currentAlertasCompletas = data?.alertas ?? [];
             filtrarAlertas();
             renderConfluencia(data);
+            try { renderSemillero(data); } catch (e) { console.warn("Semillero:", e); }
+            try { renderZonasInteres(data); } catch (e) { console.warn("Zonas de interés:", e); }
 
             const rankingArray = data?.ranking ?? [];
 
