@@ -237,7 +237,8 @@ TICKERS = {
     "DD": "Materiales",     # DuPont de Nemours
     "STLA": "Automotriz",   # Stellantis (Chrysler/Fiat/Peugeot)
     "FCX": "Materiales",    # Freeport-McMoRan, cobre
-    "BNG": "Agro",          # Bunge, agronegocios
+    "BG": "Agro",           # Bunge, agronegocios -- antes figuraba como "BNG" (código de BYMA):
+                             # en Yahoo el ticker real es "BG", por eso nunca traía datos
     "HIMS": "Salud",        # Hims & Hers Health
     "SPY": "ETF",           # SPDR S&P 500 -- ya tenía ratio cargado en
                              # RATIOS_CEDEAR pero faltaba acá en TICKERS
@@ -252,6 +253,33 @@ TICKERS = {
     "XLB": "ETF",           # Materials Select Sector SPDR
     "XLC": "ETF",           # Communication Services Select Sector SPDR
     "XLRE": "ETF",          # Real Estate Select Sector SPDR
+    # --- Pedido de Victoria (6/10): activos de Brasil tras la 1ra vuelta electoral ---
+    "ITUB": "Bancos",       # Itaú Unibanco -- CEDEAR 1:1 (PDF BYMA 3/2/2026)
+    "ABEV": "Consumo",      # Ambev (cervezas/bebidas) -- el PDF de BYMA lo muestra "1:3": ratio sin confirmar
+    # --- Tanda 6/10 (pedido de Victoria: los relevantes del listado BYMA 3/2/2026, sin lastre) ---
+    "BSBR": "Bancos",         # Banco Santander Brasil
+    "ERJ": "Aeroespacial",    # Embraer, aviones (Brasil)
+    "GGB": "Materiales",      # Gerdau, acero (Brasil) -- BYMA 1:4, ratio sin confirmar
+    "SBS": "Energía",         # Sabesp, agua y saneamiento (Brasil) -- BYMA 1:2, ratio sin confirmar
+    "SUZ": "Materiales",      # Suzano, celulosa y papel (Brasil)
+    "EBR": "Energía",         # Eletrobras, electricidad (Brasil) -- BYMA 1:4, ratio sin confirmar
+    "STNE": "Fintech",        # StoneCo, pagos (Brasil)
+    "XP": "Fintech",          # XP Inc, bróker/inversiones (Brasil)
+    "ARCO": "Consumo",        # Arcos Dorados (McDonald's LatAm) -- BYMA 1:2, ratio sin confirmar
+    "FMX": "Consumo",         # Femsa (México): Coca-Cola Femsa, OXXO
+    "AMX": "Telecomunicaciones",# América Móvil (México)
+    "KGC": "Materiales",      # Kinross Gold
+    "GFI": "Materiales",      # Gold Fields
+    "BK": "Bancos",           # BNY Mellon
+    "TRV": "Fintech",         # Travelers (BYMA lo llama TRVV)
+    "XPEV": "Automotriz",     # XPeng, autos eléctricos (China)
+    "ILF": "ETF",             # iShares Latin America 40
+    "GDX": "ETF",             # VanEck Gold Miners
+    "COPX": "ETF",            # Global X Copper Miners
+    "FXI": "ETF",             # iShares China Large-Cap
+    "IEMG": "ETF",            # iShares Core MSCI Emerging Markets
+    "ACWI": "ETF",            # iShares MSCI ACWI (mundo)
+    "EWJ": "ETF",             # iShares MSCI Japan
 }
 
 # --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
@@ -303,6 +331,23 @@ SUBCATEGORIAS = {
     "NTES": "Internet/Medios",
     "NBIS": "Minería cripto/Data center",
 
+    # --- Tanda 6/10 (Brasil/LatAm y otros relevantes) ---
+    "BSBR": "Banca LatAm",
+    "ERJ": "Aviación/Defensa",
+    "GGB": "Químicos/Otros",
+    "SBS": "Utilities/Eléctricas",
+    "SUZ": "Químicos/Otros",
+    "EBR": "Utilities/Eléctricas",
+    "STNE": "Banca digital/Neobancos",
+    "XP": "Cripto/Bróker",
+    "ARCO": "Consumo Discrecional",
+    "FMX": "Consumo Básico",
+    "KGC": "Minería/Metales",
+    "GFI": "Minería/Metales",
+    "BK": "Banca EE.UU.",
+    "TRV": "Seguros",
+    "XPEV": "Eléctricos/Lujo",
+
     # --- Consumo ---
     # Consumo Básico (defensivo -- la gente lo sigue comprando en cualquier contexto)
     "CL": "Consumo Básico", "COST": "Consumo Básico", "DEO": "Consumo Básico",
@@ -321,7 +366,7 @@ SUBCATEGORIAS = {
     "TGT": "Consumo Discrecional", "TJX": "Consumo Discrecional", "TRIP": "Consumo Discrecional",
     "UBER": "Consumo Discrecional", "URBN": "Consumo Discrecional",
     "ANF": "Consumo Discrecional", "TCOM": "Consumo Discrecional",
-    "SYY": "Consumo Básico",
+    "SYY": "Consumo Básico", "ABEV": "Consumo Básico",
 
     # --- Energía ---
     # Petróleo y Gas
@@ -377,7 +422,7 @@ SUBCATEGORIAS = {
     "BAC": "Banca EE.UU.", "C": "Banca EE.UU.", "GS": "Banca EE.UU.", "JPM": "Banca EE.UU.",
     "MS": "Banca EE.UU.", "USB": "Banca EE.UU.", "WFC": "Banca EE.UU.", "SCHW": "Banca EE.UU.",
     "BBAR": "Banca LatAm", "BMA": "Banca LatAm", "GGAL": "Banca LatAm", "SUPV": "Banca LatAm",
-    "BBD": "Banca LatAm",
+    "BBD": "Banca LatAm", "ITUB": "Banca LatAm",
     "BBVA": "Banca Europa", "BCS": "Banca Europa", "HSBC": "Banca Europa", "ING": "Banca Europa",
     "LYG": "Banca Europa", "SAN": "Banca Europa",
     "HDB": "Banca Asia", "IBN": "Banca Asia", "KB": "Banca Asia", "NMR": "Banca Asia",
@@ -541,9 +586,15 @@ RATIOS_CEDEAR = {
     # universo técnico igual, pero sin ratio hasta confirmar.
     "CSCO": 5, "ASML": 146, "ANET": 29, "CLS": 20, "SWKS": 21, "NTES": 14,
     "ANF": 1, "TCOM": 2, "SYY": 8, "SCHW": 13, "MMC": 16, "FISV": 11,
-    "NEE": 19, "DAL": 8, "FDX": 10, "DD": 5, "STLA": 5, "FCX": 3, "BNG": 5,
+    "NEE": 19, "DAL": 8, "FDX": 10, "DD": 5, "STLA": 5, "FCX": 3, "BG": 5,
     "HIMS": 4, "IVV": 692, "VEA": 10, "EFA": 18, "IBIT": 10, "SLV": 6,
     "USO": 15, "XLY": 43, "XLP": 16, "XLB": 18, "XLC": 19, "XLRE": 9,
+    # --- Brasil (6/10): ITUB 1:1 según PDF oficial de BYMA 3/2/2026. ABEV queda sin
+    # ratio: el PDF lo muestra "1:3" (formato fraccionario, igual que SAN) -- a confirmar.
+    "ITUB": 1,
+    # --- Tanda 6/10 (ratios del PDF oficial de BYMA 3/2/2026). Sin ratio, por formato
+    # fraccionario sin confirmar: ABEV (1:3), GGB (1:4), SBS (1:2), EBR (1:4), ARCO (1:2) ---
+    "BSBR": 1, "ERJ": 1, "SUZ": 1, "STNE": 3, "XP": 4, "FMX": 6, "AMX": 1, "KGC": 1, "GFI": 1, "BK": 2, "TRV": 6, "XPEV": 4, "ILF": 6, "GDX": 10, "COPX": 14, "FXI": 5, "IEMG": 12, "ACWI": 26, "EWJ": 14,
     # --- Ratios de ADR (no CEDEAR) para acciones argentinas que cotizan
     # directo en NYSE -- misma lógica de brecha, referencia distinta al
     # dólar CCL en vez del panel de CEDEARs de BYMA.
@@ -563,6 +614,8 @@ ALIAS_CEDEAR_DATA912 = {
     "BAC": "BA.C",   # Bank of America
     "NOK": "NOKA",   # Nokia
     "AGRO": "ADGO",  # Adecoagro
+    "BG": "BNG",     # Bunge (en Yahoo es BG; BYMA lo llama BNG)
+    "TRV": "TRVV",   # Travelers
 }
 
 # --- Umbral para marcar un CEDEAR como "caro" o "barato" respecto a su valor teórico ---
