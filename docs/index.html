@@ -283,11 +283,12 @@
                 Se marcan con la <span class="text-accent">☆</span> de cualquier tarjeta de Zonas de interés o escribiendo el ticker acá abajo.
                 Cada uno muestra <span class="text-white">cuáles de las 5 condiciones cumple hoy (✓) y cuáles le faltan (✗)</span>, así ves qué le falta para entrar en zona de interés.
                 Se guarda <span class="text-white">solo en este dispositivo y navegador</span> (en el celular y en la computadora son listas separadas).
-                No avisa por Telegram: es una lista para mirar, no una señal de compra.
+                También muestra los <span class=\"text-white\">niveles automáticos</span> más cercanos (medias, AVWAP y bordes de zonas, que se recalculan solos) y, si los hay, los <span class=\"text-white\">niveles cargados a mano</span> (de un analista o tus stops, con su fecha y un aviso si quedaron viejos). La lista es para mirar, no una señal de compra.
             </div>
             <div class="flex items-center gap-2 mb-3">
                 <input type="text" id="semillero-input" class="bg-surface border border-gray-700 text-white font-mono text-sm px-3 py-1.5 rounded-sm uppercase w-40 focus:outline-none focus:border-accent" placeholder="Ticker">
                 <button id="semillero-add" class="bg-surface border border-accent text-accent font-mono text-xs px-3 py-1.5 rounded-sm">Agregar</button>
+                <button id="semillero-cargar" class="bg-surface border border-gray-600 text-gray-300 font-mono text-xs px-3 py-1.5 rounded-sm" title="Suma de una vez los activos que venimos siguiendo con niveles: HIMS, GOOGL, TSLA, NOW, PATH, SHOP, IBIT, UGP, AMZN, HPQ, TEM, CAT y MU. Los que ya estaban no se duplican.">Cargar mis 13 en seguimiento</button>
                 <span id="semillero-msg" class="font-mono text-[10px] text-gray-500"></span>
             </div>
             <div id="semillero-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
@@ -1583,6 +1584,65 @@
             }).join('');
         }
 
+        // Niveles de seguimiento (data/niveles_seguimiento.json): se muestran en El Semillero.
+        const NIVELES_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/niveles_seguimiento.json';
+        let nivelesSeg = null;
+        async function cargarNivelesSeg() {
+            try {
+                const r = await fetch(NIVELES_URL + '?t=' + Date.now());
+                if (!r.ok) return;
+                const j = await r.json();
+                nivelesSeg = Array.isArray(j?.niveles) ? j.niveles : [];
+                renderSemillero(currentRadarData);
+            } catch (e) { /* sin niveles: el Semillero se ve igual */ }
+        }
+        // Niveles automáticos: salen de los datos del radar (medias, AVWAP y bordes de zonas). Se recalculan en cada corrida.
+        function nivelesAutomaticos(r, z) {
+            const out = [];
+            const add = (v, origen) => { if (v != null && Number(v) > 0) out.push({ nivel: Number(v), origen }); };
+            add(r.BB_SMA20, 'media de 20 ruedas');
+            add(r.SMA50, 'media de 50 ruedas');
+            add(r.SMA200, 'media de 200 ruedas');
+            add(r.AVWAP_Ultimo_Gap, 'AVWAP del último gap');
+            add(r.AVWAP_52W_High, 'AVWAP del máximo de 52 semanas');
+            add(r.AVWAP_YTD, 'AVWAP del año');
+            const nombres = { 'FVG alcista': 'hueco alcista', 'FVG bajista': 'hueco bajista', 'OB demanda': 'zona de demanda', 'OB oferta': 'zona de oferta' };
+            (z?.Zonas_Activas ?? []).forEach(za => {
+                const nm = nombres[za.tipo] ?? za.tipo;
+                add(za.techo, `techo de ${nm} (${za.piso} a ${za.techo})`);
+                add(za.piso, `piso de ${nm} (${za.piso} a ${za.techo})`);
+            });
+            return out;
+        }
+        function autoLineaHtml(n, precio, rotulo, f) {
+            if (!n) return `<div class="text-gray-600">${rotulo}: sin referencia.</div>`;
+            const dist = Math.abs(n.nivel - precio) / precio * 100;
+            return `<div><span class="text-gray-500">${rotulo}:</span> <span class="text-white">${f(n.nivel)}</span> <span class="text-gray-400">(${f(dist, 1)}% ${n.nivel > precio ? 'arriba' : 'abajo'})</span> <span class="text-gray-600">-- ${n.origen}</span></div>`;
+        }
+
+        function nivelesDeTicker(t, precio) {
+            const todos = (nivelesSeg ?? []).filter(n => n.ticker === t && n.nivel);
+            const abajo = todos.filter(n => n.nivel <= precio).sort((a, b) => b.nivel - a.nivel);
+            const arriba = todos.filter(n => n.nivel > precio).sort((a, b) => a.nivel - b.nivel);
+            return { abajo, arriba, total: todos.length };
+        }
+        function nivelLineaHtml(n, precio, rotulo, f) {
+            if (!n) return `<div class="text-gray-600">${rotulo}: sin nivel marcado.</div>`;
+            const dist = Math.abs(n.nivel - precio) / precio * 100;
+            let dias = null;
+            if (n.fecha) { const d = new Date(n.fecha + 'T12:00:00'); if (!isNaN(d)) dias = Math.floor((Date.now() - d.getTime()) / 86400000); }
+            const marcas = [];
+            if (n.fecha) marcas.push(`<span class="text-gray-600">nivel del ${n.fecha.slice(8, 10)}/${n.fecha.slice(5, 7)}</span>`);
+            if (n.aprox) marcas.push('<span class="text-gray-500" title="Leído a ojo del gráfico: no es un número exacto.">aproximado</span>');
+            if (n.media_movil) marcas.push('<span class="text-gray-500" title="Es una media móvil o AVWAP: se mueve cada día. El número es el de la fecha indicada.">media móvil: se mueve</span>');
+            const avisos = [];
+            if (dias != null && dias > 7) avisos.push(`Nivel sin revisar hace ${dias} días: puede estar desactualizado.`);
+            if (dist > 15) avisos.push(`El precio está a ${f(dist, 0)}% de este nivel: puede que ya no sea relevante.`);
+            return `<div><span class="text-gray-500">${rotulo}:</span> <span class="text-white">${f(n.nivel)}</span> <span class="text-gray-400">(${f(dist, 1)}% ${n.nivel > precio ? 'arriba' : 'abajo'})</span>
+                <span class="text-gray-600">-- ${n.etiqueta ?? ''}</span> ${marcas.length ? '· ' + marcas.join(' · ') : ''}
+                ${avisos.map(a => `<div class="text-accent">⚠ ${a}</div>`).join('')}</div>`;
+        }
+
         // ============ EL SEMILLERO (favoritos, guardados en este navegador) ============
         const SEMILLERO_KEY = 'el_semillero';
         function semilleroLeer() {
@@ -1609,6 +1669,16 @@
             if (semilleroLeer().includes(t)) { msg.textContent = `${t} ya está en El Semillero.`; return; }
             semilleroGuardar([...semilleroLeer(), t]);
             inp.value = ''; msg.textContent = `${t} agregado.`;
+            renderSemillero(currentRadarData);
+            renderZonasInteres(currentRadarData);
+        }
+        const SEMILLERO_SEGUIMIENTO = ['HIMS','GOOGL','TSLA','NOW','PATH','SHOP','IBIT','UGP','AMZN','HPQ','TEM','CAT','MU'];
+        function cargarSeguimientoSemillero() {
+            const msg = document.getElementById('semillero-msg');
+            const actual = semilleroLeer();
+            const nuevos = SEMILLERO_SEGUIMIENTO.filter(t => !actual.includes(t));
+            semilleroGuardar([...actual, ...nuevos]);
+            msg.textContent = nuevos.length ? `Se agregaron ${nuevos.length}: ${nuevos.join(', ')}.` : 'Ya estaban todos.';
             renderSemillero(currentRadarData);
             renderZonasInteres(currentRadarData);
         }
@@ -1649,6 +1719,26 @@
                     ? '<span class="text-pos font-bold">EN ZONA DE INTERÉS AHORA</span>'
                     : (z?.Estado_Zona === 'inactiva' ? '<span class="text-gray-400 font-bold">Estuvo en zona de interés y ya no lo está</span>'
                         : `<span class="text-gray-400">Cumple ${cumple} de 5 condiciones</span>`);
+                const autos = nivelesAutomaticos(r, z);
+                const aArriba = autos.filter(n => n.nivel > r.Precio).sort((x, y) => x.nivel - y.nivel)[0];
+                const aAbajo = autos.filter(n => n.nivel <= r.Precio).sort((x, y) => y.nivel - x.nivel)[0];
+                let nivelesBloque = `<div class="font-mono text-[10px] mt-2 pt-2 border-t border-gray-800 leading-relaxed">
+                        <div class="text-gray-400 font-bold">Niveles automáticos <span class="font-normal text-gray-600">-- salen de las medias, los AVWAP y los bordes de zonas; se recalculan en cada corrida</span></div>
+                        ${autoLineaHtml(aArriba, r.Precio, 'Más cercano arriba', f)}
+                        ${autoLineaHtml(aAbajo, r.Precio, 'Más cercano abajo', f)}
+                    </div>`;
+                if (nivelesSeg) {
+                    const nv = nivelesDeTicker(t, r.Precio);
+                    if (nv.total > 0) {
+                        const mas = nv.total - (nv.abajo[0] ? 1 : 0) - (nv.arriba[0] ? 1 : 0);
+                        nivelesBloque += `<div class="font-mono text-[10px] mt-2 pt-2 border-t border-gray-800 leading-relaxed">
+                            <div class="text-gray-400 font-bold">Niveles cargados a mano <span class="font-normal text-gray-600">-- de un analista o tus stops; se avisan por Telegram al tocarse</span></div>
+                            ${nivelLineaHtml(nv.arriba[0], r.Precio, 'Más cercano arriba', f)}
+                            ${nivelLineaHtml(nv.abajo[0], r.Precio, 'Más cercano abajo', f)}
+                            ${mas > 0 ? `<div class="text-gray-600">Hay ${mas} nivel(es) más para este activo.</div>` : ''}
+                        </div>`;
+                    }
+                }
                 const dem = z?.Zona_Demanda, ofe = z?.Zona_Oferta;
                 const zonaTxt = dem
                     ? `Zona de demanda más cercana: <span class="text-white">${f(dem.piso)} a ${f(dem.techo)}</span> (${z['Dist_Demanda_%'] === 0 ? 'el precio está dentro' : f(z['Dist_Demanda_%'], 1) + '% por debajo del precio'}).`
@@ -1666,6 +1756,7 @@
                         <div class="font-mono text-[10px] mt-1">${estado}</div>
                         <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
                         <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">${zonaTxt}<br>${ofeTxt}</div>
+                        ${nivelesBloque}
                     </div>`;
             }).join('');
         }
@@ -1759,8 +1850,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            cargarNivelesSeg();
             const b = document.getElementById('semillero-add'), i = document.getElementById('semillero-input');
             if (b) b.addEventListener('click', agregarSemillero);
+            const c = document.getElementById('semillero-cargar');
+            if (c) c.addEventListener('click', cargarSeguimientoSemillero);
             if (i) i.addEventListener('keydown', e => { if (e.key === 'Enter') agregarSemillero(); });
         });
 
