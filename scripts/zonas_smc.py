@@ -33,6 +33,14 @@ Lógica (copiada del Pine Script; parámetros iguales):
   la elimina. Por eso toda zona activa es una zona que ningún cierre rompió.
   ATR = ATR(14) con suavizado RMA (igual que ta.atr de Pine).
 
+VELA DEL DÍA EN CURSO: el indicador de TradingView solo crea e invalida zonas
+con velas CERRADAS (barstate.isconfirmed). Por eso, si el radar corre con
+la rueda abierta, la vela de hoy (parcial) se EXCLUYE del cálculo de las
+zonas; solo se usa para ver si el precio de ahora toca una zona. Además,
+con la vela parcial el volumen relativo está subestimado, así que el aviso
+de "zona de interés" y su registro en la bitácora se hacen recién con la
+corrida posterior al cierre (dato completo).
+
 Diferencias conocidas respecto a TradingView (por eso hay que validar):
   * Yahoo y TradingView pueden diferir en algún dato; una vela distinta
     puede mover una zona.
@@ -51,6 +59,9 @@ import json
 import logging
 import os
 
+from datetime import time as _hora
+from zoneinfo import ZoneInfo
+
 import numpy as np
 
 log = logging.getLogger("radar.zonas_smc")
@@ -68,10 +79,24 @@ OB_DISP_ATR = 1.5
 OB_MIN_ATR = 0.1
 OB_MAX = 3
 
+# Cierre de la rueda de EEUU + margen para que Yahoo publique la vela final
+TZ_NY = ZoneInfo("America/New_York")
+HORA_DATO_COMPLETO_NY = _hora(16, 30)
+
 # --- Condiciones de la "zona de interés" (informativas) ---
 RS_MIN = 70
 VOL_REL_MAX = 1.0
 RSI_MAX = 70
+
+
+def vela_de_hoy_parcial(ohlc, ahora):
+    """True si la última vela es la de HOY (hora de Nueva York) y la rueda
+    todavía no cerró (dato parcial). Con el cierre ya publicado, False."""
+    if ohlc is None or len(ohlc) == 0:
+        return False
+    ahora_ny = ahora.astimezone(TZ_NY)
+    ultima_fecha = str(ohlc.index[-1])[:10]
+    return ultima_fecha == ahora_ny.date().isoformat() and ahora_ny.time() < HORA_DATO_COMPLETO_NY
 
 
 def _atr_rma(h, l, c, n):
@@ -234,7 +259,9 @@ def actualizar_zonas(df_rs, precios_ohlc, ahora):
         if ticker is None or ohlc is None or len(ohlc) < ATR_LEN + OB_LEFT + OB_RIGHT + 5:
             continue
         try:
-            zonas = calcular_zonas(ohlc)
+            parcial = vela_de_hoy_parcial(ohlc, ahora)
+            # Zonas con velas cerradas; el toque se evalúa con el precio de ahora
+            zonas = calcular_zonas(ohlc.iloc[:-1] if parcial else ohlc)
             res = resumen_ticker(zonas, ohlc)
         except Exception as e:
             log.warning(f"Zonas: falló el cálculo de {ticker} ({e}) -- se omite")
@@ -256,7 +283,7 @@ def actualizar_zonas(df_rs, precios_ohlc, ahora):
         interes = all(cond.values())
         estaba = bool(estado_previo.get(ticker, {}).get("en_interes"))
 
-        if interes and not estaba:
+        if not parcial and interes and not estaba:
             eventos.append({
                 "timestamp": hoy_iso, "ticker": ticker, "sector": fila.get("Sector"),
                 "evento": "zona_de_interes", "precio": precio,
@@ -264,14 +291,19 @@ def actualizar_zonas(df_rs, precios_ohlc, ahora):
                 "rsi": rsi, "sma50": sma50, "sma200": sma200,
                 "zona_oferta_arriba": res["zona_oferta_cercana"],
             })
-        estado_nuevo[ticker] = {"en_interes": interes, "fecha_actualizado": ahora.date().isoformat()}
+        # Con dato parcial no se toca el estado guardado (se decide con el cierre)
+        if parcial and ticker in estado_previo:
+            estado_nuevo[ticker] = estado_previo[ticker]
+        else:
+            estado_nuevo[ticker] = {"en_interes": interes and not parcial,
+                                    "fecha_actualizado": ahora.date().isoformat()}
 
         puntos.append({
             "Ticker": ticker, "Sector": fila.get("Sector"),
             "Zona_Demanda": res["zona_demanda_cercana"], "Dist_Demanda_%": res["dist_demanda_pct"],
             "Zona_Oferta": res["zona_oferta_cercana"], "Dist_Oferta_%": res["dist_oferta_pct"],
             "Toca_Demanda": res["toca_demanda"], "Toca_Oferta": res["toca_oferta"],
-            "En_Zona_De_Interes": interes, "Condiciones": cond,
+            "En_Zona_De_Interes": interes, "Dato_Parcial": bool(parcial), "Condiciones": cond,
             "Zonas_Activas": zonas,
         })
     return {"puntos": puntos, "eventos": eventos, "estado": estado_nuevo}
