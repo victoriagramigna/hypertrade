@@ -282,7 +282,7 @@
                 Tu lista de activos favoritos para seguir de cerca, mientras "crecen" hasta un buen lugar de entrada.
                 Se marcan con la <span class="text-accent">☆</span> de cualquier tarjeta de Zonas de interés o escribiendo el ticker acá abajo.
                 Cada uno muestra <span class="text-white">cuáles de las 5 condiciones cumple hoy (✓) y cuáles le faltan (✗)</span>, así ves qué le falta para entrar en zona de interés.
-                Se guarda <span class="text-white">solo en este dispositivo y navegador</span> (en el celular y en la computadora son listas separadas).
+                Tus favoritos y los niveles que ocultes <span class="text-white">se sincronizan entre tus dispositivos</span> a través de <code class="text-accent">data/semillero.json</code> en el repo, igual que Mi Cartera: hace falta tener el token de GitHub conectado en cada dispositivo (solapa Cartera, una sola vez). Sin token, la lista queda solo en ese navegador.
                 También muestra los <span class=\"text-white\">niveles automáticos</span> más cercanos (medias, AVWAP y bordes de zonas, que se recalculan solos) y, si los hay, los <span class=\"text-white\">niveles cargados a mano</span> (de un analista o tus stops, con su fecha y un aviso si quedaron viejos). La lista es para mirar, no una señal de compra.
             </div>
             <div class="flex items-center gap-2 mb-3">
@@ -291,6 +291,8 @@
                 <button id="semillero-cargar" class="bg-surface border border-gray-600 text-gray-300 font-mono text-xs px-3 py-1.5 rounded-sm" title="Suma de una vez los activos que venimos siguiendo con niveles: HIMS, GOOGL, TSLA, NOW, PATH, SHOP, IBIT, UGP, AMZN, HPQ, TEM, CAT y MU. Los que ya estaban no se duplican.">Cargar mis 13 en seguimiento</button>
                 <span id="semillero-msg" class="font-mono text-[10px] text-gray-500"></span>
             </div>
+            <div id="semillero-sync" class="font-mono text-[10px] text-gray-500 mb-2"></div>
+            <div id="semillero-limpieza" class="mb-3"></div>
             <div id="semillero-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
             <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
         </section>
@@ -1620,8 +1622,156 @@
             return `<div><span class="text-gray-500">${rotulo}:</span> <span class="text-white">${f(n.nivel)}</span> <span class="text-gray-400">(${f(dist, 1)}% ${n.nivel > precio ? 'arriba' : 'abajo'})</span> <span class="text-gray-600">-- ${n.origen}</span></div>`;
         }
 
+        // ---- Niveles ocultos (✕): se guardan solo en este navegador; no tocan el archivo de niveles ni el radar ----
+        const OCULTOS_KEY = 'semillero_niveles_ocultos';
+        let mostrarOcultos = false;
+        function nivelId(n) { return n.ticker + '|' + n.nivel + '|' + (n.direccion ?? ''); }
+        function ocultosLeer() {
+            try { const a = JSON.parse(localStorage.getItem(OCULTOS_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+        }
+        function ocultosGuardar(l, sync = true) {
+            try { localStorage.setItem(OCULTOS_KEY, JSON.stringify(l)); } catch (e) {}
+            if (sync) semilleroSincronizar();
+        }
+
+        // ---- Sincronización de favoritos y ocultos con data/semillero.json (misma mecánica y token que Mi Cartera) ----
+        const SEMILLERO_PATH = 'data/semillero.json';
+        function semilleroEstado(txt, malo) {
+            const el = document.getElementById('semillero-sync');
+            if (el) { el.textContent = txt; el.className = 'font-mono text-[10px] mb-2 ' + (malo ? 'text-neg' : 'text-gray-500'); }
+        }
+        let _semCola = Promise.resolve();
+        function semilleroSincronizar() { _semCola = _semCola.then(_semilleroSubir).catch(() => {}); return _semCola; }
+        async function _semilleroSubir() {
+            const token = cargarTokenGithub();
+            if (!token) { semilleroEstado('Sin token de GitHub en este dispositivo: tu lista queda solo acá. Conectalo en la solapa Cartera para tenerla en todos.'); return; }
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${SEMILLERO_PATH}`;
+                const h = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+                const contenido = JSON.stringify({ favoritos: semilleroLeer(), ocultos: ocultosLeer(), actualizado: new Date().toISOString() }, null, 2);
+                const b64 = btoa(unescape(encodeURIComponent(contenido)));
+                let put = null;
+                for (let i = 0; i < 3; i++) {
+                    let sha = null;
+                    const g = await fetch(`${apiUrl}?t=${Date.now()}`, { headers: h, cache: 'no-store' });
+                    if (g.ok) sha = (await g.json()).sha; else if (g.status !== 404) throw new Error('HTTP ' + g.status);
+                    const body = { message: `Sync Semillero desde dashboard (${new Date().toISOString()})`, content: b64 };
+                    if (sha) body.sha = sha;
+                    put = await fetch(apiUrl, { method: 'PUT', headers: { ...h, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                    if (put.status !== 409 && put.status !== 422) break;
+                    await new Promise(r => setTimeout(r, 700));
+                }
+                if (put.ok) semilleroEstado('Sincronizado con GitHub: ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }));
+                else semilleroEstado(`⚠ No se pudo sincronizar (HTTP ${put.status}). Revisá el token en la solapa Cartera.`, true);
+            } catch (e) { semilleroEstado('⚠ No se pudo sincronizar (sin conexión o token inválido).', true); }
+        }
+        // Al abrir la app: si el archivo existe en el repo, manda (así todos los dispositivos ven lo mismo).
+        // Si todavía no existe y este dispositivo ya tenía favoritos, los sube como punto de partida.
+        async function semilleroTraer() {
+            const token = cargarTokenGithub();
+            try {
+                let remoto = null, existe = false;
+                if (token) {
+                    const g = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${SEMILLERO_PATH}?t=${Date.now()}`,
+                        { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }, cache: 'no-store' });
+                    if (g.ok) { const info = await g.json(); remoto = JSON.parse(decodeURIComponent(escape(atob(info.content.replace(/\n/g, ''))))); existe = true; }
+                    else if (g.status !== 404) throw new Error('HTTP ' + g.status);
+                } else {
+                    const g = await fetch(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${SEMILLERO_PATH}?t=${Date.now()}`, { cache: 'no-store' });
+                    if (g.ok) { remoto = await g.json(); existe = true; }
+                }
+                if (existe && remoto) {
+                    semilleroGuardar(Array.isArray(remoto.favoritos) ? remoto.favoritos : [], false);
+                    ocultosGuardar(Array.isArray(remoto.ocultos) ? remoto.ocultos : [], false);
+                    semilleroEstado(token ? 'Sincronizado con GitHub (lista traída al abrir).' : 'Lista traída de GitHub. Para poder guardar cambios desde este dispositivo, conectá el token en la solapa Cartera.');
+                    renderSemillero(currentRadarData); renderZonasInteres(currentRadarData);
+                } else if (token && (semilleroLeer().length || ocultosLeer().length)) {
+                    await semilleroSincronizar();
+                } else if (!token) {
+                    semilleroEstado('Sin token de GitHub en este dispositivo: tu lista queda solo acá. Conectalo en la solapa Cartera para tenerla en todos.');
+                }
+            } catch (e) { semilleroEstado('No se pudo traer la lista de GitHub; se muestra la guardada en este dispositivo.', true); }
+        }
+        function ocultarNivel(id) { const l = ocultosLeer(); if (!l.includes(id)) ocultosGuardar([...l, id]); refrescarSemillero(); }
+        function mostrarNivel(id) { ocultosGuardar(ocultosLeer().filter(x => x !== id)); refrescarSemillero(); }
+        function toggleMostrarOcultos() { mostrarOcultos = !mostrarOcultos; refrescarSemillero(); }
+        function refrescarSemillero() { renderSemillero(currentRadarData); }
+
+        // Estado de cada nivel cargado a mano, según el precio actual del radar. Informativo: el cierre diario es lo que confirma.
+        function estadoNivel(n, precio) {
+            const dist = Math.abs(n.nivel - precio) / precio * 100;
+            const abajo = n.direccion === 'abajo';
+            if (abajo && precio < n.nivel) return { k: 'rota', txt: 'Se rompió: el precio está por debajo (falta confirmar con el cierre diario)', cls: 'text-neg', fin: true };
+            if (!abajo && precio >= n.nivel) return { k: 'cumplida', txt: 'Superado: el precio está por encima', cls: 'text-pos', fin: true };
+            if (dist > 15) return { k: 'vencida', txt: 'Lejos del precio: revisar si sigue valiendo', cls: 'text-gray-400', fin: true };
+            if (dist <= 2) return { k: 'duda', txt: abajo ? 'En duda: el precio está a 2% o menos del nivel' : 'Cerca: a 2% o menos de superarlo', cls: 'text-accent', fin: false };
+            return { k: 'ok', txt: 'Sigue en pie', cls: 'text-pos', fin: false };
+        }
+        function nivelesTerminados(ranking) {
+            return (nivelesSeg ?? []).filter(n => n.nivel && !ocultosLeer().includes(nivelId(n)) && ranking[n.ticker]?.Precio
+                && estadoNivel(n, ranking[n.ticker].Precio).fin && semilleroLeer().includes(n.ticker));
+        }
+        function limpiarTerminados() {
+            const ranking = Object.fromEntries((currentRadarData?.ranking ?? []).map(r => [r.Ticker, r]));
+            const lista = nivelesTerminados(ranking);
+            if (!lista.length) { alert('No hay niveles terminados para limpiar.'); return; }
+            const txt = lista.map(n => `${n.ticker} ${String(n.nivel).replace('.', ',')} (${n.direccion}) - ${estadoNivel(n, ranking[n.ticker].Precio).k}`).join('\n');
+            if (!confirm('Se van a ocultar estos niveles terminados (los podés recuperar con "Mostrar ocultos"):\n\n' + txt)) return;
+            ocultosGuardar([...ocultosLeer(), ...lista.map(nivelId)]);
+            refrescarSemillero();
+        }
+        function copiarPedidoLimpieza() {
+            const ranking = Object.fromEntries((currentRadarData?.ranking ?? []).map(r => [r.Ticker, r]));
+            const lista = nivelesTerminados(ranking).concat(
+                (nivelesSeg ?? []).filter(n => ocultosLeer().includes(nivelId(n)) && semilleroLeer().includes(n.ticker)));
+            const unicos = [...new Map(lista.map(n => [nivelId(n), n])).values()];
+            const txt = unicos.length
+                ? 'Limpiá estos niveles de niveles_seguimiento.json:\n' + unicos.map(n => `- ${n.ticker} ${n.nivel} (${n.direccion}): ${n.etiqueta ?? ''}`).join('\n')
+                : 'No hay niveles terminados ni ocultos para limpiar.';
+            const msg = document.getElementById('semillero-msg');
+            const listo = () => { if (msg) msg.textContent = 'Pedido copiado: pegalo en el chat con Claude.'; };
+            if (navigator.clipboard?.writeText) navigator.clipboard.writeText(txt).then(listo, () => prompt('Copiá este texto y pegalo en el chat:', txt));
+            else prompt('Copiá este texto y pegalo en el chat:', txt);
+        }
+        function limpiezaHtml(ranking) {
+            if (!nivelesSeg || !nivelesSeg.some(n => semilleroLeer().includes(n.ticker))) return '';
+            const term = nivelesTerminados(ranking).length;
+            const oc = ocultosLeer().length;
+            const todos = (nivelesSeg ?? []).filter(n => n.nivel && semilleroLeer().includes(n.ticker) && !ocultosLeer().includes(nivelId(n)) && ranking[n.ticker]?.Precio);
+            const cuenta = { ok: 0, duda: 0, rota: 0, cumplida: 0, vencida: 0 };
+            todos.forEach(n => cuenta[estadoNivel(n, ranking[n.ticker].Precio).k]++);
+            const btn = 'bg-surface border border-gray-600 text-gray-300 font-mono text-[10px] px-2 py-1 rounded-sm';
+            return `<div class="font-mono text-[10px] text-gray-500 leading-relaxed border border-surface rounded-sm p-2">
+                <div><span class="text-gray-300 font-bold">Estado de tus niveles cargados a mano:</span>
+                    <span class="text-pos">${cuenta.ok} siguen en pie</span> ·
+                    <span class="text-accent">${cuenta.duda} en duda (a 2% o menos)</span> ·
+                    <span class="text-neg">${cuenta.rota} rotos</span> ·
+                    <span class="text-pos">${cuenta.cumplida} superados</span> ·
+                    <span class="text-gray-400">${cuenta.vencida} lejos del precio</span></div>
+                <div class="mt-1">Se calcula con el precio de la última corrida del radar. "Roto" y "superado" son avisos informativos: lo que confirma un nivel es el cierre diario. Los niveles rotos, superados o lejos del precio son "terminados": podés ocultarlos de tu pantalla con <span class="text-white">Limpiar</span> (reversible). Para borrarlos del archivo, usá <span class="text-white">Copiar pedido de limpieza</span> y pegalo en el chat con Claude.</div>
+                <div class="flex flex-wrap items-center gap-2 mt-2">
+                    <button type="button" class="${btn}" onclick="limpiarTerminados()" title="Oculta de esta pantalla los niveles terminados. No borra nada del archivo y se puede deshacer.">Limpiar terminados (${term})</button>
+                    <button type="button" class="${btn}" onclick="copiarPedidoLimpieza()" title="Copia la lista de niveles terminados u ocultos para pegarla en el chat con Claude, que los saca del archivo.">Copiar pedido de limpieza</button>
+                    <button type="button" class="${btn}" onclick="toggleMostrarOcultos()" title="Muestra u oculta los niveles que sacaste de tu pantalla.">${mostrarOcultos ? 'Esconder' : 'Mostrar'} ocultos (${oc})</button>
+                </div></div>`;
+        }
+        // Estado de la idea de cada activo, según sus niveles "abajo" (los que la invalidan si se pierden).
+        function estadoIdeaHtml(t, precio) {
+            const abajo = (nivelesSeg ?? []).filter(n => n.ticker === t && n.nivel && n.direccion === 'abajo' && !ocultosLeer().includes(nivelId(n)) && !(estadoNivel(n, precio).k === 'vencida'));
+            if (!abajo.length) return '';
+            const est = abajo.map(n => ({ n, e: estadoNivel(n, precio) }));
+            const rotos = est.filter(x => x.e.k === 'rota');
+            const duda = est.filter(x => x.e.k === 'duda');
+            let badge, det;
+            if (rotos.length) { badge = '<span class="text-neg font-bold">⛔ SE ROMPIÓ</span>'; det = `El precio está por debajo de ${rotos.map(x => String(x.n.nivel).replace('.', ',')).join(', ')}. Confirmá con el cierre diario.`; }
+            else if (duda.length) { badge = '<span class="text-accent font-bold">⚠ EN DUDA</span>'; det = `El precio está a 2% o menos de ${duda.map(x => String(x.n.nivel).replace('.', ',')).join(', ')}.`; }
+            else { badge = '<span class="text-pos font-bold">✔ SIGUE EN PIE</span>'; det = 'El precio está por encima de sus niveles de soporte o stop.'; }
+            return `<div class="font-mono text-[10px] mt-1" title="Mira solo tus niveles hacia abajo (soportes y stops): si el precio los pierde, la idea deja de valer.">Estado de la idea: ${badge} <span class="text-gray-500">-- ${det}</span></div>`;
+        }
+
         function nivelesDeTicker(t, precio) {
-            const todos = (nivelesSeg ?? []).filter(n => n.ticker === t && n.nivel);
+            const oc = ocultosLeer();
+            const todos = (nivelesSeg ?? []).filter(n => n.ticker === t && n.nivel && (mostrarOcultos || !oc.includes(nivelId(n))));
             const abajo = todos.filter(n => n.nivel <= precio).sort((a, b) => b.nivel - a.nivel);
             const arriba = todos.filter(n => n.nivel > precio).sort((a, b) => a.nivel - b.nivel);
             return { abajo, arriba, total: todos.length };
@@ -1638,7 +1788,14 @@
             const avisos = [];
             if (dias != null && dias > 7) avisos.push(`Nivel sin revisar hace ${dias} días: puede estar desactualizado.`);
             if (dist > 15) avisos.push(`El precio está a ${f(dist, 0)}% de este nivel: puede que ya no sea relevante.`);
-            return `<div><span class="text-gray-500">${rotulo}:</span> <span class="text-white">${f(n.nivel)}</span> <span class="text-gray-400">(${f(dist, 1)}% ${n.nivel > precio ? 'arriba' : 'abajo'})</span>
+            const e = estadoNivel(n, precio);
+            const oculto = ocultosLeer().includes(nivelId(n));
+            const id = nivelId(n).replace(/'/g, '');
+            const boton = oculto
+                ? `<button type="button" class="text-gray-400 ml-1" onclick="mostrarNivel('${id}')" title="Volver a mostrar este nivel">↺ mostrar</button>`
+                : `<button type="button" class="text-gray-500 ml-1" onclick="ocultarNivel('${id}')" title="Quitar este nivel de tu pantalla (no se borra del archivo; se recupera con Mostrar ocultos).">✕</button>`;
+            return `<div${oculto ? ' class="opacity-50"' : ''}><span class="text-gray-500">${rotulo}:</span> <span class="text-white">${f(n.nivel)}</span> <span class="text-gray-400">(${f(dist, 1)}% ${n.nivel > precio ? 'arriba' : 'abajo'})</span>
+                <span class="${e.cls}">[${e.txt}]</span> ${boton}
                 <span class="text-gray-600">-- ${n.etiqueta ?? ''}</span> ${marcas.length ? '· ' + marcas.join(' · ') : ''}
                 ${avisos.map(a => `<div class="text-accent">⚠ ${a}</div>`).join('')}</div>`;
         }
@@ -1649,8 +1806,9 @@
             try { const a = JSON.parse(localStorage.getItem(SEMILLERO_KEY) || '[]'); return Array.isArray(a) ? a : []; }
             catch (e) { return []; }
         }
-        function semilleroGuardar(lista) {
+        function semilleroGuardar(lista, sync = true) {
             try { localStorage.setItem(SEMILLERO_KEY, JSON.stringify(lista)); } catch (e) {}
+            if (sync) semilleroSincronizar();
         }
         function toggleSemillero(ticker) {
             let l = semilleroLeer();
@@ -1752,6 +1910,8 @@
             if (!cont) return;
             const lista = semilleroLeer();
             countEl.textContent = `(${lista.length})`;
+            const barra = document.getElementById('semillero-limpieza');
+            if (barra) barra.innerHTML = limpiezaHtml(Object.fromEntries((data?.ranking ?? []).map(r => [r.Ticker, r])));
             if (lista.length === 0) {
                 cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay favoritos. Tocá la ☆ de una tarjeta o escribí un ticker arriba.</div>';
                 return;
@@ -1813,6 +1973,7 @@
                         </div>
                         <div class="font-mono text-[10px] text-gray-500 mt-0.5">Precio <span class="text-white">${f(r.Precio)}</span> · RS ${f(r.RS_Score, 0)} · RSI ${f(r.RSI, 1)} · Vol. ${f(r.Vol_rel)}x</div>
                         <div class="font-mono text-[10px] mt-1">${estado}</div>
+                        ${nivelesSeg ? estadoIdeaHtml(t, r.Precio) : ''}
                         <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
                         <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">${zonaTxt}<br>${ofeTxt}</div>
                         ${nivelesBloque}
@@ -1911,6 +2072,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             cargarNivelesSeg();
+            semilleroTraer();
             const b = document.getElementById('semillero-add'), i = document.getElementById('semillero-input');
             if (b) b.addEventListener('click', agregarSemillero);
             const c = document.getElementById('semillero-cargar');
