@@ -59,6 +59,7 @@ import json
 import logging
 import os
 
+from datetime import datetime
 from datetime import time as _hora
 from zoneinfo import ZoneInfo
 
@@ -226,6 +227,42 @@ def resumen_ticker(zonas, ohlc):
     }
 
 
+DIAS_VISIBLE_INACTIVA = 7   # cuántos días se sigue mostrando una zona que dejó de estar activa
+
+
+def _razones_salida(cond, res, precio, sma50, sma200, rs, vol_rel, rsi, zona_entrada):
+    """Por qué dejó de estar en zona de interés, en lenguaje simple y con los números."""
+    razones, tipo = [], "condiciones"
+
+    def f(x, d=2):
+        return f"{x:.{d}f}".replace(".", ",")
+
+    if not cond["toca_demanda"]:
+        if zona_entrada and precio is not None and precio == precio and precio < zona_entrada["piso"]:
+            razones.append(f"La idea se invalidó: el precio cerró en {f(precio)}, por debajo del piso "
+                           f"de la zona ({f(zona_entrada['piso'])}).")
+            tipo = "invalidada"
+        elif res["zona_demanda_cercana"] is not None:
+            razones.append(f"El precio se alejó de la zona de demanda: hoy está a "
+                           f"{f(res['dist_demanda_pct'])}% de ella.")
+        else:
+            razones.append("Ya no hay una zona de demanda por debajo del precio.")
+    if not cond["sobre_sma50_y_sma200"]:
+        if precio is not None and sma50 is not None and precio <= sma50:
+            razones.append(f"Perdió la media de 50 ruedas (precio {f(precio)}, media {f(sma50)}).")
+        elif precio is not None and sma200 is not None and precio <= sma200:
+            razones.append(f"Perdió la media de 200 ruedas (precio {f(precio)}, media {f(sma200)}).")
+        else:
+            razones.append("Ya no está sobre sus medias de 50 y 200 ruedas.")
+    if not cond["rs_alto"]:
+        razones.append(f"La fuerza relativa bajó a {f(rs, 0)} (el mínimo que pedimos es {RS_MIN}).")
+    if not cond["volumen_bajo"]:
+        razones.append(f"El volumen relativo subió a {f(vol_rel)}x (pedimos menos de {f(VOL_REL_MAX, 1)}x).")
+    if not cond["rsi_no_sobrecomprado"]:
+        razones.append(f"El RSI subió a {f(rsi, 1)} (pedimos menos de {RSI_MAX}).")
+    return razones, tipo
+
+
 def _cargar_estado():
     if not os.path.exists(RUTA_ESTADO):
         return {}
@@ -283,27 +320,62 @@ def actualizar_zonas(df_rs, precios_ohlc, ahora):
         interes = all(cond.values())
         estaba = bool(estado_previo.get(ticker, {}).get("en_interes"))
 
-        if not parcial and interes and not estaba:
-            eventos.append({
-                "timestamp": hoy_iso, "ticker": ticker, "sector": fila.get("Sector"),
-                "evento": "zona_de_interes", "precio": precio,
-                "zona": res["zona_demanda_cercana"], "rs_score": rs, "vol_rel": vol_rel,
-                "rsi": rsi, "sma50": sma50, "sma200": sma200,
-                "zona_oferta_arriba": res["zona_oferta_cercana"],
-            })
+        previo = estado_previo.get(ticker, {})
+        entrada, salida = previo.get("entrada"), previo.get("salida")
+        if not parcial:
+            if interes and not estaba:
+                entrada = {"fecha": ahora.date().isoformat(), "precio": precio,
+                           "zona": res["zona_demanda_cercana"]}
+                salida = None
+                eventos.append({
+                    "timestamp": hoy_iso, "ticker": ticker, "sector": fila.get("Sector"),
+                    "evento": "zona_de_interes", "precio": precio,
+                    "zona": res["zona_demanda_cercana"], "rs_score": rs, "vol_rel": vol_rel,
+                    "rsi": rsi, "sma50": sma50, "sma200": sma200,
+                    "zona_oferta_arriba": res["zona_oferta_cercana"],
+                })
+            elif estaba and not interes:
+                razones, tipo = _razones_salida(cond, res, precio, sma50, sma200, rs, vol_rel, rsi,
+                                                (entrada or {}).get("zona"))
+                salida = {"fecha": ahora.date().isoformat(), "precio": precio,
+                          "motivo": tipo, "razones": razones}
+                eventos.append({
+                    "timestamp": hoy_iso, "ticker": ticker, "sector": fila.get("Sector"),
+                    "evento": "salida_zona_interes", "precio": precio, "motivo": tipo,
+                    "razones": razones, "precio_entrada": (entrada or {}).get("precio"),
+                    "fecha_entrada": (entrada or {}).get("fecha"),
+                })
         # Con dato parcial no se toca el estado guardado (se decide con el cierre)
         if parcial and ticker in estado_previo:
             estado_nuevo[ticker] = estado_previo[ticker]
         else:
             estado_nuevo[ticker] = {"en_interes": interes and not parcial,
-                                    "fecha_actualizado": ahora.date().isoformat()}
+                                    "fecha_actualizado": ahora.date().isoformat(),
+                                    "entrada": entrada, "salida": salida}
+
+        # Estado visible en la tarjeta: activa / inactiva reciente / nada
+        est = estado_nuevo[ticker]
+        estado_zona, fecha_ent, dias_sal = None, None, None
+        if est.get("en_interes"):
+            estado_zona, fecha_ent = "activa", (est.get("entrada") or {}).get("fecha")
+        elif est.get("salida"):
+            try:
+                dias_sal = (ahora.date() - datetime.fromisoformat(est["salida"]["fecha"]).date()).days
+            except Exception:
+                dias_sal = None
+            if dias_sal is not None and dias_sal <= DIAS_VISIBLE_INACTIVA:
+                estado_zona = "inactiva"
+                fecha_ent = (est.get("entrada") or {}).get("fecha")
 
         puntos.append({
             "Ticker": ticker, "Sector": fila.get("Sector"),
             "Zona_Demanda": res["zona_demanda_cercana"], "Dist_Demanda_%": res["dist_demanda_pct"],
             "Zona_Oferta": res["zona_oferta_cercana"], "Dist_Oferta_%": res["dist_oferta_pct"],
             "Toca_Demanda": res["toca_demanda"], "Toca_Oferta": res["toca_oferta"],
-            "En_Zona_De_Interes": interes, "Dato_Parcial": bool(parcial), "Condiciones": cond,
+            "En_Zona_De_Interes": interes, "Estado_Zona": estado_zona,
+            "Entrada_Zona": est.get("entrada") if estado_zona else None,
+            "Salida_Zona": est.get("salida") if estado_zona == "inactiva" else None,
+            "Dato_Parcial": bool(parcial), "Condiciones": cond,
             "Zonas_Activas": zonas,
         })
     return {"puntos": puntos, "eventos": eventos, "estado": estado_nuevo}
