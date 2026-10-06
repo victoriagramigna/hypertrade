@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HyperTrade</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2218%22%20fill%3D%22%230B0E14%22/%3E%3Cg%20transform%3D%22translate%286%206%29%20scale%28.88%29%22%3E%3Crect%20x%3D%224%22%20y%3D%2246%22%20width%3D%2244%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23E0A458%22%20transform%3D%22rotate%28-8%204%2050%29%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%2244%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23E0A458%22%20transform%3D%22rotate%288%2098%2050%29%22/%3E%3Cpath%20d%3D%22M4%2094%20L22%2076%20L34%2084%20L46%2060%20L52%2048%20L64%2032%20L74%2038%20L94%2010%22%20fill%3D%22none%22%20stroke%3D%22%236FCF97%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/g%3E%3C/svg%3E">
     
     <!-- Carga de Tailwind CSS sin build step -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -72,8 +73,69 @@
            evita para todos los botones de la página. */
         button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
     </style>
+    <style>
+        /* Pantalla de bienvenida (6/10): logo con efecto de golpe. Solo presentación. */
+        #ht-splash{position:fixed;inset:0;z-index:9999;background:#0B0E14;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease;cursor:pointer}
+        #ht-splash.ht-out{opacity:0;pointer-events:none}
+        #ht-splash .ht-box{position:relative;width:min(86vw,520px)}
+        #ht-splash img{width:100%;display:block;border-radius:16px;box-shadow:0 0 28px rgba(0,255,170,.3);animation:ht-in .7s ease both}
+        #ht-splash img.ht-kick{animation:ht-shatter .45s cubic-bezier(.36,.07,.19,.97) both}
+        #ht-splash .ht-hint{position:absolute;left:0;right:0;bottom:-26px;text-align:center;font:11px 'IBM Plex Mono',monospace;color:#6b7280}
+        #ht-splash .ht-spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#00ffaa;box-shadow:0 0 12px #00ffaa;pointer-events:none}
+        @keyframes ht-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+        @keyframes ht-shatter{0%{transform:translateX(0) rotate(0)}20%{transform:translateX(-10px) rotate(-3deg)}40%{transform:translateX(15px) rotate(4deg) scale(1.05)}60%{transform:translateX(-8px) rotate(-2deg)}80%{transform:translateX(4px) rotate(1deg)}100%{transform:none}}
+        @media (prefers-reduced-motion:reduce){#ht-splash img,#ht-splash img.ht-kick{animation:none}}
+    </style>
 </head>
 <body class="bg-base text-gray-300 font-sans p-4 md:p-8 min-h-screen relative">
+<!-- Pantalla de bienvenida: se muestra una vez por sesión del navegador (agregá ?splash=1 a la dirección para verla de nuevo).
+     Si la imagen hypertrade_logo.jpg no está en docs/, se salta sola y no pasa nada. -->
+<div id="ht-splash" style="display:none">
+    <div class="ht-box" id="ht-box">
+        <img id="ht-splash-img" src="hypertrade_logo.jpg" alt="HyperTrade — Rompiendo límites">
+        <div class="ht-hint">tocá para entrar</div>
+    </div>
+</div>
+<script>
+(function () {
+    var el = document.getElementById('ht-splash');
+    var img = document.getElementById('ht-splash-img');
+    var yaVisto = false;
+    try { yaVisto = sessionStorage.getItem('ht_splash') === '1'; } catch (e) {}
+    if (/[?&]splash=1/.test(location.search)) yaVisto = false;
+    if (yaVisto) { el.remove(); return; }
+    var cerrado = false;
+    function cerrar() {
+        if (cerrado) return; cerrado = true;
+        try { sessionStorage.setItem('ht_splash', '1'); } catch (e) {}
+        el.classList.add('ht-out');
+        setTimeout(function () { el.remove(); }, 700);
+    }
+    function golpe() {
+        img.classList.remove('ht-kick'); void img.offsetWidth; img.classList.add('ht-kick');
+        img.style.boxShadow = '0 0 60px rgba(0,255,170,.85)';
+        setTimeout(function () { img.style.boxShadow = '0 0 28px rgba(0,255,170,.3)'; }, 350);
+        var box = document.getElementById('ht-box');
+        for (var i = 0; i < 24; i++) {
+            var sp = document.createElement('div'); sp.className = 'ht-spark';
+            sp.style.left = '64%'; sp.style.top = '36%'; box.appendChild(sp);
+            var ang = Math.random() * Math.PI * 2, v = 50 + Math.random() * 110;
+            var tx = Math.cos(ang) * v, ty = Math.sin(ang) * v - 20;
+            if (sp.animate) sp.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: 'translate(' + tx + 'px,' + ty + 'px) scale(0)', opacity: 0 }], { duration: 600 + Math.random() * 300, easing: 'ease-out' });
+            (function (n) { setTimeout(function () { n.remove(); }, 950); })(sp);
+        }
+    }
+    img.addEventListener('error', function () { el.remove(); });   // sin imagen: no mostrar nada
+    img.addEventListener('load', function () {
+        el.style.display = 'flex';
+        setTimeout(golpe, 800);
+        setTimeout(cerrar, 3200);
+    });
+    if (img.complete && img.naturalWidth > 0) img.dispatchEvent(new Event('load'));
+    el.addEventListener('click', function () { if (!cerrado) { golpe(); setTimeout(cerrar, 350); } });
+})();
+</script>
+
 
     <!-- Banner de errores de fetch -->
     <div id="error-message" class="hidden bg-neg/20 text-neg border border-neg p-4 mb-6 font-mono text-sm rounded-sm"></div>
@@ -84,7 +146,64 @@
     <!-- Encabezado persistente: título, T-0, badges -- visible en todas las solapas -->
     <header class="mb-6 border-b border-surface pb-4">
         <div>
-            <h1 class="text-3xl font-bold text-white tracking-tight uppercase">HyperTrade</h1>
+            <h1 class="text-3xl font-bold text-white tracking-tight uppercase" title="HyperTrade"><span style="position:absolute;left:-9999px">HyperTrade</span>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 100" role="img" aria-label="Logo HyperTrade" style="height:52px;width:auto;display:block">
+  <style>
+    .ht-t{--d:7s}
+    .ht-line{fill:none;stroke:#6FCF97;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    #ht-p1{stroke-dasharray:100;stroke-dashoffset:100;animation:ht-p1 var(--d) infinite}
+    #ht-p2{stroke-dasharray:100;stroke-dashoffset:100;animation:ht-p2 var(--d) infinite}
+    .ht-board{fill:#E0A458}
+    #ht-bl{transform-box:fill-box;transform-origin:0% 50%;animation:ht-bl var(--d) infinite}
+    #ht-br{transform-box:fill-box;transform-origin:100% 50%;animation:ht-br var(--d) infinite}
+    .ht-frag{fill:#E0A458;opacity:0}
+    #ht-f1{animation:ht-f1 var(--d) infinite}#ht-f2{animation:ht-f2 var(--d) infinite}#ht-f3{animation:ht-f3 var(--d) infinite}
+    .ht-burst{stroke:#fff;stroke-width:2.5;stroke-linecap:round;opacity:0;transform-box:view-box;transform-origin:50px 45px;animation:ht-burst var(--d) infinite}
+    #ht-dot{fill:#6FCF97;opacity:0;transform-box:fill-box;transform-origin:center;animation:ht-dot var(--d) infinite}
+    #ht-belt{animation:ht-belt var(--d) infinite;transform-box:fill-box;transform-origin:0 50%}
+    @keyframes ht-p1{0%{stroke-dashoffset:100}17%,100%{stroke-dashoffset:0}}
+    @keyframes ht-p2{0%,21%{stroke-dashoffset:100}35%,100%{stroke-dashoffset:0}}
+    @keyframes ht-bl{0%,17%{transform:none;opacity:1}18%{transform:translate(-2px,2px) rotate(4deg)}30%{transform:translate(-12px,26px) rotate(-38deg);opacity:0}86%{transform:translate(-12px,26px) rotate(-38deg);opacity:0}87%{transform:none;opacity:0}96%,100%{transform:none;opacity:1}}
+    @keyframes ht-br{0%,17%{transform:none;opacity:1}18%{transform:translate(2px,2px) rotate(-4deg)}30%{transform:translate(12px,26px) rotate(38deg);opacity:0}86%{transform:translate(12px,26px) rotate(38deg);opacity:0}87%{transform:none;opacity:0}96%,100%{transform:none;opacity:1}}
+    @keyframes ht-f1{0%,17%{opacity:0;transform:none}18%{opacity:1}34%{opacity:0;transform:translate(-26px,-22px) rotate(-120deg)}100%{opacity:0}}
+    @keyframes ht-f2{0%,17%{opacity:0;transform:none}18%{opacity:1}34%{opacity:0;transform:translate(24px,-28px) rotate(140deg)}100%{opacity:0}}
+    @keyframes ht-f3{0%,17%{opacity:0;transform:none}18%{opacity:1}34%{opacity:0;transform:translate(4px,-34px) rotate(90deg)}100%{opacity:0}}
+    @keyframes ht-burst{0%,17%{opacity:0;transform:scale(.3)}19%{opacity:1;transform:scale(1)}30%,100%{opacity:0;transform:scale(1.7)}}
+    @keyframes ht-dot{0%,34%{opacity:0;transform:scale(0)}38%{opacity:1;transform:scale(1.6)}44%,92%{opacity:1;transform:scale(1)}100%{opacity:0}}
+    @keyframes ht-belt{0%,40%{transform:scaleX(0)}58%,100%{transform:scaleX(1)}}
+    @media (prefers-reduced-motion:reduce){
+      #ht-p1,#ht-p2{animation:none;stroke-dashoffset:0}#ht-bl,#ht-br,.ht-frag,.ht-burst,#ht-belt{animation:none}
+      #ht-bl,#ht-br,.ht-frag,.ht-burst{opacity:0}#ht-dot{animation:none;opacity:1}
+    }
+  </style>
+  <g class="ht-t">
+    <!-- tabla (resistencia): se parte cuando el precio la rompe -->
+    <rect id="ht-bl" class="ht-board" x="8" y="42" width="42" height="7" rx="1.5"/>
+    <rect id="ht-br" class="ht-board" x="50" y="42" width="42" height="7" rx="1.5"/>
+    <!-- línea de precio: sube, golpea, rompe y sigue -->
+    <path id="ht-p1" class="ht-line" pathLength="100" d="M6 92 L22 76 L33 83 L44 60 L50 45"/>
+    <path id="ht-p2" class="ht-line" pathLength="100" d="M50 45 L62 30 L72 36 L92 8"/>
+    <circle id="ht-dot" cx="92" cy="8" r="4.5"/>
+    <!-- astillas e impacto -->
+    <rect id="ht-f1" class="ht-frag" x="44" y="40" width="6" height="3" rx="1"/>
+    <rect id="ht-f2" class="ht-frag" x="52" y="42" width="7" height="3" rx="1"/>
+    <rect id="ht-f3" class="ht-frag" x="48" y="38" width="4" height="3" rx="1"/>
+    <g>
+      <line class="ht-burst" x1="50" y1="45" x2="50" y2="31"/><line class="ht-burst" x1="50" y1="45" x2="62" y2="35"/>
+      <line class="ht-burst" x1="50" y1="45" x2="38" y2="35"/><line class="ht-burst" x1="50" y1="45" x2="66" y2="48"/>
+      <line class="ht-burst" x1="50" y1="45" x2="34" y2="48"/>
+    </g>
+  </g>
+  <!-- nombre + cinturón negro con nudo (guiño al taekwondo) -->
+  <text x="112" y="54" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-weight="700" font-size="30" letter-spacing=".5" fill="#fff">HYPER<tspan fill="#E0A458">TRADE</tspan></text>
+  <g id="ht-belt">
+    <rect x="112" y="66" width="210" height="9" rx="2" fill="#10151f" stroke="#E0A458" stroke-width="1.2"/>
+    <rect x="211" y="62" width="12" height="17" rx="3" fill="#10151f" stroke="#E0A458" stroke-width="1.2"/>
+    <rect x="290" y="66" width="3" height="9" fill="#E0A458"/><rect x="298" y="66" width="3" height="9" fill="#E0A458"/><rect x="306" y="66" width="3" height="9" fill="#E0A458"/>
+  </g>
+</svg>
+
+            </h1>
             <div id="last-update" class="font-mono text-sm text-gray-500 mt-1 leading-relaxed">Sincronizando datos...</div>
             <!-- Badges de estado -->
             <div id="badges" class="flex flex-wrap gap-2 font-mono text-xs uppercase mt-3"></div>
