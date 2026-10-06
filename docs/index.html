@@ -769,7 +769,8 @@
                 ${alertHtml}
                 <div class="${alerta ? '' : 'mt-2'} flex justify-between items-end mb-6">
                     <div>
-                        <h2 class="text-4xl font-bold text-white uppercase tracking-tight">${tickerData.Ticker}</h2>
+                        <h2 class="text-4xl font-bold text-white uppercase tracking-tight">${logoInline(tickerData.Ticker, 36)}${tickerData.Ticker}</h2>
+                        <div class="text-sm font-mono text-gray-300">${nombreEmpresa(tickerData.Ticker)}</div>
                         <span class="text-sm font-mono text-accent uppercase tracking-widest">${tickerData.Sector ?? '—'}</span>
                         ${tickerData.Subcategoria ? `<span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest ml-2">· ${tickerData.Subcategoria}</span>` : ''}
                         <div class="mt-1 font-mono text-xs">${tradingViewLinkHtml(tickerData.Ticker, '📈 Ver gráfico en TradingView ↗')}</div>
@@ -899,7 +900,7 @@
                 return `
                     <div class="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
                         <div>
-                            <div class="font-mono text-sm font-bold text-white">${c.Ticker}</div>
+                            <div class="font-mono text-sm font-bold text-white">${logoInline(c.Ticker)}${c.Ticker}${nombreChico(c.Ticker)}</div>
                             <div class="font-mono text-[10px] text-gray-500">real $${c.Precio_real_ARS.toLocaleString('es-AR')} · teórico $${c.Precio_teorico_ARS.toLocaleString('es-AR')}</div>
                         </div>
                         <span class="border ${color} px-2 py-1 rounded-sm font-mono text-xs font-bold whitespace-nowrap">
@@ -1410,7 +1411,7 @@
                 return `
                     <div class="bg-[#151b2b] border-l-4 border-blueAlert p-3 rounded-r-sm">
                         <div class="flex justify-between items-start mb-1">
-                            <span class="text-lg font-bold text-white">${a?.Ticker ?? '—'}</span>
+                            <span class="text-lg font-bold text-white">${logoInline(a?.Ticker, 22)}${a?.Ticker ?? '—'}${nombreChico(a?.Ticker)}</span>
                             <span class="font-mono text-[10px] text-gray-500 uppercase">${a?.Sector ?? '—'}</span>
                         </div>
                         <div class="flex flex-wrap gap-1 mt-1">${chips}</div>
@@ -2800,7 +2801,7 @@
                 return `
                     <div class="flex justify-between items-center py-2 border-b border-gray-800 last:border-0 font-mono text-sm">
                         <div>
-                            <span class="font-bold text-white">${m?.Ticker ?? '—'}</span>
+                            <span class="font-bold text-white">${logoInline(m?.Ticker)}${m?.Ticker ?? '—'}</span>${nombreChico(m?.Ticker)}
                             <span class="text-[10px] text-gray-500 uppercase ml-2">${m?.Sector ?? ''}</span>
                         </div>
                         <span class="font-bold ${color}">${esPos ? '+' : ''}${varPct}%</span>
@@ -2858,7 +2859,7 @@
                 return `
                     <div class="bg-surface p-3 rounded-sm border border-surface flex justify-between items-center font-mono text-sm">
                         <div>
-                            <div><span class="font-bold text-white">${e.ticker ?? '—'}</span> <span class="text-[10px] text-gray-500 uppercase ml-1">${e.sector ?? ''}</span></div>
+                            <div><span class="font-bold text-white">${logoInline(e.ticker)}${e.ticker ?? '—'}</span> <span class="text-[10px] text-gray-500 uppercase ml-1">${e.sector ?? ''}</span></div>
                             <div class="text-xs text-gray-400 mt-1">${e.estado ?? '—'}</div>
                             <div class="text-[10px] text-gray-600 mt-1">${fechaStr}</div>
                         </div>
@@ -3013,7 +3014,7 @@
                     <div class="bg-surface p-4 rounded-sm border border-surface space-y-3">
                         <div class="flex justify-between items-start">
                             <div>
-                                <div class="font-bold text-white text-lg">${c?.nombre ?? '—'} <span class="text-gray-500 text-xs font-mono">${c?.ticker ?? ''}</span></div>
+                                <div class="font-bold text-white text-lg">${c?.ticker ? logoInline(c.ticker, 24) : ''}${c?.nombre ?? '—'} <span class="text-gray-500 text-xs font-mono">${c?.ticker ?? ''}</span></div>
                                 <div class="font-mono text-xl text-white mt-1">$${c?.precio != null ? c.precio.toLocaleString('en-US') : '—'}</div>
                             </div>
                             <div class="text-right">
@@ -3199,6 +3200,8 @@
                 img.style.display = 'none';
             }
         }
+        function logoInline(t, px = 18) { return `<span style="display:inline-flex;vertical-align:middle;margin-right:6px">${logoTicker(t, px)}</span>`; }
+        function nombreChico(t) { const n = nombreEmpresa(t); return n ? ` <span class="text-[10px] font-mono font-normal text-gray-400 normal-case tracking-normal">${n}</span>` : ''; }
         function logoTicker(t, px = 18) {
             return `<img src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(t)}.png" data-t="${t}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="logoFallback(this)" style="width:${px}px;height:${px}px;object-fit:contain;border-radius:3px;background:#fff;flex-shrink:0">`;
         }
@@ -3708,7 +3711,7 @@
                 return `
                     <div class="bg-surface p-3 rounded-sm border-l-2 ${o.ret > 0 ? 'border-pos' : 'border-neg'} flex justify-between items-center gap-3 font-mono text-sm">
                         <div class="min-w-0">
-                            <div><span class="font-bold text-white">${o.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${f(o.fecha)} → ${f(o.fechaVenta)}${o.dias != null ? ` · ${o.dias} días` : ''}</span></div>
+                            <div><span class="font-bold text-white">${logoInline(o.ticker)}${o.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${f(o.fecha)} → ${f(o.fechaVenta)}${o.dias != null ? ` · ${o.dias} días` : ''}</span></div>
                             <div class="text-[10px] text-gray-500">${o.motivo}${o.con_alerta ? ' · había alerta al comprar' : ''}</div>
                             <div class="text-[10px] text-gray-600">$${o.precio} → $${o.precioVenta}</div>
                         </div>
@@ -3773,7 +3776,7 @@
                 return `
                     <div class="bg-surface p-3 rounded-sm border-l-2 ${dirColor} flex justify-between items-center gap-3 font-mono text-sm">
                         <div class="min-w-0">
-                            <div><span class="font-bold text-white">${c.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${fecha}</span></div>
+                            <div><span class="font-bold text-white">${logoInline(c.ticker)}${c.ticker}</span> <span class="text-[10px] text-gray-500 ml-1">${fecha}</span></div>
                             <div class="text-[11px] text-gray-400 truncate">${c.señal}</div>
                             <div class="text-[10px] text-gray-600">Entrada $${c.precio_entrada}${c.radar_score != null ? ` · Radar ${Number(c.radar_score).toFixed(0)}` : ''}</div>
                         </div>
@@ -4460,7 +4463,7 @@
                     <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
                         <div class="flex justify-between items-start">
                             <div>
-                                <span class="font-bold text-white text-lg">${p.ticker}</span>
+                                <span class="font-bold text-white text-lg">${logoInline(p.ticker, 24)}${p.ticker}${nombreChico(p.ticker)}</span>
                                 <span class="ml-2 font-mono text-[10px]">${tradingViewLinkHtml(p.ticker)}</span>
                                 ${encabezadoHtml}
                             </div>
