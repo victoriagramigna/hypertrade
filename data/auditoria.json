@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-06T21:16:08.967581+00:00",
+ "generado_utc": "2026-10-06T22:55:27.720756+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 450,
+ "casos_total": 451,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
@@ -74,11 +74,11 @@
   {
    "señal": "Confirmado",
    "direccion": "alcista",
-   "casos_total": 69,
+   "casos_total": 70,
    "horizontes": {
     "5": {
      "n": 36,
-     "pendientes": 33,
+     "pendientes": 34,
      "aciertos": 14,
      "pct_aciertos": 39,
      "tocaron_stop": 0,
@@ -88,7 +88,7 @@
     },
     "10": {
      "n": 16,
-     "pendientes": 53,
+     "pendientes": 54,
      "aciertos": 6,
      "pct_aciertos": 38,
      "tocaron_stop": 0,
@@ -98,7 +98,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 69,
+     "pendientes": 70,
      "confiable": false
     }
    }
@@ -303,7 +303,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 187,
+   "casos": 188,
    "5": {
     "n": 0
    },
@@ -350,7 +350,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 291,
+   "casos": 292,
    "5": {
     "n": 111,
     "pct_aciertos": 47,
@@ -413,7 +413,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 229,
+   "casos": 230,
    "5": {
     "n": 81,
     "pct_aciertos": 49,
@@ -429,7 +429,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 93,
+   "casos": 94,
    "5": {
     "n": 30,
     "pct_aciertos": 57,
@@ -540,7 +540,7 @@
   },
   {
    "grupo": "🟡 Mixta (RSI y MACD semanal en desacuerdo)",
-   "casos": 78,
+   "casos": 79,
    "5": {
     "n": 14,
     "pct_aciertos": 21,
@@ -1682,6 +1682,24 @@
     "sma50_bajando"
    ],
    "tendencia_semanal": "contra",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "PG",
+   "fecha": "2026-10-06",
+   "señal": "Confirmado",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 148.41,
+   "radar_score": 59.5,
+   "regimen_score": 69,
+   "cuidados": [
+    "sma50_bajando"
+   ],
+   "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 0,
    "r5": null,
    "r10": null,
@@ -6152,28 +6170,6 @@
    "spy5": 1.2,
    "vs_spy5": -0.66,
    "acierto5": true,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "DELL",
-   "fecha": "2026-09-27",
-   "señal": "Confluencia Alcista",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 562.89,
-   "radar_score": 91.1,
-   "regimen_score": 68,
-   "cuidados": [
-    "techo_avwap"
-   ],
-   "tendencia_semanal": null,
-   "ruedas_transcurridas": 7,
-   "r5": -0.07,
-   "spy5": -0.22,
-   "vs_spy5": 0.15,
-   "acierto5": false,
    "stop5": false,
    "r10": null,
    "r20": null
