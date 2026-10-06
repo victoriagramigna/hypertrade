@@ -335,6 +335,7 @@
                     <br>Dentro de cada sector con subcategorías (ej. Tecnología), los tickers van agrupados por subcategoría: arriba la más fuerte
                     (según el promedio de Fuerza Relativa de sus tickers, que se ve a la derecha del título del grupo) y, dentro de cada grupo, de mayor a menor Fuerza Relativa.
                     En cada tarjeta, los botones de arriba filtran por subcategoría.
+                    Al lado de cada ticker aparece el logo y el nombre de la empresa (si el logo no carga, queda solo el nombre).
                 </div>
                 <div id="sectors-detail" class="space-y-6"></div>
             </section>
@@ -1328,7 +1329,8 @@
                     <div class="${bgCustom} p-4 ${containerBorder} transition-colors rounded-r-sm">
                         <div class="flex justify-between items-start mb-3">
                             <div>
-                                <span class="text-xl font-bold text-white">${titleIcon}${ticker}</span>
+                                <span class="inline-flex items-center gap-2 align-middle">${logoTicker(ticker, 24)}<span class="text-xl font-bold text-white">${titleIcon}${ticker}</span></span>
+                                <span class="text-xs font-mono text-gray-300 ml-2">${nombreEmpresa(ticker)}</span>
                                 <span class="text-xs font-mono text-gray-500 ml-2 uppercase">${sector}</span>
                                 ${alerta?.Subcategoria ? `<span class="text-[10px] font-mono text-gray-600 ml-1 uppercase">· ${alerta.Subcategoria}</span>` : ''}
                             </div>
@@ -1582,7 +1584,7 @@
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-2 min-w-0">
                                     <span class="text-gray-600 font-mono text-xs w-6 text-right flex-shrink-0">${index + 1}.</span>
-                                    <span class="font-bold text-white cursor-pointer hover:text-accent hover:underline flex-shrink-0" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    ${logoTicker(nombreTicker)}<span class="font-bold text-white cursor-pointer hover:text-accent hover:underline flex-shrink-0" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span><span class="text-[10px] text-gray-400 truncate hidden sm:inline">${nombreEmpresa(nombreTicker)}</span>
                                     <span class="text-[9px] uppercase text-gray-500 truncate">${sectorSubHtml(ticker)}</span>
                                     ${badgeNuevo}
                                 </div>
@@ -1657,7 +1659,7 @@
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-2 min-w-0">
                                     <span class="text-gray-600 font-mono text-xs w-6 text-right flex-shrink-0">${index + 1}.</span>
-                                    <span class="font-bold text-white cursor-pointer hover:text-accent hover:underline flex-shrink-0" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span>
+                                    ${logoTicker(nombreTicker)}<span class="font-bold text-white cursor-pointer hover:text-accent hover:underline flex-shrink-0" onclick="irAAlertasDeTicker('${nombreTicker}')">${nombreTicker}</span><span class="text-[10px] text-gray-400 truncate hidden sm:inline">${nombreEmpresa(nombreTicker)}</span>
                                     <span class="text-[9px] uppercase text-gray-500 truncate">${sectorSubHtml(ticker)}</span>
                                     ${badgeNuevoRadar}
                                 </div>
@@ -1799,7 +1801,7 @@
                         return `
                             <div class="ticker-row py-2 border-b border-base/50 font-mono text-sm hover:bg-base/40 px-2 -mx-2 transition-colors">
                                 <div class="flex flex-wrap md:flex-nowrap items-center">
-                                    <div class="w-16 font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${tickerName}')">${tickerName}</div>
+                                    <div class="w-40 md:w-52 flex-shrink-0 flex items-center gap-2 cursor-pointer group" onclick="irAAlertasDeTicker('${tickerName}')">${logoTicker(tickerName, 20)}<div class="min-w-0"><div class="font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${tickerName}</div><div class="text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(tickerName)}</div></div></div>
 
                                     <div class="w-28 flex-shrink-0 text-right mr-4 md:mr-6">
                                         <div class="text-gray-400">${displayPrecio}</div>
@@ -3154,7 +3156,7 @@
                 const rs = r?.RS_Score, rad = r?.Radar_Score, rsi = r?.RSI;
                 const px = typeof r?.Precio === 'number' ? r.Precio.toFixed(2) : '—';
                 return `<div class="flex flex-wrap items-center gap-x-4 py-1 border-b border-base/50">
-                    <span class="w-16 font-bold text-white cursor-pointer hover:text-accent hover:underline" onclick="irAAlertasDeTicker('${r.Ticker}')">${r.Ticker}</span>
+                    <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="irAAlertasDeTicker('${r.Ticker}')">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
                     <span class="w-20 text-right text-gray-400">${px}</span>
                     <span class="text-gray-500">RS <span class="text-white">${rs != null ? rs.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RADAR <span class="text-accent">${rad != null ? rad.toFixed(0) : '—'}</span></span>
@@ -3180,6 +3182,25 @@
                 b.classList.toggle('text-gray-400', !activo);
                 b.classList.toggle('border-surface', !activo);
             });
+        }
+
+        // ============ LOGO + NOMBRE DE LA EMPRESA (6/10) ============
+        // Solo presentación: no cambia ninguna señal. El logo viene de un servicio
+        // gratuito de logos; si no existe para un ticker (o no carga), la imagen
+        // simplemente se oculta y queda el ticker + el nombre, como antes.
+        const NOMBRES_EMPRESA = {"AAL":"American Airlines","AAP":"Advance Auto Parts","AAPL":"Apple","ABBV":"AbbVie","ABEV":"Ambev","ABNB":"Airbnb","ABT":"Abbott","ACN":"Accenture","ACWI":"iShares MSCI ACWI (global)","ADBE":"Adobe","ADI":"Analog Devices","ADP":"ADP","AEG":"Aegon","AEM":"Agnico Eagle","AGRO":"Adecoagro","AI":"C3.ai","AIG":"AIG","ALAB":"Astera Labs","AMAT":"Applied Materials","AMD":"AMD","AMGN":"Amgen","AMX":"América Móvil","AMZN":"Amazon","ANET":"Arista Networks","ANF":"Abercrombie & Fitch","ARCO":"Arcos Dorados","ARKK":"ARK Innovation ETF","ARM":"Arm Holdings","ASML":"ASML","ASR":"Grupo Aeroportuario del Sureste","ASTS":"AST SpaceMobile","AVGO":"Broadcom","AVY":"Avery Dennison","AXP":"American Express","AZN":"AstraZeneca","B":"Barrick Mining","BA":"Boeing","BABA":"Alibaba","BAC":"Bank of America","BAK":"Braskem","BB":"BlackBerry","BBAR":"BBVA Argentina","BBD":"Bradesco","BBVA":"BBVA","BCS":"Barclays","BG":"Bunge","BHP":"BHP Group","BIDU":"Baidu","BIIB":"Biogen","BIOX":"Bioceres","BK":"BNY Mellon","BKNG":"Booking Holdings","BKR":"Baker Hughes","BMA":"Banco Macro","BMNR":"BitMine Immersion","BMY":"Bristol Myers Squibb","BP":"BP","BRK-B":"Berkshire Hathaway","BSBR":"Santander Brasil","BX":"Blackstone","C":"Citigroup","CAH":"Cardinal Health","CAR":"Avis Budget","CAT":"Caterpillar","CCJ":"Cameco","CCL":"Carnival","CDE":"Coeur Mining","CEG":"Constellation Energy","CIBR":"First Trust Cybersecurity ETF","CL":"Colgate-Palmolive","CLS":"Celestica","COIN":"Coinbase","COP":"ConocoPhillips","COPX":"Global X Copper Miners ETF","COST":"Costco","CRM":"Salesforce","CRSP":"CRISPR Therapeutics","CRWD":"CrowdStrike","CRWV":"CoreWeave","CSCO":"Cisco","CVS":"CVS Health","CVX":"Chevron","DAL":"Delta Air Lines","DD":"DuPont","DE":"Deere","DECK":"Deckers (UGG, HOKA)","DELL":"Dell Technologies","DEO":"Diageo","DHR":"Danaher","DIA":"SPDR Dow Jones ETF","DIS":"Disney","DOCU":"DocuSign","DOW":"Dow","EBAY":"eBay","EBR":"Eletrobras","ECL":"Ecolab","EDN":"Edenor","EEM":"iShares MSCI Emergentes","EFA":"iShares MSCI EAFE","EFX":"Equifax","EQNR":"Equinor","ERIC":"Ericsson","ERJ":"Embraer","ETHA":"iShares Ethereum Trust","ETSY":"Etsy","EWJ":"iShares MSCI Japón","EWY":"iShares MSCI Corea","EWZ":"iShares MSCI Brasil","F":"Ford","FCX":"Freeport-McMoRan","FDX":"FedEx","FISV":"Fiserv","FMX":"Fomento Económico Mexicano","FSLR":"First Solar","FXI":"iShares China Large-Cap","GDX":"VanEck Gold Miners ETF","GE":"GE Aerospace","GEV":"GE Vernova","GFI":"Gold Fields","GGAL":"Grupo Financiero Galicia","GGB":"Gerdau","GILD":"Gilead Sciences","GLD":"SPDR Gold Shares","GLOB":"Globant","GLW":"Corning","GM":"General Motors","GOOGL":"Alphabet (Google)","GPRK":"GeoPark","GRMN":"Garmin","GS":"Goldman Sachs","GSK":"GSK","GT":"Goodyear","HAL":"Halliburton","HD":"Home Depot","HDB":"HDFC Bank","HIMS":"Hims & Hers Health","HL":"Hecla Mining","HMC":"Honda","HMY":"Harmony Gold","HOG":"Harley-Davidson","HON":"Honeywell","HOOD":"Robinhood","HPQ":"HP Inc.","HSBC":"HSBC","HSY":"Hershey","HUT":"Hut 8","HWM":"Howmet Aerospace","IBB":"iShares Biotecnología ETF","IBIT":"iShares Bitcoin Trust","IBKR":"Interactive Brokers","IBM":"IBM","IBN":"ICICI Bank","ICLN":"iShares Energía Limpia","IEMG":"iShares Core MSCI Emergentes","ILF":"iShares Latinoamérica 40","ILMN":"Illumina","INFY":"Infosys","ING":"ING Groep","INTC":"Intel","IP":"International Paper","IREN":"IREN (Iris Energy)","ISRG":"Intuitive Surgical","ITA":"iShares Aeroespacial y Defensa","ITUB":"Itaú Unibanco","IVV":"iShares Core S&P 500","IWM":"iShares Russell 2000","JCI":"Johnson Controls","JD":"JD.com","JMIA":"Jumia","JNJ":"Johnson & Johnson","JPM":"JPMorgan Chase","KB":"KB Financial","KEEL":"Keel Infrastructure (ex Bitfarms)","KGC":"Kinross Gold","KLAC":"KLA","KMB":"Kimberly-Clark","KO":"Coca-Cola","LAC":"Lithium Americas","LAR":"Lithium Argentina","LIN":"Linde","LLY":"Eli Lilly","LMT":"Lockheed Martin","LRCX":"Lam Research","LVS":"Las Vegas Sands","LYG":"Lloyds Banking","MA":"Mastercard","MCD":"McDonald's","MDLZ":"Mondelez","MDT":"Medtronic","MELI":"MercadoLibre","META":"Meta Platforms","MMC":"Marsh McLennan","MMM":"3M","MO":"Altria","MOS":"Mosaic","MP":"MP Materials","MRK":"Merck","MRNA":"Moderna","MRVL":"Marvell","MS":"Morgan Stanley","MSFT":"Microsoft","MSI":"Motorola Solutions","MSTR":"Strategy (MicroStrategy)","MU":"Micron","MUX":"McEwen Mining","NBIS":"Nebius","NEE":"NextEra Energy","NEM":"Newmont","NFLX":"Netflix","NGG":"National Grid","NIO":"NIO","NKE":"Nike","NMR":"Nomura","NOK":"Nokia","NOW":"ServiceNow","NTES":"NetEase","NU":"Nu Holdings (Nubank)","NUE":"Nucor","NVDA":"NVIDIA","NVO":"Novo Nordisk","NVS":"Novartis","NXE":"NexGen Energy","O":"Realty Income","OKLO":"Oklo","ONDS":"Ondas Holdings","ORCL":"Oracle","ORLY":"O'Reilly Automotive","OXY":"Occidental Petroleum","PAAS":"Pan American Silver","PAGS":"PagSeguro","PAM":"Pampa Energía","PANW":"Palo Alto Networks","PATH":"UiPath","PBR":"Petrobras","PCAR":"PACCAR","PDD":"PDD Holdings (Temu)","PEP":"PepsiCo","PFE":"Pfizer","PG":"Procter & Gamble","PINS":"Pinterest","PLD":"Prologis","PLTR":"Palantir","PM":"Philip Morris","PSX":"Phillips 66","PYPL":"PayPal","QCOM":"Qualcomm","QQQ":"Invesco QQQ (Nasdaq 100)","RACE":"Ferrari","RBLX":"Roblox","REGN":"Regeneron","RGTI":"Rigetti Computing","RIO":"Rio Tinto","RIOT":"Riot Platforms","RKLB":"Rocket Lab","ROKU":"Roku","ROST":"Ross Stores","RSP":"Invesco S&P 500 Equal Weight","RTX":"RTX (Raytheon)","SAN":"Banco Santander","SAP":"SAP","SATL":"Satellogic","SBS":"Sabesp","SBUX":"Starbucks","SCCO":"Southern Copper","SCHW":"Charles Schwab","SE":"Sea Limited","SH":"ProShares Short S&P 500","SHEL":"Shell","SHOP":"Shopify","SHW":"Sherwin-Williams","SKHY":"SK Hynix","SLB":"SLB (Schlumberger)","SLV":"iShares Silver Trust","SMH":"VanEck Semiconductores ETF","SNAP":"Snap","SNDK":"Sandisk","SNOW":"Snowflake","SONY":"Sony","SPCE":"Virgin Galactic","SPCX":"SpaceX","SPGI":"S&P Global","SPOT":"Spotify","SPXL":"Direxion S&P 500 Bull 3X","SPY":"SPDR S&P 500 ETF","STLA":"Stellantis","STNE":"StoneCo","SUPV":"Grupo Supervielle","SUZ":"Suzano","SWKS":"Skyworks","SYY":"Sysco","T":"AT&T","TCOM":"Trip.com","TEAM":"Atlassian","TEM":"Tempus AI","TEN":"Tenaris","TGS":"Transportadora de Gas del Sur","TGT":"Target","TJX":"TJX Companies","TLN":"Talen Energy","TM":"Toyota","TMO":"Thermo Fisher","TMUS":"T-Mobile US","TQQQ":"ProShares UltraPro QQQ (3X)","TRIP":"Tripadvisor","TRV":"Travelers","TSLA":"Tesla","TSM":"TSMC","TTE":"TotalEnergies","TV":"Grupo Televisa","TWLO":"Twilio","TX":"Ternium","TXN":"Texas Instruments","UAL":"United Airlines","UBER":"Uber","UGP":"Ultrapar","UL":"Unilever","UNH":"UnitedHealth","UNP":"Union Pacific","UPST":"Upstart","URA":"Global X Uranium ETF","URBN":"Urban Outfitters","USB":"U.S. Bancorp","USO":"United States Oil Fund","V":"Visa","VALE":"Vale","VEA":"Vanguard Mercados Desarrollados","VIST":"Vista Energy","VRSN":"VeriSign","VRTX":"Vertex Pharmaceuticals","VST":"Vistra","VXX":"iPath VIX Corto Plazo","VZ":"Verizon","WDC":"Western Digital","WELL":"Welltower","WFC":"Wells Fargo","WMT":"Walmart","XLB":"SPDR Materiales","XLC":"SPDR Comunicaciones","XLE":"SPDR Energía","XLF":"SPDR Financiero","XLI":"SPDR Industriales","XLK":"SPDR Tecnología","XLP":"SPDR Consumo Básico","XLRE":"SPDR Real Estate","XLU":"SPDR Utilities","XLV":"SPDR Salud","XLY":"SPDR Consumo Discrecional","XME":"SPDR Minería y Metales","XOM":"ExxonMobil","XP":"XP Inc.","XPEV":"XPeng","XYZ":"Block","YPF":"YPF","ZM":"Zoom"};
+        function nombreEmpresa(t) { return NOMBRES_EMPRESA[t] ?? ''; }
+        function logoFallback(img) {
+            const t = img.dataset.t;
+            if (img.dataset.f !== '1') {
+                img.dataset.f = '1';
+                img.src = 'https://assets.parqet.com/logos/symbol/' + encodeURIComponent(t) + '?format=png';
+            } else {
+                img.style.display = 'none';
+            }
+        }
+        function logoTicker(t, px = 18) {
+            return `<img src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(t)}.png" data-t="${t}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="logoFallback(this)" style="width:${px}px;height:${px}px;object-fit:contain;border-radius:3px;background:#fff;flex-shrink:0">`;
         }
 
         // Sector + subcategoría chiquita al lado del ticker (a pedido de
