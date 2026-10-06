@@ -58,6 +58,7 @@ from rotacion_ticker import actualizar_rotacion_ticker
 from auditoria_rotacion import correr_auditoria_rotacion
 from golden_cross import actualizar_golden_cross
 from bollinger_squeeze import actualizar_squeeze
+from zonas_smc import actualizar_zonas, guardar_zonas
 from auditoria_golden_cross import correr_auditoria_golden_cross
 from auditoria_squeeze import correr_auditoria_squeeze
 from niveles_seguimiento import procesar_niveles
@@ -249,6 +250,16 @@ def main():
         log.error(f"Squeeze de Bollinger falló, no afecta al resto de la corrida: {e}")
         squeeze = {"puntos": [], "eventos": []}
 
+    # 3a-sexies. Zonas de oferta/demanda (Order Blocks) y FVG -- replica del
+    # indicador All-in-One Pro de Victoria (ver zonas_smc.py). ADITIVO: no
+    # toca el Radar Score, las alertas ni la Auditoría; solo informa. Si
+    # falla, no tumba la corrida.
+    try:
+        zonas = actualizar_zonas(df_rs, precios_ohlc, ahora)
+    except Exception as e:
+        log.error(f"Zonas oferta/demanda falló, no afecta al resto de la corrida: {e}")
+        zonas = {"puntos": [], "eventos": [], "estado": {}}
+
     # 3b. Señal de CEDEAR caro/barato
     precios_usd_actuales = dict(zip(df_rs["Ticker"], df_rs["Precio"])) if not df_rs.empty else {}
     # El benchmark (SPY) nunca aparece en df_rs -- no tiene sentido rankearlo
@@ -407,6 +418,7 @@ def main():
         "rotacion_ticker": rotacion_ticker,
         "golden_cross": golden_cross["puntos"],
         "squeeze": squeeze["puntos"],
+        "zonas": zonas["puntos"],
         "regimen_mercado": regimen,
         "regimen_score": regimen_score,
         "alertas": recomendaciones,
@@ -558,6 +570,18 @@ def main():
     elif eventos_squeeze:
         log.info(f"MODO=test o corrida degradada -- NO se avisan las {len(eventos_squeeze)} "
                  f"liberación(es) de squeeze de esta corrida")
+
+    # 9b-quinquies-bis. Zonas de oferta/demanda: estado + bitácora de "zona de
+    # interés" (solo se escribe en producción y sin corrida degradada, igual
+    # que el resto de los registros). Sin aviso a Telegram: por ahora solo
+    # se registra para poder medirlo más adelante.
+    if MODO == "produccion" and not corrida_degradada:
+        try:
+            guardar_zonas(zonas)
+            if zonas.get("eventos"):
+                log.info(f"Zonas: {len(zonas['eventos'])} activo(s) entraron en zona de interés (registrado en la bitácora)")
+        except Exception as e:
+            log.warning(f"Zonas: no se pudo guardar el estado/bitácora ({e})")
 
     # 9b-sexies. Avisos de niveles en seguimiento (ver niveles_seguimiento.py).
     # ADITIVO: no usa ni modifica ninguna señal del radar ni la Auditoría; baja
