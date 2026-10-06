@@ -334,6 +334,7 @@
                     SPY sin ser el más fuerte dentro de Energía). Cuando aparecen los dos, la línea de abajo (↳) resume qué combinación es.
                     <br>Dentro de cada sector con subcategorías (ej. Tecnología), los tickers van agrupados por subcategoría: arriba la más fuerte
                     (según el promedio de Fuerza Relativa de sus tickers, que se ve a la derecha del título del grupo) y, dentro de cada grupo, de mayor a menor Fuerza Relativa.
+                    En cada tarjeta, los botones de arriba filtran por subcategoría.
                 </div>
                 <div id="sectors-detail" class="space-y-6"></div>
             </section>
@@ -1843,19 +1844,22 @@
                     // con un encabezado por grupo; dentro de cada grupo, por FR. Los sin subcategoría van al final.
                     const listaSector = groupedBySector[sector].sort((x, y) => (y?.RS_Score ?? 0) - (x?.RS_Score ?? 0));
                     let rows;
+                    let gruposOrdenados = [];
                     if (!listaSector.some(t => t?.Subcategoria)) {
                         rows = listaSector.map(filaTicker).join('');
                     } else {
                         const grupos = {};
                         listaSector.forEach(t => { const k = t?.Subcategoria ?? '(sin subcategoría)'; (grupos[k] = grupos[k] || []).push(t); });
                         const prom = g => g.reduce((acc, t) => acc + (t?.RS_Score ?? 0), 0) / g.length;
-                        rows = Object.entries(grupos)
-                            .sort((p, q) => (p[0].startsWith('(sin') ? 1 : 0) - (q[0].startsWith('(sin') ? 1 : 0) || prom(q[1]) - prom(p[1]))
-                            .map(([nombre, g]) => `
+                        gruposOrdenados = Object.entries(grupos)
+                            .sort((p, q) => (p[0].startsWith('(sin') ? 1 : 0) - (q[0].startsWith('(sin') ? 1 : 0) || prom(q[1]) - prom(p[1]));
+                        rows = gruposOrdenados
+                            .map(([nombre, g], i) => `
+                                <div class="grupo-sub" data-grupo="${i}">
                                 <div class="sticky top-0 z-10 bg-surface flex items-baseline justify-between font-mono text-[10px] uppercase tracking-widest text-accent border-b border-accent/40 pt-3 pb-1 first:pt-0">
                                     <span>${nombre} <span class="text-gray-500 normal-case">(${g.length})</span></span>
                                     <span class="text-gray-500 normal-case">FR prom. ${prom(g).toFixed(0)}</span>
-                                </div>${g.map(filaTicker).join('')}`).join('');
+                                </div>${g.map(filaTicker).join('')}</div>`).join('');
                     }
 
                     const sectorScoreRaw = rsPorSector[sector];
@@ -1868,6 +1872,14 @@
                                 <span>${sector} <span class="text-gray-500 normal-case font-mono text-xs">(${cantidadEnSector})</span></span>
                                 <span class="text-xs font-mono text-accent bg-base px-2 py-1 rounded-sm">FR ${sectorScoreDisplay}</span>
                             </h3>
+                            ${gruposOrdenados.length ? `
+                            <div class="mb-2">
+                                <div class="flex flex-wrap gap-1.5" data-botones-sub="${sectorSlug(sector)}">
+                                    <button class="btn-sub px-2 py-1 border rounded-sm font-mono text-[10px] uppercase tracking-wide bg-accent text-base border-accent" data-grupo="-1" onclick="filtrarSubcategoria('${sectorSlug(sector)}', -1)">Todas <span class="opacity-70">${cantidadEnSector}</span></button>
+                                    ${gruposOrdenados.map(([nombre, g], i) => `<button class="btn-sub px-2 py-1 border border-surface rounded-sm font-mono text-[10px] uppercase tracking-wide text-gray-400 hover:text-accent hover:border-accent" data-grupo="${i}" onclick="filtrarSubcategoria('${sectorSlug(sector)}', ${i})">${nombre.replace(/^\(sin subcategoría\)$/, 'Otros')} <span class="opacity-60">${g.length}</span></button>`).join('')}
+                                </div>
+                                <div class="font-mono text-[9px] text-gray-600 mt-1">Tocá una subcategoría para ver solo esos tickers; "Todas" vuelve a mostrar el sector completo.</div>
+                            </div>` : ''}
                             <div class="max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
                                 ${rows}
                             </div>
@@ -3150,6 +3162,24 @@
                     <span class="text-[10px] uppercase text-gray-600 truncate">${sectorSubHtml(r)}</span>
                 </div>`;
             }).join('');
+        }
+
+        // Botones de subcategoría dentro de la tarjeta de cada sector (6/10):
+        // solo muestran/ocultan grupos ya dibujados; no recalculan nada.
+        function filtrarSubcategoria(slug, idx) {
+            const card = document.getElementById(slug);
+            if (!card) return;
+            card.querySelectorAll('.grupo-sub').forEach(g => {
+                g.style.display = (idx === -1 || Number(g.dataset.grupo) === idx) ? '' : 'none';
+            });
+            card.querySelectorAll('.btn-sub').forEach(b => {
+                const activo = Number(b.dataset.grupo) === idx;
+                b.classList.toggle('bg-accent', activo);
+                b.classList.toggle('text-base', activo);
+                b.classList.toggle('border-accent', activo);
+                b.classList.toggle('text-gray-400', !activo);
+                b.classList.toggle('border-surface', !activo);
+            });
         }
 
         // Sector + subcategoría chiquita al lado del ticker (a pedido de
