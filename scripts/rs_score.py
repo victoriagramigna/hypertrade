@@ -56,6 +56,31 @@ def _rsi(serie, periodo=14):
     return 100 - (100 / (1 + rs))
 
 
+def _rsi_wilder(serie, periodo=14):
+    """RSI con el suavizado de Wilder (el estándar, el mismo que usa TradingView).
+    Se agrega como dato INFORMATIVO aparte ("RSI_TV"): no reemplaza al RSI que
+    ya usa el radar (promedio simple) ni cambia ningún aviso ni la Auditoría."""
+    delta = serie.diff()
+    ganancia = delta.clip(lower=0)
+    perdida = (-delta.clip(upper=0))
+    # Wilder: primer promedio = media simple de los primeros 'periodo' valores,
+    # luego avg = (avg_prev*(periodo-1) + valor)/periodo (equivale a ewm alpha=1/periodo)
+    g = ganancia.copy(); l = perdida.copy()
+    if len(serie.dropna()) <= periodo:
+        return serie * float('nan')
+    ag = g.iloc[1:periodo + 1].mean(); al = l.iloc[1:periodo + 1].mean()
+    out = [float('nan')] * (periodo)
+    def _v(ag, al):
+        return 100.0 if al == 0 else 100 - 100 / (1 + ag / al)
+    out.append(_v(ag, al))
+    for i in range(periodo + 1, len(serie)):
+        ag = (ag * (periodo - 1) + g.iloc[i]) / periodo
+        al = (al * (periodo - 1) + l.iloc[i]) / periodo
+        out.append(_v(ag, al))
+    import pandas as _pd
+    return _pd.Series(out, index=serie.index)
+
+
 def _perfil_fuerza(row) -> str | None:
     """Cruza RS_Score (vs. mercado) con RS_Score_Sector (vs. pares del
     sector) en 4 lecturas posibles. None si el sector no tiene al menos
@@ -161,6 +186,12 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
         rsi_serie = _rsi(close, 14)
         rsi_hoy = rsi_serie.iloc[-1] if len(rsi_serie.dropna()) > 0 else None
         fila["RSI"] = round(float(rsi_hoy), 1) if rsi_hoy is not None and pd.notna(rsi_hoy) else None
+        # RSI al estilo TradingView (Wilder): dato extra, solo para mostrar y comparar
+        try:
+            rsi_tv = _rsi_wilder(close, 14).iloc[-1]
+            fila["RSI_TV"] = round(float(rsi_tv), 1) if pd.notna(rsi_tv) else None
+        except Exception:
+            fila["RSI_TV"] = None
 
         # Beta vs. benchmark -- cov(retorno ticker, retorno benchmark) /
         # var(retorno benchmark), sobre los últimos VENTANA_BETA días en los
