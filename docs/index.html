@@ -305,7 +305,7 @@
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
                 Activos que hoy están en una <span class="text-white">zona de demanda</span> (un lugar donde el precio ya arrancó fuerte hacia arriba y
                 donde podrían volver compradores) <span class="text-white">y</span> cumplen 4 filtros más:
-                precio sobre sus medias de 50 y 200 ruedas, fuerza relativa (RS) de 70 o más, volumen bajo (menos de 1x su promedio) y RSI menor a 70.
+                precio sobre sus medias de 50 y 200 ruedas, fuerza relativa (RS) de 70 o más, volumen bajo (menos de 1x su promedio) y RSI menor a 70. El RSI del radar usa promedio simple; entre paréntesis se muestra el RSI "TradingView" (suavizado de Wilder, el estándar) solo para que lo compares con tu pantalla: no cambia ningún aviso.
                 Es un <span class="text-white">mapa de lugares para mirar, no una señal de compra</span>: cada tarjeta dice dónde la idea deja de valer.
                 Se actualiza con velas cerradas; una zona que deja de cumplir pasa a <span class="text-gray-400">"Ya no está activa"</span> y se muestra 7 días con el motivo.
                 Guía completa: <a class="underline text-accent" href="https://claude.ai/artifact/Aia6RJvzhtuNAj6Kb3WUT6" target="_blank" rel="noopener">Cómo leer una zona de entrada</a>.
@@ -1971,7 +1971,7 @@
                             <span class="text-lg font-bold text-white">${logoInline(t, 22)}${t}${nombreChico(t)}</span>
                             <span class="flex items-center"><span class="font-mono text-[10px] text-gray-500 uppercase">${r.Sector ?? '—'}</span>${estrellaSemillero(t)}</span>
                         </div>
-                        <div class="font-mono text-[10px] text-gray-500 mt-0.5">Precio <span class="text-white">${f(r.Precio)}</span> · RS ${f(r.RS_Score, 0)} · RSI ${f(r.RSI, 1)} · Vol. ${f(r.Vol_rel)}x</div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-0.5">Precio <span class="text-white">${f(r.Precio)}</span> · RS ${f(r.RS_Score, 0)} · RSI ${f(r.RSI, 1)}${r.RSI_TV != null ? ` <span class="text-gray-600" title="Mismo cálculo de RSI que TradingView (suavizado de Wilder). El primero es el del radar (promedio simple); este es para comparar con tu pantalla.">(TradingView ${f(r.RSI_TV, 1)})</span>` : ''} · Vol. ${f(r.Vol_rel)}x</div>
                         <div class="font-mono text-[10px] mt-1">${estado}</div>
                         ${nivelesSeg ? estadoIdeaHtml(t, r.Precio) : ''}
                         <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
@@ -2028,7 +2028,7 @@
                     cuerpo = `
                         <div class="font-mono text-[10px] text-gray-400 mt-2 leading-relaxed">
                             ${ent}Cumple las 5 condiciones: toca una zona de demanda, está sobre sus medias de 50 y 200, RS ${f(r.RS_Score, 0)} (mín. 70),
-                            volumen ${f(r.Vol_rel)}x (menos de 1x) y RSI ${f(r.RSI, 1)} (menos de 70).
+                            volumen ${f(r.Vol_rel)}x (menos de 1x) y RSI ${f(r.RSI, 1)}${r.RSI_TV != null ? ` (TradingView ${f(r.RSI_TV, 1)})` : ''} (menos de 70, con el cálculo del radar).
                         </div>
                         <div class="grid grid-cols-1 gap-1 mt-2 font-mono text-[10px]">
                             <div><span class="text-gray-500">Zona de demanda (${dem?.tipo ?? '—'}):</span> <span class="text-white">${f(dem?.piso)} a ${f(dem?.techo)}</span>
