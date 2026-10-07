@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HyperTrade</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2218%22%20fill%3D%22%230B0E14%22/%3E%3Cg%20transform%3D%22translate%286%206%29%20scale%28.88%29%22%3E%3Crect%20x%3D%224%22%20y%3D%2246%22%20width%3D%2244%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23E0A458%22%20transform%3D%22rotate%28-8%204%2050%29%22/%3E%3Crect%20x%3D%2254%22%20y%3D%2246%22%20width%3D%2244%22%20height%3D%228%22%20rx%3D%222%22%20fill%3D%22%23E0A458%22%20transform%3D%22rotate%288%2098%2050%29%22/%3E%3Cpath%20d%3D%22M4%2094%20L22%2076%20L34%2084%20L46%2060%20L52%2048%20L64%2032%20L74%2038%20L94%2010%22%20fill%3D%22none%22%20stroke%3D%22%236FCF97%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/g%3E%3C/svg%3E">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B0E14">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="HyperTrade">
     
     <!-- Carga de Tailwind CSS sin build step -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -73,68 +79,8 @@
            evita para todos los botones de la página. */
         button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
     </style>
-    <style>
-        /* Pantalla de bienvenida (6/10): logo con efecto de golpe. Solo presentación. */
-        #ht-splash{position:fixed;inset:0;z-index:9999;background:#0B0E14;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease;cursor:pointer}
-        #ht-splash.ht-out{opacity:0;pointer-events:none}
-        #ht-splash .ht-box{position:relative;width:min(86vw,520px)}
-        #ht-splash img{width:100%;display:block;border-radius:16px;box-shadow:0 0 28px rgba(0,255,170,.3);animation:ht-in .7s ease both}
-        #ht-splash img.ht-kick{animation:ht-shatter .45s cubic-bezier(.36,.07,.19,.97) both}
-        #ht-splash .ht-hint{position:absolute;left:0;right:0;bottom:-26px;text-align:center;font:11px 'IBM Plex Mono',monospace;color:#6b7280}
-        #ht-splash .ht-spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#00ffaa;box-shadow:0 0 12px #00ffaa;pointer-events:none}
-        @keyframes ht-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-        @keyframes ht-shatter{0%{transform:translateX(0) rotate(0)}20%{transform:translateX(-10px) rotate(-3deg)}40%{transform:translateX(15px) rotate(4deg) scale(1.05)}60%{transform:translateX(-8px) rotate(-2deg)}80%{transform:translateX(4px) rotate(1deg)}100%{transform:none}}
-        @media (prefers-reduced-motion:reduce){#ht-splash img,#ht-splash img.ht-kick{animation:none}}
-    </style>
 </head>
 <body class="bg-base text-gray-300 font-sans p-4 md:p-8 min-h-screen relative">
-<!-- Pantalla de bienvenida: se muestra una vez por sesión del navegador (agregá ?splash=1 a la dirección para verla de nuevo).
-     Si la imagen hypertrade_logo.jpg no está en docs/, se salta sola y no pasa nada. -->
-<div id="ht-splash" style="display:none">
-    <div class="ht-box" id="ht-box">
-        <img id="ht-splash-img" src="hypertrade_logo.jpg" alt="HyperTrade — Rompiendo límites">
-        <div class="ht-hint">tocá para entrar</div>
-    </div>
-</div>
-<script>
-(function () {
-    var el = document.getElementById('ht-splash');
-    var img = document.getElementById('ht-splash-img');
-    var yaVisto = false;
-    try { yaVisto = sessionStorage.getItem('ht_splash') === '1'; } catch (e) {}
-    if (/[?&]splash=1/.test(location.search)) yaVisto = false;
-    if (yaVisto) { el.remove(); return; }
-    var cerrado = false;
-    function cerrar() {
-        if (cerrado) return; cerrado = true;
-        try { sessionStorage.setItem('ht_splash', '1'); } catch (e) {}
-        el.classList.add('ht-out');
-        setTimeout(function () { el.remove(); }, 700);
-    }
-    function golpe() {
-        img.classList.remove('ht-kick'); void img.offsetWidth; img.classList.add('ht-kick');
-        img.style.boxShadow = '0 0 60px rgba(0,255,170,.85)';
-        setTimeout(function () { img.style.boxShadow = '0 0 28px rgba(0,255,170,.3)'; }, 350);
-        var box = document.getElementById('ht-box');
-        for (var i = 0; i < 24; i++) {
-            var sp = document.createElement('div'); sp.className = 'ht-spark';
-            sp.style.left = '64%'; sp.style.top = '36%'; box.appendChild(sp);
-            var ang = Math.random() * Math.PI * 2, v = 50 + Math.random() * 110;
-            var tx = Math.cos(ang) * v, ty = Math.sin(ang) * v - 20;
-            if (sp.animate) sp.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: 'translate(' + tx + 'px,' + ty + 'px) scale(0)', opacity: 0 }], { duration: 600 + Math.random() * 300, easing: 'ease-out' });
-            (function (n) { setTimeout(function () { n.remove(); }, 950); })(sp);
-        }
-    }
-    img.addEventListener('error', function () { el.remove(); });   // sin imagen: no mostrar nada
-    img.addEventListener('load', function () {
-        el.style.display = 'flex';
-        setTimeout(golpe, 800);
-        setTimeout(cerrar, 3200);
-    });
-    if (img.complete && img.naturalWidth > 0) img.dispatchEvent(new Event('load'));
-    el.addEventListener('click', function () { if (!cerrado) { golpe(); setTimeout(cerrar, 350); } });
-})();
-</script>
 
 
     <!-- Banner de errores de fetch -->
@@ -730,7 +676,10 @@
                 <span class="text-neg">Se rompió</span> (el precio ya está por debajo de ese nivel) o <span class="text-gray-300">Abierta</span>. Es solo informativo: cada cuenta confirma sus niveles con cierres (diarios o semanales), no con el precio de un instante.
                 Las ideas sin stop no se pueden dar por rotas, y las que no dan ningún nivel solo quedan anotadas. La tabla de arriba resume cuántas se cumplieron o se rompieron <span class="text-white">por cuenta</span>; con pocos casos no dice nada todavía.
                 Los datos salen de <code class="text-accent">data/log_ideas_externas.jsonl</code>.
+                <br><span class="text-white">Tus marcas:</span> en cada tarjeta, <span class="text-white">Entré</span> anota que tomaste esa operación (con tu precio y fecha; si tiene CEDEAR, te pide el precio <span class="text-white">en pesos</span> y calcula la ganancia o pérdida en pesos) y <span class="text-white">Descartar</span> la saca de la lista (por ejemplo, un activo sin CEDEAR); las descartadas se pueden recuperar con "Mostrar descartadas".
+                El resumen por cuenta sigue contando <span class="text-white">todas</span> las ideas, también las descartadas, para que la auditoría de cada cuenta no quede sesgada. Tus marcas se guardan en <code class="text-accent">data/ideas_estado.json</code> y se sincronizan entre dispositivos con el mismo token de GitHub de la solapa Cartera.
             </div>
+            <div id="ideas-sync" class="font-mono text-[10px] mb-2 text-gray-500"></div>
             <div id="ideas-resumen" class="mb-3"></div>
             <div id="ideas-filtros" class="flex flex-wrap gap-2 mb-3"></div>
             <div id="ideas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
@@ -3312,7 +3261,97 @@
         // ============ SOLAPAS ============
         // ============ IDEAS DE TERCEROS (data/log_ideas_externas.jsonl) ============
         const IDEAS_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/log_ideas_externas.jsonl';
-        let ideasExternas = null, ideasFiltroFuente = 'todas';
+        let ideasExternas = null, ideasFiltroFuente = 'todas', ideasMostrarDesc = false;
+        const IDEAS_ESTADO_PATH = 'data/ideas_estado.json', IDEAS_ESTADO_KEY = 'ideas_estado_v1';
+        function ideasEstadoLeer() {
+            try { const o = JSON.parse(localStorage.getItem(IDEAS_ESTADO_KEY) || '{}'); return { entradas: o.entradas && typeof o.entradas === 'object' ? o.entradas : {}, descartadas: Array.isArray(o.descartadas) ? o.descartadas : [] }; }
+            catch (e) { return { entradas: {}, descartadas: [] }; }
+        }
+        function ideasEstadoGuardar(o, sync = true) {
+            try { localStorage.setItem(IDEAS_ESTADO_KEY, JSON.stringify(o)); } catch (e) {}
+            if (sync) ideasSincronizar();
+        }
+        function ideasMsg(txt, malo) { const el = document.getElementById('ideas-sync'); if (el) { el.textContent = txt; el.className = 'font-mono text-[10px] mb-2 ' + (malo ? 'text-neg' : 'text-gray-500'); } }
+        let _ideasCola = Promise.resolve();
+        function ideasSincronizar() { _ideasCola = _ideasCola.then(_ideasSubir).catch(() => {}); return _ideasCola; }
+        async function _ideasSubir() {
+            const token = cargarTokenGithub();
+            if (!token) { ideasMsg('Sin token de GitHub en este dispositivo: tus marcas quedan solo acá. Conectalo en la solapa Cartera para tenerlas en todos.'); return; }
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${IDEAS_ESTADO_PATH}`;
+                const hd = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+                const contenido = JSON.stringify({ ...ideasEstadoLeer(), actualizado: new Date().toISOString() }, null, 2);
+                const b64 = btoa(unescape(encodeURIComponent(contenido)));
+                let put = null;
+                for (let i = 0; i < 3; i++) {
+                    let sha = null;
+                    const g = await fetch(`${apiUrl}?t=${Date.now()}`, { headers: hd, cache: 'no-store' });
+                    if (g.ok) sha = (await g.json()).sha; else if (g.status !== 404) throw new Error('HTTP ' + g.status);
+                    const body = { message: `Sync marcas de Ideas desde dashboard (${new Date().toISOString()})`, content: b64 };
+                    if (sha) body.sha = sha;
+                    put = await fetch(apiUrl, { method: 'PUT', headers: { ...hd, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                    if (put.status !== 409 && put.status !== 422) break;
+                    await new Promise(r => setTimeout(r, 700));
+                }
+                if (put.ok) ideasMsg('Marcas sincronizadas con GitHub: ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }));
+                else ideasMsg(`⚠ No se pudieron sincronizar las marcas (HTTP ${put.status}). Revisá el token en la solapa Cartera.`, true);
+            } catch (e) { ideasMsg('⚠ No se pudieron sincronizar las marcas (sin conexión o token inválido).', true); }
+        }
+        async function ideasEstadoTraer() {
+            const token = cargarTokenGithub();
+            try {
+                let remoto = null;
+                if (token) {
+                    const g = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${IDEAS_ESTADO_PATH}?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }, cache: 'no-store' });
+                    if (g.ok) { const info = await g.json(); remoto = JSON.parse(decodeURIComponent(escape(atob(info.content.replace(/\n/g, ''))))); }
+                    else if (g.status !== 404) throw new Error('HTTP ' + g.status);
+                } else {
+                    const g = await fetch(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${IDEAS_ESTADO_PATH}?t=${Date.now()}`, { cache: 'no-store' });
+                    if (g.ok) remoto = await g.json();
+                }
+                if (remoto) {
+                    ideasEstadoGuardar({ entradas: remoto.entradas ?? {}, descartadas: remoto.descartadas ?? [] }, false);
+                    ideasMsg(token ? 'Marcas sincronizadas con GitHub (traídas al abrir).' : 'Marcas traídas de GitHub. Para guardar cambios desde este dispositivo, conectá el token en la solapa Cartera.');
+                } else if (token) {
+                    const l = ideasEstadoLeer();
+                    if (Object.keys(l.entradas).length || l.descartadas.length) await ideasSincronizar();
+                } else ideasMsg('Sin token de GitHub en este dispositivo: tus marcas quedan solo acá. Conectalo en la solapa Cartera para tenerlas en todos.');
+            } catch (e) { ideasMsg('No se pudieron traer las marcas de GitHub; se muestran las guardadas en este dispositivo.', true); }
+        }
+        function cedearDe(t) {
+            const cp = currentRadarData?.cedears_pricing;
+            const c = (cp?.cedears ?? []).find(x => x?.Ticker?.toUpperCase() === String(t).toUpperCase());
+            if (!c || c.sin_datos || !c.Ratio || !cp?.ccl) return null;
+            return { ratio: Number(c.Ratio), ars: c.Precio_real_ARS ?? null, ccl: Number(cp.ccl) };
+        }
+        const _ars = (x) => x == null ? '—' : '$' + Number(x).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function ideaEntre(id) {
+            const i = (ideasExternas ?? []).find(x => x.id === id); if (!i) return;
+            const ced = cedearDe(i.ticker);
+            const px = currentRadarData?.ranking?.find(r => r.Ticker === i.ticker)?.Precio;
+            let moneda, sug;
+            if (ced && ced.ars) { moneda = 'ARS'; sug = ced.ars; }
+            else { moneda = 'USD'; sug = i.zona_entrada?.desde ?? px ?? i.precio_al_publicar ?? ''; }
+            const txt = moneda === 'ARS' ? `¿A qué precio compraste el CEDEAR de ${i.ticker}, en pesos? (podés corregirlo)` : `¿A qué precio entraste en ${i.ticker}, en dólares? (no tiene CEDEAR en el radar)`;
+            const resp = prompt(txt, String(sug).replace('.', ','));
+            if (resp === null) return;
+            const s = String(resp).trim();
+            const v2 = parseFloat(s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : s);
+            if (!isFinite(v2) || v2 <= 0) { alert('Precio no válido.'); return; }
+            const o = ideasEstadoLeer();
+            o.entradas[id] = { precio: v2, moneda, fecha: new Date().toISOString().slice(0, 10) };
+            if (moneda === 'ARS') o.entradas[id].ccl = ced.ccl;
+            ideasEstadoGuardar(o); renderIdeas();
+        }
+        function ideaSalir(id) { const o = ideasEstadoLeer(); delete o.entradas[id]; ideasEstadoGuardar(o); renderIdeas(); }
+        function ideaDescartar(id) {
+            const i = (ideasExternas ?? []).find(x => x.id === id);
+            if (!confirm(`¿Descartar la idea de ${i?.ticker ?? ''} (${i?.fuente ?? ''})? Se oculta de la lista, no se borra: la podés recuperar con "Mostrar descartadas".`)) return;
+            const o = ideasEstadoLeer(); if (!o.descartadas.includes(id)) o.descartadas.push(id);
+            ideasEstadoGuardar(o); renderIdeas();
+        }
+        function ideaRestaurar(id) { const o = ideasEstadoLeer(); o.descartadas = o.descartadas.filter(x => x !== id); ideasEstadoGuardar(o); renderIdeas(); }
+        function ideaToggleDesc() { ideasMostrarDesc = !ideasMostrarDesc; renderIdeas(); }
         function _esc(t) { return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
         async function cargarIdeasExternas() {
             const msg = document.getElementById('ideas-container');
@@ -3331,6 +3370,7 @@
                 if (msg) msg.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">No se pudo leer el registro de ideas (¿ya subiste <code>data/log_ideas_externas.jsonl</code>?).</div>';
                 return;
             }
+            await ideasEstadoTraer();
             renderIdeas();
         }
         // Estado de una idea según el precio actual (informativo). Devuelve {k, txt, cls}
@@ -3373,24 +3413,45 @@
             const fuentes = ['todas', ...Object.keys(porFuente)];
             const btn = (v) => `<button type="button" onclick="ideaFiltrar(${JSON.stringify(v).replace(/"/g, '&quot;')})" class="font-mono text-[10px] px-2 py-1 rounded-sm border ${ideasFiltroFuente === v ? 'border-accent text-accent' : 'border-gray-600 text-gray-300'}">${v === 'todas' ? 'Todas' : _esc(v)}</button>`;
             document.getElementById('ideas-filtros').innerHTML = fuentes.map(btn).join('');
-            const vista = lista.filter(i => ideasFiltroFuente === 'todas' || i.fuente === ideasFiltroFuente);
+            const est = ideasEstadoLeer();
+            const nDesc = lista.filter(i => est.descartadas.includes(i.id)).length;
+            document.getElementById('ideas-filtros').innerHTML += (nDesc || ideasMostrarDesc) ? `<button type="button" onclick="ideaToggleDesc()" class="font-mono text-[10px] px-2 py-1 rounded-sm border border-gray-700 text-gray-400" title="Muestra u oculta las ideas que descartaste. No se borran.">${ideasMostrarDesc ? 'Esconder' : 'Mostrar'} descartadas (${nDesc})</button>` : '';
+            const vista = lista.filter(i => (ideasFiltroFuente === 'todas' || i.fuente === ideasFiltroFuente) && (ideasMostrarDesc || !est.descartadas.includes(i.id)));
             cont.innerHTML = vista.map(i => {
                 const r = ranking[i.ticker];
                 const precio = r?.Precio;
                 const e = estadoIdea(i, precio);
                 const var_ = (precio != null && i.precio_al_publicar) ? (precio / Number(i.precio_al_publicar) - 1) * 100 : null;
                 const filasN = [];
-                if (i.zona_entrada) filasN.push(`<div><span class="text-gray-500">Entrada / zona:</span> <span class="text-white">${f(i.zona_entrada.desde)}${i.zona_entrada.hasta !== i.zona_entrada.desde ? ' a ' + f(i.zona_entrada.hasta) : ''}</span></div>`);
+                const cI = cedearDe(i.ticker);
+                const aprox = (v) => (cI && v != null && !isNaN(Number(v))) ? ` <span class="text-gray-500">≈ ${_ars(Number(v) * cI.ccl / cI.ratio)}</span>` : '';
+                if (i.zona_entrada) filasN.push(`<div><span class="text-gray-500">Entrada / zona:</span> <span class="text-white">${f(i.zona_entrada.desde)}${i.zona_entrada.hasta !== i.zona_entrada.desde ? ' a ' + f(i.zona_entrada.hasta) : ''}</span>${aprox(i.zona_entrada.desde)}</div>`);
                 if (i.caso_alcista) filasN.push(`<div><span class="text-gray-500">Caso alcista:</span> <span class="text-gray-300">${_esc(i.caso_alcista)}</span></div>`);
                 if (i.caso_bajista) filasN.push(`<div><span class="text-gray-500">Caso bajista / stop:</span> <span class="text-gray-300">${_esc(i.caso_bajista)}</span></div>`);
-                if (i.invalidacion != null) filasN.push(`<div><span class="text-gray-500">La idea falla en:</span> <span class="text-white">${f(i.invalidacion)}</span>${precio != null ? ` <span class="text-gray-400">(${f(Math.abs(precio - i.invalidacion) / precio * 100, 1)}% ${i.invalidacion < precio ? 'abajo' : 'arriba'} del precio)</span>` : ''}</div>`);
-                if ((i.objetivos ?? []).length) filasN.push(`<div><span class="text-gray-500">Objetivo(s):</span> <span class="text-white">${i.objetivos.map(o => f(o)).join(' · ')}</span>${precio != null ? ` <span class="text-gray-400">(el primero, ${f((Math.min(...i.objetivos) / precio - 1) * 100, 1)}% ${Math.min(...i.objetivos) > precio ? 'arriba' : 'abajo'} del precio)</span>` : ''}</div>`);
+                if (i.invalidacion != null) filasN.push(`<div><span class="text-gray-500">La idea falla en:</span> <span class="text-white">${f(i.invalidacion)}</span>${aprox(i.invalidacion)}${precio != null ? ` <span class="text-gray-400">(${f(Math.abs(precio - i.invalidacion) / precio * 100, 1)}% ${i.invalidacion < precio ? 'abajo' : 'arriba'} del precio)</span>` : ''}</div>`);
+                if ((i.objetivos ?? []).length) filasN.push(`<div><span class="text-gray-500">Objetivo(s):</span> <span class="text-white">${i.objetivos.map(o => f(o)).join(' · ')}</span>${aprox(Math.min(...i.objetivos))}${precio != null ? ` <span class="text-gray-400">(el primero, ${f((Math.min(...i.objetivos) / precio - 1) * 100, 1)}% ${Math.min(...i.objetivos) > precio ? 'arriba' : 'abajo'} del precio)</span>` : ''}</div>`);
                 if (!filasN.length) filasN.push('<div class="text-gray-600">No dio niveles concretos.</div>');
                 const av = (nivelesTerceros ?? []).filter(n => n.ticker === i.ticker && String(n.fuente).replace(/^@/,'').toLowerCase() === String(i.fuente).replace(/^@/,'').toLowerCase());
                 if (av.length) filasN.push(`<div class="mt-1"><span class="text-gray-500">Avisos por Telegram del radar:</span> <span class="text-white">${av.map(n => f(n.nivel) + ' (' + n.direccion + ')').join(' · ')}</span></div>`);
+                const ent = est.entradas[i.id];
+                const desc = est.descartadas.includes(i.id);
+                const tv = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(i.ticker)}`;
+                const cedI = cedearDe(i.ticker);
+                const entARS = ent && ent.moneda === 'ARS';
+                const actualEnt = entARS ? cedI?.ars : precio;
+                const varEnt = (ent && actualEnt != null) ? (actualEnt / ent.precio - 1) * 100 : null;
+                const marcaEnt = ent ? `<div class="mt-1 text-pos font-bold">✔ ENTRÉ <span class="font-normal text-gray-300">el ${_esc(ent.fecha)} a ${entARS ? _ars(ent.precio) + ' (CEDEAR)' : f(ent.precio) + ' USD'}${varEnt != null ? ` · hoy <span class="${varEnt >= 0 ? 'text-pos' : 'text-neg'}">${varEnt >= 0 ? '+' : ''}${f(varEnt, 1)}%</span> desde tu entrada${entARS ? ' (en pesos)' : ''}` : ''}</span></div>` : '';
+                const bt = 'font-mono text-[10px] px-2 py-1 rounded-sm border border-gray-600 text-gray-300';
+                const botones = `<div class="flex flex-wrap gap-2 mt-2">
+                    <a href="${tv}" target="_blank" rel="noopener" class="${bt}" title="Abre el gráfico de ${_esc(i.ticker)} en TradingView">📈 Gráfico</a>
+                    ${desc ? `<button type="button" class="${bt}" onclick="ideaRestaurar('${_esc(i.id)}')" title="Vuelve a mostrar esta idea">↩ Restaurar</button>`
+                           : (ent ? `<button type="button" class="${bt}" onclick="ideaSalir('${_esc(i.id)}')" title="Saca tu marca de entrada">Quitar marca de entrada</button>`
+                                  : `<button type="button" class="${bt}" onclick="ideaEntre('${_esc(i.id)}')" title="Anota que tomaste esta operación, con tu precio y fecha">✔ Entré</button>`)}
+                    ${desc ? '' : `<button type="button" class="${bt}" onclick="ideaDescartar('${_esc(i.id)}')" title="Saca esta idea de la lista (no se borra; se recupera con Mostrar descartadas)">✕ Descartar</button>`}
+                </div>`;
                 const link = i.fuente_url ? ` · <a href="${_esc(i.fuente_url)}" target="_blank" rel="noopener" class="text-accent underline">ver post</a>` : '';
                 const borde = e.k === 'rota' ? 'border-neg' : (e.k === 'cumplida' ? 'border-pos' : 'border-accent');
-                return `<div class="bg-[#151b2b] border-l-4 ${borde} p-3 rounded-r-sm font-mono text-[10px] leading-relaxed">
+                return `<div class="bg-[#151b2b] border-l-4 ${borde} p-3 ${desc ? 'opacity-50' : ''} rounded-r-sm font-mono text-[10px] leading-relaxed">
                     <div class="flex justify-between items-start">
                         <span class="text-lg font-bold text-white">${logoInline(i.ticker, 22)}${_esc(i.ticker)}${nombreChico(i.ticker)}</span>
                         <span class="text-gray-500 text-right">${_esc(i.fecha_publicacion ?? '')}</span>
@@ -3398,11 +3459,14 @@
                     <div class="mt-1"><span class="text-accent font-bold">${_esc(i.fuente)}</span>${link}</div>
                     <div class="text-gray-500">${_esc(i.tipo ?? '')}</div>
                     <div class="mt-1">Precio al publicar: <span class="text-white">${f(i.precio_al_publicar)}</span> · ahora: <span class="text-white">${f(precio)}</span>${var_ != null ? ` <span class="${var_ >= 0 ? 'text-pos' : 'text-neg'}">(${var_ >= 0 ? '+' : ''}${f(var_, 1)}%)</span>` : ''}</div>
+                    ${cI ? `<div class="text-gray-400">CEDEAR en pesos: <span class="text-white">${_ars(cI.ars)}</span> <span class="text-gray-600">(ratio ${cI.ratio}:1, CCL $${f(cI.ccl, 2)}). Los "≈ $" de abajo son el nivel en pesos con el CCL de hoy: aproximados.</span></div>` : '<div class="text-gray-600">Sin CEDEAR en el radar: los precios están en dólares.</div>'}
                     <div class="mt-1 font-bold ${e.cls}">${_esc(e.txt)}</div>
+                    ${marcaEnt}${desc ? '<div class="text-gray-600 mt-1">Descartada por vos.</div>' : ''}
                     <div class="mt-1">${filasN.join('')}</div>
                     ${i.notas ? `<div class="text-gray-500 mt-1">${_esc(i.notas)}</div>` : ''}
                     ${i.fecha_publicacion_nota ? `<div class="text-gray-600 mt-1">Fecha: ${_esc(i.fecha_publicacion_nota)}</div>` : ''}
                     ${!r ? '<div class="text-gray-600 mt-1">Este activo no está (o no tiene datos hoy) en el radar.</div>' : ''}
+                    ${botones}
                 </div>`;
             }).join('') || '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay ideas registradas.</div>';
         }
