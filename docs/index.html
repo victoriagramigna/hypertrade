@@ -283,7 +283,7 @@
                 Se marcan con la <span class="text-accent">☆</span> de cualquier tarjeta de Zonas de interés o escribiendo el ticker acá abajo.
                 Cada uno muestra <span class="text-white">cuáles de las 5 condiciones cumple hoy (✓) y cuáles le faltan (✗)</span>, así ves qué le falta para entrar en zona de interés.
                 Tus favoritos y los niveles que ocultes <span class="text-white">se sincronizan entre tus dispositivos</span> a través de <code class="text-accent">data/semillero.json</code> en el repo, igual que Mi Cartera: hace falta tener el token de GitHub conectado en cada dispositivo (solapa Cartera, una sola vez). Sin token, la lista queda solo en ese navegador.
-                También muestra los <span class=\"text-white\">niveles automáticos</span> más cercanos (medias, AVWAP y bordes de zonas, que se recalculan solos) y, si los hay, los <span class=\"text-white\">niveles cargados a mano</span> (de un analista o tus stops, con su fecha y un aviso si quedaron viejos). La lista es para mirar, no una señal de compra.
+                También muestra los <span class=\"text-white\">niveles automáticos</span> más cercanos (medias, AVWAP y bordes de zonas, que se recalculan solos) y, si los hay, los <span class=\"text-white\">niveles cargados a mano</span> (tus stops y tus propias referencias, con su fecha y un aviso si quedaron viejos). Los niveles de terceros ya no se muestran acá: están en la solapa <span class=\"text-white\">Ideas</span>. La lista es para mirar, no una señal de compra.
             </div>
             <div class="flex items-center gap-2 mb-3">
                 <input type="text" id="semillero-input" class="bg-surface border border-gray-700 text-white font-mono text-sm px-3 py-1.5 rounded-sm uppercase w-40 focus:outline-none focus:border-accent" placeholder="Ticker">
@@ -717,48 +717,74 @@
         </section>
     </div>
 
+    <!-- ===== SOLAPA: IDEAS DE TERCEROS ===== -->
+    <div id="tab-ideas" class="tab-content hidden-tab space-y-6">
+        <section>
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">💡 Ideas de terceros <span id="ideas-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Ideas y estrategias que publican <span class="text-white">cuentas externas</span> (X, Telegram) y que me pasaste para seguir. <span class="text-white">No son señales del radar ni recomendaciones</span>:
+                son opiniones de terceros. Cada tarjeta dice <span class="text-white">quién la dijo, cuándo</span>, a qué precio estaba el activo en ese momento, y los niveles que dio (entrada, stop u objetivo).
+                El <span class="text-white">estado</span> se calcula con el precio de la última corrida del radar: <span class="text-pos">Objetivo alcanzado</span>, <span class="text-accent">En duda</span> (a 2% o menos del nivel donde la idea falla),
+                <span class="text-neg">Se rompió</span> (el precio ya está por debajo de ese nivel) o <span class="text-gray-300">Abierta</span>. Es solo informativo: cada cuenta confirma sus niveles con cierres (diarios o semanales), no con el precio de un instante.
+                Las ideas sin stop no se pueden dar por rotas, y las que no dan ningún nivel solo quedan anotadas. La tabla de arriba resume cuántas se cumplieron o se rompieron <span class="text-white">por cuenta</span>; con pocos casos no dice nada todavía.
+                Los datos salen de <code class="text-accent">data/log_ideas_externas.jsonl</code>.
+            </div>
+            <div id="ideas-resumen" class="mb-3"></div>
+            <div id="ideas-filtros" class="flex flex-wrap gap-2 mb-3"></div>
+            <div id="ideas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <div class="font-mono text-[10px] text-gray-600 mt-2">Opiniones de terceros, no una recomendación. No es asesoramiento financiero.</div>
+        </section>
+    </div>
+
     <!-- Barra de navegación inferior fija -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-8 z-40 text-gray-500">
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-9 z-40 text-gray-500">
         
         <button class="tab-btn active flex flex-col items-center gap-1 py-2" data-tab="inicio" onclick="switchTab('inicio')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Inicio</span>
+            <span class="text-[8px] font-mono uppercase">Inicio</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="alertas" onclick="switchTab('alertas')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Alertas</span>
+            <span class="text-[8px] font-mono uppercase">Alertas</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="universo" onclick="switchTab('universo')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Universo</span>
+            <span class="text-[8px] font-mono uppercase">Universo</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cedears" onclick="switchTab('cedears')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            <span class="text-[9px] font-mono uppercase">CEDEARs</span>
+            <span class="text-[8px] font-mono uppercase">CEDEARs</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="historial" onclick="switchTab('historial')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Historial</span>
+            <span class="text-[8px] font-mono uppercase">Historial</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cartera" onclick="switchTab('cartera')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20v14H2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Cartera</span>
+            <span class="text-[8px] font-mono uppercase">Cartera</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="auditoria" onclick="switchTab('auditoria')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Auditoría</span>
+            <span class="text-[8px] font-mono uppercase">Auditoría</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cripto" onclick="switchTab('cripto')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.8 9a2 2 0 0 0-2-1.5h-1.6a1.9 1.9 0 0 0 0 3.8h1.6a1.9 1.9 0 0 1 0 3.7h-1.6a2 2 0 0 1-2-1.5M12 6v1.5M12 16.5V18"></path></svg>
-            <span class="text-[9px] font-mono uppercase">Cripto</span>
+            <span class="text-[8px] font-mono uppercase">Cripto</span>
+        </button>
+        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="ideas" onclick="switchTab('ideas')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"></path></svg>
+            <span class="text-[8px] font-mono uppercase">Ideas</span>
         </button>
     </nav>
 
@@ -1588,13 +1614,16 @@
 
         // Niveles de seguimiento (data/niveles_seguimiento.json): se muestran en El Semillero.
         const NIVELES_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/niveles_seguimiento.json';
-        let nivelesSeg = null;
+        let nivelesSeg = null, nivelesTerceros = [];
         async function cargarNivelesSeg() {
             try {
                 const r = await fetch(NIVELES_URL + '?t=' + Date.now());
                 if (!r.ok) return;
                 const j = await r.json();
-                nivelesSeg = Array.isArray(j?.niveles) ? j.niveles : [];
+                const _todos = Array.isArray(j?.niveles) ? j.niveles : [];
+                nivelesSeg = _todos.filter(n => !n.fuente);   // El Semillero: solo niveles propios
+                nivelesTerceros = _todos.filter(n => n.fuente); // Los de terceros van en la solapa Ideas
+                if (ideasExternas) renderIdeas();
                 renderSemillero(currentRadarData);
             } catch (e) { /* sin niveles: el Semillero se ve igual */ }
         }
@@ -3281,6 +3310,103 @@
         }
 
         // ============ SOLAPAS ============
+        // ============ IDEAS DE TERCEROS (data/log_ideas_externas.jsonl) ============
+        const IDEAS_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/log_ideas_externas.jsonl';
+        let ideasExternas = null, ideasFiltroFuente = 'todas';
+        function _esc(t) { return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+        async function cargarIdeasExternas() {
+            const msg = document.getElementById('ideas-container');
+            try {
+                const r = await fetch(IDEAS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const txt = await r.text();
+                const porId = new Map();
+                txt.split('\n').forEach(l => {
+                    l = l.trim(); if (!l) return;
+                    try { const j = JSON.parse(l); if (j && j.id) porId.set(j.id, { ...(porId.get(j.id) || {}), ...j }); } catch (e) { /* línea inválida: se ignora */ }
+                });
+                ideasExternas = [...porId.values()].filter(x => x.ticker && x.fuente);
+            } catch (e) {
+                ideasExternas = null;
+                if (msg) msg.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">No se pudo leer el registro de ideas (¿ya subiste <code>data/log_ideas_externas.jsonl</code>?).</div>';
+                return;
+            }
+            renderIdeas();
+        }
+        // Estado de una idea según el precio actual (informativo). Devuelve {k, txt, cls}
+        function estadoIdea(i, precio) {
+            if (precio == null) return { k: 'sin_dato', txt: 'Sin precio en el radar', cls: 'text-gray-500' };
+            const inval = (i.invalidacion != null && !isNaN(Number(i.invalidacion))) ? Number(i.invalidacion) : null;
+            const objs = (Array.isArray(i.objetivos) ? i.objetivos : []).map(Number).filter(x => !isNaN(x));
+            if (inval != null && precio <= inval) return { k: 'rota', txt: 'Se rompió: el precio está por debajo del nivel donde la idea falla', cls: 'text-neg' };
+            if (objs.length && precio >= Math.min(...objs)) return { k: 'cumplida', txt: 'Objetivo alcanzado', cls: 'text-pos' };
+            if (inval != null && (precio - inval) / precio * 100 <= 2) return { k: 'duda', txt: 'En duda: a 2% o menos del nivel donde falla', cls: 'text-accent' };
+            if (inval == null && !objs.length) return { k: 'sin_niveles', txt: 'Sin niveles para medir: solo anotada', cls: 'text-gray-500' };
+            if (inval == null) return { k: 'sin_stop', txt: 'Abierta, pero sin stop: no se puede saber cuándo falla', cls: 'text-gray-300' };
+            return { k: 'abierta', txt: 'Abierta', cls: 'text-gray-300' };
+        }
+        function ideaFiltrar(f) { ideasFiltroFuente = f; renderIdeas(); }
+        function renderIdeas() {
+            const cont = document.getElementById('ideas-container');
+            if (!cont || !ideasExternas) return;
+            const ranking = Object.fromEntries((currentRadarData?.ranking ?? []).map(r => [r.Ticker, r]));
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+            const lista = [...ideasExternas].sort((a, b) => String(b.fecha_publicacion).localeCompare(String(a.fecha_publicacion)) || String(a.ticker).localeCompare(String(b.ticker)));
+            document.getElementById('ideas-count').textContent = `(${lista.length})`;
+            // resumen por cuenta
+            const porFuente = {};
+            lista.forEach(i => {
+                const e = estadoIdea(i, ranking[i.ticker]?.Precio);
+                const o = porFuente[i.fuente] ??= { total: 0, abierta: 0, duda: 0, rota: 0, cumplida: 0, otras: 0 };
+                o.total++;
+                if (e.k === 'abierta' || e.k === 'sin_stop') o.abierta++;
+                else if (e.k === 'duda') o.duda++;
+                else if (e.k === 'rota') o.rota++;
+                else if (e.k === 'cumplida') o.cumplida++;
+                else o.otras++;
+            });
+            const filas = Object.entries(porFuente).map(([fu, o]) => `<tr class="border-t border-gray-800"><td class="py-1 pr-2 text-white">${_esc(fu)}</td><td class="text-center">${o.total}</td><td class="text-center text-gray-300">${o.abierta}</td><td class="text-center text-accent">${o.duda}</td><td class="text-center text-neg">${o.rota}</td><td class="text-center text-pos">${o.cumplida}</td><td class="text-center text-gray-500">${o.otras}</td></tr>`).join('');
+            document.getElementById('ideas-resumen').innerHTML = `<div class="font-mono text-[10px] text-gray-500 border border-surface rounded-sm p-2 overflow-x-auto">
+                <div class="text-gray-300 font-bold mb-1">Resumen por cuenta <span class="font-normal text-gray-600">-- con el precio de la última corrida; con pocas ideas no se puede concluir nada</span></div>
+                <table class="w-full"><thead><tr class="text-gray-500"><th class="text-left font-normal">Cuenta</th><th class="font-normal" title="Ideas registradas">Total</th><th class="font-normal" title="Abiertas, sin llegar al objetivo ni romper">Abiertas</th><th class="font-normal" title="A 2% o menos del nivel donde falla">En duda</th><th class="font-normal" title="Precio por debajo del nivel donde falla">Rotas</th><th class="font-normal" title="Precio en el objetivo o más arriba">Objetivo</th><th class="font-normal" title="Sin niveles o sin precio en el radar">Sin medir</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+            // filtros por cuenta
+            const fuentes = ['todas', ...Object.keys(porFuente)];
+            const btn = (v) => `<button type="button" onclick="ideaFiltrar(${JSON.stringify(v).replace(/"/g, '&quot;')})" class="font-mono text-[10px] px-2 py-1 rounded-sm border ${ideasFiltroFuente === v ? 'border-accent text-accent' : 'border-gray-600 text-gray-300'}">${v === 'todas' ? 'Todas' : _esc(v)}</button>`;
+            document.getElementById('ideas-filtros').innerHTML = fuentes.map(btn).join('');
+            const vista = lista.filter(i => ideasFiltroFuente === 'todas' || i.fuente === ideasFiltroFuente);
+            cont.innerHTML = vista.map(i => {
+                const r = ranking[i.ticker];
+                const precio = r?.Precio;
+                const e = estadoIdea(i, precio);
+                const var_ = (precio != null && i.precio_al_publicar) ? (precio / Number(i.precio_al_publicar) - 1) * 100 : null;
+                const filasN = [];
+                if (i.zona_entrada) filasN.push(`<div><span class="text-gray-500">Entrada / zona:</span> <span class="text-white">${f(i.zona_entrada.desde)}${i.zona_entrada.hasta !== i.zona_entrada.desde ? ' a ' + f(i.zona_entrada.hasta) : ''}</span></div>`);
+                if (i.caso_alcista) filasN.push(`<div><span class="text-gray-500">Caso alcista:</span> <span class="text-gray-300">${_esc(i.caso_alcista)}</span></div>`);
+                if (i.caso_bajista) filasN.push(`<div><span class="text-gray-500">Caso bajista / stop:</span> <span class="text-gray-300">${_esc(i.caso_bajista)}</span></div>`);
+                if (i.invalidacion != null) filasN.push(`<div><span class="text-gray-500">La idea falla en:</span> <span class="text-white">${f(i.invalidacion)}</span>${precio != null ? ` <span class="text-gray-400">(${f(Math.abs(precio - i.invalidacion) / precio * 100, 1)}% ${i.invalidacion < precio ? 'abajo' : 'arriba'} del precio)</span>` : ''}</div>`);
+                if ((i.objetivos ?? []).length) filasN.push(`<div><span class="text-gray-500">Objetivo(s):</span> <span class="text-white">${i.objetivos.map(o => f(o)).join(' · ')}</span>${precio != null ? ` <span class="text-gray-400">(el primero, ${f((Math.min(...i.objetivos) / precio - 1) * 100, 1)}% ${Math.min(...i.objetivos) > precio ? 'arriba' : 'abajo'} del precio)</span>` : ''}</div>`);
+                if (!filasN.length) filasN.push('<div class="text-gray-600">No dio niveles concretos.</div>');
+                const av = (nivelesTerceros ?? []).filter(n => n.ticker === i.ticker && String(n.fuente).replace(/^@/,'').toLowerCase() === String(i.fuente).replace(/^@/,'').toLowerCase());
+                if (av.length) filasN.push(`<div class="mt-1"><span class="text-gray-500">Avisos por Telegram del radar:</span> <span class="text-white">${av.map(n => f(n.nivel) + ' (' + n.direccion + ')').join(' · ')}</span></div>`);
+                const link = i.fuente_url ? ` · <a href="${_esc(i.fuente_url)}" target="_blank" rel="noopener" class="text-accent underline">ver post</a>` : '';
+                const borde = e.k === 'rota' ? 'border-neg' : (e.k === 'cumplida' ? 'border-pos' : 'border-accent');
+                return `<div class="bg-[#151b2b] border-l-4 ${borde} p-3 rounded-r-sm font-mono text-[10px] leading-relaxed">
+                    <div class="flex justify-between items-start">
+                        <span class="text-lg font-bold text-white">${logoInline(i.ticker, 22)}${_esc(i.ticker)}${nombreChico(i.ticker)}</span>
+                        <span class="text-gray-500 text-right">${_esc(i.fecha_publicacion ?? '')}</span>
+                    </div>
+                    <div class="mt-1"><span class="text-accent font-bold">${_esc(i.fuente)}</span>${link}</div>
+                    <div class="text-gray-500">${_esc(i.tipo ?? '')}</div>
+                    <div class="mt-1">Precio al publicar: <span class="text-white">${f(i.precio_al_publicar)}</span> · ahora: <span class="text-white">${f(precio)}</span>${var_ != null ? ` <span class="${var_ >= 0 ? 'text-pos' : 'text-neg'}">(${var_ >= 0 ? '+' : ''}${f(var_, 1)}%)</span>` : ''}</div>
+                    <div class="mt-1 font-bold ${e.cls}">${_esc(e.txt)}</div>
+                    <div class="mt-1">${filasN.join('')}</div>
+                    ${i.notas ? `<div class="text-gray-500 mt-1">${_esc(i.notas)}</div>` : ''}
+                    ${i.fecha_publicacion_nota ? `<div class="text-gray-600 mt-1">Fecha: ${_esc(i.fecha_publicacion_nota)}</div>` : ''}
+                    ${!r ? '<div class="text-gray-600 mt-1">Este activo no está (o no tiene datos hoy) en el radar.</div>' : ''}
+                </div>`;
+            }).join('') || '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay ideas registradas.</div>';
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
@@ -3290,6 +3416,7 @@
             if (name === 'historial' && historialData === null) fetchHistorialData();
             if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); }
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
+            if (name === 'ideas') { cargarIdeasExternas(); if (!nivelesSeg) cargarNivelesSeg(); }
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
