@@ -280,6 +280,12 @@ TICKERS = {
     "IEMG": "ETF",            # iShares Core MSCI Emerging Markets
     "ACWI": "ETF",            # iShares MSCI ACWI (mundo)
     "EWJ": "ETF",             # iShares MSCI Japan
+    # --- Agregado a pedido de Victoria (7/10/2026), a partir de un tuit de
+    # @HKIStrategies. Sector asignado por Claude (distribuidor de equipos
+    # eléctricos para infraestructura de energía): se agrupa con GEV, CEG, TLN
+    # y VST. Cambialo si preferís otro. Si Yahoo tiene menos de 200 ruedas de
+    # historia (cotiza hace poco), aparece en tickers_fallidos con ese motivo.
+    "FPS": "Energía",   # Forgent
 }
 
 # --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
