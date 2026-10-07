@@ -1836,7 +1836,7 @@
             UGP: ['entrada', 'Subió hasta una zona de oferta: miramos si la supera o si retrocede hacia sus apoyos.'],
             HPQ: ['entrada', 'Seguimiento de posible entrada: esperamos un retroceso a una zona de apoyo.'],
             TEM: ['entrada', 'Seguimiento de posible entrada: cayó con fuerza (-10,9% el 6/10) tras subir mucho; miramos dónde encuentra apoyo.'],
-            CAT: ['entrada', 'Seguimiento de posible entrada: rompió hacia arriba sus medias; miramos si retrocede a un apoyo.'],
+            CAT: ['entrada', 'Seguimiento de posible entrada: apareció el 5/10 por romper hacia arriba sus medias; miramos si retrocede a un apoyo. Mirá abajo la línea Premisa: dice si esa razón sigue vigente.'],
             MU: ['entrada', 'Seguimiento de posible entrada, a partir de un tuit de Warren Bife (opinión de un tercero, no una señal).'],
         };
         const SEMILLERO_SIGNIFICADOS = {
@@ -1872,11 +1872,32 @@
                 ['Volumen', 'Menos de 1x es poco interés; más de 1,5x es un movimiento con fuerza.'],
             ],
         };
-        function semilleroObjetivoHtml(t) {
+        // Premisa: se recalcula sola en cada corrida con los datos del radar. Solo para seguimientos de 'entrada' y 'tendencia'.
+        function premisaHtml(tipo, r, z) {
+            if (!r || (tipo !== 'entrada' && tipo !== 'tendencia')) return '';
+            const p = Number(r.Precio), s50 = Number(r.SMA50), s200 = Number(r.SMA200);
+            if (!isFinite(p) || !isFinite(s50) || !isFinite(s200)) return '';
+            const f = (x, d = 2) => Number(x).toFixed(d).replace('.', ',');
+            const piso = (tipo === 'entrada' && z?.Zona_Demanda?.piso != null) ? Number(z.Zona_Demanda.piso) : null;
+            let k, txt, cls;
+            if (piso != null && p < piso) { k = 'INVALIDADA'; cls = 'text-neg'; txt = `el precio (${f(p)}) está por debajo del piso de la zona de demanda (${f(piso)}): la idea de apoyo ya no vale.`; }
+            else if (p < s200) { k = 'ROTA'; cls = 'text-neg'; txt = `el precio (${f(p)}) perdió también la media de 200 ruedas (${f(s200)}).`; }
+            else if (p < s50) { k = 'DEBILITADA'; cls = 'text-accent'; txt = `el precio (${f(p)}) perdió la media de 50 ruedas (${f(s50)}) pero sigue sobre la de 200 (${f(s200)}).`; }
+            else { k = 'VIGENTE'; cls = 'text-pos'; txt = `el precio (${f(p)}) sigue sobre sus medias de 50 (${f(s50)}) y de 200 (${f(s200)}).`; }
+            const notas = [];
+            if (r.Tendencia_Semanal === 'contra') notas.push('la tendencia semanal está en contra');
+            if (r.Delta_RS_semana != null && Number(r.Delta_RS_semana) <= -10) notas.push(`la fuerza relativa cayó ${f(Math.abs(r.Delta_RS_semana), 1)} puntos en la semana`);
+            const extra = notas.length ? ` <span class="text-gray-400">Además: ${notas.join(' y ')}.</span>` : '';
+            const base = tipo === 'entrada' ? 'tendencia sana para esperar un retroceso a un apoyo' : 'sostiene su media de 50';
+            return `<div class="mt-1" title="Se calcula sola con los datos de la última corrida del radar."><span class="text-accent font-bold">Premisa (${base}):</span> <span class="font-bold ${cls}">${k}</span> <span class="text-gray-300">-- ${txt}</span>${extra}</div>
+                <div class="text-gray-600">Vigente: sobre las medias de 50 y 200. Debilitada: perdió la de 50. Rota: perdió también la de 200. Invalidada: cayó bajo el piso de la zona de demanda. Informativo, no una orden.</div>`;
+        }
+        function semilleroObjetivoHtml(t, r, z) {
             const [tipo, porque] = SEMILLERO_OBJETIVO[t] ?? ['favorito', 'Agregado por vos a tu lista de favoritos.'];
             const filas = (SEMILLERO_SIGNIFICADOS[tipo] ?? []).map(([a, b]) => `<li><span class="text-gray-300">${a}:</span> ${b}</li>`).join('');
             return `<div class="font-mono text-[10px] mt-2 pt-2 border-t border-gray-800 leading-relaxed">
                 <div><span class="text-accent font-bold">Por qué lo seguimos:</span> <span class="text-gray-300">${porque}</span></div>
+                ${premisaHtml(tipo, r, z)}
                 <div class="text-gray-400 font-bold mt-1">Qué significa cada dato, para este objetivo</div>
                 <ul class="list-disc pl-4 text-gray-500">${filas}</ul>
             </div>`;
@@ -1955,7 +1976,7 @@
                         <div class="font-mono text-[10px] mt-1 leading-relaxed">${chips}</div>
                         <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">${zonaTxt}<br>${ofeTxt}</div>
                         ${nivelesBloque}
-                        ${semilleroObjetivoHtml(t)}
+                        ${semilleroObjetivoHtml(t, r, z)}
                     </div>`;
             }).join('');
         }
