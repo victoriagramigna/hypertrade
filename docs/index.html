@@ -3621,7 +3621,8 @@
                 lineas.push('ALERTAS DEL RADAR HOY: ' + al.join(' | '));
             } else { sec('Alertas del radar hoy', 'Ninguna en esta corrida.'); lineas.push('ALERTAS DEL RADAR HOY: ninguna.'); }
             lineas.push('');
-            lineas.push(`Armame el análisis de ${t}: cómo está hoy, qué falta para una posible entrada, dónde falla la idea, qué conviene mirar y escenarios con niveles (en dólares y en pesos). Sin recomendaciones tajantes; recordame que no sos asesor financiero.`);
+            if (pos.length) lineas.push(`Yo ya estoy comprada en ${t} (ver Mi Cartera arriba) y puedo querer sumar más, mantener o vender. Armame el análisis para esas tres opciones: cómo está hoy, qué tendría que pasar para que tenga sentido sumar, qué mirar para mantener (y cómo se ve mi stop) y qué señales harían pensar en reducir o vender, con niveles en dólares y en pesos. Sin recomendaciones tajantes; recordame que no sos asesor financiero.`);
+            else lineas.push(`Armame el análisis de ${t}: cómo está hoy, qué falta para una posible entrada, dónde falla la idea, qué conviene mirar y escenarios con niveles (en dólares y en pesos). Sin recomendaciones tajantes; recordame que no sos asesor financiero.`);
             _rxTexto = lineas.join('\n');
             const bt = 'font-mono text-[10px] px-2 py-1 rounded-sm border border-gray-600 text-gray-300';
             out.innerHTML = `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] leading-relaxed">${html.join('')}
@@ -4869,6 +4870,8 @@
                 // pico y la alerta de devolución dejaría de detectar nada
                 // hasta que vuelva a subir por encima del último guardado.
                 maxRendimientoArs: p.maxRendimientoArs ?? null,
+                // Precio máximo visto desde la compra (protección de ganancia).
+                maxPrecio: p.maxPrecio ?? null,
             }));
         }
 
@@ -4993,6 +4996,32 @@
         const CARTERA_STOP_PCT_INICIAL = 0.08;       // -8% del precio de entrada, si no hay SMA50 más cercana
         const CARTERA_GANANCIA_PARCIAL_PCT = 20;     // primer punto clásico para vender una porción
         const CARTERA_GANANCIA_TRAILING_PCT = 35;    // a partir de acá, trailing más agresivo (bajo SMA50)
+        // Protección de ganancia (elegida por defecto, ajustable acá y en
+        // scripts/cartera_seguimiento.py -- mantener los dos iguales): si la
+        // posición llegó a ganar más de ASEGURA_DESDE_PCT, el stop no puede
+        // quedar por debajo de esa fracción de la ganancia máxima.
+        const CARTERA_ASEGURA_DESDE_PCT = 30;
+        const CARTERA_ASEGURA_FRACCION = 0.5;
+        // Máximo desde la compra que calcula el radar (data/cartera_avisos.json,
+        // clave "_trailing"). Sirve para saber el pico aunque la app no
+        // haya estado abierta ese día.
+        let carteraMaxServidor = {};
+        function maxServidorDe(p) {
+            for (const [clave, v] of Object.entries(carteraMaxServidor)) {
+                const [t, f, pr] = clave.split('|');
+                if (t === String(p.ticker).toUpperCase() && f === String(p.fecha) && Math.abs(parseFloat(pr) - p.precio) < 0.005) return v?.max_precio ?? null;
+            }
+            return null;
+        }
+        async function cargarMaxCartera() {
+            try {
+                const r = await fetch(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/data/cartera_avisos.json?t=${Date.now()}`, { cache: 'no-store' });
+                if (!r.ok) return;
+                const j = await r.json();
+                carteraMaxServidor = (j && j._trailing) || {};
+                renderCartera();
+            } catch (e) { /* sin dato del servidor: se usa solo lo que vio la app */ }
+        }
         const CARTERA_CAIDA_RADAR_SCORE = 15;        // puntos de caída en el Radar Score vs. la compra = alerta
         const CARTERA_AVISO_PREVIO_STOP_PCT = 1;     // avisa cuando falta esta distancia (%) para tocar el stop
         // Mismo margen de tolerancia que usa Alertas para "apoyo en SMA50"
@@ -5249,6 +5278,21 @@
                         origenStop = 'equilibrio (+20% de ganancia)';
                     }
                 }
+                // Protección de ganancia: se mide contra el MÁXIMO desde la
+                // compra (el más alto entre lo que vio la app, lo que calculó
+                // el radar y el precio de hoy), no contra el precio de hoy.
+                let maxPrecio = Math.max(p.maxPrecio ?? 0, maxServidorDe(p) ?? 0, precioActual ?? 0);
+                if (maxPrecio > 0 && p.precio > 0) {
+                    if (maxPrecio !== p.maxPrecio) { p.maxPrecio = maxPrecio; huboCambios = true; }
+                    const gananciaMax = (maxPrecio / p.precio - 1) * 100;
+                    if (gananciaMax >= CARTERA_ASEGURA_DESDE_PCT) {
+                        const piso = p.precio * (1 + gananciaMax / 100 * CARTERA_ASEGURA_FRACCION);
+                        if (piso > stopSugerido) {
+                            stopSugerido = piso;
+                            origenStop = `asegura la mitad de la ganancia máxima (llegó a +${gananciaMax.toFixed(0)}%)`;
+                        }
+                    }
+                }
                 if (stopSugerido !== p.stopActual || origenStop !== p.origenStop) {
                     p.stopActual = stopSugerido;
                     p.origenStop = origenStop; // se persiste -- sobrevive aunque la condición de hoy ya no se cumpla
@@ -5301,7 +5345,8 @@
                 ).join('');
 
                 const stopHtml = p.stopActual != null
-                    ? `<div class="text-accent text-xs mt-2">STOP ACTUAL: $${p.stopActual.toFixed(2)} <span class="text-gray-500">(${p.origenStop})</span></div>`
+                    ? `<div class="text-accent text-xs mt-2">STOP ACTUAL: $${p.stopActual.toFixed(2)} <span class="text-gray-500">(${p.origenStop})</span></div>
+                       <div class="text-gray-500 text-[10px] mt-1 leading-snug">El stop solo sube, nunca baja. Si la ganancia máxima llega a +${CARTERA_ASEGURA_DESDE_PCT}%, el stop asegura la mitad de esa ganancia: ej. compra 1000, llegó a 1500 → stop mínimo 1250, aunque el precio después retroceda.</div>`
                     : '';
 
                 const objetivoHtml = `<div class="text-gray-500 text-[10px] mt-1">Objetivo parcial (+${CARTERA_GANANCIA_PARCIAL_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_PARCIAL_PCT / 100)).toFixed(2)} · Objetivo trailing (+${CARTERA_GANANCIA_TRAILING_PCT}%): $${(p.precio * (1 + CARTERA_GANANCIA_TRAILING_PCT / 100)).toFixed(2)}</div>`;
@@ -5818,6 +5863,7 @@
         fetchRotacionHistorial();
         fetchRotacionTickerHistorial();
         renderCartera();
+        cargarMaxCartera();
         setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
     </script>
 </body>
