@@ -368,8 +368,10 @@
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de Rotación por Ticker</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-4 leading-relaxed">
                 Mismo cuadrante que el de arriba (misma Fuerza Relativa, mismo umbral, mismos 4 cuadrantes), pero por TICKER individual
-                en vez de por sector completo. Buscá un ticker para ver dónde está parado hoy y su recorrido de las últimas semanas --
+                en vez de por sector completo. Buscá uno o varios tickers (separados por coma, ej. MU, TEAM, AMZN) o tocá "Mi Cartera" para
+                ver dónde está parado cada uno hoy y su recorrido de hasta 16 semanas (con ▶ se reproduce semana a semana) --
                 los puntos grises de fondo son el resto del universo, solo para dar contexto de dónde está la mayoría.
+                Es una forma de MIRAR dónde está la fuerza relativa de cada papel, no una señal de compra ni de venta.
             </div>
             <div class="mb-3">
                 <details>
@@ -392,10 +394,12 @@
                 </details>
             </div>
             <div class="mb-3 flex flex-wrap items-center gap-2">
-                <input id="rotacion-ticker-buscador" list="rotacion-ticker-lista" type="text" placeholder="Buscar ticker (ej. XLK, AAPL)..."
+                <input id="rotacion-ticker-buscador" list="rotacion-ticker-lista" type="text" placeholder="Uno o varios tickers (ej. MU, TEAM, XLK)..."
                     class="w-full sm:w-64 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
                     oninput="renderRotacionTicker(rotacionTickerUltimoData)">
                 <datalist id="rotacion-ticker-lista"></datalist>
+                <button onclick="rotacionTickerMiCartera()" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-300 hover:border-accent hover:text-accent">Mi Cartera</button>
+                <button onclick="rotacionTickerLimpiar()" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-500 hover:text-gray-200">Limpiar</button>
                 <div class="flex rounded-sm border border-surface overflow-hidden font-mono text-[10px] uppercase">
                     <button onclick="setRotacionTickerFiltro('todos')" id="rtf-todos" class="px-2.5 py-1.5">Todos</button>
                     <button onclick="setRotacionTickerFiltro('acciones')" id="rtf-acciones" class="px-2.5 py-1.5 border-l border-surface">Acciones</button>
@@ -2639,18 +2643,30 @@
         // universo): como explicó Warren en su video, dibujar el recorrido de
         // cientos de tickers a la vez sería ilegible y pesado.
         const ROTACION_TICKER_HISTORIAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_score_historial.jsonl';
+        // Historial reconstruido con precios (scripts/rs_backfill.py): da ~19 semanas de recorrido
+        // desde el primer dia. Si un dia ya esta en el historial diario real, manda el real.
+        const ROTACION_TICKER_HISTORIAL_LARGO_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_score_historial_largo.jsonl';
         let rotacionTickerHistorialCache = null;  // array [{fecha, rs: {ticker: valor}}], ordenado por fecha
         let rotacionTickerAnimIndex = null;
         let rotacionTickerAnimTimer = null;
 
         async function fetchRotacionTickerHistorial() {
             try {
-                const resp = await fetch(`${ROTACION_TICKER_HISTORIAL_URL}?t=${Date.now()}`, { cache: 'no-store' });
-                if (!resp.ok) { rotacionTickerHistorialCache = []; return; }
-                const texto = await resp.text();
-                rotacionTickerHistorialCache = texto.split('\n').map(l => l.trim()).filter(Boolean)
-                    .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
-                    .filter(Boolean)
+                const leer = async (url) => {
+                    try {
+                        const resp = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+                        if (!resp.ok) return [];
+                        const texto = await resp.text();
+                        return texto.split('\n').map(l => l.trim()).filter(Boolean)
+                            .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
+                            .filter(Boolean);
+                    } catch (e) { return []; }
+                };
+                const [real, largo] = await Promise.all([leer(ROTACION_TICKER_HISTORIAL_URL), leer(ROTACION_TICKER_HISTORIAL_LARGO_URL)]);
+                const porFecha = new Map();
+                for (const f of largo) if (f.fecha) porFecha.set(f.fecha, f);
+                for (const f of real) if (f.fecha) porFecha.set(f.fecha, f);   // el dato real pisa al reconstruido
+                rotacionTickerHistorialCache = [...porFecha.values()]
                     .sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''));
             } catch (e) {
                 rotacionTickerHistorialCache = rotacionTickerHistorialCache ?? [];
@@ -2678,7 +2694,7 @@
             if (!historial || historial.length === 0) return [];
             const ultimaFecha = new Date(historial[historial.length - 1].fecha + 'T12:00:00');
             const anclas = [];
-            for (let i = 7; i >= 0; i--) {
+            for (let i = 15; i >= 0; i--) {   // hasta 16 semanas de recorrido
                 const f = new Date(ultimaFecha);
                 f.setDate(f.getDate() - i * 7);
                 anclas.push(f);
@@ -2696,6 +2712,19 @@
             return puntos;
         }
 
+        // Carga en el buscador los tickers de Mi Cartera (solo lee, no escribe nada)
+        function rotacionTickerMiCartera() {
+            const ts = [...new Set(cargarCartera().map(p => String(p.ticker).toUpperCase()).filter(Boolean))];
+            const b = document.getElementById('rotacion-ticker-buscador');
+            if (b) b.value = ts.join(', ');
+            renderRotacionTicker(rotacionTickerUltimoData);
+        }
+        function rotacionTickerLimpiar() {
+            const b = document.getElementById('rotacion-ticker-buscador');
+            if (b) b.value = '';
+            renderRotacionTicker(rotacionTickerUltimoData);
+        }
+
         function toggleAnimacionRotacionTicker() {
             if (rotacionTickerAnimTimer) {
                 clearInterval(rotacionTickerAnimTimer);
@@ -2707,7 +2736,7 @@
             rotacionTickerAnimIndex = 0;
             rotacionTickerAnimTimer = setInterval(() => {
                 rotacionTickerAnimIndex++;
-                if (rotacionTickerAnimIndex >= 7) {
+                if (rotacionTickerAnimIndex >= 15) {
                     clearInterval(rotacionTickerAnimTimer);
                     rotacionTickerAnimTimer = null;
                 }
@@ -3101,7 +3130,12 @@
             const COLOR = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
             const buscador = document.getElementById('rotacion-ticker-buscador');
             const buscado = (buscador?.value ?? '').trim().toUpperCase();
-            const seleccionado = buscado ? puntos.find(p => p.Ticker.toUpperCase() === buscado) : null;
+            // Se pueden pedir varios tickers separados por coma o espacio (hasta 15)
+            const pedidos = buscado ? [...new Set(buscado.split(/[\s,;]+/).filter(Boolean))].slice(0, 15) : [];
+            const seleccionados = pedidos.map(t => puntos.find(p => p.Ticker.toUpperCase() === t)).filter(Boolean);
+            const noEncontrados = pedidos.filter(t => !puntos.some(p => p.Ticker.toUpperCase() === t));
+            const selTickers = new Set(seleccionados.map(p => p.Ticker));
+            const seleccionado = seleccionados.length === 1 ? seleccionados[0] : null;
 
             const puntosHoy = puntos.filter(p => p.Cuadrante);
             const sinHistorial = puntos.filter(p => !p.Cuadrante);
@@ -3118,10 +3152,31 @@
             // eje X = Fuerza Relativa (fuerte a la derecha), eje Y = cambio en 7
             // días (mejoró arriba).
             const W = 440, H = 300, PAD = 44;
-            const maxAbsDelta = Math.max(5, ...puntosHoy.map(p => Math.abs(p.Delta_RS_semana ?? 0)));
+            // Recorrido de cada ticker pedido (el punto mas nuevo se pisa por el dato de hoy)
+            const recorridos = {};
+            for (const sel of seleccionados) {
+                if (!sel.Cuadrante) continue;
+                let rec = construirRecorridoSemanalTicker(rotacionTickerHistorialCache ?? [], sel.Ticker);
+                const hoy = { fecha: 'hoy', rs: sel.RS_Score, delta: sel.Delta_RS_semana, cuadrante: sel.Cuadrante };
+                if (rec.length === 0) rec = [hoy];
+                else {
+                    const u = rec[rec.length - 1];
+                    if (Math.abs(u.rs - sel.RS_Score) < 0.05 && Math.abs((u.delta ?? 0) - (sel.Delta_RS_semana ?? 0)) < 0.05) rec[rec.length - 1] = hoy;
+                    else rec.push(hoy);
+                }
+                if (rec.length > 16) rec = rec.slice(-16);   // máximo 16 puntos de recorrido
+                recorridos[sel.Ticker] = rec;
+            }
+            // Escala vertical robusta: se ignora el 2% de cambios mas extremos para que la nube
+            // se abra y se lean los grupos (antes, unos pocos valores extremos la aplastaban).
+            // Los tickers pedidos siempre entran completos; los extremos de fondo quedan en el borde.
+            const absOrd = puntosHoy.map(p => Math.abs(p.Delta_RS_semana ?? 0)).sort((a, b) => a - b);
+            const p98 = absOrd.length ? absOrd[Math.min(absOrd.length - 1, Math.floor(absOrd.length * 0.98))] : 5;
+            let maxAbsDelta = Math.max(5, p98);
+            for (const rec of Object.values(recorridos)) for (const q of rec) maxAbsDelta = Math.max(maxAbsDelta, Math.abs(q.delta ?? 0));
             const yMin = -maxAbsDelta * 1.15, yMax = maxAbsDelta * 1.15;
             const xScale = (v) => PAD + (v - 0) / 100 * (W - PAD * 2);
-            const yScale = (v) => H - PAD - (v - yMin) / (yMax - yMin) * (H - PAD * 2);
+            const yScale = (v) => H - PAD - (Math.max(yMin, Math.min(yMax, v)) - yMin) / (yMax - yMin) * (H - PAD * 2);
             const x0 = xScale(50), y50 = yScale(0);
 
             // Toggle Acciones/ETFs (a pedido de Victoria, igual que hace Warren) --
@@ -3165,33 +3220,20 @@
             // puntitos grises de fondo, solo para dar contexto de dónde está la mayoría.
             let fondoSvg = '';
             for (const p of puntosFiltrados) {
-                if (seleccionado && p.Ticker === seleccionado.Ticker) continue;
+                if (selTickers.has(p.Ticker)) continue;
                 fondoSvg += `<circle cx="${xScale(p.RS_Score)}" cy="${yScale(p.Delta_RS_semana)}" r="2.5" fill="#6b7280" opacity="0.35"><title>${p.Ticker}: FR ${p.RS_Score} · 7d ${(p.Delta_RS_semana ?? 0) > 0 ? '+' : ''}${p.Delta_RS_semana}</title></circle>`;
             }
 
-            // Cola del ticker buscado -- a propósito, solo de este ticker (ver
-            // comentario arriba de ROTACION_TICKER_HISTORIAL_URL). El punto más
-            // nuevo del historial se pisa por el dato de hoy (en vivo).
+            // Colas de los tickers pedidos (uno o varios), hasta 16 semanas cada una.
             let destacadoSvg = '', controlAnimacionTicker = '';
-            if (seleccionado && seleccionado.Cuadrante) {
-                const color = COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
-                let recorrido = construirRecorridoSemanalTicker(rotacionTickerHistorialCache ?? [], seleccionado.Ticker);
-                const puntoHoy = { fecha: 'hoy', rs: seleccionado.RS_Score, delta: seleccionado.Delta_RS_semana, cuadrante: seleccionado.Cuadrante };
-                if (recorrido.length === 0) {
-                    recorrido = [puntoHoy];
-                } else {
-                    const ultimo = recorrido[recorrido.length - 1];
-                    if (Math.abs(ultimo.rs - seleccionado.RS_Score) < 0.05 && Math.abs((ultimo.delta ?? 0) - (seleccionado.Delta_RS_semana ?? 0)) < 0.05) {
-                        recorrido[recorrido.length - 1] = puntoHoy;
-                    } else {
-                        recorrido.push(puntoHoy);
-                    }
-                }
-
-                const hayRecorridoLargo = recorrido.length > 1;
-                const idxMostrar = rotacionTickerAnimIndex == null ? recorrido.length - 1 : Math.min(rotacionTickerAnimIndex, recorrido.length - 1);
-                const visibles = recorrido.slice(0, idxMostrar + 1);
-
+            const conRecorrido = seleccionados.filter(sel => recorridos[sel.Ticker]);
+            const F = Math.max(1, ...conRecorrido.map(sel => recorridos[sel.Ticker].length));
+            const idxFrame = rotacionTickerAnimIndex == null ? F - 1 : Math.min(rotacionTickerAnimIndex, F - 1);
+            const etiquetasPuestas = [];   // para que las etiquetas de tickers cercanos no se pisen
+            conRecorrido.forEach((sel, n) => {
+                const color = COLOR[sel.Cuadrante] ?? '#9ca3af';
+                const rec = recorridos[sel.Ticker];
+                const visibles = rec.slice(0, Math.min(idxFrame, rec.length - 1) + 1);
                 if (visibles.length > 1) {
                     for (let i = 1; i < visibles.length; i++) {
                         const a = visibles[i - 1], b = visibles[i];
@@ -3199,46 +3241,57 @@
                         destacadoSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${xScale(b.rs)}" y2="${yScale(b.delta)}" stroke="${color}" stroke-width="2" opacity="${opacidad.toFixed(2)}"/>`;
                     }
                     for (let i = 0; i < visibles.length - 1; i++) {
-                        const p = visibles[i];
-                        destacadoSvg += `<circle cx="${xScale(p.rs)}" cy="${yScale(p.delta)}" r="2.5" fill="${color}" opacity="0.5"/>`;
+                        const q = visibles[i];
+                        destacadoSvg += `<circle cx="${xScale(q.rs)}" cy="${yScale(q.delta)}" r="2.5" fill="${color}" opacity="0.5"/>`;
                     }
                 }
-
                 const actual = visibles[visibles.length - 1];
                 const cx = xScale(actual.rs), cy = yScale(actual.delta);
-                const arriba = cy > H / 2;
+                const r = seleccionados.length > 1 ? 5 : 7;
+                let ly = cy - r - 5;
+                const choca = (y) => etiquetasPuestas.some(e => Math.abs(e.x - cx) < 34 && Math.abs(e.y - y) < 11);
+                for (let k = 1; k <= 12 && choca(ly); k++) ly = cy - r - 5 - 11 * k;   // sube de a un renglón hasta encontrar lugar
+                if (ly < 12) { ly = cy + r + 12; for (let k = 1; k <= 12 && choca(ly); k++) ly = cy + r + 12 + 11 * k; }
+                etiquetasPuestas.push({ x: cx, y: ly });
                 destacadoSvg += `
-                    <circle cx="${cx}" cy="${cy}" r="7" fill="${color}" stroke="#0B0E14" stroke-width="2"/>
-                    <text x="${cx}" y="${arriba ? cy - 12 : cy + 18}" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#fff">${seleccionado.Ticker}</text>`;
-
-                if (hayRecorridoLargo) {
-                    const semanaLabel = idxMostrar === recorrido.length - 1
-                        ? (rotacionTickerAnimIndex == null ? '' : `Semana ${idxMostrar + 1}/${recorrido.length} (hoy)`)
-                        : `Semana ${idxMostrar + 1}/${recorrido.length}`;
-                    controlAnimacionTicker = `
-                        <div class="flex items-center gap-3 mt-3 font-mono text-[10px]">
-                            <button onclick="toggleAnimacionRotacionTicker()" class="px-3 py-1 rounded-sm border border-gray-700 text-gray-300 hover:border-accent hover:text-accent">
-                                ${rotacionTickerAnimTimer ? '⏸ Pausar' : '▶ Reproducir recorrido'}
-                            </button>
-                            <span class="text-gray-500">${semanaLabel || 'Recorrido de las últimas ' + recorrido.length + ' semanas'}</span>
-                        </div>`;
-                }
+                    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" stroke="#0B0E14" stroke-width="2"><title>${sel.Ticker}: FR ${actual.rs} · 7d ${actual.delta > 0 ? '+' : ''}${actual.delta}</title></circle>
+                    <text x="${cx}" y="${ly}" text-anchor="middle" font-size="${seleccionados.length > 1 ? 10 : 11}" font-family="monospace" font-weight="bold" fill="#fff">${sel.Ticker}</text>`;
+            });
+            if (F > 1 && conRecorrido.length) {
+                const semanaLabel = idxFrame === F - 1
+                    ? (rotacionTickerAnimIndex == null ? '' : `Semana ${idxFrame + 1}/${F} (hoy)`)
+                    : `Semana ${idxFrame + 1}/${F}`;
+                controlAnimacionTicker = `
+                    <div class="flex items-center gap-3 mt-3 font-mono text-[10px]">
+                        <button onclick="toggleAnimacionRotacionTicker()" class="px-3 py-1 rounded-sm border border-gray-700 text-gray-300 hover:border-accent hover:text-accent">
+                            ${rotacionTickerAnimTimer ? '⏸ Pausar' : '▶ Reproducir recorrido'}
+                        </button>
+                        <span class="text-gray-500">${semanaLabel || 'Recorrido de las últimas ' + F + ' semanas'}</span>
+                    </div>`;
             }
 
             let infoSeleccionado = '';
-            if (buscado && !seleccionado) {
-                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-500 mt-3">No encontramos "${buscado}" en el universo (o todavía no tiene una semana de historial).</div>`;
-            } else if (seleccionado && !seleccionado.Cuadrante) {
-                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-500 mt-3">${seleccionado.Ticker} todavía está juntando historial -- hace falta 1 semana de Fuerza Relativa para ubicarlo en un cuadrante.</div>`;
+            if (noEncontrados.length) {
+                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-500 mt-3">No encontramos en el universo: ${noEncontrados.join(', ')}.</div>`;
+            }
+            if (seleccionado && !seleccionado.Cuadrante) {
+                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-500 mt-3">${seleccionado.Ticker} todavía está juntando historial -- hace falta 1 semana de Fuerza Relativa para ubicarlo en un cuadrante.</div>`;
             } else if (seleccionado) {
                 const color = COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
                 const signo = (seleccionado.Delta_RS_semana ?? 0) > 0 ? '+' : '';
-                infoSeleccionado = `<div class="font-mono text-[11px] text-gray-300 mt-3">
+                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-300 mt-3">
                     <span style="color:${color}" class="font-bold">${seleccionado.Cuadrante}</span> ·
                     Fuerza Relativa: ${seleccionado.RS_Score} ·
                     Cambio 7d: ${signo}${seleccionado.Delta_RS_semana} ·
                     ${seleccionado.Sobre_SMA50 == null ? '' : (seleccionado.Sobre_SMA50 ? 'sobre su SMA50' : 'bajo su SMA50')}
                 </div>`;
+            } else if (seleccionados.length > 1) {
+                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-300 mt-3 space-y-0.5">` + seleccionados.map(sel => {
+                    if (!sel.Cuadrante) return `<div><span class="text-gray-400">${sel.Ticker}</span> · juntando historial</div>`;
+                    const color = COLOR[sel.Cuadrante] ?? '#9ca3af';
+                    const sg = (sel.Delta_RS_semana ?? 0) > 0 ? '+' : '';
+                    return `<div><span class="font-bold text-gray-200">${sel.Ticker}</span> · <span style="color:${color}" class="font-bold">${sel.Cuadrante}</span> · FR ${sel.RS_Score} · 7d ${sg}${sel.Delta_RS_semana}</div>`;
+                }).join('') + `</div>`;
             }
 
             cont.innerHTML = `
@@ -3251,6 +3304,7 @@
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
                 </div>
+                <div class="font-mono text-[9px] text-gray-600 mt-2">Un punto gris pegado al borde de arriba o de abajo cambió más que el rango del gráfico (se recorta el 2% más extremo para que el resto se pueda leer).</div>
                 ${infoSeleccionado}
                 ${controlAnimacionTicker}
                 ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${sinHistorial.length} ticker(s) todavía juntando historial.</div>` : ''}
