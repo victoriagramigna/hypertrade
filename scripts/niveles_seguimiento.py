@@ -125,6 +125,19 @@ def procesar_niveles(modo: str, token=None, chat_id=None, ahora=None, fetch=None
     fetch = fetch or _traer_precio_yahoo
     cfg = _cargar_json(RUTA_CONFIG, {"niveles": []})
     niveles = [n for n in cfg.get("niveles", []) if n.get("ticker") and n.get("nivel") and n.get("direccion") in ("arriba", "abajo")]
+    # Los niveles "tu stop actual en Mi Cartera" siguen al stop real de Mi Cartera
+    # (data/mi_cartera.json, que sincroniza la app), así nunca quedan desfasados.
+    try:
+        stops_cartera = {}
+        for pos in _cargar_json("data/mi_cartera.json", []):
+            if pos.get("ticker") and pos.get("stopActual"):
+                stops_cartera[str(pos["ticker"]).upper()] = float(pos["stopActual"])
+        for n in niveles:
+            if (n.get("direccion") == "abajo" and str(n.get("etiqueta", "")).startswith("tu stop actual en Mi Cartera")
+                    and str(n["ticker"]).upper() in stops_cartera):
+                n["nivel"] = round(stops_cartera[str(n["ticker"]).upper()], 2)
+    except Exception as e:
+        log.warning(f"No se pudo sincronizar con los stops de Mi Cartera ({e}); se usan los del archivo")
     if not niveles:
         log.info("Niveles de seguimiento: no hay niveles configurados")
         return {"avisos": 0}
