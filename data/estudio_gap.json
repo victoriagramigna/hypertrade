@@ -1,0 +1,5588 @@
+{
+  "generado_utc": "2026-10-08T22:02:07.171053+00:00",
+  "regla": "suba >= 3% de cierre a cierre, ayer sobre SMA200, hoy máximo de 10 ruedas (igual que el radar), sin otro gap en las 5 ruedas previas",
+  "grupos_volatilidad": "baja <= 30.0% anual, media <= 50.0%, alta > 50.0% (desvío de 60 ruedas anualizado, mediana del papel)",
+  "periodo": "5y",
+  "corte_entrenamiento_prueba": "2024-10-08",
+  "tickers_analizados": 300,
+  "tickers_por_grupo": {
+    "alta": 64,
+    "baja": 127,
+    "media": 109
+  },
+  "eventos_total": 5540,
+  "eventos": {
+    "baja": {
+      "n": 1263,
+      "fwd1": {
+        "n": 1259,
+        "media": 0.02,
+        "mediana": 0.01,
+        "pct_positivos": 50.0
+      },
+      "alpha1": {
+        "n": 1259,
+        "media": 0.0,
+        "mediana": -0.05,
+        "pct_positivos": 49.1
+      },
+      "fwd5": {
+        "n": 1256,
+        "media": 0.21,
+        "mediana": 0.28,
+        "pct_positivos": 54.3
+      },
+      "alpha5": {
+        "n": 1256,
+        "media": -0.19,
+        "mediana": -0.18,
+        "pct_positivos": 47.9
+      },
+      "fwd10": {
+        "n": 1252,
+        "media": 0.51,
+        "mediana": 0.58,
+        "pct_positivos": 55.0
+      },
+      "alpha10": {
+        "n": 1252,
+        "media": -0.27,
+        "mediana": -0.41,
+        "pct_positivos": 46.8
+      },
+      "fwd20": {
+        "n": 1247,
+        "media": 0.92,
+        "mediana": 1.2,
+        "pct_positivos": 56.9
+      },
+      "alpha20": {
+        "n": 1247,
+        "media": -0.56,
+        "mediana": -0.78,
+        "pct_positivos": 45.1
+      },
+      "peor_caida10_mediana": -2.78
+    },
+    "baja_o_media": {
+      "n": 3971,
+      "fwd1": {
+        "n": 3960,
+        "media": 0.07,
+        "mediana": 0.02,
+        "pct_positivos": 50.2
+      },
+      "alpha1": {
+        "n": 3960,
+        "media": 0.01,
+        "mediana": -0.07,
+        "pct_positivos": 48.5
+      },
+      "fwd5": {
+        "n": 3941,
+        "media": 0.27,
+        "mediana": 0.25,
+        "pct_positivos": 52.6
+      },
+      "alpha5": {
+        "n": 3941,
+        "media": -0.12,
+        "mediana": -0.16,
+        "pct_positivos": 48.4
+      },
+      "fwd10": {
+        "n": 3929,
+        "media": 0.81,
+        "mediana": 0.66,
+        "pct_positivos": 54.5
+      },
+      "alpha10": {
+        "n": 3929,
+        "media": 0.07,
+        "mediana": -0.15,
+        "pct_positivos": 48.9
+      },
+      "fwd20": {
+        "n": 3905,
+        "media": 1.63,
+        "mediana": 1.26,
+        "pct_positivos": 55.5
+      },
+      "alpha20": {
+        "n": 3905,
+        "media": 0.2,
+        "mediana": -0.34,
+        "pct_positivos": 48.1
+      },
+      "peor_caida10_mediana": -3.74
+    },
+    "media": {
+      "n": 2708,
+      "fwd1": {
+        "n": 2701,
+        "media": 0.1,
+        "mediana": 0.02,
+        "pct_positivos": 50.2
+      },
+      "alpha1": {
+        "n": 2701,
+        "media": 0.02,
+        "mediana": -0.1,
+        "pct_positivos": 48.2
+      },
+      "fwd5": {
+        "n": 2685,
+        "media": 0.3,
+        "mediana": 0.24,
+        "pct_positivos": 51.8
+      },
+      "alpha5": {
+        "n": 2685,
+        "media": -0.09,
+        "mediana": -0.16,
+        "pct_positivos": 48.6
+      },
+      "fwd10": {
+        "n": 2677,
+        "media": 0.95,
+        "mediana": 0.74,
+        "pct_positivos": 54.2
+      },
+      "alpha10": {
+        "n": 2677,
+        "media": 0.23,
+        "mediana": -0.01,
+        "pct_positivos": 49.9
+      },
+      "fwd20": {
+        "n": 2658,
+        "media": 1.96,
+        "mediana": 1.29,
+        "pct_positivos": 54.9
+      },
+      "alpha20": {
+        "n": 2658,
+        "media": 0.55,
+        "mediana": -0.12,
+        "pct_positivos": 49.5
+      },
+      "peor_caida10_mediana": -4.34
+    },
+    "alta": {
+      "n": 1569,
+      "fwd1": {
+        "n": 1568,
+        "media": 0.43,
+        "mediana": 0.07,
+        "pct_positivos": 50.7
+      },
+      "alpha1": {
+        "n": 1568,
+        "media": 0.35,
+        "mediana": -0.05,
+        "pct_positivos": 49.2
+      },
+      "fwd5": {
+        "n": 1562,
+        "media": 1.01,
+        "mediana": 0.03,
+        "pct_positivos": 50.0
+      },
+      "alpha5": {
+        "n": 1562,
+        "media": 0.7,
+        "mediana": -0.34,
+        "pct_positivos": 48.0
+      },
+      "fwd10": {
+        "n": 1558,
+        "media": 2.9,
+        "mediana": 1.08,
+        "pct_positivos": 53.7
+      },
+      "alpha10": {
+        "n": 1558,
+        "media": 2.23,
+        "mediana": 0.18,
+        "pct_positivos": 51.0
+      },
+      "fwd20": {
+        "n": 1538,
+        "media": 5.32,
+        "mediana": 0.96,
+        "pct_positivos": 51.9
+      },
+      "alpha20": {
+        "n": 1538,
+        "media": 3.99,
+        "mediana": -0.08,
+        "pct_positivos": 49.9
+      },
+      "peor_caida10_mediana": -7.22
+    },
+    "todos": {
+      "n": 5540,
+      "fwd1": {
+        "n": 5528,
+        "media": 0.17,
+        "mediana": 0.02,
+        "pct_positivos": 50.3
+      },
+      "alpha1": {
+        "n": 5528,
+        "media": 0.11,
+        "mediana": -0.07,
+        "pct_positivos": 48.7
+      },
+      "fwd5": {
+        "n": 5503,
+        "media": 0.48,
+        "mediana": 0.22,
+        "pct_positivos": 51.8
+      },
+      "alpha5": {
+        "n": 5503,
+        "media": 0.11,
+        "mediana": -0.19,
+        "pct_positivos": 48.3
+      },
+      "fwd10": {
+        "n": 5487,
+        "media": 1.4,
+        "mediana": 0.73,
+        "pct_positivos": 54.3
+      },
+      "alpha10": {
+        "n": 5487,
+        "media": 0.68,
+        "mediana": -0.09,
+        "pct_positivos": 49.5
+      },
+      "fwd20": {
+        "n": 5443,
+        "media": 2.67,
+        "mediana": 1.21,
+        "pct_positivos": 54.5
+      },
+      "alpha20": {
+        "n": 5443,
+        "media": 1.27,
+        "mediana": -0.31,
+        "pct_positivos": 48.6
+      },
+      "peor_caida10_mediana": -4.41
+    }
+  },
+  "previa_comparada": {
+    "baja": {
+      "dist_sma50_pct": {
+        "antes_del_gap_mediana": 3.12,
+        "dia_normal_mediana": 3.15
+      },
+      "dist_sma200_pct": {
+        "antes_del_gap_mediana": 8.79,
+        "dia_normal_mediana": 9.25
+      },
+      "dist_max52w_pct": {
+        "antes_del_gap_mediana": -6.08,
+        "dia_normal_mediana": -4.34
+      },
+      "rsi14": {
+        "antes_del_gap_mediana": 55.98,
+        "dia_normal_mediana": 56.83
+      },
+      "compresion_bb": {
+        "antes_del_gap_mediana": 0.92,
+        "dia_normal_mediana": 0.95
+      },
+      "rango10_pct": {
+        "antes_del_gap_mediana": 4.54,
+        "dia_normal_mediana": 4.43
+      },
+      "vol_secado": {
+        "antes_del_gap_mediana": 0.94,
+        "dia_normal_mediana": 0.93
+      },
+      "ret20_pct": {
+        "antes_del_gap_mediana": 2.75,
+        "dia_normal_mediana": 2.65
+      },
+      "rs20_pct": {
+        "antes_del_gap_mediana": 1.4,
+        "dia_normal_mediana": 0.69
+      },
+      "atr_pct": {
+        "antes_del_gap_mediana": 2.06,
+        "dia_normal_mediana": 1.83
+      }
+    },
+    "baja_o_media": {
+      "dist_sma50_pct": {
+        "antes_del_gap_mediana": 4.41,
+        "dia_normal_mediana": 3.91
+      },
+      "dist_sma200_pct": {
+        "antes_del_gap_mediana": 12.49,
+        "dia_normal_mediana": 11.34
+      },
+      "dist_max52w_pct": {
+        "antes_del_gap_mediana": -7.4,
+        "dia_normal_mediana": -5.41
+      },
+      "rsi14": {
+        "antes_del_gap_mediana": 56.67,
+        "dia_normal_mediana": 56.88
+      },
+      "compresion_bb": {
+        "antes_del_gap_mediana": 0.92,
+        "dia_normal_mediana": 0.97
+      },
+      "rango10_pct": {
+        "antes_del_gap_mediana": 5.83,
+        "dia_normal_mediana": 5.53
+      },
+      "vol_secado": {
+        "antes_del_gap_mediana": 0.89,
+        "dia_normal_mediana": 0.92
+      },
+      "ret20_pct": {
+        "antes_del_gap_mediana": 3.95,
+        "dia_normal_mediana": 3.33
+      },
+      "rs20_pct": {
+        "antes_del_gap_mediana": 2.57,
+        "dia_normal_mediana": 1.39
+      },
+      "atr_pct": {
+        "antes_del_gap_mediana": 2.73,
+        "dia_normal_mediana": 2.24
+      }
+    },
+    "media": {
+      "dist_sma50_pct": {
+        "antes_del_gap_mediana": 5.3,
+        "dia_normal_mediana": 5.56
+      },
+      "dist_sma200_pct": {
+        "antes_del_gap_mediana": 15.04,
+        "dia_normal_mediana": 16.21
+      },
+      "dist_max52w_pct": {
+        "antes_del_gap_mediana": -8.33,
+        "dia_normal_mediana": -7.78
+      },
+      "rsi14": {
+        "antes_del_gap_mediana": 56.89,
+        "dia_normal_mediana": 56.94
+      },
+      "compresion_bb": {
+        "antes_del_gap_mediana": 0.92,
+        "dia_normal_mediana": 0.98
+      },
+      "rango10_pct": {
+        "antes_del_gap_mediana": 6.6,
+        "dia_normal_mediana": 7.52
+      },
+      "vol_secado": {
+        "antes_del_gap_mediana": 0.87,
+        "dia_normal_mediana": 0.91
+      },
+      "ret20_pct": {
+        "antes_del_gap_mediana": 4.78,
+        "dia_normal_mediana": 4.82
+      },
+      "rs20_pct": {
+        "antes_del_gap_mediana": 3.27,
+        "dia_normal_mediana": 2.8
+      },
+      "atr_pct": {
+        "antes_del_gap_mediana": 3.08,
+        "dia_normal_mediana": 2.96
+      }
+    },
+    "alta": {
+      "dist_sma50_pct": {
+        "antes_del_gap_mediana": 7.9,
+        "dia_normal_mediana": 8.73
+      },
+      "dist_sma200_pct": {
+        "antes_del_gap_mediana": 20.19,
+        "dia_normal_mediana": 25.89
+      },
+      "dist_max52w_pct": {
+        "antes_del_gap_mediana": -18.21,
+        "dia_normal_mediana": -15.77
+      },
+      "rsi14": {
+        "antes_del_gap_mediana": 56.29,
+        "dia_normal_mediana": 56.31
+      },
+      "compresion_bb": {
+        "antes_del_gap_mediana": 0.92,
+        "dia_normal_mediana": 1.01
+      },
+      "rango10_pct": {
+        "antes_del_gap_mediana": 10.27,
+        "dia_normal_mediana": 13.02
+      },
+      "vol_secado": {
+        "antes_del_gap_mediana": 0.86,
+        "dia_normal_mediana": 0.92
+      },
+      "ret20_pct": {
+        "antes_del_gap_mediana": 6.53,
+        "dia_normal_mediana": 7.25
+      },
+      "rs20_pct": {
+        "antes_del_gap_mediana": 5.11,
+        "dia_normal_mediana": 5.44
+      },
+      "atr_pct": {
+        "antes_del_gap_mediana": 5.0,
+        "dia_normal_mediana": 5.09
+      }
+    },
+    "todos": {
+      "dist_sma50_pct": {
+        "antes_del_gap_mediana": 5.0,
+        "dia_normal_mediana": 4.24
+      },
+      "dist_sma200_pct": {
+        "antes_del_gap_mediana": 13.99,
+        "dia_normal_mediana": 12.49
+      },
+      "dist_max52w_pct": {
+        "antes_del_gap_mediana": -9.27,
+        "dia_normal_mediana": -6.16
+      },
+      "rsi14": {
+        "antes_del_gap_mediana": 56.57,
+        "dia_normal_mediana": 56.8
+      },
+      "compresion_bb": {
+        "antes_del_gap_mediana": 0.92,
+        "dia_normal_mediana": 0.97
+      },
+      "rango10_pct": {
+        "antes_del_gap_mediana": 6.77,
+        "dia_normal_mediana": 6.19
+      },
+      "vol_secado": {
+        "antes_del_gap_mediana": 0.88,
+        "dia_normal_mediana": 0.92
+      },
+      "ret20_pct": {
+        "antes_del_gap_mediana": 4.4,
+        "dia_normal_mediana": 3.6
+      },
+      "rs20_pct": {
+        "antes_del_gap_mediana": 3.0,
+        "dia_normal_mediana": 1.67
+      },
+      "atr_pct": {
+        "antes_del_gap_mediana": 3.16,
+        "dia_normal_mediana": 2.46
+      }
+    }
+  },
+  "lift": {
+    "baja": {
+      "dist_sma50_pct": {
+        "cortes": [
+          -0.69,
+          2.0,
+          4.36,
+          7.28
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.14,
+            "tasa_base_pct": 4.99,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.25,
+            "tasa_base_pct": 4.99,
+            "lift": 1.05
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.32,
+            "tasa_base_pct": 4.99,
+            "lift": 0.87
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.5,
+            "tasa_base_pct": 4.99,
+            "lift": 0.9
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.75,
+            "tasa_base_pct": 4.99,
+            "lift": 1.15
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 9165,
+            "tasa_gap_pct": 8.41,
+            "tasa_base_pct": 7.84,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 8531,
+            "tasa_gap_pct": 7.48,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8247,
+            "tasa_gap_pct": 7.99,
+            "tasa_base_pct": 7.84,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 8048,
+            "tasa_gap_pct": 7.8,
+            "tasa_base_pct": 7.84,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 8860,
+            "tasa_gap_pct": 7.48,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          }
+        ]
+      },
+      "dist_sma200_pct": {
+        "cortes": [
+          3.56,
+          6.86,
+          10.33,
+          15.38
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.0,
+            "tasa_base_pct": 4.99,
+            "lift": 1.0
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.96,
+            "tasa_base_pct": 4.99,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.76,
+            "tasa_base_pct": 4.99,
+            "lift": 0.95
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.01,
+            "tasa_base_pct": 4.99,
+            "lift": 1.0
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.22,
+            "tasa_base_pct": 4.99,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 7107,
+            "tasa_gap_pct": 6.53,
+            "tasa_base_pct": 7.84,
+            "lift": 0.83
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7048,
+            "tasa_gap_pct": 8.4,
+            "tasa_base_pct": 7.84,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 7615,
+            "tasa_gap_pct": 7.38,
+            "tasa_base_pct": 7.84,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 9066,
+            "tasa_gap_pct": 8.06,
+            "tasa_base_pct": 7.84,
+            "lift": 1.03
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 12015,
+            "tasa_gap_pct": 8.41,
+            "tasa_base_pct": 7.84,
+            "lift": 1.07
+          }
+        ]
+      },
+      "dist_max52w_pct": {
+        "cortes": [
+          -9.37,
+          -5.73,
+          -3.16,
+          -1.01
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 7.86,
+            "tasa_base_pct": 4.99,
+            "lift": 1.57
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.62,
+            "tasa_base_pct": 4.99,
+            "lift": 1.13
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.27,
+            "tasa_base_pct": 4.99,
+            "lift": 0.86
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 3.87,
+            "tasa_base_pct": 4.99,
+            "lift": 0.78
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 3.34,
+            "tasa_base_pct": 4.99,
+            "lift": 0.67
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 7642,
+            "tasa_gap_pct": 11.19,
+            "tasa_base_pct": 7.84,
+            "lift": 1.43
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 9070,
+            "tasa_gap_pct": 8.02,
+            "tasa_base_pct": 7.84,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8629,
+            "tasa_gap_pct": 7.16,
+            "tasa_base_pct": 7.84,
+            "lift": 0.91
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 8775,
+            "tasa_gap_pct": 7.29,
+            "tasa_base_pct": 7.84,
+            "lift": 0.93
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 8735,
+            "tasa_gap_pct": 5.94,
+            "tasa_base_pct": 7.84,
+            "lift": 0.76
+          }
+        ]
+      },
+      "rsi14": {
+        "cortes": [
+          46.88,
+          54.09,
+          60.22,
+          66.9
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 3.98,
+            "tasa_base_pct": 4.99,
+            "lift": 0.8
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.95,
+            "tasa_base_pct": 4.99,
+            "lift": 1.19
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.66,
+            "tasa_base_pct": 4.99,
+            "lift": 1.13
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.67,
+            "tasa_base_pct": 4.99,
+            "lift": 0.94
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.7,
+            "tasa_base_pct": 4.99,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 9133,
+            "tasa_gap_pct": 6.46,
+            "tasa_base_pct": 7.84,
+            "lift": 0.82
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 9494,
+            "tasa_gap_pct": 9.5,
+            "tasa_base_pct": 7.84,
+            "lift": 1.21
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 9075,
+            "tasa_gap_pct": 9.2,
+            "tasa_base_pct": 7.84,
+            "lift": 1.17
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 8174,
+            "tasa_gap_pct": 7.49,
+            "tasa_base_pct": 7.84,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 6975,
+            "tasa_gap_pct": 6.02,
+            "tasa_base_pct": 7.84,
+            "lift": 0.77
+          }
+        ]
+      },
+      "compresion_bb": {
+        "cortes": [
+          0.61,
+          0.8,
+          1.0,
+          1.3
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.2,
+            "tasa_base_pct": 4.99,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.05,
+            "tasa_base_pct": 4.99,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.17,
+            "tasa_base_pct": 4.99,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.66,
+            "tasa_base_pct": 4.99,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.88,
+            "tasa_base_pct": 4.99,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 4813,
+            "tasa_gap_pct": 10.33,
+            "tasa_base_pct": 7.84,
+            "lift": 1.32
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7757,
+            "tasa_gap_pct": 7.62,
+            "tasa_base_pct": 7.84,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8224,
+            "tasa_gap_pct": 7.45,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 9114,
+            "tasa_gap_pct": 7.58,
+            "tasa_base_pct": 7.84,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 12943,
+            "tasa_gap_pct": 7.47,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          }
+        ]
+      },
+      "rango10_pct": {
+        "cortes": [
+          2.79,
+          3.71,
+          4.75,
+          6.36
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 3.77,
+            "tasa_base_pct": 4.99,
+            "lift": 0.76
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.15,
+            "tasa_base_pct": 4.99,
+            "lift": 0.83
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.12,
+            "tasa_base_pct": 4.99,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.63,
+            "tasa_base_pct": 4.99,
+            "lift": 1.13
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 6.28,
+            "tasa_base_pct": 4.99,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 6176,
+            "tasa_gap_pct": 6.01,
+            "tasa_base_pct": 7.84,
+            "lift": 0.77
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7175,
+            "tasa_gap_pct": 7.79,
+            "tasa_base_pct": 7.84,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8161,
+            "tasa_gap_pct": 8.31,
+            "tasa_base_pct": 7.84,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 9338,
+            "tasa_gap_pct": 9.19,
+            "tasa_base_pct": 7.84,
+            "lift": 1.17
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 12001,
+            "tasa_gap_pct": 7.44,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          }
+        ]
+      },
+      "vol_secado": {
+        "cortes": [
+          0.76,
+          0.87,
+          0.98,
+          1.15
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.4,
+            "tasa_base_pct": 4.99,
+            "lift": 1.08
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.74,
+            "tasa_base_pct": 4.99,
+            "lift": 0.95
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.96,
+            "tasa_base_pct": 4.99,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.23,
+            "tasa_base_pct": 4.99,
+            "lift": 1.05
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.62,
+            "tasa_base_pct": 4.99,
+            "lift": 0.93
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 8385,
+            "tasa_gap_pct": 9.87,
+            "tasa_base_pct": 7.84,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7565,
+            "tasa_gap_pct": 8.21,
+            "tasa_base_pct": 7.84,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8281,
+            "tasa_gap_pct": 7.91,
+            "tasa_base_pct": 7.84,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 8833,
+            "tasa_gap_pct": 6.99,
+            "tasa_base_pct": 7.84,
+            "lift": 0.89
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 9787,
+            "tasa_gap_pct": 6.52,
+            "tasa_base_pct": 7.84,
+            "lift": 0.83
+          }
+        ]
+      },
+      "ret20_pct": {
+        "cortes": [
+          -1.82,
+          1.31,
+          4.09,
+          7.58
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.16,
+            "tasa_base_pct": 4.99,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.88,
+            "tasa_base_pct": 4.99,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.28,
+            "tasa_base_pct": 4.99,
+            "lift": 0.86
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.64,
+            "tasa_base_pct": 4.99,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.99,
+            "tasa_base_pct": 4.99,
+            "lift": 1.2
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 9461,
+            "tasa_gap_pct": 7.77,
+            "tasa_base_pct": 7.84,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 8550,
+            "tasa_gap_pct": 7.46,
+            "tasa_base_pct": 7.84,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 8011,
+            "tasa_gap_pct": 8.3,
+            "tasa_base_pct": 7.84,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 7722,
+            "tasa_gap_pct": 7.54,
+            "tasa_base_pct": 7.84,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 9107,
+            "tasa_gap_pct": 8.11,
+            "tasa_base_pct": 7.84,
+            "lift": 1.04
+          }
+        ]
+      },
+      "rs20_pct": {
+        "cortes": [
+          -3.34,
+          -0.48,
+          1.89,
+          5.19
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 5.25,
+            "tasa_base_pct": 4.99,
+            "lift": 1.05
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 4.16,
+            "tasa_base_pct": 4.99,
+            "lift": 0.83
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 3.87,
+            "tasa_base_pct": 4.99,
+            "lift": 0.78
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 5.13,
+            "tasa_base_pct": 4.99,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 6.54,
+            "tasa_base_pct": 4.99,
+            "lift": 1.31
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 9603,
+            "tasa_gap_pct": 7.58,
+            "tasa_base_pct": 7.84,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7586,
+            "tasa_gap_pct": 7.63,
+            "tasa_base_pct": 7.84,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 7469,
+            "tasa_gap_pct": 6.98,
+            "tasa_base_pct": 7.84,
+            "lift": 0.89
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 7477,
+            "tasa_gap_pct": 7.96,
+            "tasa_base_pct": 7.84,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 10716,
+            "tasa_gap_pct": 8.73,
+            "tasa_base_pct": 7.84,
+            "lift": 1.11
+          }
+        ]
+      },
+      "atr_pct": {
+        "cortes": [
+          1.35,
+          1.6,
+          1.86,
+          2.2
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 9277,
+            "tasa_gap_pct": 2.39,
+            "tasa_base_pct": 4.99,
+            "lift": 0.48
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 9276,
+            "tasa_gap_pct": 3.49,
+            "tasa_base_pct": 4.99,
+            "lift": 0.7
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 9277,
+            "tasa_gap_pct": 4.68,
+            "tasa_base_pct": 4.99,
+            "lift": 0.94
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 9276,
+            "tasa_gap_pct": 6.26,
+            "tasa_base_pct": 4.99,
+            "lift": 1.25
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 9277,
+            "tasa_gap_pct": 8.13,
+            "tasa_base_pct": 4.99,
+            "lift": 1.63
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 4939,
+            "tasa_gap_pct": 3.1,
+            "tasa_base_pct": 7.84,
+            "lift": 0.4
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5660,
+            "tasa_gap_pct": 5.67,
+            "tasa_base_pct": 7.84,
+            "lift": 0.72
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 7740,
+            "tasa_gap_pct": 6.68,
+            "tasa_base_pct": 7.84,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 9362,
+            "tasa_gap_pct": 8.3,
+            "tasa_base_pct": 7.84,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 15150,
+            "tasa_gap_pct": 10.5,
+            "tasa_base_pct": 7.84,
+            "lift": 1.34
+          }
+        ]
+      }
+    },
+    "baja_o_media": {
+      "dist_sma50_pct": {
+        "cortes": [
+          -0.8,
+          2.44,
+          5.32,
+          9.1
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 9.76,
+            "tasa_base_pct": 9.88,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.53,
+            "tasa_base_pct": 9.88,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.6,
+            "tasa_base_pct": 9.88,
+            "lift": 0.87
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.67,
+            "tasa_base_pct": 9.88,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 11.85,
+            "tasa_base_pct": 9.88,
+            "lift": 1.2
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 16079,
+            "tasa_gap_pct": 12.76,
+            "tasa_base_pct": 12.74,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 14898,
+            "tasa_gap_pct": 11.46,
+            "tasa_base_pct": 12.74,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14081,
+            "tasa_gap_pct": 12.2,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 13798,
+            "tasa_gap_pct": 12.18,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 17176,
+            "tasa_gap_pct": 14.74,
+            "tasa_base_pct": 12.74,
+            "lift": 1.16
+          }
+        ]
+      },
+      "dist_sma200_pct": {
+        "cortes": [
+          4.17,
+          8.19,
+          13.05,
+          20.49
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 8.34,
+            "tasa_base_pct": 9.88,
+            "lift": 0.84
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.64,
+            "tasa_base_pct": 9.88,
+            "lift": 0.87
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.55,
+            "tasa_base_pct": 9.88,
+            "lift": 0.86
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 10.86,
+            "tasa_base_pct": 9.88,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 13.03,
+            "tasa_base_pct": 9.88,
+            "lift": 1.32
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 12542,
+            "tasa_gap_pct": 9.63,
+            "tasa_base_pct": 12.74,
+            "lift": 0.76
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 12513,
+            "tasa_gap_pct": 12.0,
+            "tasa_base_pct": 12.74,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14623,
+            "tasa_gap_pct": 10.88,
+            "tasa_base_pct": 12.74,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 15740,
+            "tasa_gap_pct": 12.83,
+            "tasa_base_pct": 12.74,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 20614,
+            "tasa_gap_pct": 16.34,
+            "tasa_base_pct": 12.74,
+            "lift": 1.28
+          }
+        ]
+      },
+      "dist_max52w_pct": {
+        "cortes": [
+          -12.17,
+          -7.21,
+          -3.96,
+          -1.28
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 14.86,
+            "tasa_base_pct": 9.88,
+            "lift": 1.5
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 10.56,
+            "tasa_base_pct": 9.88,
+            "lift": 1.07
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.75,
+            "tasa_base_pct": 9.88,
+            "lift": 0.89
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.69,
+            "tasa_base_pct": 9.88,
+            "lift": 0.88
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 6.55,
+            "tasa_base_pct": 9.88,
+            "lift": 0.66
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 14294,
+            "tasa_gap_pct": 17.08,
+            "tasa_base_pct": 12.74,
+            "lift": 1.34
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 15651,
+            "tasa_gap_pct": 13.8,
+            "tasa_base_pct": 12.74,
+            "lift": 1.08
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 15322,
+            "tasa_gap_pct": 11.5,
+            "tasa_base_pct": 12.74,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 15268,
+            "tasa_gap_pct": 11.93,
+            "tasa_base_pct": 12.74,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 15497,
+            "tasa_gap_pct": 9.7,
+            "tasa_base_pct": 12.74,
+            "lift": 0.76
+          }
+        ]
+      },
+      "rsi14": {
+        "cortes": [
+          46.84,
+          54.0,
+          60.07,
+          66.71
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 7.59,
+            "tasa_base_pct": 9.88,
+            "lift": 0.77
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 12.07,
+            "tasa_base_pct": 9.88,
+            "lift": 1.22
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 12.04,
+            "tasa_base_pct": 9.88,
+            "lift": 1.22
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.9,
+            "tasa_base_pct": 9.88,
+            "lift": 1.0
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 7.81,
+            "tasa_base_pct": 9.88,
+            "lift": 0.79
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 15982,
+            "tasa_gap_pct": 10.31,
+            "tasa_base_pct": 12.74,
+            "lift": 0.81
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 16571,
+            "tasa_gap_pct": 14.81,
+            "tasa_base_pct": 12.74,
+            "lift": 1.16
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 15445,
+            "tasa_gap_pct": 14.96,
+            "tasa_base_pct": 12.74,
+            "lift": 1.17
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 14621,
+            "tasa_gap_pct": 12.74,
+            "tasa_base_pct": 12.74,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 13413,
+            "tasa_gap_pct": 10.54,
+            "tasa_base_pct": 12.74,
+            "lift": 0.83
+          }
+        ]
+      },
+      "compresion_bb": {
+        "cortes": [
+          0.61,
+          0.8,
+          1.01,
+          1.33
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 10.99,
+            "tasa_base_pct": 9.88,
+            "lift": 1.11
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.74,
+            "tasa_base_pct": 9.88,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.56,
+            "tasa_base_pct": 9.88,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.24,
+            "tasa_base_pct": 9.88,
+            "lift": 0.94
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 9.87,
+            "tasa_base_pct": 9.88,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 8986,
+            "tasa_gap_pct": 16.07,
+            "tasa_base_pct": 12.74,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 13054,
+            "tasa_gap_pct": 12.3,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14750,
+            "tasa_gap_pct": 12.53,
+            "tasa_base_pct": 12.74,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 16855,
+            "tasa_gap_pct": 12.26,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 22387,
+            "tasa_gap_pct": 12.18,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          }
+        ]
+      },
+      "rango10_pct": {
+        "cortes": [
+          3.28,
+          4.52,
+          5.99,
+          8.34
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 5.67,
+            "tasa_base_pct": 9.88,
+            "lift": 0.57
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.6,
+            "tasa_base_pct": 9.88,
+            "lift": 0.87
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 10.67,
+            "tasa_base_pct": 9.88,
+            "lift": 1.08
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 12.18,
+            "tasa_base_pct": 9.88,
+            "lift": 1.23
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 12.28,
+            "tasa_base_pct": 9.88,
+            "lift": 1.24
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 10994,
+            "tasa_gap_pct": 8.04,
+            "tasa_base_pct": 12.74,
+            "lift": 0.63
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 12952,
+            "tasa_gap_pct": 10.72,
+            "tasa_base_pct": 12.74,
+            "lift": 0.84
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14255,
+            "tasa_gap_pct": 13.6,
+            "tasa_base_pct": 12.74,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 16092,
+            "tasa_gap_pct": 14.95,
+            "tasa_base_pct": 12.74,
+            "lift": 1.17
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 21739,
+            "tasa_gap_pct": 14.14,
+            "tasa_base_pct": 12.74,
+            "lift": 1.11
+          }
+        ]
+      },
+      "vol_secado": {
+        "cortes": [
+          0.75,
+          0.86,
+          0.98,
+          1.16
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 11.86,
+            "tasa_base_pct": 9.88,
+            "lift": 1.2
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 10.35,
+            "tasa_base_pct": 9.88,
+            "lift": 1.05
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.63,
+            "tasa_base_pct": 9.88,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.55,
+            "tasa_base_pct": 9.88,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 8.01,
+            "tasa_base_pct": 9.88,
+            "lift": 0.81
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 15641,
+            "tasa_gap_pct": 16.81,
+            "tasa_base_pct": 12.74,
+            "lift": 1.32
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 13444,
+            "tasa_gap_pct": 13.46,
+            "tasa_base_pct": 12.74,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14476,
+            "tasa_gap_pct": 12.67,
+            "tasa_base_pct": 12.74,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 15538,
+            "tasa_gap_pct": 10.94,
+            "tasa_base_pct": 12.74,
+            "lift": 0.86
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 16933,
+            "tasa_gap_pct": 10.13,
+            "tasa_base_pct": 12.74,
+            "lift": 0.8
+          }
+        ]
+      },
+      "ret20_pct": {
+        "cortes": [
+          -2.18,
+          1.6,
+          4.96,
+          9.51
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 10.56,
+            "tasa_base_pct": 9.88,
+            "lift": 1.07
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.99,
+            "tasa_base_pct": 9.88,
+            "lift": 0.91
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.38,
+            "tasa_base_pct": 9.88,
+            "lift": 0.85
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.57,
+            "tasa_base_pct": 9.88,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 11.92,
+            "tasa_base_pct": 9.88,
+            "lift": 1.21
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 16674,
+            "tasa_gap_pct": 12.82,
+            "tasa_base_pct": 12.74,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 14555,
+            "tasa_gap_pct": 11.43,
+            "tasa_base_pct": 12.74,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 13650,
+            "tasa_gap_pct": 11.69,
+            "tasa_base_pct": 12.74,
+            "lift": 0.92
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 14158,
+            "tasa_gap_pct": 12.23,
+            "tasa_base_pct": 12.74,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 16995,
+            "tasa_gap_pct": 15.06,
+            "tasa_base_pct": 12.74,
+            "lift": 1.18
+          }
+        ]
+      },
+      "rs20_pct": {
+        "cortes": [
+          -3.66,
+          -0.21,
+          2.79,
+          6.96
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 10.03,
+            "tasa_base_pct": 9.88,
+            "lift": 1.02
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.8,
+            "tasa_base_pct": 9.88,
+            "lift": 0.89
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 8.18,
+            "tasa_base_pct": 9.88,
+            "lift": 0.83
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.98,
+            "tasa_base_pct": 9.88,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 12.41,
+            "tasa_base_pct": 9.88,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 16804,
+            "tasa_gap_pct": 12.58,
+            "tasa_base_pct": 12.74,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 13309,
+            "tasa_gap_pct": 11.21,
+            "tasa_base_pct": 12.74,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 13163,
+            "tasa_gap_pct": 11.18,
+            "tasa_base_pct": 12.74,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 13373,
+            "tasa_gap_pct": 13.02,
+            "tasa_base_pct": 12.74,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 19383,
+            "tasa_gap_pct": 14.81,
+            "tasa_base_pct": 12.74,
+            "lift": 1.16
+          }
+        ]
+      },
+      "atr_pct": {
+        "cortes": [
+          1.54,
+          1.92,
+          2.34,
+          2.93
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 16371,
+            "tasa_gap_pct": 2.96,
+            "tasa_base_pct": 9.88,
+            "lift": 0.3
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 16370,
+            "tasa_gap_pct": 5.71,
+            "tasa_base_pct": 9.88,
+            "lift": 0.58
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 16370,
+            "tasa_gap_pct": 9.63,
+            "tasa_base_pct": 9.88,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 16370,
+            "tasa_gap_pct": 12.8,
+            "tasa_base_pct": 9.88,
+            "lift": 1.3
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 16371,
+            "tasa_gap_pct": 18.32,
+            "tasa_base_pct": 9.88,
+            "lift": 1.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 9101,
+            "tasa_gap_pct": 4.43,
+            "tasa_base_pct": 12.74,
+            "lift": 0.35
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 12569,
+            "tasa_gap_pct": 7.92,
+            "tasa_base_pct": 12.74,
+            "lift": 0.62
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 14447,
+            "tasa_gap_pct": 10.77,
+            "tasa_base_pct": 12.74,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 15448,
+            "tasa_gap_pct": 14.66,
+            "tasa_base_pct": 12.74,
+            "lift": 1.15
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 24467,
+            "tasa_gap_pct": 18.27,
+            "tasa_base_pct": 12.74,
+            "lift": 1.43
+          }
+        ]
+      }
+    },
+    "media": {
+      "dist_sma50_pct": {
+        "cortes": [
+          -1.03,
+          3.38,
+          7.16,
+          11.75
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.13,
+            "tasa_base_pct": 16.28,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 19.06,
+            "tasa_base_pct": 16.28,
+            "lift": 1.17
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 17.61,
+            "tasa_base_pct": 16.28,
+            "lift": 1.08
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 14.97,
+            "tasa_base_pct": 16.28,
+            "lift": 0.92
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 14.62,
+            "tasa_base_pct": 16.28,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 6969,
+            "tasa_gap_pct": 18.08,
+            "tasa_base_pct": 19.08,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 6128,
+            "tasa_gap_pct": 21.13,
+            "tasa_base_pct": 19.08,
+            "lift": 1.11
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 5787,
+            "tasa_gap_pct": 19.35,
+            "tasa_base_pct": 19.08,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 5825,
+            "tasa_gap_pct": 18.88,
+            "tasa_base_pct": 19.08,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 8472,
+            "tasa_gap_pct": 18.35,
+            "tasa_base_pct": 19.08,
+            "lift": 0.96
+          }
+        ]
+      },
+      "dist_sma200_pct": {
+        "cortes": [
+          5.47,
+          11.58,
+          18.5,
+          27.07
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.62,
+            "tasa_base_pct": 16.28,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 16.94,
+            "tasa_base_pct": 16.28,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 17.23,
+            "tasa_base_pct": 16.28,
+            "lift": 1.06
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.1,
+            "tasa_base_pct": 16.28,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 16.49,
+            "tasa_base_pct": 16.28,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 5402,
+            "tasa_gap_pct": 16.57,
+            "tasa_base_pct": 19.08,
+            "lift": 0.87
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5718,
+            "tasa_gap_pct": 18.87,
+            "tasa_base_pct": 19.08,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 6092,
+            "tasa_gap_pct": 19.44,
+            "tasa_base_pct": 19.08,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 6152,
+            "tasa_gap_pct": 19.52,
+            "tasa_base_pct": 19.08,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 9817,
+            "tasa_gap_pct": 20.08,
+            "tasa_base_pct": 19.08,
+            "lift": 1.05
+          }
+        ]
+      },
+      "dist_max52w_pct": {
+        "cortes": [
+          -15.92,
+          -10.01,
+          -5.59,
+          -1.89
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 19.24,
+            "tasa_base_pct": 16.28,
+            "lift": 1.18
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.2,
+            "tasa_base_pct": 16.28,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 16.18,
+            "tasa_base_pct": 16.28,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 17.51,
+            "tasa_base_pct": 16.28,
+            "lift": 1.08
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 13.25,
+            "tasa_base_pct": 16.28,
+            "lift": 0.81
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 6331,
+            "tasa_gap_pct": 19.89,
+            "tasa_base_pct": 19.08,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7088,
+            "tasa_gap_pct": 18.1,
+            "tasa_base_pct": 19.08,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 6654,
+            "tasa_gap_pct": 19.49,
+            "tasa_base_pct": 19.08,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 6437,
+            "tasa_gap_pct": 21.41,
+            "tasa_base_pct": 19.08,
+            "lift": 1.12
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 6671,
+            "tasa_gap_pct": 16.68,
+            "tasa_base_pct": 19.08,
+            "lift": 0.87
+          }
+        ]
+      },
+      "rsi14": {
+        "cortes": [
+          46.8,
+          53.87,
+          59.87,
+          66.47
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 12.29,
+            "tasa_base_pct": 16.28,
+            "lift": 0.76
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 19.83,
+            "tasa_base_pct": 16.28,
+            "lift": 1.22
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 20.2,
+            "tasa_base_pct": 16.28,
+            "lift": 1.24
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 16.66,
+            "tasa_base_pct": 16.28,
+            "lift": 1.02
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 12.39,
+            "tasa_base_pct": 16.28,
+            "lift": 0.76
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 6866,
+            "tasa_gap_pct": 15.38,
+            "tasa_base_pct": 19.08,
+            "lift": 0.81
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 7041,
+            "tasa_gap_pct": 21.8,
+            "tasa_base_pct": 19.08,
+            "lift": 1.14
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 6417,
+            "tasa_gap_pct": 22.94,
+            "tasa_base_pct": 19.08,
+            "lift": 1.2
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 6431,
+            "tasa_gap_pct": 19.44,
+            "tasa_base_pct": 19.08,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 6426,
+            "tasa_gap_pct": 15.83,
+            "tasa_base_pct": 19.08,
+            "lift": 0.83
+          }
+        ]
+      },
+      "compresion_bb": {
+        "cortes": [
+          0.62,
+          0.81,
+          1.03,
+          1.37
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.92,
+            "tasa_base_pct": 16.28,
+            "lift": 1.16
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.99,
+            "tasa_base_pct": 16.28,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 15.59,
+            "tasa_base_pct": 16.28,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.63,
+            "tasa_base_pct": 16.28,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.25,
+            "tasa_base_pct": 16.28,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 4233,
+            "tasa_gap_pct": 23.08,
+            "tasa_base_pct": 19.08,
+            "lift": 1.21
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5213,
+            "tasa_gap_pct": 19.18,
+            "tasa_base_pct": 19.08,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 6554,
+            "tasa_gap_pct": 19.79,
+            "tasa_base_pct": 19.08,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 7660,
+            "tasa_gap_pct": 17.7,
+            "tasa_base_pct": 19.08,
+            "lift": 0.93
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 9521,
+            "tasa_gap_pct": 17.86,
+            "tasa_base_pct": 19.08,
+            "lift": 0.94
+          }
+        ]
+      },
+      "rango10_pct": {
+        "cortes": [
+          4.57,
+          6.11,
+          7.85,
+          10.57
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 17.86,
+            "tasa_base_pct": 16.28,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.28,
+            "tasa_base_pct": 16.28,
+            "lift": 1.12
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 16.18,
+            "tasa_base_pct": 16.28,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 14.76,
+            "tasa_base_pct": 16.28,
+            "lift": 0.91
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 14.29,
+            "tasa_base_pct": 16.28,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 4196,
+            "tasa_gap_pct": 19.83,
+            "tasa_base_pct": 19.08,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5429,
+            "tasa_gap_pct": 21.85,
+            "tasa_base_pct": 19.08,
+            "lift": 1.15
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 5949,
+            "tasa_gap_pct": 21.5,
+            "tasa_base_pct": 19.08,
+            "lift": 1.13
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 7182,
+            "tasa_gap_pct": 20.12,
+            "tasa_base_pct": 19.08,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 10425,
+            "tasa_gap_pct": 15.23,
+            "tasa_base_pct": 19.08,
+            "lift": 0.8
+          }
+        ]
+      },
+      "vol_secado": {
+        "cortes": [
+          0.74,
+          0.85,
+          0.97,
+          1.17
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 19.02,
+            "tasa_base_pct": 16.28,
+            "lift": 1.17
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.13,
+            "tasa_base_pct": 16.28,
+            "lift": 1.11
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 16.16,
+            "tasa_base_pct": 16.28,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.99,
+            "tasa_base_pct": 16.28,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 12.09,
+            "tasa_base_pct": 16.28,
+            "lift": 0.74
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 7205,
+            "tasa_gap_pct": 23.98,
+            "tasa_base_pct": 19.08,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5988,
+            "tasa_gap_pct": 20.27,
+            "tasa_base_pct": 19.08,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 6123,
+            "tasa_gap_pct": 19.71,
+            "tasa_base_pct": 19.08,
+            "lift": 1.03
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 6694,
+            "tasa_gap_pct": 16.85,
+            "tasa_base_pct": 19.08,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 7171,
+            "tasa_gap_pct": 14.68,
+            "tasa_base_pct": 19.08,
+            "lift": 0.77
+          }
+        ]
+      },
+      "ret20_pct": {
+        "cortes": [
+          -2.93,
+          2.27,
+          6.76,
+          12.44
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.63,
+            "tasa_base_pct": 16.28,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.35,
+            "tasa_base_pct": 16.28,
+            "lift": 1.13
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 16.16,
+            "tasa_base_pct": 16.28,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.75,
+            "tasa_base_pct": 16.28,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.49,
+            "tasa_base_pct": 16.28,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 7243,
+            "tasa_gap_pct": 18.27,
+            "tasa_base_pct": 19.08,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5933,
+            "tasa_gap_pct": 20.38,
+            "tasa_base_pct": 19.08,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 5805,
+            "tasa_gap_pct": 18.83,
+            "tasa_base_pct": 19.08,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 6104,
+            "tasa_gap_pct": 19.58,
+            "tasa_base_pct": 19.08,
+            "lift": 1.03
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 8096,
+            "tasa_gap_pct": 18.65,
+            "tasa_base_pct": 19.08,
+            "lift": 0.98
+          }
+        ]
+      },
+      "rs20_pct": {
+        "cortes": [
+          -4.21,
+          0.44,
+          4.5,
+          9.74
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 14.86,
+            "tasa_base_pct": 16.28,
+            "lift": 0.91
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.24,
+            "tasa_base_pct": 16.28,
+            "lift": 1.12
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 16.58,
+            "tasa_base_pct": 16.28,
+            "lift": 1.02
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 16.27,
+            "tasa_base_pct": 16.28,
+            "lift": 1.0
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 15.44,
+            "tasa_base_pct": 16.28,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 7285,
+            "tasa_gap_pct": 18.27,
+            "tasa_base_pct": 19.08,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 5667,
+            "tasa_gap_pct": 19.0,
+            "tasa_base_pct": 19.08,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 5678,
+            "tasa_gap_pct": 19.85,
+            "tasa_base_pct": 19.08,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 5852,
+            "tasa_gap_pct": 20.11,
+            "tasa_base_pct": 19.08,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 8699,
+            "tasa_gap_pct": 18.6,
+            "tasa_base_pct": 19.08,
+            "lift": 0.97
+          }
+        ]
+      },
+      "atr_pct": {
+        "cortes": [
+          2.22,
+          2.59,
+          2.99,
+          3.57
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 7094,
+            "tasa_gap_pct": 13.19,
+            "tasa_base_pct": 16.28,
+            "lift": 0.81
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 7094,
+            "tasa_gap_pct": 13.9,
+            "tasa_base_pct": 16.28,
+            "lift": 0.85
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 7093,
+            "tasa_gap_pct": 15.86,
+            "tasa_base_pct": 16.28,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 7094,
+            "tasa_gap_pct": 18.68,
+            "tasa_base_pct": 16.28,
+            "lift": 1.15
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 7094,
+            "tasa_gap_pct": 19.75,
+            "tasa_base_pct": 16.28,
+            "lift": 1.21
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3705,
+            "tasa_gap_pct": 16.71,
+            "tasa_base_pct": 19.08,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 4439,
+            "tasa_gap_pct": 16.96,
+            "tasa_base_pct": 19.08,
+            "lift": 0.89
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 5331,
+            "tasa_gap_pct": 20.41,
+            "tasa_base_pct": 19.08,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 7237,
+            "tasa_gap_pct": 19.07,
+            "tasa_base_pct": 19.08,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 12469,
+            "tasa_gap_pct": 19.97,
+            "tasa_base_pct": 19.08,
+            "lift": 1.05
+          }
+        ]
+      }
+    },
+    "alta": {
+      "dist_sma50_pct": {
+        "cortes": [
+          -3.01,
+          4.3,
+          11.8,
+          21.66
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 22.75,
+            "tasa_base_pct": 19.69,
+            "lift": 1.16
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.62,
+            "tasa_base_pct": 19.69,
+            "lift": 0.95
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 23.07,
+            "tasa_base_pct": 19.69,
+            "lift": 1.17
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.41,
+            "tasa_base_pct": 19.69,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 14.6,
+            "tasa_base_pct": 19.69,
+            "lift": 0.74
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3886,
+            "tasa_gap_pct": 23.37,
+            "tasa_base_pct": 22.97,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2870,
+            "tasa_gap_pct": 26.24,
+            "tasa_base_pct": 22.97,
+            "lift": 1.14
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3224,
+            "tasa_gap_pct": 26.02,
+            "tasa_base_pct": 22.97,
+            "lift": 1.13
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3029,
+            "tasa_gap_pct": 22.61,
+            "tasa_base_pct": 22.97,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 4351,
+            "tasa_gap_pct": 18.43,
+            "tasa_base_pct": 22.97,
+            "lift": 0.8
+          }
+        ]
+      },
+      "dist_sma200_pct": {
+        "cortes": [
+          6.26,
+          15.42,
+          27.04,
+          48.27
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.87,
+            "tasa_base_pct": 19.69,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 22.89,
+            "tasa_base_pct": 19.69,
+            "lift": 1.16
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.56,
+            "tasa_base_pct": 19.69,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 17.82,
+            "tasa_base_pct": 19.69,
+            "lift": 0.91
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.3,
+            "tasa_base_pct": 19.69,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 2077,
+            "tasa_gap_pct": 24.36,
+            "tasa_base_pct": 22.97,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2742,
+            "tasa_gap_pct": 25.97,
+            "tasa_base_pct": 22.97,
+            "lift": 1.13
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3085,
+            "tasa_gap_pct": 23.31,
+            "tasa_base_pct": 22.97,
+            "lift": 1.01
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3993,
+            "tasa_gap_pct": 23.97,
+            "tasa_base_pct": 22.97,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 5463,
+            "tasa_gap_pct": 20.01,
+            "tasa_base_pct": 22.97,
+            "lift": 0.87
+          }
+        ]
+      },
+      "dist_max52w_pct": {
+        "cortes": [
+          -30.17,
+          -19.77,
+          -11.93,
+          -4.23
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.92,
+            "tasa_base_pct": 19.69,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.95,
+            "tasa_base_pct": 19.69,
+            "lift": 1.11
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.04,
+            "tasa_base_pct": 19.69,
+            "lift": 1.07
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.2,
+            "tasa_base_pct": 19.69,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 16.33,
+            "tasa_base_pct": 19.69,
+            "lift": 0.83
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3419,
+            "tasa_gap_pct": 24.98,
+            "tasa_base_pct": 22.97,
+            "lift": 1.09
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 3707,
+            "tasa_gap_pct": 22.63,
+            "tasa_base_pct": 22.97,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3340,
+            "tasa_gap_pct": 24.73,
+            "tasa_base_pct": 22.97,
+            "lift": 1.08
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3306,
+            "tasa_gap_pct": 25.26,
+            "tasa_base_pct": 22.97,
+            "lift": 1.1
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 3588,
+            "tasa_gap_pct": 17.64,
+            "tasa_base_pct": 22.97,
+            "lift": 0.77
+          }
+        ]
+      },
+      "rsi14": {
+        "cortes": [
+          45.45,
+          52.74,
+          59.51,
+          67.31
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.4,
+            "tasa_base_pct": 19.69,
+            "lift": 0.93
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 22.89,
+            "tasa_base_pct": 19.69,
+            "lift": 1.16
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 23.58,
+            "tasa_base_pct": 19.69,
+            "lift": 1.2
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.45,
+            "tasa_base_pct": 19.69,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 14.13,
+            "tasa_base_pct": 19.69,
+            "lift": 0.72
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3345,
+            "tasa_gap_pct": 20.33,
+            "tasa_base_pct": 22.97,
+            "lift": 0.89
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 3820,
+            "tasa_gap_pct": 27.51,
+            "tasa_base_pct": 22.97,
+            "lift": 1.2
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3452,
+            "tasa_gap_pct": 28.59,
+            "tasa_base_pct": 22.97,
+            "lift": 1.24
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3386,
+            "tasa_gap_pct": 22.45,
+            "tasa_base_pct": 22.97,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 3357,
+            "tasa_gap_pct": 15.16,
+            "tasa_base_pct": 22.97,
+            "lift": 0.66
+          }
+        ]
+      },
+      "compresion_bb": {
+        "cortes": [
+          0.64,
+          0.86,
+          1.11,
+          1.54
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 22.17,
+            "tasa_base_pct": 19.69,
+            "lift": 1.13
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.85,
+            "tasa_base_pct": 19.69,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.92,
+            "tasa_base_pct": 19.69,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.77,
+            "tasa_base_pct": 19.69,
+            "lift": 1.11
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 14.74,
+            "tasa_base_pct": 19.69,
+            "lift": 0.75
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 2927,
+            "tasa_gap_pct": 27.37,
+            "tasa_base_pct": 22.97,
+            "lift": 1.19
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 3309,
+            "tasa_gap_pct": 24.24,
+            "tasa_base_pct": 22.97,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3589,
+            "tasa_gap_pct": 22.12,
+            "tasa_base_pct": 22.97,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3761,
+            "tasa_gap_pct": 21.72,
+            "tasa_base_pct": 22.97,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 3774,
+            "tasa_gap_pct": 20.48,
+            "tasa_base_pct": 22.97,
+            "lift": 0.89
+          }
+        ]
+      },
+      "rango10_pct": {
+        "cortes": [
+          7.25,
+          10.03,
+          13.4,
+          19.06
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 23.54,
+            "tasa_base_pct": 19.69,
+            "lift": 1.2
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 24.45,
+            "tasa_base_pct": 19.69,
+            "lift": 1.24
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 19.81,
+            "tasa_base_pct": 19.69,
+            "lift": 1.01
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.11,
+            "tasa_base_pct": 19.69,
+            "lift": 0.92
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 12.53,
+            "tasa_base_pct": 19.69,
+            "lift": 0.64
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 2304,
+            "tasa_gap_pct": 32.03,
+            "tasa_base_pct": 22.97,
+            "lift": 1.39
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2739,
+            "tasa_gap_pct": 27.97,
+            "tasa_base_pct": 22.97,
+            "lift": 1.22
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3041,
+            "tasa_gap_pct": 24.56,
+            "tasa_base_pct": 22.97,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3834,
+            "tasa_gap_pct": 20.63,
+            "tasa_base_pct": 22.97,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 5442,
+            "tasa_gap_pct": 17.36,
+            "tasa_base_pct": 22.97,
+            "lift": 0.76
+          }
+        ]
+      },
+      "vol_secado": {
+        "cortes": [
+          0.7,
+          0.84,
+          1.0,
+          1.29
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 23.58,
+            "tasa_base_pct": 19.69,
+            "lift": 1.2
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 22.75,
+            "tasa_base_pct": 19.69,
+            "lift": 1.16
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.73,
+            "tasa_base_pct": 19.69,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.73,
+            "tasa_base_pct": 19.69,
+            "lift": 0.95
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 11.66,
+            "tasa_base_pct": 19.69,
+            "lift": 0.59
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3406,
+            "tasa_gap_pct": 30.53,
+            "tasa_base_pct": 22.97,
+            "lift": 1.33
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 3461,
+            "tasa_gap_pct": 25.51,
+            "tasa_base_pct": 22.97,
+            "lift": 1.11
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3497,
+            "tasa_gap_pct": 23.96,
+            "tasa_base_pct": 22.97,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3681,
+            "tasa_gap_pct": 19.23,
+            "tasa_base_pct": 22.97,
+            "lift": 0.84
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 3315,
+            "tasa_gap_pct": 15.63,
+            "tasa_base_pct": 22.97,
+            "lift": 0.68
+          }
+        ]
+      },
+      "ret20_pct": {
+        "cortes": [
+          -5.73,
+          1.91,
+          11.16,
+          24.05
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 23.98,
+            "tasa_base_pct": 19.69,
+            "lift": 1.22
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.54,
+            "tasa_base_pct": 19.69,
+            "lift": 0.94
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.54,
+            "tasa_base_pct": 19.69,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.43,
+            "tasa_base_pct": 19.69,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 14.96,
+            "tasa_base_pct": 19.69,
+            "lift": 0.76
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3741,
+            "tasa_gap_pct": 23.44,
+            "tasa_base_pct": 22.97,
+            "lift": 1.02
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2805,
+            "tasa_gap_pct": 26.13,
+            "tasa_base_pct": 22.97,
+            "lift": 1.14
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3404,
+            "tasa_gap_pct": 25.06,
+            "tasa_base_pct": 22.97,
+            "lift": 1.09
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3328,
+            "tasa_gap_pct": 22.96,
+            "tasa_base_pct": 22.97,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 4082,
+            "tasa_gap_pct": 18.62,
+            "tasa_base_pct": 22.97,
+            "lift": 0.81
+          }
+        ]
+      },
+      "rs20_pct": {
+        "cortes": [
+          -7.17,
+          0.39,
+          8.75,
+          20.95
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.91,
+            "tasa_base_pct": 19.69,
+            "lift": 1.11
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.21,
+            "tasa_base_pct": 19.69,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.19,
+            "tasa_base_pct": 19.69,
+            "lift": 1.08
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.17,
+            "tasa_base_pct": 19.69,
+            "lift": 1.02
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 14.96,
+            "tasa_base_pct": 19.69,
+            "lift": 0.76
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 3582,
+            "tasa_gap_pct": 24.26,
+            "tasa_base_pct": 22.97,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2902,
+            "tasa_gap_pct": 24.05,
+            "tasa_base_pct": 22.97,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 3255,
+            "tasa_gap_pct": 25.13,
+            "tasa_base_pct": 22.97,
+            "lift": 1.09
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3474,
+            "tasa_gap_pct": 23.95,
+            "tasa_base_pct": 22.97,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 4147,
+            "tasa_gap_pct": 18.57,
+            "tasa_base_pct": 22.97,
+            "lift": 0.81
+          }
+        ]
+      },
+      "atr_pct": {
+        "cortes": [
+          3.51,
+          4.26,
+          5.05,
+          6.61
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.9,
+            "tasa_base_pct": 19.69,
+            "lift": 1.06
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 2761,
+            "tasa_gap_pct": 20.32,
+            "tasa_base_pct": 19.69,
+            "lift": 1.03
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 2761,
+            "tasa_gap_pct": 21.08,
+            "tasa_base_pct": 19.69,
+            "lift": 1.07
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 2761,
+            "tasa_gap_pct": 17.67,
+            "tasa_base_pct": 19.69,
+            "lift": 0.9
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 2761,
+            "tasa_gap_pct": 18.47,
+            "tasa_base_pct": 19.69,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 1972,
+            "tasa_gap_pct": 23.83,
+            "tasa_base_pct": 22.97,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 2459,
+            "tasa_gap_pct": 23.71,
+            "tasa_base_pct": 22.97,
+            "lift": 1.03
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 2575,
+            "tasa_gap_pct": 22.87,
+            "tasa_base_pct": 22.97,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 3951,
+            "tasa_gap_pct": 22.2,
+            "tasa_base_pct": 22.97,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 6403,
+            "tasa_gap_pct": 22.93,
+            "tasa_base_pct": 22.97,
+            "lift": 1.0
+          }
+        ]
+      }
+    },
+    "todos": {
+      "dist_sma50_pct": {
+        "cortes": [
+          -0.94,
+          2.56,
+          5.73,
+          10.21
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 11.92,
+            "tasa_base_pct": 11.3,
+            "lift": 1.06
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.11,
+            "tasa_base_pct": 11.3,
+            "lift": 0.9
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.62,
+            "tasa_base_pct": 11.3,
+            "lift": 0.85
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.04,
+            "tasa_base_pct": 11.3,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 13.78,
+            "tasa_base_pct": 11.3,
+            "lift": 1.22
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 20203,
+            "tasa_gap_pct": 15.24,
+            "tasa_base_pct": 14.64,
+            "lift": 1.04
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 17386,
+            "tasa_gap_pct": 12.68,
+            "tasa_base_pct": 14.64,
+            "lift": 0.87
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 16632,
+            "tasa_gap_pct": 13.38,
+            "tasa_base_pct": 14.64,
+            "lift": 0.91
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 16827,
+            "tasa_gap_pct": 13.89,
+            "tasa_base_pct": 14.64,
+            "lift": 0.95
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 22344,
+            "tasa_gap_pct": 17.15,
+            "tasa_base_pct": 14.64,
+            "lift": 1.17
+          }
+        ]
+      },
+      "dist_sma200_pct": {
+        "cortes": [
+          4.35,
+          8.7,
+          14.16,
+          22.92
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 9.33,
+            "tasa_base_pct": 11.3,
+            "lift": 0.83
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.89,
+            "tasa_base_pct": 11.3,
+            "lift": 0.88
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.93,
+            "tasa_base_pct": 11.3,
+            "lift": 0.88
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.97,
+            "tasa_base_pct": 11.3,
+            "lift": 1.06
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 15.36,
+            "tasa_base_pct": 11.3,
+            "lift": 1.36
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 14607,
+            "tasa_gap_pct": 10.97,
+            "tasa_base_pct": 14.64,
+            "lift": 0.75
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 14838,
+            "tasa_gap_pct": 13.25,
+            "tasa_base_pct": 14.64,
+            "lift": 0.9
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 17542,
+            "tasa_gap_pct": 12.58,
+            "tasa_base_pct": 14.64,
+            "lift": 0.86
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 18897,
+            "tasa_gap_pct": 14.39,
+            "tasa_base_pct": 14.64,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 27508,
+            "tasa_gap_pct": 18.84,
+            "tasa_base_pct": 14.64,
+            "lift": 1.29
+          }
+        ]
+      },
+      "dist_max52w_pct": {
+        "cortes": [
+          -14.44,
+          -8.2,
+          -4.45,
+          -1.45
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 17.89,
+            "tasa_base_pct": 11.3,
+            "lift": 1.58
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.98,
+            "tasa_base_pct": 11.3,
+            "lift": 1.06
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.96,
+            "tasa_base_pct": 11.3,
+            "lift": 0.88
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.48,
+            "tasa_base_pct": 11.3,
+            "lift": 0.84
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 7.19,
+            "tasa_base_pct": 11.3,
+            "lift": 0.64
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 19331,
+            "tasa_gap_pct": 21.09,
+            "tasa_base_pct": 14.64,
+            "lift": 1.44
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 18763,
+            "tasa_gap_pct": 15.83,
+            "tasa_base_pct": 14.64,
+            "lift": 1.08
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 18391,
+            "tasa_gap_pct": 12.92,
+            "tasa_base_pct": 14.64,
+            "lift": 0.88
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 18162,
+            "tasa_gap_pct": 12.97,
+            "tasa_base_pct": 14.64,
+            "lift": 0.89
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 18745,
+            "tasa_gap_pct": 10.13,
+            "tasa_base_pct": 14.64,
+            "lift": 0.69
+          }
+        ]
+      },
+      "rsi14": {
+        "cortes": [
+          46.61,
+          53.82,
+          60.0,
+          66.79
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 9.3,
+            "tasa_base_pct": 11.3,
+            "lift": 0.82
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 13.81,
+            "tasa_base_pct": 11.3,
+            "lift": 1.22
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 13.51,
+            "tasa_base_pct": 11.3,
+            "lift": 1.2
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.1,
+            "tasa_base_pct": 11.3,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 8.77,
+            "tasa_base_pct": 11.3,
+            "lift": 0.78
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 19460,
+            "tasa_gap_pct": 12.33,
+            "tasa_base_pct": 14.64,
+            "lift": 0.84
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 20366,
+            "tasa_gap_pct": 17.45,
+            "tasa_base_pct": 14.64,
+            "lift": 1.19
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 18872,
+            "tasa_gap_pct": 17.05,
+            "tasa_base_pct": 14.64,
+            "lift": 1.16
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 17856,
+            "tasa_gap_pct": 14.29,
+            "tasa_base_pct": 14.64,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 16838,
+            "tasa_gap_pct": 11.59,
+            "tasa_base_pct": 14.64,
+            "lift": 0.79
+          }
+        ]
+      },
+      "compresion_bb": {
+        "cortes": [
+          0.62,
+          0.81,
+          1.02,
+          1.36
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 12.43,
+            "tasa_base_pct": 11.3,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.0,
+            "tasa_base_pct": 11.3,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.93,
+            "tasa_base_pct": 11.3,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.09,
+            "tasa_base_pct": 11.3,
+            "lift": 0.98
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 11.03,
+            "tasa_base_pct": 11.3,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 11857,
+            "tasa_gap_pct": 18.69,
+            "tasa_base_pct": 14.64,
+            "lift": 1.28
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 16203,
+            "tasa_gap_pct": 14.2,
+            "tasa_base_pct": 14.64,
+            "lift": 0.97
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 18285,
+            "tasa_gap_pct": 14.55,
+            "tasa_base_pct": 14.64,
+            "lift": 0.99
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 20609,
+            "tasa_gap_pct": 13.73,
+            "tasa_base_pct": 14.64,
+            "lift": 0.94
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 26438,
+            "tasa_gap_pct": 13.87,
+            "tasa_base_pct": 14.64,
+            "lift": 0.95
+          }
+        ]
+      },
+      "rango10_pct": {
+        "cortes": [
+          3.45,
+          4.89,
+          6.72,
+          9.75
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 6.02,
+            "tasa_base_pct": 11.3,
+            "lift": 0.53
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.49,
+            "tasa_base_pct": 11.3,
+            "lift": 0.84
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 12.41,
+            "tasa_base_pct": 11.3,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 14.26,
+            "tasa_base_pct": 11.3,
+            "lift": 1.26
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 14.31,
+            "tasa_base_pct": 11.3,
+            "lift": 1.27
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 12901,
+            "tasa_gap_pct": 8.69,
+            "tasa_base_pct": 14.64,
+            "lift": 0.59
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 15478,
+            "tasa_gap_pct": 11.8,
+            "tasa_base_pct": 14.64,
+            "lift": 0.81
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 17610,
+            "tasa_gap_pct": 15.6,
+            "tasa_base_pct": 14.64,
+            "lift": 1.07
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 19319,
+            "tasa_gap_pct": 17.23,
+            "tasa_base_pct": 14.64,
+            "lift": 1.18
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 28084,
+            "tasa_gap_pct": 16.56,
+            "tasa_base_pct": 14.64,
+            "lift": 1.13
+          }
+        ]
+      },
+      "vol_secado": {
+        "cortes": [
+          0.74,
+          0.86,
+          0.98,
+          1.17
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 14.1,
+            "tasa_base_pct": 11.3,
+            "lift": 1.25
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.72,
+            "tasa_base_pct": 11.3,
+            "lift": 1.04
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.95,
+            "tasa_base_pct": 11.3,
+            "lift": 0.97
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.86,
+            "tasa_base_pct": 11.3,
+            "lift": 0.96
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 8.85,
+            "tasa_base_pct": 11.3,
+            "lift": 0.78
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 19276,
+            "tasa_gap_pct": 19.81,
+            "tasa_base_pct": 14.64,
+            "lift": 1.35
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 16813,
+            "tasa_gap_pct": 15.49,
+            "tasa_base_pct": 14.64,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 17695,
+            "tasa_gap_pct": 14.38,
+            "tasa_base_pct": 14.64,
+            "lift": 0.98
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 19018,
+            "tasa_gap_pct": 12.51,
+            "tasa_base_pct": 14.64,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 20590,
+            "tasa_gap_pct": 11.31,
+            "tasa_base_pct": 14.64,
+            "lift": 0.77
+          }
+        ]
+      },
+      "ret20_pct": {
+        "cortes": [
+          -2.48,
+          1.62,
+          5.33,
+          10.73
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 13.01,
+            "tasa_base_pct": 11.3,
+            "lift": 1.15
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.81,
+            "tasa_base_pct": 11.3,
+            "lift": 0.87
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.11,
+            "tasa_base_pct": 11.3,
+            "lift": 0.81
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.63,
+            "tasa_base_pct": 11.3,
+            "lift": 0.94
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 13.92,
+            "tasa_base_pct": 11.3,
+            "lift": 1.23
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 20656,
+            "tasa_gap_pct": 15.54,
+            "tasa_base_pct": 14.64,
+            "lift": 1.06
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 17118,
+            "tasa_gap_pct": 12.79,
+            "tasa_base_pct": 14.64,
+            "lift": 0.87
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 16415,
+            "tasa_gap_pct": 12.69,
+            "tasa_base_pct": 14.64,
+            "lift": 0.87
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 17300,
+            "tasa_gap_pct": 14.09,
+            "tasa_base_pct": 14.64,
+            "lift": 0.96
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 21903,
+            "tasa_gap_pct": 17.14,
+            "tasa_base_pct": 14.64,
+            "lift": 1.17
+          }
+        ]
+      },
+      "rs20_pct": {
+        "cortes": [
+          -3.96,
+          -0.16,
+          3.16,
+          8.07
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 12.37,
+            "tasa_base_pct": 11.3,
+            "lift": 1.1
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 9.7,
+            "tasa_base_pct": 11.3,
+            "lift": 0.86
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 8.99,
+            "tasa_base_pct": 11.3,
+            "lift": 0.8
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 11.14,
+            "tasa_base_pct": 11.3,
+            "lift": 0.99
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 14.28,
+            "tasa_base_pct": 11.3,
+            "lift": 1.26
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 20639,
+            "tasa_gap_pct": 15.32,
+            "tasa_base_pct": 14.64,
+            "lift": 1.05
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 15967,
+            "tasa_gap_pct": 12.41,
+            "tasa_base_pct": 14.64,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 15654,
+            "tasa_gap_pct": 12.47,
+            "tasa_base_pct": 14.64,
+            "lift": 0.85
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 16576,
+            "tasa_gap_pct": 14.68,
+            "tasa_base_pct": 14.64,
+            "lift": 1.0
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 24556,
+            "tasa_gap_pct": 16.88,
+            "tasa_base_pct": 14.64,
+            "lift": 1.15
+          }
+        ]
+      },
+      "atr_pct": {
+        "cortes": [
+          1.6,
+          2.05,
+          2.58,
+          3.5
+        ],
+        "filas": [
+          {
+            "muestra": "entrenamiento",
+            "quintil": 1,
+            "n_dias": 19132,
+            "tasa_gap_pct": 3.08,
+            "tasa_base_pct": 11.3,
+            "lift": 0.27
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 2,
+            "n_dias": 19131,
+            "tasa_gap_pct": 6.74,
+            "tasa_base_pct": 11.3,
+            "lift": 0.6
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 3,
+            "n_dias": 19131,
+            "tasa_gap_pct": 10.73,
+            "tasa_base_pct": 11.3,
+            "lift": 0.95
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 4,
+            "n_dias": 19131,
+            "tasa_gap_pct": 16.49,
+            "tasa_base_pct": 11.3,
+            "lift": 1.46
+          },
+          {
+            "muestra": "entrenamiento",
+            "quintil": 5,
+            "n_dias": 19132,
+            "tasa_gap_pct": 19.45,
+            "tasa_base_pct": 11.3,
+            "lift": 1.72
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 1,
+            "n_dias": 10779,
+            "tasa_gap_pct": 4.67,
+            "tasa_base_pct": 14.64,
+            "lift": 0.32
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 2,
+            "n_dias": 15483,
+            "tasa_gap_pct": 8.42,
+            "tasa_base_pct": 14.64,
+            "lift": 0.58
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 3,
+            "n_dias": 17268,
+            "tasa_gap_pct": 12.21,
+            "tasa_base_pct": 14.64,
+            "lift": 0.83
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 4,
+            "n_dias": 19852,
+            "tasa_gap_pct": 17.41,
+            "tasa_base_pct": 14.64,
+            "lift": 1.19
+          },
+          {
+            "muestra": "prueba",
+            "quintil": 5,
+            "n_dias": 30010,
+            "tasa_gap_pct": 21.01,
+            "tasa_base_pct": 14.64,
+            "lift": 1.43
+          }
+        ]
+      }
+    }
+  },
+  "hallazgos": {
+    "baja": [
+      {
+        "caracteristica": "dist_max52w_pct",
+        "quintil": 1,
+        "lift_entrenamiento": 1.57,
+        "lift_prueba": 1.43,
+        "tasa_prueba_pct": 11.19,
+        "tasa_base_prueba_pct": 7.84
+      },
+      {
+        "caracteristica": "atr_pct",
+        "quintil": 5,
+        "lift_entrenamiento": 1.63,
+        "lift_prueba": 1.34,
+        "tasa_prueba_pct": 10.5,
+        "tasa_base_prueba_pct": 7.84
+      }
+    ],
+    "baja_o_media": [
+      {
+        "caracteristica": "atr_pct",
+        "quintil": 5,
+        "lift_entrenamiento": 1.85,
+        "lift_prueba": 1.43,
+        "tasa_prueba_pct": 18.27,
+        "tasa_base_prueba_pct": 12.74
+      },
+      {
+        "caracteristica": "dist_max52w_pct",
+        "quintil": 1,
+        "lift_entrenamiento": 1.5,
+        "lift_prueba": 1.34,
+        "tasa_prueba_pct": 17.08,
+        "tasa_base_prueba_pct": 12.74
+      }
+    ],
+    "media": [],
+    "alta": [],
+    "todos": [
+      {
+        "caracteristica": "dist_max52w_pct",
+        "quintil": 1,
+        "lift_entrenamiento": 1.58,
+        "lift_prueba": 1.44,
+        "tasa_prueba_pct": 21.09,
+        "tasa_base_prueba_pct": 14.64
+      },
+      {
+        "caracteristica": "atr_pct",
+        "quintil": 5,
+        "lift_entrenamiento": 1.72,
+        "lift_prueba": 1.43,
+        "tasa_prueba_pct": 21.01,
+        "tasa_base_prueba_pct": 14.64
+      }
+    ]
+  },
+  "mas_repetidos": {
+    "baja_o_media": {
+      "VIST": 52,
+      "KGC": 45,
+      "AVGO": 44,
+      "CCJ": 43,
+      "ANET": 41,
+      "KLAC": 40,
+      "URBN": 40,
+      "CRWD": 38,
+      "LRCX": 38,
+      "TEN": 38,
+      "DELL": 37,
+      "PAAS": 37,
+      "AMAT": 36,
+      "UAL": 36,
+      "AEM": 35
+    }
+  },
+  "ultimos_eventos": [
+    {
+      "fecha": "2026-10-01",
+      "ticker": "LRCX",
+      "grupo_vol": "media",
+      "ret_dia": 3.53,
+      "fwd5": -5.74,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-01",
+      "ticker": "GLW",
+      "grupo_vol": "media",
+      "ret_dia": 4.33,
+      "fwd5": -4.73,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-01",
+      "ticker": "MU",
+      "grupo_vol": "media",
+      "ret_dia": 3.03,
+      "fwd5": -5.61,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-02",
+      "ticker": "PBR",
+      "grupo_vol": "media",
+      "ret_dia": 3.19,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-02",
+      "ticker": "CSCO",
+      "grupo_vol": "baja",
+      "ret_dia": 3.56,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-02",
+      "ticker": "ADI",
+      "grupo_vol": "media",
+      "ret_dia": 3.1,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-02",
+      "ticker": "TXN",
+      "grupo_vol": "media",
+      "ret_dia": 4.44,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-02",
+      "ticker": "CLS",
+      "grupo_vol": "alta",
+      "ret_dia": 3.81,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "EWZ",
+      "grupo_vol": "baja",
+      "ret_dia": 12.54,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "ILF",
+      "grupo_vol": "baja",
+      "ret_dia": 8.23,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "HOG",
+      "grupo_vol": "media",
+      "ret_dia": 6.68,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "UGP",
+      "grupo_vol": "media",
+      "ret_dia": 4.3,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "XP",
+      "grupo_vol": "media",
+      "ret_dia": 30.93,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "NUE",
+      "grupo_vol": "media",
+      "ret_dia": 4.58,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "TEAM",
+      "grupo_vol": "alta",
+      "ret_dia": 4.66,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "ANF",
+      "grupo_vol": "alta",
+      "ret_dia": 4.04,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "ARKK",
+      "grupo_vol": "media",
+      "ret_dia": 3.28,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "BBD",
+      "grupo_vol": "media",
+      "ret_dia": 18.76,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-05",
+      "ticker": "SHOP",
+      "grupo_vol": "alta",
+      "ret_dia": 5.76,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "NBIS",
+      "grupo_vol": "alta",
+      "ret_dia": 7.44,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "NOK",
+      "grupo_vol": "media",
+      "ret_dia": 7.55,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "NU",
+      "grupo_vol": "media",
+      "ret_dia": 3.16,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "PANW",
+      "grupo_vol": "media",
+      "ret_dia": 3.23,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "BSBR",
+      "grupo_vol": "media",
+      "ret_dia": 3.46,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "ANET",
+      "grupo_vol": "media",
+      "ret_dia": 4.09,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "DELL",
+      "grupo_vol": "media",
+      "ret_dia": 3.93,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-06",
+      "ticker": "ALAB",
+      "grupo_vol": "alta",
+      "ret_dia": 7.58,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-07",
+      "ticker": "VST",
+      "grupo_vol": "media",
+      "ret_dia": 3.88,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "ETSY",
+      "grupo_vol": "media",
+      "ret_dia": 5.11,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "GPRK",
+      "grupo_vol": "media",
+      "ret_dia": 3.06,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "COP",
+      "grupo_vol": "media",
+      "ret_dia": 3.35,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "PM",
+      "grupo_vol": "baja",
+      "ret_dia": 4.05,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "PSX",
+      "grupo_vol": "media",
+      "ret_dia": 3.67,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "TEN",
+      "grupo_vol": "media",
+      "ret_dia": 4.1,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "SHEL",
+      "grupo_vol": "baja",
+      "ret_dia": 3.46,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "SNOW",
+      "grupo_vol": "alta",
+      "ret_dia": 3.17,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "CVX",
+      "grupo_vol": "baja",
+      "ret_dia": 3.12,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "EBAY",
+      "grupo_vol": "media",
+      "ret_dia": 4.07,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "OXY",
+      "grupo_vol": "media",
+      "ret_dia": 3.56,
+      "fwd5": null,
+      "fwd10": null
+    },
+    {
+      "fecha": "2026-10-08",
+      "ticker": "BP",
+      "grupo_vol": "baja",
+      "ret_dia": 4.16,
+      "fwd5": null,
+      "fwd10": null
+    }
+  ],
+  "por_anio_baja_o_media": {
+    "2022": {
+      "n": 269,
+      "fwd5": {
+        "n": 269,
+        "media": -1.11,
+        "mediana": -0.84,
+        "pct_positivos": 40.1
+      },
+      "fwd10": {
+        "n": 269,
+        "media": -0.0,
+        "mediana": 0.19,
+        "pct_positivos": 50.9
+      },
+      "peor_caida10_mediana": -4.68
+    },
+    "2023": {
+      "n": 847,
+      "fwd5": {
+        "n": 847,
+        "media": 0.37,
+        "mediana": 0.33,
+        "pct_positivos": 53.6
+      },
+      "fwd10": {
+        "n": 847,
+        "media": 0.79,
+        "mediana": 0.69,
+        "pct_positivos": 55.6
+      },
+      "peor_caida10_mediana": -3.33
+    },
+    "2024": {
+      "n": 926,
+      "fwd5": {
+        "n": 926,
+        "media": 0.13,
+        "mediana": 0.12,
+        "pct_positivos": 51.3
+      },
+      "fwd10": {
+        "n": 926,
+        "media": 0.36,
+        "mediana": 0.03,
+        "pct_positivos": 50.1
+      },
+      "peor_caida10_mediana": -3.57
+    },
+    "2025": {
+      "n": 930,
+      "fwd5": {
+        "n": 930,
+        "media": 0.34,
+        "mediana": 0.47,
+        "pct_positivos": 55.8
+      },
+      "fwd10": {
+        "n": 930,
+        "media": 0.97,
+        "mediana": 0.99,
+        "pct_positivos": 56.5
+      },
+      "peor_caida10_mediana": -3.53
+    },
+    "2026": {
+      "n": 999,
+      "fwd5": {
+        "n": 969,
+        "media": 0.64,
+        "mediana": 0.43,
+        "pct_positivos": 53.3
+      },
+      "fwd10": {
+        "n": 957,
+        "media": 1.35,
+        "mediana": 1.1,
+        "pct_positivos": 56.8
+      },
+      "peor_caida10_mediana": -4.18
+    }
+  },
+  "por_regimen_baja_o_media": {
+    "SPY sobre su SMA200": {
+      "n": 3509,
+      "fwd1": {
+        "n": 3498,
+        "media": 0.07,
+        "mediana": 0.0,
+        "pct_positivos": 49.6
+      },
+      "alpha1": {
+        "n": 3498,
+        "media": 0.01,
+        "mediana": -0.1,
+        "pct_positivos": 47.9
+      },
+      "fwd5": {
+        "n": 3479,
+        "media": 0.24,
+        "mediana": 0.18,
+        "pct_positivos": 51.9
+      },
+      "alpha5": {
+        "n": 3479,
+        "media": -0.09,
+        "mediana": -0.17,
+        "pct_positivos": 48.3
+      },
+      "fwd10": {
+        "n": 3467,
+        "media": 0.68,
+        "mediana": 0.5,
+        "pct_positivos": 53.4
+      },
+      "alpha10": {
+        "n": 3467,
+        "media": 0.11,
+        "mediana": -0.18,
+        "pct_positivos": 48.7
+      },
+      "fwd20": {
+        "n": 3443,
+        "media": 1.51,
+        "mediana": 1.04,
+        "pct_positivos": 54.5
+      },
+      "alpha20": {
+        "n": 3443,
+        "media": 0.29,
+        "mediana": -0.34,
+        "pct_positivos": 48.2
+      },
+      "peor_caida10_mediana": -3.74
+    },
+    "SPY bajo su SMA200": {
+      "n": 462,
+      "fwd1": {
+        "n": 462,
+        "media": 0.08,
+        "mediana": 0.26,
+        "pct_positivos": 54.8
+      },
+      "alpha1": {
+        "n": 462,
+        "media": 0.03,
+        "mediana": 0.22,
+        "pct_positivos": 53.2
+      },
+      "fwd5": {
+        "n": 462,
+        "media": 0.55,
+        "mediana": 1.07,
+        "pct_positivos": 57.6
+      },
+      "alpha5": {
+        "n": 462,
+        "media": -0.33,
+        "mediana": -0.02,
+        "pct_positivos": 49.6
+      },
+      "fwd10": {
+        "n": 462,
+        "media": 1.78,
+        "mediana": 2.15,
+        "pct_positivos": 62.8
+      },
+      "alpha10": {
+        "n": 462,
+        "media": -0.2,
+        "mediana": 0.09,
+        "pct_positivos": 50.9
+      },
+      "fwd20": {
+        "n": 462,
+        "media": 2.53,
+        "mediana": 2.43,
+        "pct_positivos": 63.0
+      },
+      "alpha20": {
+        "n": 462,
+        "media": -0.48,
+        "mediana": -0.34,
+        "pct_positivos": 47.8
+      },
+      "peor_caida10_mediana": -3.61
+    }
+  },
+  "sin_datos": []
+}
