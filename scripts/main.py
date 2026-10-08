@@ -143,6 +143,21 @@ def main():
     frescura = evaluar_frescura(ultima_fecha_benchmark)
     log.info(f"Frescura del dato: {frescura}")
 
+    # 2b-bis. Nunca retroceder: si Yahoo devuelve datos MÁS VIEJOS que los ya
+    # guardados (ej. corrida de madrugada sin el cierre del día), se aborta
+    # la corrida entera para no pisar el dato bueno -- caso real del 8/10:
+    # MU pasó de 1088 (cierre del 7/10) a 1045,56 (cierre del 6/10).
+    try:
+        if frescura.get("fecha_ultimo_dato") and os.path.exists("data/ultimo.json"):
+            with open("data/ultimo.json", "r", encoding="utf-8") as f_prev:
+                fecha_prev = (json.load(f_prev).get("frescura_dato") or {}).get("fecha_ultimo_dato")
+            if fecha_prev and frescura["fecha_ultimo_dato"] < fecha_prev:
+                log.warning(f"Dato más viejo ({frescura['fecha_ultimo_dato']}) que el ya guardado ({fecha_prev}) "
+                            f"-- se aborta la corrida para no retroceder")
+                return
+    except Exception as e:
+        log.warning(f"No se pudo comparar con el dato guardado ({e}); sigo normal")
+
     # 2c. Distribution Days -- v2.1: SOLO informativo (badge), ya no
     # multiplica el Radar Score (ver radar_score.py). Se sigue calculando
     # y guardando en el JSON para que el dashboard lo muestre.
