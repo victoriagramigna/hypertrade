@@ -1,0 +1,41 @@
+name: Estudios 3 y 4 (entradas y extension)
+
+# Estudios históricos aparte (no tocan el radar ni la Auditoría). Se corren SOLO a mano:
+# pestaña Actions -> "Estudios 3 y 4 (entradas y extension)" -> Run workflow. Tarda unos 20 minutos.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  estudios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Estudio 3 (entradas y stops)
+        run: python scripts/estudio_entradas.py
+
+      - name: Estudio 4 (extendido vs cerca de zona)
+        run: python scripts/estudio_extension.py
+
+      - name: Guardar resultados
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/estudio_entradas.json data/estudio_entradas_resumen.md data/estudio_extension.json data/estudio_extension_resumen.md
+          git diff --staged --quiet || git commit -m "Estudios 3 y 4 (resultados) [skip ci]"
+          # El radar también hace commits: se trae lo nuevo antes de subir
+          git pull --rebase
+          git push
