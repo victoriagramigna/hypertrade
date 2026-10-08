@@ -34,6 +34,12 @@ GANANCIA_PARCIAL_PCT = 20
 GANANCIA_TRAILING_PCT = 35
 CAIDA_RADAR_SCORE = 15
 AVISO_PREVIO_STOP_PCT = 1
+# Protección de ganancia (elegida por defecto, ajustable): cuando el máximo
+# que llegó a ganar la posición supera ASEGURA_DESDE_PCT, el stop no puede
+# quedar por debajo de ASEGURA_FRACCION de esa ganancia máxima.
+# Ej: compra 1000, máximo 1500 (+50%) -> stop mínimo 1250.
+ASEGURA_DESDE_PCT = 30
+ASEGURA_FRACCION = 0.5
 
 
 def cargar_cartera() -> list:
@@ -60,7 +66,7 @@ def _calcular_stop_inicial(precio_compra: float, sma50) -> float:
     return stop_pct
 
 
-def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str) -> tuple:
+def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str, max_precio=None) -> tuple:
     """
     Devuelve (posicion_actualizada, lista_de_avisos_nuevos). Un aviso
     es un dict {tipo, texto} -- "nuevo" significa que hoy todavía no
@@ -85,6 +91,16 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str) -> tuple:
         p["stopActual"] = max(p["stopActual"], sma50 * 0.98)
     if ganancia_pct is not None and ganancia_pct >= GANANCIA_PARCIAL_PCT:
         p["stopActual"] = max(p["stopActual"], p["precio"])
+
+    # Protección de ganancia: se mide contra el MÁXIMO desde la compra,
+    # no contra el precio de hoy -- así el stop no se afloja si el precio retrocede.
+    if max_precio is not None and precio_actual is not None:
+        max_precio = max(max_precio, precio_actual)
+    if max_precio is not None and p["precio"] > 0:
+        ganancia_max = (max_precio / p["precio"] - 1) * 100
+        if ganancia_max >= ASEGURA_DESDE_PCT:
+            piso = p["precio"] * (1 + ganancia_max / 100 * ASEGURA_FRACCION)
+            p["stopActual"] = max(p["stopActual"], piso)
 
     avisos_candidatos = []  # (tipo, texto)
 
@@ -113,6 +129,19 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str) -> tuple:
     return p, avisos_candidatos
 
 
+def _max_desde_compra(serie, fecha_compra):
+    """Precio de cierre más alto desde la fecha de compra (o None si no hay datos)."""
+    try:
+        if serie is None or len(serie) == 0:
+            return None
+        s = serie.dropna()
+        if fecha_compra:
+            s = s[s.index >= str(fecha_compra)]
+        return float(s.max()) if len(s) else None
+    except Exception:
+        return None
+
+
 def _clave_posicion(p: dict) -> str:
     return f"{p.get('ticker', '').upper()}|{p.get('fecha')}|{p.get('precio')}"
 
@@ -133,7 +162,7 @@ def _guardar_avisos(avisos: dict):
         json.dump(avisos, f, ensure_ascii=False, indent=2)
 
 
-def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str, email_to: str, modo: str):
+def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str, email_to: str, modo: str, precios=None):
     """
     Punto de entrada desde main.py. df_rs: el DataFrame completo del
     universo (con Precio, SMA50, Radar_Score, Sobre_SMA50 ya
@@ -154,16 +183,23 @@ def procesar_cartera(df_rs, fecha_hoy: str, email_user: str, email_password: str
     # (ej: el precio se aleja del stop) y después vuelve, se avisa de nuevo.
     memoria = _cargar_avisos()
     memoria_nueva = {}
+    trailing = {}  # clave -> {"max_precio": ...}; lo lee el dashboard
     todos_los_avisos = []
     for p in posiciones:
         ticker_data = ranking_por_ticker.get(p.get("ticker", "").upper()) or ranking_por_ticker.get(p.get("ticker"))
-        _, candidatos = _evaluar_posicion(p, ticker_data, fecha_hoy)
         clave = _clave_posicion(p)
+        serie = (precios or {}).get(p.get("ticker", "").upper())
+        max_precio = _max_desde_compra(serie, p.get("fecha"))
+        _, candidatos = _evaluar_posicion(p, ticker_data, fecha_hoy, max_precio)
+        if max_precio is not None:
+            trailing[clave] = {"max_precio": round(max_precio, 4)}
         activos_antes = set(memoria.get(clave, []))
         for tipo, texto in candidatos:
             if tipo not in activos_antes:
                 todos_los_avisos.append({"tipo": tipo, "texto": texto})
         memoria_nueva[clave] = [tipo for tipo, _ in candidatos]
+
+    memoria_nueva["_trailing"] = trailing
 
     # mi_cartera.json NO se reescribe acá: lo maneja el dashboard (que es
     # quien sincroniza el stop). Pisarlo desde el radar podía borrar una

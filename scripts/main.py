@@ -673,6 +673,7 @@ def main():
             email_password=os.environ.get("EMAIL_PASSWORD"),
             email_to=os.environ.get("EMAIL_TO"),
             modo=MODO,
+            precios=precios,
         )
     except Exception as e:
         log.error(f"Seguimiento de cartera falló, no afecta al resto de la corrida: {e}")
