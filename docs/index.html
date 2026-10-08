@@ -5346,6 +5346,7 @@
 
                 const stopHtml = p.stopActual != null
                     ? `<div class="text-accent text-xs mt-2">STOP ACTUAL: $${p.stopActual.toFixed(2)} <span class="text-gray-500">(${p.origenStop})</span></div>
+                       ${(() => { const si = stopDeIdeaPara(p); return si && Math.abs(si.valor - p.stopActual) > 0.005 ? `<div class="text-accent text-[10px] mt-1 leading-snug">La idea de ${_esc(si.fuente)} tiene su stop en $${si.valor.toFixed(2)} (${(((si.valor / p.precio) - 1) * 100).toFixed(1)}% desde tu compra). Si querés copiarlo, tocá "Fijar stop".</div>` : ''; })()}
                        <div class="text-gray-500 text-[10px] mt-1 leading-snug">El stop solo sube, nunca baja. Si la ganancia máxima llega a +${CARTERA_ASEGURA_DESDE_PCT}%, el stop asegura la mitad de esa ganancia: ej. compra 1000, llegó a 1500 → stop mínimo 1250, aunque el precio después retroceda.</div>`
                     : '';
 
@@ -5535,6 +5536,7 @@
                             </div>
                             <div class="flex flex-col items-end gap-2">
                                 <button type="button" onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
+                                <button type="button" onclick="fijarStopManual(${idx})" class="border border-gray-600 text-gray-400 hover:text-white px-3 py-1 rounded-sm text-[10px] uppercase" title="Poné vos el stop (ej. el de la idea que estás copiando). Después el sistema solo lo puede subir, nunca bajar.">Fijar stop</button>
                                 <button type="button" onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
                             </div>
                         </div>
@@ -5569,6 +5571,30 @@
         // ============ VENTAS (operaciones reales para la Auditoría) ============
         let ventaAbierta = null;
 
+        // Stop de una idea de terceros (ej. Gusti) para este ticker: toma la idea
+        // con precio de invalidación que vos marcaste como "Entré" (o la única que haya).
+        function stopDeIdeaPara(p) {
+            try {
+                const ideas = (ideasExternas || []).filter(i => String(i.ticker).toUpperCase() === String(p.ticker).toUpperCase() && Number(i.invalidacion) > 0);
+                if (!ideas.length) return null;
+                const ent = ideasEstadoLeer().entradas || {};
+                const marcada = ideas.find(i => ent[i.id]) || ideas[0];
+                return { valor: Number(marcada.invalidacion), fuente: marcada.fuente, id: marcada.id };
+            } catch (e) { return null; }
+        }
+        function fijarStopManual(idx) {
+            const pos = cargarCartera(); const p = pos[idx]; if (!p) return;
+            const idea = stopDeIdeaPara(p);
+            const sug = idea ? idea.valor : (p.stopActual ?? '');
+            const r = prompt(`Stop de ${p.ticker} en dólares (hoy: ${p.stopActual != null ? p.stopActual.toFixed(2) : '—'}).` + (idea ? `\nLa idea de ${idea.fuente} tiene su stop en ${idea.valor}.` : ''), String(sug));
+            if (r == null) return;
+            const v = parseFloat(String(r).replace(',', '.'));
+            if (!(v > 0)) { alert('Número inválido.'); return; }
+            p.stopActual = v;
+            p.origenStop = idea && Math.abs(idea.valor - v) < 0.005 ? `stop de ${idea.fuente} (su nivel de invalidación)` : 'stop fijado por vos';
+            guardarCartera(pos);
+            renderCartera();
+        }
         function abrirVenta(idx) {
             ventaAbierta = ventaAbierta === idx ? null : idx;
             renderCartera();
@@ -5864,6 +5890,7 @@
         fetchRotacionTickerHistorial();
         renderCartera();
         cargarMaxCartera();
+        cargarIdeasExternas().then(() => renderCartera()).catch(() => {});
         setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
     </script>
 </body>
