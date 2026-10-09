@@ -20,11 +20,15 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Reconstruir
         run: python scripts/rs_backfill.py
+      - name: Capitalizacion de mercado (tamano de burbujas)
+        run: python scripts/market_caps.py
+        continue-on-error: true
       - name: Guardar
         run: |
           git config user.name "radar-bot"
           git config user.email "actions@github.com"
           git add data/rs_score_historial_largo.jsonl
-          git diff --staged --quiet || git commit -m "Recorrido de Fuerza Relativa reconstruido [skip ci]"
+          [ -f data/market_caps.json ] && git add data/market_caps.json || true
+          git diff --staged --quiet || git commit -m "Recorrido de Fuerza Relativa y capitalizaciones [skip ci]"
           git pull --rebase
           git push
