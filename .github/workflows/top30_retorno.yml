@@ -1,0 +1,38 @@
+name: Retorno de los ingresos al Top 30
+
+# Aparte del radar (no toca el ranking ni la Auditoria). Corre despues del cierre de Wall Street
+# (lunes a viernes) y se puede disparar a mano desde Actions -> Run workflow.
+on:
+  schedule:
+    - cron: '30 21 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: top30-retorno
+  cancel-in-progress: false
+
+jobs:
+  retorno:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Correr
+        run: python scripts/top30_retorno.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          for f in data/top30_retorno.json data/log_top30_ingresos.jsonl; do
+            [ -f "$f" ] && git add "$f"
+          done
+          git diff --staged --quiet || git commit -m "Retorno de ingresos al Top 30 [skip ci]"
+          git pull --rebase
+          git push
