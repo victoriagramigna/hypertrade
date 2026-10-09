@@ -370,7 +370,7 @@
                 Mismo cuadrante que el de arriba (misma Fuerza Relativa, mismo umbral, mismos 4 cuadrantes), pero por TICKER individual
                 en vez de por sector completo. Buscá uno o varios tickers (separados por coma, ej. MU, TEAM, AMZN) o tocá "Mi Cartera" para
                 ver dónde está parado cada uno hoy y su recorrido de hasta 16 semanas (con ▶ se reproduce semana a semana) --
-                los puntos grises de fondo son el resto del universo, solo para dar contexto de dónde está la mayoría.
+                las burbujas de fondo son el resto del universo (más grande = más capitalización), solo para dar contexto de dónde está la mayoría. Se puede acercar, mover y tocar una burbuja para ver su detalle.
                 Es una forma de MIRAR dónde está la fuerza relativa de cada papel, no una señal de compra ni de venta.
             </div>
             <div class="mb-3">
@@ -3107,6 +3107,214 @@
             renderRotacionTicker(rotacionTickerUltimoData);
         }
 
+        // ---- Vista de burbujas (estilo Warren): tamaño por capitalización, zoom y arrastre ----
+        const ROTACION_CAPS_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/market_caps.json';
+        let rotacionCaps = null;   // {ticker: capitalización en USD}; si no está, todas las burbujas salen del mismo tamaño
+        async function fetchRotacionCaps() {
+            try {
+                const resp = await fetch(`${ROTACION_CAPS_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (resp.ok) { const j = await resp.json(); rotacionCaps = j.caps ?? {}; }
+                else rotacionCaps = rotacionCaps ?? {};
+            } catch (e) { rotacionCaps = rotacionCaps ?? {}; }
+            if (rotacionTickerUltimoData) renderRotacionTicker(rotacionTickerUltimoData);
+        }
+
+        const ROT_W = 440, ROT_H = 560, ROT_PL = 40, ROT_PR = 14, ROT_PT = 14, ROT_PB = 30;
+        const ROT_PW = ROT_W - ROT_PL - ROT_PR, ROT_PH = ROT_H - ROT_PT - ROT_PB;
+        const ROT_COLOR = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
+        let rotVista = null;      // dominio visible {x0,x1,y0,y1}; null = vista completa
+        let rotCtx = null;        // datos del dibujo actual
+        let rotPick = null;       // ticker tocado (para mostrar su detalle)
+        let rotRaf = null;
+
+        function rotBase() { return { x0: 0, x1: 100, y0: rotCtx.yMin, y1: rotCtx.yMax }; }
+        function rotView() { return rotVista ?? rotBase(); }
+        function rotEstaZoom() { const b = rotBase(), v = rotView(); return (v.x1 - v.x0) < (b.x1 - b.x0) - 0.01; }
+        function rotXS(v, d) { return ROT_PL + (v - d.x0) / (d.x1 - d.x0) * ROT_PW; }
+        function rotYS(v, d) { return ROT_PT + (d.y1 - v) / (d.y1 - d.y0) * ROT_PH; }
+        function rotPasoNice(rango, objetivo) {
+            const crudo = rango / objetivo, mag = Math.pow(10, Math.floor(Math.log10(crudo)));
+            for (const m of [1, 2, 5, 10]) if (crudo <= m * mag) return m * mag;
+            return 10 * mag;
+        }
+        function rotRadio(t) {
+            const c = rotacionCaps?.[t];
+            if (!c || !rotCtx || rotCtx.logMax <= rotCtx.logMin) return 4.5;
+            const f = (Math.log10(c) - rotCtx.logMin) / (rotCtx.logMax - rotCtx.logMin);
+            return 3 + 11 * Math.max(0, Math.min(1, f));
+        }
+        function rotCapTexto(t) {
+            const c = rotacionCaps?.[t];
+            if (!c) return '';
+            return c >= 1e12 ? `$${(c / 1e12).toFixed(1)}T` : c >= 1e9 ? `$${(c / 1e9).toFixed(c >= 1e10 ? 0 : 1)}B` : `$${Math.round(c / 1e6)}M`;
+        }
+
+        function rotDibujar() {
+            const g = document.getElementById('rt-plot');
+            if (!g || !rotCtx) return;
+            const d = rotView(), C = rotCtx;
+            const xr = d.x1 - d.x0, zoomX = 100 / xr;
+            const px50 = Math.max(ROT_PL, Math.min(ROT_PL + ROT_PW, rotXS(50, d)));
+            const py0 = Math.max(ROT_PT, Math.min(ROT_PT + ROT_PH, rotYS(0, d)));
+            const R = ROT_PL + ROT_PW, B = ROT_PT + ROT_PH;
+            let s = `<defs><clipPath id="rt-clip"><rect x="${ROT_PL}" y="${ROT_PT}" width="${ROT_PW}" height="${ROT_PH}"/></clipPath></defs>`;
+            s += `<rect x="${px50}" y="${ROT_PT}" width="${R - px50}" height="${py0 - ROT_PT}" fill="${ROT_COLOR['Líder']}" opacity="0.07"/>
+                  <rect x="${ROT_PL}" y="${ROT_PT}" width="${px50 - ROT_PL}" height="${py0 - ROT_PT}" fill="${ROT_COLOR['Mejorando']}" opacity="0.07"/>
+                  <rect x="${px50}" y="${py0}" width="${R - px50}" height="${B - py0}" fill="${ROT_COLOR['Debilitándose']}" opacity="0.07"/>
+                  <rect x="${ROT_PL}" y="${py0}" width="${px50 - ROT_PL}" height="${B - py0}" fill="${ROT_COLOR['Rezagado']}" opacity="0.07"/>`;
+            // ejes con números
+            const pasoY = rotPasoNice(d.y1 - d.y0, 7);
+            for (let v = Math.ceil(d.y0 / pasoY) * pasoY; v <= d.y1 + 1e-9; v += pasoY) {
+                const y = rotYS(v, d);
+                s += `<line x1="${ROT_PL}" y1="${y}" x2="${R}" y2="${y}" stroke="#2a3040" stroke-width="${Math.abs(v) < 1e-9 ? 1.2 : 0.5}" opacity="${Math.abs(v) < 1e-9 ? 1 : 0.6}"/>
+                      <text x="${ROT_PL - 5}" y="${y + 3}" text-anchor="end" font-size="9" font-family="monospace" fill="#6b7280">${Math.round(v * 10) / 10}</text>`;
+            }
+            const pasoX = rotPasoNice(xr, 6);
+            for (let v = Math.ceil(d.x0 / pasoX) * pasoX; v <= d.x1 + 1e-9; v += pasoX) {
+                const x = rotXS(v, d);
+                s += `<line x1="${x}" y1="${ROT_PT}" x2="${x}" y2="${B}" stroke="#2a3040" stroke-width="${Math.abs(v - 50) < 1e-9 ? 1.2 : 0.5}" opacity="${Math.abs(v - 50) < 1e-9 ? 1 : 0.6}"/>
+                      <text x="${x}" y="${B + 13}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">${Math.round(v * 10) / 10}</text>`;
+            }
+            s += `<rect x="${ROT_PL}" y="${ROT_PT}" width="${ROT_PW}" height="${ROT_PH}" fill="none" stroke="#2a3040"/>
+                  <text x="${R - 5}" y="${ROT_PT + 14}" text-anchor="end" font-size="10" font-family="monospace" fill="${ROT_COLOR['Líder']}">LÍDER</text>
+                  <text x="${ROT_PL + 5}" y="${ROT_PT + 14}" font-size="10" font-family="monospace" fill="${ROT_COLOR['Mejorando']}">MEJORANDO</text>
+                  <text x="${R - 5}" y="${B - 7}" text-anchor="end" font-size="10" font-family="monospace" fill="${ROT_COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
+                  <text x="${ROT_PL + 5}" y="${B - 7}" font-size="10" font-family="monospace" fill="${ROT_COLOR['Rezagado']}">REZAGADO</text>
+                  <text x="${ROT_PL + ROT_PW / 2}" y="${ROT_H - 3}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">Fuerza Relativa vs SPY (0 débil · 100 fuerte)</text>
+                  <text transform="translate(9 ${ROT_PT + ROT_PH / 2}) rotate(-90)" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">Δ Fuerza Relativa vs semana anterior</text>`;
+
+            // burbujas (las grandes primero, para que las chicas queden arriba)
+            let burb = '', etiquetas = '', pos = [];
+            const mostrarEtiquetas = zoomX >= 2.2;
+            for (const p of C.fondo) {
+                const x = rotXS(p.RS_Score, d), y = rotYS(Math.max(C.yMin, Math.min(C.yMax, p.Delta_RS_semana ?? 0)), d);
+                if (x < ROT_PL - 20 || x > R + 20 || y < ROT_PT - 20 || y > B + 20) continue;
+                const r = rotRadio(p.Ticker), col = ROT_COLOR[p.Cuadrante] ?? '#9ca3af';
+                const elegido = rotPick === p.Ticker;
+                burb += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${col}" fill-opacity="0.18" stroke="${elegido ? '#fff' : col}" stroke-opacity="${elegido ? 1 : 0.85}" stroke-width="${elegido ? 2 : 1.2}"/>`;
+                pos.push({ t: p.Ticker, x, y, r });
+                if (mostrarEtiquetas && etiquetas.length < 14000) etiquetas += `<text x="${x.toFixed(1)}" y="${(y - r - 3).toFixed(1)}" text-anchor="middle" font-size="9" font-family="monospace" font-weight="bold" fill="#e5e7eb" opacity="0.92">${p.Ticker}</text>`;
+            }
+            // tickers pedidos: cola + punto con nombre
+            let sel = '';
+            const puestas = [];
+            C.sel.forEach((it, n) => {
+                const rec = it.rec, vis = rec.slice(0, Math.min(C.idxFrame, rec.length - 1) + 1), col = ROT_COLOR[it.p.Cuadrante] ?? '#9ca3af';
+                for (let i = 1; i < vis.length; i++) {
+                    const a = vis[i - 1], b = vis[i], op = 0.2 + 0.6 * (i / (vis.length - 1));
+                    sel += `<line x1="${rotXS(a.rs, d)}" y1="${rotYS(a.delta, d)}" x2="${rotXS(b.rs, d)}" y2="${rotYS(b.delta, d)}" stroke="${col}" stroke-width="2" opacity="${op.toFixed(2)}"/>`;
+                }
+                for (let i = 0; i < vis.length - 1; i++) sel += `<circle cx="${rotXS(vis[i].rs, d)}" cy="${rotYS(vis[i].delta, d)}" r="2.5" fill="${col}" opacity="0.5"/>`;
+                const a = vis[vis.length - 1], cx = rotXS(a.rs, d), cy = rotYS(a.delta, d), r = Math.max(rotRadio(it.p.Ticker), C.sel.length > 15 ? 4 : 5);
+                let ly = cy - r - 5;
+                const choca = (y) => puestas.some(e => Math.abs(e.x - cx) < 34 && Math.abs(e.y - y) < 11);
+                for (let k = 1; k <= 12 && choca(ly); k++) ly = cy - r - 5 - 11 * k;
+                if (ly < ROT_PT + 10) { ly = cy + r + 12; for (let k = 1; k <= 12 && choca(ly); k++) ly = cy + r + 12 + 11 * k; }
+                puestas.push({ x: cx, y: ly });
+                sel += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${col}" fill-opacity="0.5" stroke="#fff" stroke-width="2"/>
+                        <text x="${cx > R - 26 ? cx + 4 : cx}" y="${ly}" text-anchor="${cx > R - 26 ? 'end' : 'middle'}" font-size="${C.sel.length > 15 ? 9.5 : 11}" font-family="monospace" font-weight="bold" fill="#fff" stroke="#0B0E14" stroke-width="3" paint-order="stroke">${it.p.Ticker}</text>`;
+                pos.push({ t: it.p.Ticker, x: cx, y: cy, r });
+            });
+            C.pos = pos;
+            g.innerHTML = s + `<g clip-path="url(#rt-clip)">${burb}${etiquetas}</g>${sel}`;
+            const svg = document.getElementById('rt-svg');
+            if (svg) svg.style.touchAction = rotEstaZoom() ? 'none' : 'pan-y';
+            const rb = document.getElementById('rt-reset');
+            if (rb) rb.style.opacity = rotEstaZoom() ? '1' : '0.4';
+            rotMostrarPick();
+        }
+        function rotProgramar() { if (rotRaf) return; rotRaf = requestAnimationFrame(() => { rotRaf = null; rotDibujar(); }); }
+
+        function rotMostrarPick() {
+            const el = document.getElementById('rt-pick');
+            if (!el || !rotCtx) return;
+            const p = rotCtx.todos.find(q => q.Ticker === rotPick);
+            if (!p) { el.innerHTML = '<span class="text-gray-600">Tocá una burbuja para ver su detalle.</span>'; return; }
+            const col = ROT_COLOR[p.Cuadrante] ?? '#9ca3af', sg = (p.Delta_RS_semana ?? 0) > 0 ? '+' : '';
+            const cap = rotCapTexto(p.Ticker);
+            el.innerHTML = `<span class="text-gray-200 font-bold">${p.Ticker}</span> · <span style="color:${col}" class="font-bold">${p.Cuadrante ?? 'juntando historial'}</span> · FR ${p.RS_Score} · Δ7d ${sg}${p.Delta_RS_semana ?? '-'}${cap ? ' · Cap. ' + cap : ''}`;
+        }
+
+        function rotZoom(factor, cx, cy) {
+            const b = rotBase(), d = rotView();
+            const fx = cx == null ? 0.5 : (cx - ROT_PL) / ROT_PW, fy = cy == null ? 0.5 : (cy - ROT_PT) / ROT_PH;
+            const ax = d.x0 + fx * (d.x1 - d.x0), ay = d.y1 - fy * (d.y1 - d.y0);
+            let wx = (d.x1 - d.x0) / factor, wy = (d.y1 - d.y0) / factor;
+            wx = Math.max((b.x1 - b.x0) / 14, Math.min(b.x1 - b.x0, wx));
+            wy = Math.max((b.y1 - b.y0) / 14, Math.min(b.y1 - b.y0, wy));
+            let x0 = ax - fx * wx, y1 = ay + fy * wy;
+            x0 = Math.max(b.x0, Math.min(b.x1 - wx, x0));
+            y1 = Math.max(b.y0 + wy, Math.min(b.y1, y1));
+            rotVista = (wx >= b.x1 - b.x0 - 1e-6 && wy >= b.y1 - b.y0 - 1e-6) ? null : { x0, x1: x0 + wx, y0: y1 - wy, y1 };
+            rotProgramar();
+        }
+        function rotMover(dxPx, dyPx, escala) {
+            const b = rotBase(), d = rotView();
+            const dx = -dxPx * escala / ROT_PW * (d.x1 - d.x0), dy = dyPx * escala / ROT_PH * (d.y1 - d.y0);
+            const wx = d.x1 - d.x0, wy = d.y1 - d.y0;
+            let x0 = Math.max(b.x0, Math.min(b.x1 - wx, d.x0 + dx));
+            let y1 = Math.max(b.y0 + wy, Math.min(b.y1, d.y1 + dy));
+            rotVista = { x0, x1: x0 + wx, y0: y1 - wy, y1 };
+            rotProgramar();
+        }
+        function rotReset() { rotVista = null; rotProgramar(); }
+        function rotZoomBoton(f) { rotZoom(f, null, null); }
+
+        function rotConectar(svg) {
+            const ptrs = new Map();
+            let ultimaDist = null, movio = 0, inicio = null;
+            const aSvg = (e) => { const r = svg.getBoundingClientRect(); return { x: (e.clientX - r.left) * ROT_W / r.width, y: (e.clientY - r.top) * ROT_H / r.height, k: ROT_W / r.width }; };
+            svg.addEventListener('pointerdown', (e) => {
+                ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+                if (ptrs.size === 1) { movio = 0; inicio = { x: e.clientX, y: e.clientY }; }
+                ultimaDist = null;
+                try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+            });
+            svg.addEventListener('pointermove', (e) => {
+                if (!ptrs.has(e.pointerId)) return;
+                const prev = ptrs.get(e.pointerId);
+                const cur = { x: e.clientX, y: e.clientY };
+                if (ptrs.size === 1) {
+                    const dx = cur.x - prev.x, dy = cur.y - prev.y;
+                    movio += Math.abs(dx) + Math.abs(dy);
+                    if (rotEstaZoom() && movio > 4) rotMover(dx, dy, aSvg(e).k);
+                } else if (ptrs.size === 2) {
+                    ptrs.set(e.pointerId, cur);
+                    const [a, b] = [...ptrs.values()];
+                    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+                    movio += 10;
+                    if (ultimaDist) {
+                        const r = svg.getBoundingClientRect();
+                        const mx = ((a.x + b.x) / 2 - r.left) * ROT_W / r.width, my = ((a.y + b.y) / 2 - r.top) * ROT_H / r.height;
+                        rotZoom(dist / ultimaDist, mx, my);
+                    }
+                    ultimaDist = dist;
+                    return;
+                }
+                ptrs.set(e.pointerId, cur);
+            });
+            const fin = (e) => {
+                const era1 = ptrs.size === 1;
+                ptrs.delete(e.pointerId);
+                ultimaDist = null;
+                if (era1 && movio <= 6 && e.type === 'pointerup') {   // toque corto: elegir la burbuja más cercana
+                    const q = aSvg(e);
+                    let mejor = null, md = 1e9;
+                    for (const p of (rotCtx?.pos ?? [])) { const dd = Math.hypot(p.x - q.x, p.y - q.y) - p.r; if (dd < md) { md = dd; mejor = p; } }
+                    rotPick = (mejor && md <= 8) ? mejor.t : null;
+                    rotProgramar();
+                }
+            };
+            svg.addEventListener('pointerup', fin);
+            svg.addEventListener('pointercancel', fin);
+            svg.addEventListener('wheel', (e) => {
+                if (!(e.ctrlKey || e.metaKey || rotEstaZoom())) return;   // sin zoom, la rueda sigue haciendo scroll de la página
+                e.preventDefault();
+                const q = aSvg(e);
+                rotZoom(Math.exp(-e.deltaY * 0.0018), q.x, q.y);
+            }, { passive: false });
+        }
+
         function renderRotacionTicker(data) {
             const cont = document.getElementById('ticker-quadrant-chart');
             if (!cont || !data) return;
@@ -3115,31 +3323,29 @@
             const rt = data?.rotacion_ticker ?? { puntos: [], recien_a_lideres: [], aceleracion_inusual: [] };
             const puntos = rt.puntos ?? [];
 
-            // Datalist del buscador -- se repuebla cada vez, pero es liviano (un puñado de cientos de tickers)
             const lista = document.getElementById('rotacion-ticker-lista');
-            if (lista) {
-                lista.innerHTML = puntos.map(p => `<option value="${p.Ticker}">`).join('');
-            }
+            if (lista) lista.innerHTML = puntos.map(p => `<option value="${p.Ticker}">`).join('');
 
             if (puntos.length === 0) {
                 cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Sin datos todavía.</div>';
                 renderTablasRotacionTicker(rt);
                 return;
             }
-
-            const COLOR = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
             const buscador = document.getElementById('rotacion-ticker-buscador');
             const buscado = (buscador?.value ?? '').trim().toUpperCase();
             // Se pueden pedir varios tickers separados por coma o espacio (hasta 15)
             const pedidos = buscado ? [...new Set(buscado.split(/[\s,;]+/).filter(Boolean))].slice(0, 15) : [];
-            const seleccionados = pedidos.map(t => puntos.find(p => p.Ticker.toUpperCase() === t)).filter(Boolean);
+            let seleccionados = pedidos.map(t => puntos.find(p => p.Ticker.toUpperCase() === t)).filter(Boolean);
+            // Con el filtro "ETFs" y sin búsqueda: como en la vista "Índices" de Warren, se dibujan TODOS los ETFs
+            // con su cola y su nombre (son pocos, así que se lee bien).
+            const modoETFs = rotacionTickerFiltro === 'etfs' && pedidos.length === 0;
+            if (modoETFs) seleccionados = puntos.filter(p => p.Es_ETF && p.Cuadrante);
             const noEncontrados = pedidos.filter(t => !puntos.some(p => p.Ticker.toUpperCase() === t));
             const selTickers = new Set(seleccionados.map(p => p.Ticker));
             const seleccionado = seleccionados.length === 1 ? seleccionados[0] : null;
 
             const puntosHoy = puntos.filter(p => p.Cuadrante);
             const sinHistorial = puntos.filter(p => !p.Cuadrante);
-
             if (puntosHoy.length === 0) {
                 cont.innerHTML = `<div class="text-gray-500 font-mono text-xs p-2 border border-dashed border-surface rounded-sm">
                     Todavía juntando historial (hace falta guardar 1 semana de Fuerza Relativa por ticker antes de poder ubicar cada uno en un cuadrante).
@@ -3148,11 +3354,18 @@
                 return;
             }
 
-            // Mismo formato que el cuadrante por sector (y que "Warren Bife"):
-            // eje X = Fuerza Relativa (fuerte a la derecha), eje Y = cambio en 7
-            // días (mejoró arriba).
-            const W = 440, H = 300, PAD = 44;
-            // Recorrido de cada ticker pedido (el punto mas nuevo se pisa por el dato de hoy)
+            // Toggle Acciones/ETFs (filtra la nube; el buscador sigue encontrando cualquier ticker)
+            const filtro = rotacionTickerFiltro;
+            const puntosFiltrados = puntosHoy.filter(p => filtro === 'todos' || (filtro === 'etfs' ? p.Es_ETF : !p.Es_ETF));
+            for (const [id, val] of [['rtf-todos', 'todos'], ['rtf-acciones', 'acciones'], ['rtf-etfs', 'etfs']]) {
+                const btn = document.getElementById(id);
+                if (!btn) continue;
+                btn.className = (val === filtro)
+                    ? 'px-2.5 py-1.5 bg-accent text-base font-bold' + (id !== 'rtf-todos' ? ' border-l border-surface' : '')
+                    : 'px-2.5 py-1.5 text-gray-400 hover:text-gray-200' + (id !== 'rtf-todos' ? ' border-l border-surface' : '');
+            }
+
+            // Recorrido de cada ticker pedido (el punto más nuevo se pisa por el dato de hoy), máx. 16 puntos
             const recorridos = {};
             for (const sel of seleccionados) {
                 if (!sel.Cuadrante) continue;
@@ -3164,99 +3377,33 @@
                     if (Math.abs(u.rs - sel.RS_Score) < 0.05 && Math.abs((u.delta ?? 0) - (sel.Delta_RS_semana ?? 0)) < 0.05) rec[rec.length - 1] = hoy;
                     else rec.push(hoy);
                 }
-                if (rec.length > 16) rec = rec.slice(-16);   // máximo 16 puntos de recorrido
+                if (rec.length > 16) rec = rec.slice(-16);
                 recorridos[sel.Ticker] = rec;
             }
-            // Escala vertical robusta: se ignora el 2% de cambios mas extremos para que la nube
-            // se abra y se lean los grupos (antes, unos pocos valores extremos la aplastaban).
-            // Los tickers pedidos siempre entran completos; los extremos de fondo quedan en el borde.
-            const absOrd = puntosHoy.map(p => Math.abs(p.Delta_RS_semana ?? 0)).sort((a, b) => a - b);
+            // Escala vertical robusta: se ignora el 2% de cambios más extremos (los de fondo quedan en el borde);
+            // los tickers pedidos siempre entran completos.
+            const absOrd = puntosFiltrados.map(p => Math.abs(p.Delta_RS_semana ?? 0)).sort((a, b) => a - b);
             const p98 = absOrd.length ? absOrd[Math.min(absOrd.length - 1, Math.floor(absOrd.length * 0.98))] : 5;
-            let maxAbsDelta = Math.max(5, p98);
-            for (const rec of Object.values(recorridos)) for (const q of rec) maxAbsDelta = Math.max(maxAbsDelta, Math.abs(q.delta ?? 0));
-            const yMin = -maxAbsDelta * 1.15, yMax = maxAbsDelta * 1.15;
-            const xScale = (v) => PAD + (v - 0) / 100 * (W - PAD * 2);
-            const yScale = (v) => H - PAD - (Math.max(yMin, Math.min(yMax, v)) - yMin) / (yMax - yMin) * (H - PAD * 2);
-            const x0 = xScale(50), y50 = yScale(0);
+            let maxAbs = Math.max(5, p98);
+            for (const rec of Object.values(recorridos)) for (const q of rec) maxAbs = Math.max(maxAbs, Math.abs(q.delta ?? 0));
+            const yMax = maxAbs * 1.12, yMin = -maxAbs * 1.12;
 
-            // Toggle Acciones/ETFs (a pedido de Victoria, igual que hace Warren) --
-            // filtra la nube de fondo y el ticker destacado; el buscador sigue
-            // encontrando cualquier ticker esté o no filtrado.
-            const filtro = rotacionTickerFiltro; // 'todos' | 'acciones' | 'etfs'
-            const puntosFiltrados = puntosHoy.filter(p =>
-                filtro === 'todos' || (filtro === 'etfs' ? p.Es_ETF : !p.Es_ETF)
-            );
-            for (const [id, val] of [['rtf-todos', 'todos'], ['rtf-acciones', 'acciones'], ['rtf-etfs', 'etfs']]) {
-                const btn = document.getElementById(id);
-                if (!btn) continue;
-                btn.className = (val === filtro)
-                    ? 'px-2.5 py-1.5 bg-accent text-base font-bold' + (id !== 'rtf-todos' ? ' border-l border-surface' : '')
-                    : 'px-2.5 py-1.5 text-gray-400 hover:text-gray-200' + (id !== 'rtf-todos' ? ' border-l border-surface' : '');
-            }
+            // Tamaño de burbuja: escala logarítmica de la capitalización (solo entre los que tienen dato)
+            const caps = puntosFiltrados.map(p => rotacionCaps?.[p.Ticker]).filter(c => c > 0).map(Math.log10);
+            const fondo = puntosFiltrados.filter(p => !selTickers.has(p.Ticker))
+                .sort((a, b) => (rotacionCaps?.[b.Ticker] ?? 0) - (rotacionCaps?.[a.Ticker] ?? 0));
 
-            const zonas = `
-                <rect x="${x0}" y="${PAD}" width="${W - PAD - x0}" height="${y50 - PAD}" fill="${COLOR['Líder']}" opacity="0.07"/>
-                <rect x="${PAD}" y="${PAD}" width="${x0 - PAD}" height="${y50 - PAD}" fill="${COLOR['Mejorando']}" opacity="0.07"/>
-                <rect x="${x0}" y="${y50}" width="${W - PAD - x0}" height="${H - PAD - y50}" fill="${COLOR['Debilitándose']}" opacity="0.07"/>
-                <rect x="${PAD}" y="${y50}" width="${x0 - PAD}" height="${H - PAD - y50}" fill="${COLOR['Rezagado']}" opacity="0.07"/>`;
-
-            const ejes = `
-                <line x1="${PAD}" y1="${y50}" x2="${W - PAD}" y2="${y50}" stroke="#2a3040" stroke-width="1"/>
-                <line x1="${x0}" y1="${PAD}" x2="${x0}" y2="${H - PAD}" stroke="#2a3040" stroke-width="1"/>
-                <rect x="${PAD}" y="${PAD}" width="${W - PAD * 2}" height="${H - PAD * 2}" fill="none" stroke="#2a3040" stroke-width="1"/>`;
-
-            const etiquetasCuadrante = `
-                <text x="${W - PAD - 4}" y="${PAD + 14}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Líder']}">LÍDER</text>
-                <text x="${PAD + 4}" y="${PAD + 14}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Mejorando']}">MEJORANDO</text>
-                <text x="${W - PAD - 4}" y="${H - PAD - 6}" text-anchor="end" font-size="10" font-family="monospace" fill="${COLOR['Debilitándose']}">DEBILITÁNDOSE</text>
-                <text x="${PAD + 4}" y="${H - PAD - 6}" text-anchor="start" font-size="10" font-family="monospace" fill="${COLOR['Rezagado']}">REZAGADO</text>`;
-
-            const ejesTexto = `
-                <text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="9" font-family="monospace" fill="#6b7280">← FR débil    FR fuerte →</text>
-                <text x="16" y="${PAD - 10}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">mejoró 7d</text>
-                <text x="16" y="${H - PAD + 18}" text-anchor="start" font-size="9" font-family="monospace" fill="#6b7280">empeoró 7d</text>`;
-
-            // El resto del universo (filtrado por Acciones/ETFs si corresponde):
-            // puntitos grises de fondo, solo para dar contexto de dónde está la mayoría.
-            let fondoSvg = '';
-            for (const p of puntosFiltrados) {
-                if (selTickers.has(p.Ticker)) continue;
-                fondoSvg += `<circle cx="${xScale(p.RS_Score)}" cy="${yScale(p.Delta_RS_semana)}" r="2.5" fill="#6b7280" opacity="0.35"><title>${p.Ticker}: FR ${p.RS_Score} · 7d ${(p.Delta_RS_semana ?? 0) > 0 ? '+' : ''}${p.Delta_RS_semana}</title></circle>`;
-            }
-
-            // Colas de los tickers pedidos (uno o varios), hasta 16 semanas cada una.
-            let destacadoSvg = '', controlAnimacionTicker = '';
             const conRecorrido = seleccionados.filter(sel => recorridos[sel.Ticker]);
             const F = Math.max(1, ...conRecorrido.map(sel => recorridos[sel.Ticker].length));
             const idxFrame = rotacionTickerAnimIndex == null ? F - 1 : Math.min(rotacionTickerAnimIndex, F - 1);
-            const etiquetasPuestas = [];   // para que las etiquetas de tickers cercanos no se pisen
-            conRecorrido.forEach((sel, n) => {
-                const color = COLOR[sel.Cuadrante] ?? '#9ca3af';
-                const rec = recorridos[sel.Ticker];
-                const visibles = rec.slice(0, Math.min(idxFrame, rec.length - 1) + 1);
-                if (visibles.length > 1) {
-                    for (let i = 1; i < visibles.length; i++) {
-                        const a = visibles[i - 1], b = visibles[i];
-                        const opacidad = 0.2 + 0.6 * (i / (visibles.length - 1));
-                        destacadoSvg += `<line x1="${xScale(a.rs)}" y1="${yScale(a.delta)}" x2="${xScale(b.rs)}" y2="${yScale(b.delta)}" stroke="${color}" stroke-width="2" opacity="${opacidad.toFixed(2)}"/>`;
-                    }
-                    for (let i = 0; i < visibles.length - 1; i++) {
-                        const q = visibles[i];
-                        destacadoSvg += `<circle cx="${xScale(q.rs)}" cy="${yScale(q.delta)}" r="2.5" fill="${color}" opacity="0.5"/>`;
-                    }
-                }
-                const actual = visibles[visibles.length - 1];
-                const cx = xScale(actual.rs), cy = yScale(actual.delta);
-                const r = seleccionados.length > 1 ? 5 : 7;
-                let ly = cy - r - 5;
-                const choca = (y) => etiquetasPuestas.some(e => Math.abs(e.x - cx) < 34 && Math.abs(e.y - y) < 11);
-                for (let k = 1; k <= 12 && choca(ly); k++) ly = cy - r - 5 - 11 * k;   // sube de a un renglón hasta encontrar lugar
-                if (ly < 12) { ly = cy + r + 12; for (let k = 1; k <= 12 && choca(ly); k++) ly = cy + r + 12 + 11 * k; }
-                etiquetasPuestas.push({ x: cx, y: ly });
-                destacadoSvg += `
-                    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" stroke="#0B0E14" stroke-width="2"><title>${sel.Ticker}: FR ${actual.rs} · 7d ${actual.delta > 0 ? '+' : ''}${actual.delta}</title></circle>
-                    <text x="${cx}" y="${ly}" text-anchor="middle" font-size="${seleccionados.length > 1 ? 10 : 11}" font-family="monospace" font-weight="bold" fill="#fff">${sel.Ticker}</text>`;
-            });
+
+            rotCtx = {
+                yMin, yMax, fondo, todos: puntos, idxFrame, pos: [],
+                logMin: caps.length ? Math.min(...caps) : 0, logMax: caps.length ? Math.max(...caps) : 0,
+                sel: conRecorrido.map(sel => ({ p: sel, rec: recorridos[sel.Ticker] })),
+            };
+
+            let controlAnimacionTicker = '';
             if (F > 1 && conRecorrido.length) {
                 const semanaLabel = idxFrame === F - 1
                     ? (rotacionTickerAnimIndex == null ? '' : `Semana ${idxFrame + 1}/${F} (hoy)`)
@@ -3270,46 +3417,55 @@
                     </div>`;
             }
 
-            let infoSeleccionado = '';
-            if (noEncontrados.length) {
-                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-500 mt-3">No encontramos en el universo: ${noEncontrados.join(', ')}.</div>`;
-            }
+            let info = '';
+            if (noEncontrados.length) info += `<div class="font-mono text-[11px] text-gray-500 mt-3">No encontramos en el universo: ${noEncontrados.join(', ')}.</div>`;
             if (seleccionado && !seleccionado.Cuadrante) {
-                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-500 mt-3">${seleccionado.Ticker} todavía está juntando historial -- hace falta 1 semana de Fuerza Relativa para ubicarlo en un cuadrante.</div>`;
+                info += `<div class="font-mono text-[11px] text-gray-500 mt-3">${seleccionado.Ticker} todavía está juntando historial -- hace falta 1 semana de Fuerza Relativa para ubicarlo en un cuadrante.</div>`;
             } else if (seleccionado) {
-                const color = COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
+                const color = ROT_COLOR[seleccionado.Cuadrante] ?? '#9ca3af';
                 const signo = (seleccionado.Delta_RS_semana ?? 0) > 0 ? '+' : '';
-                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-300 mt-3">
+                info += `<div class="font-mono text-[11px] text-gray-300 mt-3">
                     <span style="color:${color}" class="font-bold">${seleccionado.Cuadrante}</span> ·
-                    Fuerza Relativa: ${seleccionado.RS_Score} ·
-                    Cambio 7d: ${signo}${seleccionado.Delta_RS_semana} ·
+                    Fuerza Relativa: ${seleccionado.RS_Score} · Cambio 7d: ${signo}${seleccionado.Delta_RS_semana} ·
                     ${seleccionado.Sobre_SMA50 == null ? '' : (seleccionado.Sobre_SMA50 ? 'sobre su SMA50' : 'bajo su SMA50')}
                 </div>`;
-            } else if (seleccionados.length > 1) {
-                infoSeleccionado += `<div class="font-mono text-[11px] text-gray-300 mt-3 space-y-0.5">` + seleccionados.map(sel => {
+            } else if (seleccionados.length > 1 && !modoETFs) {
+                info += `<div class="font-mono text-[11px] text-gray-300 mt-3 space-y-0.5">` + seleccionados.map(sel => {
                     if (!sel.Cuadrante) return `<div><span class="text-gray-400">${sel.Ticker}</span> · juntando historial</div>`;
-                    const color = COLOR[sel.Cuadrante] ?? '#9ca3af';
+                    const color = ROT_COLOR[sel.Cuadrante] ?? '#9ca3af';
                     const sg = (sel.Delta_RS_semana ?? 0) > 0 ? '+' : '';
                     return `<div><span class="font-bold text-gray-200">${sel.Ticker}</span> · <span style="color:${color}" class="font-bold">${sel.Cuadrante}</span> · FR ${sel.RS_Score} · 7d ${sg}${sel.Delta_RS_semana}</div>`;
                 }).join('') + `</div>`;
             }
 
+            const hayCaps = caps.length > 0;
             cont.innerHTML = `
-                <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cuadrante de rotación por ticker">
-                    ${zonas}${ejes}${etiquetasCuadrante}${ejesTexto}${fondoSvg}${destacadoSvg}
-                </svg>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Debilitándose']}"></span> Debilitándose: fuerte pero empeorando</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
+                <div class="flex items-center gap-2 mb-2 font-mono text-[11px]">
+                    <button onclick="rotZoomBoton(1.6)" class="w-8 h-8 shrink-0 rounded-sm border border-surface text-gray-200 hover:border-accent" aria-label="Acercar">＋</button>
+                    <button onclick="rotZoomBoton(1/1.6)" class="w-8 h-8 shrink-0 rounded-sm border border-surface text-gray-200 hover:border-accent" aria-label="Alejar">－</button>
+                    <button id="rt-reset" onclick="rotReset()" class="px-3 h-8 whitespace-nowrap shrink-0 rounded-sm border border-surface text-gray-300 hover:border-accent">↺ Reset zoom</button>
+                    <span class="text-gray-600 text-[9px] leading-tight">Pellizcá o usá ＋ － para acercar (con zoom aparecen los nombres) · arrastrá para mover${modoETFs ? ' · Vista ETFs: todos con su recorrido' : ''}</span>
                 </div>
-                <div class="font-mono text-[9px] text-gray-600 mt-2">Un punto gris pegado al borde de arriba o de abajo cambió más que el rango del gráfico (se recorta el 2% más extremo para que el resto se pueda leer).</div>
-                ${infoSeleccionado}
+                <svg id="rt-svg" viewBox="0 0 ${ROT_W} ${ROT_H}" class="w-full h-auto select-none" style="touch-action:pan-y" role="img" aria-label="Cuadrante de rotación por ticker (burbujas)">
+                    <g id="rt-plot"></g>
+                </svg>
+                <div id="rt-pick" class="font-mono text-[11px] mt-2 min-h-[1.25rem]"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${ROT_COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${ROT_COLOR['Debilitándose']}"></span> Debilitándose: fuerte pero empeorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${ROT_COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
+                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${ROT_COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
+                </div>
+                <div class="font-mono text-[9px] text-gray-600 mt-2">
+                    ${hayCaps ? 'Tamaño de la burbuja = capitalización de mercado del papel (los ETFs y los que no tienen dato salen chicos). ' : 'Todas las burbujas salen del mismo tamaño hasta que se cargue la capitalización de mercado. '}
+                    Una burbuja pegada al borde de arriba o de abajo cambió más que el rango del gráfico (se recorta el 2% más extremo para que el resto se pueda leer).
+                </div>
+                ${info}
                 ${controlAnimacionTicker}
                 ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${sinHistorial.length} ticker(s) todavía juntando historial.</div>` : ''}
             `;
-
+            rotDibujar();
+            rotConectar(document.getElementById('rt-svg'));
             renderTablasRotacionTicker(rt);
         }
 
@@ -5942,6 +6098,7 @@
         fetchRadarData();
         fetchRotacionHistorial();
         fetchRotacionTickerHistorial();
+        fetchRotacionCaps();
         renderCartera();
         cargarMaxCartera();
         cargarIdeasExternas().then(() => renderCartera()).catch(() => {});
