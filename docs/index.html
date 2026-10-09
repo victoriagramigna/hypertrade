@@ -218,6 +218,23 @@
 
     <!-- ===== SOLAPA: ALERTAS ===== -->
     <div id="tab-alertas" class="tab-content hidden-tab">
+        <!-- Antes de la apertura -- aparte del radar: premarket + balances. Lo arma scripts/preapertura.py (~10:10 hora argentina). -->
+        <section class="mb-6">
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">🌅 Antes de la apertura <span id="preap-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Una lista para MIRAR antes de que abra Wall Street (se arma cerca de las 10:10, hora argentina), no una señal de compra.
+                <span class="text-white">Posibles gaps al abrir:</span> papeles que en el premarket ya suben 2% o más contra el cierre anterior y que cumplen la
+                macrotendencia de la alerta "Gap alcista" (cierre previo sobre su SMA200 y precio en máximos de las últimas 10 ruedas).
+                El premarket tiene poco volumen y muchas veces se revierte al abrir.
+                <span class="text-white">Balances de hoy y mañana:</span> el balance anuncia un movimiento fuerte, pero no si es para arriba o para abajo;
+                al lado se muestra cuántas veces ese papel se movió 3% o más en sus balances anteriores.
+                Cada aviso queda registrado y la solapa Auditoría mide cómo terminó contra la frecuencia normal de gaps.
+            </div>
+            <div id="preap-contenido" class="space-y-2"><div class="text-gray-500 font-mono text-xs">Cargando...</div></div>
+        </section>
+
         <!-- Confluencia Alcista -- filtro duro, aparte del resto: junta 3+ chips
              técnicos independientes en las últimas 48hs SIN mirar el Radar Score. -->
         <section class="mb-6">
@@ -621,6 +638,14 @@
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Rotación sectorial: ¿anticipa algo?</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">Cada vez que un sector cambió de cuadrante (ver el gráfico en la solapa Universo), se guardó la fecha. Acá se mide cómo le fue después a la canasta de tickers de ese sector contra el SPY -- si el cuadrante no anticipa nada real, "Líder" y "Mejorando" no deberían acertar más que al azar.</p>
             <div id="aud-rotacion" class="space-y-3"></div>
+        </section>
+
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Antes de la apertura: ¿anticipa algo?</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cada papel que apareció en la lista "Antes de la apertura" (solapa Alertas) se mide con el cierre de ese día contra el cierre anterior.
+                "Gap real" = cerró +3% o más. Se compara con la frecuencia normal de gaps de +3% entre los papeles con macrotendencia ese mismo día: si la lista no supera esa frecuencia, no anticipa nada.
+                Los balances solo anuncian movimiento, por eso se mira cuánto se movieron (en valor absoluto) y no si subieron.</p>
+            <div id="aud-preap" class="space-y-3"><div class="text-gray-500 font-mono text-xs">Todavía no hay avisos medidos.</div></div>
         </section>
 
         <section>
@@ -3855,6 +3880,95 @@
             }
         }
 
+        // ============ ANTES DE LA APERTURA (data/preapertura.json y data/auditoria_preapertura.json) ============
+        const PREAP_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/preapertura.json';
+        const AUD_PREAP_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/auditoria_preapertura.json';
+        let preapData = null;
+        async function fetchPreapertura() {
+            const cont = document.getElementById('preap-contenido');
+            if (!cont) return;
+            try {
+                const resp = await fetch(`${PREAP_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) throw new Error(resp.status);
+                preapData = await resp.json();
+            } catch (e) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-3 border border-dashed border-surface rounded-sm">Todavía no hay una lista de "Antes de la apertura" (se arma sola de lunes a viernes cerca de las 10:10; la primera vez puede tardar).</div>';
+                return;
+            }
+            renderPreapertura();
+        }
+        function renderPreapertura() {
+            const cont = document.getElementById('preap-contenido');
+            const d = preapData;
+            if (!cont || !d) return;
+            const cand = d.candidatos ?? [], bal = d.balances ?? [];
+            const cnt = document.getElementById('preap-count');
+            if (cnt) cnt.textContent = `(${cand.length} gaps posibles · ${bal.length} balances) · ${d.fecha_et ?? ''}`;
+            const hoy = d.fecha_et;
+            let h = '';
+            h += `<div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Posibles gaps al abrir</div>`;
+            if (!d.premarket_disponible) {
+                h += `<div class="text-gray-500 font-mono text-[11px] p-3 border border-dashed border-surface rounded-sm">Hoy no hay datos de premarket (feriado, o Yahoo sin datos a esa hora).</div>`;
+            } else if (cand.length === 0) {
+                h += `<div class="text-gray-500 font-mono text-[11px] p-3 border border-dashed border-surface rounded-sm">Ningún papel con macrotendencia cotiza hoy +${d.umbral_premarket_pct ?? 2}% o más en premarket.</div>`;
+            } else {
+                h += cand.map(c => `
+                    <div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span class="text-white font-bold">${c.ticker}</span>
+                        <span class="text-pos font-bold">${c.pm_pct > 0 ? '+' : ''}${c.pm_pct}% premarket</span>
+                        <span class="text-gray-400">cierre previo ${c.cierre_previo} → ${c.pm_precio}</span>
+                        <span class="text-gray-500">${c.sector ?? ''}</span>
+                        <span class="text-gray-600">volumen premarket: ${c.pm_vol_rel_pct != null ? c.pm_vol_rel_pct + '% de un día normal' : 's/d'}</span>
+                    </div>`).join('');
+            }
+            h += `<div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mt-4">Balances de hoy y mañana</div>`;
+            if (bal.length === 0) {
+                h += `<div class="text-gray-500 font-mono text-[11px] p-3 border border-dashed border-surface rounded-sm">Ningún papel del universo presenta balance hoy ni mañana (según Yahoo).</div>`;
+            } else {
+                h += bal.map(b => {
+                    const f = new Date(b.fecha_balance);
+                    const dia = (b.fecha_balance ?? '').slice(0, 10) === hoy ? 'hoy' : (b.cuando === 'manana' ? 'mañana' : 'hoy');
+                    const antes = f.getHours() < 12;
+                    const hi = b.historial ?? {};
+                    const histTxt = hi.n
+                        ? `en sus ${hi.n} balances anteriores: <span class="text-pos">${hi.sube3} subió ≥3%</span> · <span class="text-neg">${hi.baja3} bajó ≥3%</span> · movimiento típico ${hi.mov_abs_mediano_pct}%`
+                        : 'sin historial de balances disponible';
+                    return `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px]">
+                        <span class="text-white font-bold">${b.ticker}</span>
+                        <span class="text-blueAlert">presenta ${dia} ${antes ? 'antes de la apertura' : 'después del cierre'}</span>
+                        <span class="text-gray-500">${b.sector ?? ''}</span>
+                        <div class="text-gray-400 mt-1">${histTxt}</div>
+                    </div>`;
+                }).join('');
+            }
+            h += `<div class="font-mono text-[9px] text-gray-600 mt-3">Actualizado: ${d.generado_utc ? new Date(d.generado_utc).toLocaleString('es-AR') : '-'}. Lista informativa; no es una recomendación de compra ni de venta.</div>`;
+            cont.innerHTML = h;
+        }
+        async function fetchAuditoriaPreapertura() {
+            const cont = document.getElementById('aud-preap');
+            if (!cont) return;
+            let a;
+            try {
+                const resp = await fetch(`${AUD_PREAP_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) return;
+                a = await resp.json();
+            } catch (e) { return; }
+            const res = a.resumen ?? {};
+            const nombres = { gap_candidato: 'Posibles gaps al abrir (premarket +2% o más)', balance: 'Balances de hoy y mañana' };
+            let h = '';
+            for (const [tipo, r] of Object.entries(res)) {
+                const pocos = r.n < 30;
+                h += `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] space-y-1">
+                    <div class="text-white font-bold">${nombres[tipo] ?? tipo}</div>
+                    <div class="text-gray-300">Casos medidos: <span class="text-white font-bold">${r.n}</span>${pocos ? ' <span class="text-gray-500">(muy pocos para sacar conclusiones)</span>' : ''}</div>
+                    <div class="text-gray-300">Cerraron con gap real (+3% o más): <span class="text-white font-bold">${r.gap_real} de ${r.n} (${r.pct_gap_real}%)</span>
+                        ${r.pct_gap_normal != null ? `· frecuencia normal ese mismo día: <span class="text-white">${r.pct_gap_normal}%</span>` : ''}</div>
+                    <div class="text-gray-400">Movimiento de cierre mediano: ${r.mediana_ret_cierre_pct}% · movimiento típico (valor absoluto): ${r.mov_abs_mediano_pct}%</div>
+                </div>`;
+            }
+            if (h) cont.innerHTML = h + `<div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
@@ -3862,7 +3976,8 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
-            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); }
+            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); }
+            if (name === 'alertas') fetchPreapertura();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             if (name === 'ideas') { cargarIdeasExternas(); if (!nivelesSeg) cargarNivelesSeg(); }
             window.scrollTo({ top: 0, behavior: 'instant' });
@@ -6099,6 +6214,7 @@
         fetchRotacionHistorial();
         fetchRotacionTickerHistorial();
         fetchRotacionCaps();
+        fetchPreapertura();
         renderCartera();
         cargarMaxCartera();
         cargarIdeasExternas().then(() => renderCartera()).catch(() => {});
