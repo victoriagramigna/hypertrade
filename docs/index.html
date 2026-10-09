@@ -183,6 +183,22 @@
             </div>
         </div>
 
+        <!-- Pulso del mercado: fila KPI + balances de la semana (9/10, inspirado en Warren Bife) -->
+        <section id="pulso-section">
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">📊 Pulso del mercado</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Cinco números para ver de un vistazo qué tan amplio es el mercado hoy: cuántos de los activos que analiza el radar están por encima de sus medias de 200 y de 50 ruedas,
+                cuántos tienen Fuerza Relativa alta y cuántos operan con volumen inusual. Se cuentan todos los activos (acciones y ETFs); el "Régimen de mercado" de más abajo cuenta solo acciones y le suma
+                índices y sentimiento, por eso los porcentajes pueden diferir un poco. Son datos de la última corrida, no una recomendación.
+            </div>
+            <div id="kpi-fila" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+            <div class="mt-4">
+                <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">Balances de la semana (próximos 7 días)</div>
+                <div class="font-mono text-[10px] text-gray-600 mb-2 leading-relaxed">☀ = presenta antes de la apertura · ☾ = después del cierre · ★ = está en Mi Cartera. Un balance puede mover mucho el precio para cualquier lado. Fechas de Yahoo Finance, pueden cambiar.</div>
+                <div id="earnings-tira" class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[11px] text-gray-600">Cargando...</div></div>
+            </div>
+        </section>
+
         <!-- Radiografía: ficha global de un ticker -->
         <section id="radiografia-section">
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">🩻 Radiografía</h2>
@@ -207,6 +223,16 @@
             <div id="regimen-panel" class="bg-surface p-4 rounded-sm border border-surface"></div>
             <div id="extremos-52w-panel" class="bg-surface p-4 rounded-sm border border-surface mt-3"></div>
             <div id="amplitud-historial-panel" class="bg-surface p-4 rounded-sm border border-surface mt-3"></div>
+        </section>
+
+        <!-- Cartelera del día -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cartelera del día</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Subas y bajas más grandes del día (solo aparecen los movimientos fuertes, los mismos de "Movimientos del día"), activos sobrecomprados o sobrevendidos según el RSI (14 días) y quiénes operan con volumen inusual.
+                Sobrecomprado no significa "va a caer" ni sobrevendido "va a subir": solo marca que el movimiento reciente fue muy fuerte. Tocá un ticker para abrir su ficha.
+            </div>
+            <div id="cartelera-cont"></div>
         </section>
 
         <!-- Movimientos del día -->
@@ -255,7 +281,16 @@
         </section>
 
         <!-- El Semillero: favoritos de Victoria (se guardan en este navegador). Informativo. -->
-        <section class="mb-6" id="semillero-section">
+                <section>
+            <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">🧩 Señales en matriz</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Tres vistas rápidas armadas con los datos del radar: una matriz de quién junta más condiciones a la vez, la lista de bases VCP y los MACD semanales cerca de cruzar.
+                No son alertas nuevas ni reemplazan a las de arriba: sirven para ver el panorama y elegir qué mirar. Nada de acá es una recomendación de compra o venta.
+            </div>
+            <div id="matriz-cont"></div>
+        </section>
+
+<section class="mb-6" id="semillero-section">
             <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest">⭐ El Semillero <span id="semillero-count" class="text-gray-500 normal-case"></span></h2>
             </div>
@@ -342,6 +377,7 @@
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Top 30 Fuerza Relativa</h2>
                 <div id="top30-nuevos-container" class="mb-3"></div>
+                <div id="top30-nuevos-detalle" class="mb-3"></div>
                 <div id="top10-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto mx-3 md:mx-0"></div>
             </section>
             <!-- 4. Rotación Sectorial -->
@@ -361,6 +397,7 @@
                     los mismos nombres que el Top 30 de arriba.
                 </div>
                 <div id="top30-radar-nuevos-container" class="mb-3"></div>
+                <div id="top30-radar-nuevos-detalle" class="mb-3"></div>
                 <div id="top30-radar-container" class="bg-surface p-4 space-y-3 rounded-sm border border-surface max-h-[32rem] overflow-y-auto mx-3 md:mx-0"></div>
             </section>
         </div>
@@ -424,6 +461,7 @@
                 </div>
             </div>
             <div id="ticker-quadrant-chart" class="bg-surface p-4 rounded-sm border border-surface"></div>
+            <div id="rt-lectura"></div>
 
             <div class="mt-5">
                 <details>
@@ -468,6 +506,16 @@
                 <div id="buscador-subclase-chips" class="flex flex-wrap gap-1.5"></div>
             </div>
             <div id="buscador-subclase-resultado" class="bg-surface p-3 rounded-sm border border-surface font-mono text-xs"></div>
+        </section>
+        <!-- Sectores y subsectores (9/10, inspirado en Warren Bife) -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Sectores y subsectores</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Elegí un sector (arriba, ordenados por Fuerza Relativa promedio, que es el número gris) y se abren sus subgrupos con una tarjeta por activo:
+                su RS (0-100), qué tan lejos está de su media de 200 y de 50 ruedas (punto verde = arriba, rojo = abajo), el RSI y si tiene squeeze o VCP.
+                Dentro de cada subgrupo van primero los más fuertes. Tocá una tarjeta para abrir su ficha completa. Es una forma de explorar, no una recomendación.
+            </div>
+            <div id="ss-cont" class="bg-surface p-3 rounded-sm border border-surface"></div>
         </section>
         <!-- 5. Detalle por Sector (Ranking) -->
             <section>
@@ -2231,6 +2279,7 @@
             currentAlertasCompletas = data?.alertas ?? [];
             filtrarAlertas();
             renderConfluencia(data);
+            try { renderPanelesNuevos(data); } catch (e) { console.warn("Paneles nuevos:", e); }
             try { renderSemillero(data); } catch (e) { console.warn("Semillero:", e); }
             try { renderZonasInteres(data); } catch (e) { console.warn("Zonas de interés:", e); }
 
@@ -2697,6 +2746,7 @@
                 rotacionTickerHistorialCache = rotacionTickerHistorialCache ?? [];
             }
             if (rotacionTickerUltimoData) renderRotacionTicker(rotacionTickerUltimoData);
+            try { if (currentRadarData) renderNuevosDetalle(currentRadarData); } catch (e) {}
         }
 
         function _valorCercanoTicker(historial, ticker, fechaObjetivo, toleranciaDias) {
@@ -3492,6 +3542,7 @@
             rotDibujar();
             rotConectar(document.getElementById('rt-svg'));
             renderTablasRotacionTicker(rt);
+            try { renderLecturaRotacion(seleccionados.length ? seleccionados : puntos.filter(p => p.Es_ETF && p.Cuadrante)); } catch (e) { console.warn("Lectura rotación:", e); }
         }
 
         function _filaRotacionTickerHtml(ev, { conEvolucion }) {
@@ -6219,6 +6270,291 @@
         cargarMaxCartera();
         cargarIdeasExternas().then(() => renderCartera()).catch(() => {});
         setInterval(fetchRadarData, 5 * 60 * 1000); // 300.000 milisegundos
+
+        // =====================================================================
+        // PANELES NUEVOS (9/10/2026) -- inspirados en el video de Warren Bife.
+        // Todo es ADITIVO: solo lee data.ranking / data.zonas / balances_cache,
+        // no toca ningún cálculo, alerta ni log. Son datos para mirar, no señales.
+        // =====================================================================
+        const BALANCES_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/balances_cache.json';
+        const DIAS_ES = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+        let balancesCache = null;
+        let ssSectorActual = null;
+
+        function abrirFicha(t) {
+            switchTab('inicio');
+            radiografia(t);
+            const s = document.getElementById('radiografia-section');
+            if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function _num(v) { return (typeof v === 'number' && isFinite(v)) ? v : null; }
+        function _pct(v, d = 1) { const n = _num(v); return n === null ? '—' : (n >= 0 ? '+' : '') + n.toFixed(d) + '%'; }
+        function _col(v) { const n = _num(v); return n === null ? 'text-gray-500' : (n >= 0 ? 'text-pos' : 'text-neg'); }
+        function _chipTk(t, extra = '') {
+            return `<span class="inline-flex items-center gap-1 bg-base border border-gray-800 rounded-sm px-1.5 py-0.5 mr-1 mb-1 cursor-pointer hover:border-accent font-mono text-[11px]" onclick="abrirFicha('${t}')"><span class="font-bold text-white">${t}</span>${extra}</span>`;
+        }
+
+        // ---------- 1. Pulso del mercado (fila KPI) ----------
+        function _anillo(pct, color) {
+            const p = Math.max(0, Math.min(100, pct ?? 0));
+            const c = 2 * Math.PI * 15;
+            return `<svg width="38" height="38" viewBox="0 0 38 38" class="flex-shrink-0"><circle cx="19" cy="19" r="15" fill="none" stroke="#2a2f3a" stroke-width="4"/><circle cx="19" cy="19" r="15" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${(c * p / 100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 19 19)"/><text x="19" y="22.5" text-anchor="middle" font-size="9" fill="#d1d5db" font-family="monospace">${Math.round(p)}%</text></svg>`;
+        }
+        function renderPulsoMercado(data) {
+            const cont = document.getElementById('kpi-fila');
+            if (!cont) return;
+            const r = data?.ranking ?? [];
+            const n = r.length;
+            if (!n) { cont.innerHTML = '<div class="text-gray-500 font-mono text-xs">Sin datos.</div>'; return; }
+            const s200 = r.filter(x => _num(x['Dist_SMA200_%']) !== null && x['Dist_SMA200_%'] > 0).length;
+            const s50 = r.filter(x => x.Sobre_SMA50 === true).length;
+            const rs70 = r.filter(x => _num(x.RS_Score) !== null && x.RS_Score >= 70).length;
+            const vol = r.filter(x => _num(x.Vol_rel) !== null && x.Vol_rel >= VOLUMEN_RELATIVO_MINIMO_JS).length;
+            const items = [
+                { t: 'Activos analizados', v: n, p: 100, c: '#9ca3af', h: 'Cuántos tickers (acciones y ETFs) entran hoy en el radar.' },
+                { t: 'Sobre su SMA200', v: s200, p: 100 * s200 / n, c: '#6FCF97', h: 'Cuántos cotizan por encima de su media de 200 ruedas: tendencia de fondo alcista.' },
+                { t: 'Sobre su SMA50', v: s50, p: 100 * s50 / n, c: '#6FCF97', h: 'Cuántos cotizan por encima de su media de 50 ruedas: tendencia de corto/mediano plazo alcista.' },
+                { t: 'RS de 70 o más', v: rs70, p: 100 * rs70 / n, c: '#E0A458', h: 'Cuántos están entre los más fuertes contra el resto (Fuerza Relativa 70 o más sobre 100).' },
+                { t: 'Volumen inusual', v: vol, p: 100 * vol / n, c: '#3b82f6', h: `Cuántos operaron hoy con ${VOLUMEN_RELATIVO_MINIMO_JS} veces su volumen normal o más.` },
+            ];
+            cont.innerHTML = items.map(i => `
+                <div class="bg-surface border border-surface rounded-sm p-3 flex items-center gap-3" title="${i.h}">
+                    ${_anillo(i.p, i.c)}
+                    <div class="min-w-0"><div class="font-mono text-xl font-bold text-white leading-none">${i.v}</div>
+                    <div class="font-mono text-[9px] uppercase tracking-wider text-gray-500 mt-1">${i.t}</div></div>
+                </div>`).join('');
+        }
+
+        // ---------- 2. Earnings de la semana ----------
+        async function renderEarningsSemana() {
+            const cont = document.getElementById('earnings-tira');
+            if (!cont) return;
+            try {
+                if (!balancesCache) {
+                    const resp = await fetch(`${BALANCES_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                    if (!resp.ok) throw new Error('http ' + resp.status);
+                    balancesCache = await resp.json();
+                }
+            } catch (e) { cont.innerHTML = '<div class="font-mono text-[11px] text-gray-600">Todavía no hay fechas de balances cargadas.</div>'; return; }
+            const pt = balancesCache?.por_ticker ?? {};
+            const rk = {}; for (const x of (currentRadarData?.ranking ?? [])) rk[x.Ticker] = x;
+            let mios = new Set();
+            try { mios = new Set(cargarCartera().map(p => String(p.ticker).toUpperCase())); } catch (e) {}
+            const hoy = new Date();
+            const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const desde = iso(hoy);
+            const lim = new Date(hoy); lim.setDate(lim.getDate() + 7);
+            const hasta = iso(lim);
+            const porDia = {};
+            for (const [t, v] of Object.entries(pt)) {
+                for (const f of (v.fechas ?? [])) {
+                    const dia = f.slice(0, 10);
+                    if (dia < desde || dia > hasta) continue;
+                    const hora = parseInt(f.slice(11, 13), 10);
+                    (porDia[dia] = porDia[dia] ?? []).push({ t, pre: hora < 12 });
+                }
+            }
+            const dias = Object.keys(porDia).sort();
+            if (!dias.length) { cont.innerHTML = '<div class="font-mono text-[11px] text-gray-600">No hay balances del universo en los próximos 7 días.</div>'; return; }
+            cont.innerHTML = dias.map(d => {
+                const dt = new Date(d + 'T12:00:00');
+                const lista = porDia[d].sort((a, b) => (rk[b.t]?.RS_Score ?? 0) - (rk[a.t]?.RS_Score ?? 0));
+                const chips = lista.map(e => _chipTk(e.t, `<span class="text-[9px] text-gray-500" title="${e.pre ? 'Antes de la apertura' : 'Después del cierre'}">${e.pre ? '☀' : '☾'}</span>${mios.has(e.t) ? '<span class="text-accent" title="Está en Mi Cartera">★</span>' : ''}`)).join('');
+                return `<div class="mb-2"><span class="font-mono text-[10px] uppercase font-bold text-accent mr-2">${DIAS_ES[dt.getDay()]} ${dt.getDate()}/${dt.getMonth() + 1}</span>${chips}</div>`;
+            }).join('');
+        }
+
+        // ---------- 3. Cartelera del día ----------
+        function renderCartelera(data) {
+            const cont = document.getElementById('cartelera-cont');
+            if (!cont) return;
+            const r = data?.ranking ?? [];
+            const movs = data?.movimientos_dia ?? [];
+            const filaMov = (m) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${m.Ticker}')"><span class="text-white font-bold">${logoInline(m.Ticker, 16)}${m.Ticker}</span><span class="${_col(m['Variacion_dia_%'])} font-bold">${_pct(m['Variacion_dia_%'], 2)}</span></div>`;
+            const sube = movs.filter(m => m['Variacion_dia_%'] > 0).sort((a, b) => b['Variacion_dia_%'] - a['Variacion_dia_%']).slice(0, 5);
+            const baja = movs.filter(m => m['Variacion_dia_%'] < 0).sort((a, b) => a['Variacion_dia_%'] - b['Variacion_dia_%']).slice(0, 5);
+            const filaRsi = (x) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${x.Ticker}')"><span class="text-white font-bold">${logoInline(x.Ticker, 16)}${x.Ticker}</span><span class="text-gray-400">RSI ${x.RSI.toFixed(0)}</span></div>`;
+            const conRsi = r.filter(x => _num(x.RSI) !== null);
+            const sobrec = conRsi.filter(x => x.RSI >= 70).sort((a, b) => b.RSI - a.RSI).slice(0, 6);
+            const sobrev = conRsi.filter(x => x.RSI <= 30).sort((a, b) => a.RSI - b.RSI).slice(0, 6);
+            const umbral = parseFloat(document.getElementById('vol-umbral')?.value ?? '1.5');
+            const vol = r.filter(x => _num(x.Vol_rel) !== null && x.Vol_rel >= umbral).sort((a, b) => b.Vol_rel - a.Vol_rel).slice(0, 8);
+            const filaVol = (x) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${x.Ticker}')"><span class="text-white font-bold">${logoInline(x.Ticker, 16)}${x.Ticker}</span><span class="text-accent">${x.Vol_rel.toFixed(1)}× su volumen</span></div>`;
+            const caja = (tit, color, html, vacio) => `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color} mb-1">${tit}</div>${html || `<div class="font-mono text-[11px] text-gray-600">${vacio}</div>`}</div>`;
+            cont.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    ${caja('▲ Mayores subas del día', 'text-pos', sube.map(filaMov).join(''), 'Ninguna suba fuerte hoy.')}
+                    ${caja('▼ Mayores bajas del día', 'text-neg', baja.map(filaMov).join(''), 'Ninguna baja fuerte hoy.')}
+                    ${caja('Sobrecomprados (RSI ≥ 70)', 'text-accent', sobrec.map(filaRsi).join(''), 'Ninguno hoy.')}
+                    ${caja('Sobrevendidos (RSI ≤ 30)', 'text-blueAlert', sobrev.map(filaRsi).join(''), 'Ninguno hoy.')}
+                </div>
+                <div class="bg-surface border border-surface rounded-sm p-3 mt-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-blueAlert">Volumen inusual hoy</div>
+                        <label class="font-mono text-[10px] text-gray-500">Desde <select id="vol-umbral" onchange="renderCartelera(currentRadarData)" class="bg-base border border-gray-700 text-gray-200 rounded-sm px-1 py-0.5">
+                            ${['1.5', '2', '3'].map(v => `<option value="${v}" ${parseFloat(v) === umbral ? 'selected' : ''}>${v}×</option>`).join('')}</select> su volumen normal</label>
+                    </div>
+                    ${vol.map(filaVol).join('') || '<div class="font-mono text-[11px] text-gray-600">Ninguno con ese umbral.</div>'}
+                </div>`;
+        }
+
+        // ---------- 4. Sectores y subsectores ----------
+        function ssElegir(s) { ssSectorActual = s; renderSectoresSub(currentRadarData); }
+        function renderSectoresSub(data) {
+            const cont = document.getElementById('ss-cont');
+            if (!cont) return;
+            const r = data?.ranking ?? [];
+            if (!r.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
+            const porSector = {};
+            for (const x of r) (porSector[x.Sector ?? 'Otros'] = porSector[x.Sector ?? 'Otros'] ?? []).push(x);
+            const media = (a) => a.reduce((s, x) => s + (x.RS_Score ?? 0), 0) / (a.length || 1);
+            const sectores = Object.keys(porSector).sort((a, b) => media(porSector[b]) - media(porSector[a]));
+            if (!ssSectorActual || !porSector[ssSectorActual]) ssSectorActual = sectores[0];
+            const tabs = sectores.map(s => `<button onclick="ssElegir('${s.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 font-mono text-[10px] uppercase whitespace-nowrap border-b-2 ${s === ssSectorActual ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-300'}">${s} <span class="text-gray-600">${media(porSector[s]).toFixed(0)}</span></button>`).join('');
+            const grupos = {};
+            for (const x of porSector[ssSectorActual]) (grupos[x.Subcategoria ?? (ssSectorActual === 'ETF' ? 'ETFs' : 'Otros')] = grupos[x.Subcategoria ?? (ssSectorActual === 'ETF' ? 'ETFs' : 'Otros')] ?? []).push(x);
+            const dot = (v) => `<span class="inline-block w-1.5 h-1.5 rounded-full ${_num(v) === null ? 'bg-gray-600' : (v >= 0 ? 'bg-pos' : 'bg-neg')} mr-1"></span>`;
+            const tarjeta = (x) => `
+                <div class="bg-base border border-gray-800 rounded-sm p-2 font-mono text-[10px] cursor-pointer hover:border-accent" onclick="abrirFicha('${x.Ticker}')">
+                    <div class="flex justify-between items-center"><span class="font-bold text-white text-xs">${logoInline(x.Ticker, 14)}${x.Ticker}</span><span class="text-accent text-xs font-bold" title="Fuerza Relativa (0-100)">${_num(x.RS_Score) === null ? '—' : x.RS_Score.toFixed(0)}</span></div>
+                    <div class="text-gray-600 truncate mb-1">${(typeof nombreEmpresa === 'function' ? nombreEmpresa(x.Ticker) : '') ?? ''}</div>
+                    <div class="flex justify-between text-gray-400"><span>${dot(x['Dist_SMA200_%'])}SMA200</span><span class="${_col(x['Dist_SMA200_%'])}">${_pct(x['Dist_SMA200_%'], 1)}</span></div>
+                    <div class="flex justify-between text-gray-400"><span>${dot(x['Dist_SMA50_%'])}SMA50</span><span class="${_col(x['Dist_SMA50_%'])}">${_pct(x['Dist_SMA50_%'], 1)}</span></div>
+                    <div class="flex justify-between text-gray-400"><span>RSI</span><span class="text-gray-200">${_num(x.RSI) === null ? '—' : x.RSI.toFixed(0)}</span></div>
+                    ${(x.Squeeze_Comprimido || x.VCP_valido) ? `<div class="mt-1">${x.Squeeze_Comprimido ? '<span class="text-[8px] uppercase border border-blueAlert text-blueAlert rounded-sm px-1 mr-1">squeeze</span>' : ''}${x.VCP_valido ? '<span class="text-[8px] uppercase border border-accent text-accent rounded-sm px-1">VCP</span>' : ''}</div>` : ''}
+                </div>`;
+            const orden = Object.keys(grupos).sort((a, b) => media(grupos[b]) - media(grupos[a]));
+            cont.innerHTML = `
+                <div class="flex overflow-x-auto border-b border-surface mb-3">${tabs}</div>
+                ${orden.map(g => `
+                    <div class="mb-4">
+                        <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-white mb-1.5">${g} <span class="text-accent">RS ${media(grupos[g]).toFixed(0)}</span> <span class="text-gray-600 normal-case">· ${grupos[g].length}</span></div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">${[...grupos[g]].sort((a, b) => (b.RS_Score ?? 0) - (a.RS_Score ?? 0)).map(tarjeta).join('')}</div>
+                    </div>`).join('')}`;
+        }
+
+        // ---------- 5. Señales en matriz, bases VCP y MACD semanal ----------
+        function renderMatrizSenales(data) {
+            const cont = document.getElementById('matriz-cont');
+            if (!cont) return;
+            const r = data?.ranking ?? [];
+            const zonas = {}; for (const z of (data?.zonas ?? [])) zonas[z.Ticker] = z;
+            const COLS = [
+                ['SMA50', 'Sobre su media de 50', x => x.Sobre_SMA50 === true],
+                ['SMA200', 'Sobre su media de 200', x => _num(x['Dist_SMA200_%']) !== null && x['Dist_SMA200_%'] > 0],
+                ['RS≥70', 'Fuerza Relativa de 70 o más', x => _num(x.RS_Score) !== null && x.RS_Score >= 70],
+                ['Squeeze', 'Bandas de Bollinger comprimidas', x => x.Squeeze_Comprimido === true],
+                ['VCP', 'Patrón de contracción de volatilidad válido', x => x.VCP_valido === true],
+                ['AVWAP', 'Apoya sobre un AVWAP', x => x.Apoyo_AVWAP === true],
+                ['Demanda', 'Toca una zona de demanda', x => zonas[x.Ticker]?.Toca_Demanda === true],
+                ['Sem.', 'Tendencia semanal a favor', x => x.Tendencia_Semanal === 'favor'],
+                ['Vol', 'Volumen relativo alto', x => _num(x.Vol_rel) !== null && x.Vol_rel >= VOLUMEN_RELATIVO_MINIMO_JS],
+            ];
+            const filas = r.map(x => ({ x, f: COLS.map(c => c[2](x)) })).map(o => ({ ...o, n: o.f.filter(Boolean).length }))
+                .filter(o => o.n >= 6).sort((a, b) => b.n - a.n || (b.x.RS_Score ?? 0) - (a.x.RS_Score ?? 0)).slice(0, 25);
+            const th = COLS.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal" title="${c[1]}">${c[0]}</th>`).join('');
+            const tr = filas.map(o => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer" onclick="abrirFicha('${o.x.Ticker}')">
+                <td class="px-1.5 py-1 text-left whitespace-nowrap font-bold text-white">${logoInline(o.x.Ticker, 14)}${o.x.Ticker}</td>
+                ${o.f.map(v => `<td class="px-1.5 py-1 text-center">${v ? '<span class="inline-block w-2 h-2 rounded-full bg-pos"></span>' : '<span class="inline-block w-1 h-1 rounded-full bg-gray-700"></span>'}</td>`).join('')}
+                <td class="px-1.5 py-1 text-center text-accent font-bold">${o.n}/${COLS.length}</td>
+                <td class="px-1.5 py-1 text-center text-gray-300">${_num(o.x.RS_Score) === null ? '—' : o.x.RS_Score.toFixed(0)}</td></tr>`).join('');
+            const matriz = filas.length ? `<div class="overflow-x-auto"><table class="w-full font-mono text-xs"><thead><tr><th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Ticker</th>${th}<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal">Total</th><th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal">RS</th></tr></thead><tbody>${tr}</tbody></table></div>` : '<div class="font-mono text-[11px] text-gray-600">Ningún ticker junta 6 o más señales hoy.</div>';
+
+            const vcp = r.filter(x => x.VCP_valido === true).sort((a, b) => (b.Radar_Score ?? 0) - (a.Radar_Score ?? 0)).slice(0, 15);
+            const vcpHtml = vcp.length ? `<div class="overflow-x-auto"><table class="w-full font-mono text-xs"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="px-1.5 py-1 text-left font-normal">Ticker</th><th class="px-1.5 py-1 font-normal">RS</th><th class="px-1.5 py-1 font-normal">Radar</th><th class="px-1.5 py-1 font-normal" title="Distancia al máximo de 52 semanas (el 'techo' más cercano)">Dist. máx 52s</th><th class="px-1.5 py-1 font-normal">Dist. SMA50</th><th class="px-1.5 py-1 font-normal">Squeeze</th><th class="px-1.5 py-1 font-normal">Vol rel.</th></tr></thead><tbody>${vcp.map(x => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer text-center" onclick="abrirFicha('${x.Ticker}')"><td class="px-1.5 py-1 text-left font-bold text-white whitespace-nowrap">${logoInline(x.Ticker, 14)}${x.Ticker}</td><td class="text-accent">${_num(x.RS_Score) === null ? '—' : x.RS_Score.toFixed(0)}</td><td>${_num(x.Radar_Score) === null ? '—' : x.Radar_Score.toFixed(0)}</td><td class="${_col(x['Dist_Max52w_%'])}">${_pct(x['Dist_Max52w_%'])}</td><td class="${_col(x['Dist_SMA50_%'])}">${_pct(x['Dist_SMA50_%'])}</td><td>${x.Squeeze_Comprimido ? '<span class="text-blueAlert">sí</span>' : '<span class="text-gray-600">no</span>'}</td><td class="text-gray-300">${_num(x.Vol_rel) === null ? '—' : x.Vol_rel.toFixed(2)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="font-mono text-[11px] text-gray-600">Ningún ticker con VCP válido hoy.</div>';
+
+            const mac = r.filter(x => _num(x.MACD_Semanal) !== null && _num(x.MACD_Señal_Semanal) !== null && _num(x.RS_Score) !== null && x.RS_Score >= 60)
+                .map(x => ({ x, d: x.MACD_Semanal - x.MACD_Señal_Semanal, rel: Math.abs(x.MACD_Semanal - x.MACD_Señal_Semanal) / Math.max(Math.abs(x.MACD_Señal_Semanal), 0.05) }))
+                .filter(o => o.rel <= 0.05).sort((a, b) => a.rel - b.rel).slice(0, 20);
+            const macHtml = mac.length ? mac.map(o => _chipTk(o.x.Ticker, `<span class="${o.d >= 0 ? 'text-pos' : 'text-neg'} text-[10px]">${o.d >= 0 ? 'apenas arriba' : 'apenas abajo'}</span><span class="text-gray-600 text-[10px]">RSI sem ${_num(o.x.RSI_Semanal) === null ? '—' : o.x.RSI_Semanal.toFixed(0)}</span>`)).join('') : '<div class="font-mono text-[11px] text-gray-600">Ninguno cerca del cruce hoy.</div>';
+
+            cont.innerHTML = `
+                <div class="bg-surface border border-surface rounded-sm p-3 mb-3">
+                    <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Matriz: quién junta más señales a la vez (6 o más de ${COLS.length})</div>
+                    ${matriz}
+                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Cada punto verde es una condición que hoy se cumple. Pasá el dedo/mouse por el encabezado para ver qué mide cada columna. Tocá una fila para abrir la ficha. Es un resumen de condiciones, no una orden de compra.</div>
+                </div>
+                <div class="bg-surface border border-surface rounded-sm p-3 mb-3">
+                    <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Bases VCP (volatilidad contraída)</div>
+                    ${vcpHtml}
+                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Tickers con patrón VCP válido, ordenados por Radar Score. "Dist. máx 52s" dice qué tan lejos está del techo de 52 semanas. Hoy no calculamos un pivote exacto de ruptura: es una lista para mirar.</div>
+                </div>
+                <div class="bg-surface border border-surface rounded-sm p-3">
+                    <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">MACD semanal cerca de cruzar su señal (RS 60 o más)</div>
+                    ${macHtml}
+                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Muestra la distancia actual entre el MACD semanal y su línea de señal (a menos de 5%). Todavía no registramos la fecha exacta del cruce, así que acá ves el estado de hoy, no el momento en que cruzó.</div>
+                </div>`;
+        }
+
+        // ---------- 6. Lectura de rotación en texto ----------
+        function renderLecturaRotacion(pts) {
+            const cont = document.getElementById('rt-lectura');
+            if (!cont) return;
+            const hist = rotacionTickerHistorialCache ?? [];
+            const COLOR = { 'Líder': 'text-pos', 'Mejorando': 'text-accent', 'Debilitándose': 'text-blueAlert', 'Rezagado': 'text-neg' };
+            const tag = (c) => `<span class="${COLOR[c] ?? 'text-gray-400'} font-bold">${c}</span>`;
+            if (!hist.length || !pts.length) { cont.innerHTML = ''; return; }
+            const cambios = [], quietos = [];
+            for (const p of pts) {
+                const rec = construirRecorridoSemanalTicker(hist, p.Ticker).filter(q => q.cuadrante);
+                if (rec.length < 2) continue;
+                const ult = rec[rec.length - 1], prev = rec[rec.length - 2];
+                let sem = 1;
+                for (let i = rec.length - 2; i >= 0 && rec[i].cuadrante === ult.cuadrante; i--) sem++;
+                if (ult.cuadrante !== prev.cuadrante) cambios.push({ t: p.Ticker, de: prev.cuadrante, a: ult.cuadrante, rs: ult.rs });
+                else quietos.push({ t: p.Ticker, c: ult.cuadrante, sem });
+            }
+            const prioridad = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
+            cambios.sort((a, b) => prioridad[a.a] - prioridad[b.a]);
+            const frase = (c) => {
+                const extra = c.a === 'Líder' ? 'pasó a liderar: fuerte y todavía acelerando.'
+                    : c.a === 'Mejorando' ? 'empieza a recuperar fuerza, aunque sigue por debajo de la mitad del ranking.'
+                    : c.a === 'Debilitándose' ? 'sigue fuerte pero perdió impulso esta semana.'
+                    : 'perdió el liderazgo y quedó detrás del mercado.';
+                return `<div class="py-0.5"><span class="font-bold text-white cursor-pointer hover:text-accent" onclick="abrirFicha('${c.t}')">${c.t}</span> ${tag(c.de)} → ${tag(c.a)} <span class="text-gray-500">(RS ${c.rs.toFixed(0)}) ${extra}</span></div>`;
+            };
+            const largos = quietos.filter(q => q.sem >= 4).sort((a, b) => b.sem - a.sem).slice(0, 5);
+            cont.innerHTML = `
+                <div class="bg-surface border border-surface rounded-sm p-3 mt-3 font-mono text-[11px] leading-relaxed">
+                    <div class="text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Lectura de rotación — cambios de cuadrante en la última semana</div>
+                    ${cambios.length ? cambios.slice(0, 12).map(frase).join('') : '<div class="text-gray-500">Ningún ticker de esta vista cambió de cuadrante esta semana.</div>'}
+                    ${largos.length ? `<div class="text-gray-500 mt-2">Más tiempo en el mismo cuadrante: ${largos.map(q => `<span class="text-gray-300">${q.t}</span> ${tag(q.c)} (${q.sem} sem)`).join(' · ')}</div>` : ''}
+                    <div class="text-gray-600 text-[10px] mt-2">Se arma sola con el recorrido semanal de la Fuerza Relativa. Describe lo que pasó; no anticipa lo que va a pasar. Sin búsqueda se leen los ETFs; si buscás tickers, se leen esos.</div>
+                </div>`;
+        }
+
+        // ---------- 7. Nuevos ingresos al Top 30 con curva de RS ----------
+        function _spark(vals, w = 70, h = 18) {
+            const v = vals.filter(x => _num(x) !== null);
+            if (v.length < 2) return '<span class="text-gray-700">—</span>';
+            const mn = Math.min(...v), mx = Math.max(...v), rg = (mx - mn) || 1;
+            const pts = v.map((y, i) => `${(i / (v.length - 1) * w).toFixed(1)},${(h - 2 - (y - mn) / rg * (h - 4)).toFixed(1)}`).join(' ');
+            const c = v[v.length - 1] >= v[0] ? '#6FCF97' : '#D9694F';
+            return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="1.5"/></svg>`;
+        }
+        function renderNuevosDetalle(data) {
+            const rk = {}; for (const x of (data?.ranking ?? [])) rk[x.Ticker] = x;
+            const hist = rotacionTickerHistorialCache ?? [];
+            const cuerpo = (lista, getScore, etiqueta) => {
+                if (!lista.length) return '';
+                return `<div class="overflow-x-auto mt-2"><table class="w-full font-mono text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal px-1 py-1">Ticker</th><th class="font-normal px-1">${etiqueta}</th><th class="font-normal px-1">Dist. SMA50</th><th class="font-normal px-1" title="Evolución de la Fuerza Relativa (últimas ~4 semanas)">Evolución RS</th></tr></thead><tbody>${lista.map(t => {
+                    const x = rk[t] ?? {};
+                    const serie = hist.slice(-20).map(f => f.rs?.[t]);
+                    return `<tr class="border-t border-gray-800 text-center hover:bg-base cursor-pointer" onclick="abrirFicha('${t}')"><td class="text-left font-bold text-white px-1 py-1 whitespace-nowrap">${logoInline(t, 14)}${t}</td><td class="text-accent">${getScore(x)}</td><td class="${_col(x['Dist_SMA50_%'])}">${_pct(x['Dist_SMA50_%'])}</td><td class="px-1">${_spark(serie)}</td></tr>`;
+                }).join('')}</tbody></table></div>`;
+            };
+            const a = document.getElementById('top30-nuevos-detalle');
+            if (a) a.innerHTML = cuerpo(data?.top30_nuevos_hoy ?? [], x => _num(x.RS_Score) === null ? '—' : x.RS_Score.toFixed(0), 'RS');
+            const b = document.getElementById('top30-radar-nuevos-detalle');
+            if (b) b.innerHTML = cuerpo(data?.top30_radar_nuevos_hoy ?? [], x => _num(x.Radar_Score) === null ? '—' : x.Radar_Score.toFixed(0), 'Radar');
+        }
+
+        function renderPanelesNuevos(data) {
+            for (const fn of [renderPulsoMercado, renderCartelera, renderSectoresSub, renderMatrizSenales, renderNuevosDetalle]) {
+                try { fn(data); } catch (e) { console.warn('Panel nuevo:', fn.name, e); }
+            }
+            renderEarningsSemana();
+        }
     </script>
 </body>
 </html>
