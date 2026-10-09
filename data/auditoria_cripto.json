@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-09T04:15:42.575121+00:00",
+ "generado_utc": "2026-10-09T14:54:33.773167+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,7 +7,7 @@
   7,
   14
  ],
- "casos_total": 4,
+ "casos_total": 6,
  "resumen_señales": [
   {
    "tipo": "RSI en sobrecompra",
@@ -56,9 +56,79 @@
      "confiable": false
     }
    }
+  },
+  {
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "casos_total": 1,
+   "horizontes": {
+    "3": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    },
+    "7": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    },
+    "14": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    }
+   }
+  },
+  {
+   "tipo": "Perdió su SMA50",
+   "direccion": "bajista",
+   "casos_total": 1,
+   "horizontes": {
+    "3": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    },
+    "7": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    },
+    "14": {
+     "n": 0,
+     "pendientes": 1,
+     "confiable": false
+    }
+   }
   }
  ],
  "detalle": [
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
+   "fecha": "2026-10-09",
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "precio_entrada": 2488.84,
+   "score": 59,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
+   "fecha": "2026-10-09",
+   "tipo": "Perdió su SMA50",
+   "direccion": "bajista",
+   "precio_entrada": 2488.84,
+   "score": 59,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
   {
    "ticker": "BTC-USD",
    "nombre": "Bitcoin",
@@ -80,7 +150,7 @@
    "direccion": "bajista",
    "precio_entrada": 2612.69,
    "score": 49,
-   "dias_transcurridos": 1,
+   "dias_transcurridos": 2,
    "r3": null,
    "r7": null,
    "r14": null
@@ -93,7 +163,7 @@
    "direccion": "bajista",
    "precio_entrada": 83700.85,
    "score": 49,
-   "dias_transcurridos": 8,
+   "dias_transcurridos": 9,
    "r3": 1.27,
    "acierto3": false,
    "r7": -0.51,
@@ -108,7 +178,7 @@
    "direccion": "bajista",
    "precio_entrada": 2690.42,
    "score": 53,
-   "dias_transcurridos": 8,
+   "dias_transcurridos": 9,
    "r3": -0.12,
    "acierto3": true,
    "r7": -4.34,
