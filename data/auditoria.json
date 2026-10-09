@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-08T23:51:19.190498+00:00",
+ "generado_utc": "2026-10-09T13:01:28.451884+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,17 +9,17 @@
   10,
   20
  ],
- "casos_total": 548,
+ "casos_total": 550,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 150,
+   "casos_total": 152,
    "horizontes": {
     "5": {
      "n": 70,
-     "pendientes": 80,
+     "pendientes": 82,
      "aciertos": 36,
      "pct_aciertos": 51,
      "tocaron_stop": 3,
@@ -29,12 +29,12 @@
     },
     "10": {
      "n": 0,
-     "pendientes": 150,
+     "pendientes": 152,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 150,
+     "pendientes": 152,
      "confiable": false
     }
    }
@@ -306,7 +306,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 285,
+   "casos": 287,
    "5": {
     "n": 29,
     "pct_aciertos": 48,
@@ -356,7 +356,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 371,
+   "casos": 373,
    "5": {
     "n": 144,
     "pct_aciertos": 45,
@@ -428,7 +428,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 278,
+   "casos": 280,
    "5": {
     "n": 121,
     "pct_aciertos": 47,
@@ -447,7 +447,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 115,
+   "casos": 116,
    "5": {
     "n": 47,
     "pct_aciertos": 51,
@@ -498,7 +498,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 133,
+   "casos": 135,
    "5": {
     "n": 54,
     "pct_aciertos": 56,
@@ -554,7 +554,7 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 176,
+   "casos": 177,
    "5": {
     "n": 62,
     "pct_aciertos": 65,
@@ -586,7 +586,7 @@
   },
   {
    "grupo": "🔴 En contra (RSI y MACD semanal bajistas)",
-   "casos": 86,
+   "casos": 87,
    "5": {
     "n": 39,
     "pct_aciertos": 49,
@@ -602,6 +602,43 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "TX",
+   "fecha": "2026-10-09",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 56.47,
+   "radar_score": 63.2,
+   "regimen_score": 68,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AMAT",
+   "fecha": "2026-10-09",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 509.57,
+   "radar_score": 64.7,
+   "regimen_score": 68,
+   "cuidados": [
+    "sma50_bajando",
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "contra",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "MRK",
    "fecha": "2026-10-08",
@@ -5972,52 +6009,6 @@
    "r5": -4.66,
    "spy5": 1.91,
    "vs_spy5": -6.57,
-   "acierto5": false,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "KMB",
-   "fecha": "2026-09-30",
-   "señal": "Confluencia Alcista",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 99.62,
-   "radar_score": 35.7,
-   "regimen_score": 61,
-   "cuidados": [
-    "sma50_bajando",
-    "bajo_sma200",
-    "techo_avwap"
-   ],
-   "tendencia_semanal": "contra",
-   "ruedas_transcurridas": 6,
-   "r5": -3.15,
-   "spy5": 1.91,
-   "vs_spy5": -5.06,
-   "acierto5": false,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "IREN",
-   "fecha": "2026-09-30",
-   "señal": "Sacudón, sin definición clara",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 41.36,
-   "radar_score": 57.4,
-   "regimen_score": 62,
-   "cuidados": [
-    "bajo_sma200"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 6,
-   "r5": -6.46,
-   "spy5": 1.91,
-   "vs_spy5": -8.37,
    "acierto5": false,
    "stop5": false,
    "r10": null,
