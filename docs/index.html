@@ -697,6 +697,13 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Top 30: ¿los que entran le ganan al SPY?</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cada vez que un ticker ENTRA al Top 30 (de Fuerza Relativa o de Radar Score) se anota su precio: el cierre anterior a la foto en que apareció. Después se mide cuánto rindió hasta el último cierre contra el SPY en el mismo período.
+                Cuenta a todos los que entraron, también a los que ya salieron, para no mirar solo a los que quedaron bien parados. "Exceso" = lo que rindió menos lo que rindió el SPY. Mientras haya pocos casos, no se puede sacar ninguna conclusión; recién con varias semanas empieza a decir algo.</p>
+            <div id="aud-top30ret" class="space-y-3"><div class="text-gray-500 font-mono text-xs">Todavía no hay ingresos medidos.</div></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Evolución mes a mes</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">Todas las señales juntas, agrupadas por el mes en que se dispararon. Sirve para ver si la app acierta de forma sostenida o solo tuvo algunas semanas buenas. "A favor" cuenta como ganancia que una señal bajista haya bajado.</p>
             <div id="aud-meses" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
@@ -4020,6 +4027,38 @@
             if (h) cont.innerHTML = h + `<div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
         }
 
+
+        const TOP30_RET_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/top30_retorno.json';
+        async function fetchAuditoriaTop30Retorno() {
+            const cont = document.getElementById('aud-top30ret');
+            if (!cont) return;
+            let a;
+            try {
+                const resp = await fetch(`${TOP30_RET_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) return;
+                a = await resp.json();
+            } catch (e) { return; }
+            const pc = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%');
+            const cl = (v) => (v == null ? 'text-gray-500' : (v >= 0 ? 'text-pos' : 'text-neg'));
+            let h = '';
+            for (const [k, L] of Object.entries(a.listas ?? {})) {
+                const r = L.resumen;
+                const filas = (L.ingresos ?? []).filter(f => f.sesiones >= 1).slice(0, 15);
+                h += `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] space-y-1">
+                    <div class="text-white font-bold">Top 30 por ${L.nombre}</div>
+                    ${r ? `
+                    <div class="text-gray-300">Ingresos medidos: <span class="text-white font-bold">${r.n}</span>${r.n < 30 ? ' <span class="text-gray-500">(muy pocos para sacar conclusiones)</span>' : ''}</div>
+                    <div class="text-gray-300">Rendimiento medio desde que entraron: <span class="${cl(r.ret_medio_pct)} font-bold">${pc(r.ret_medio_pct)}</span> · SPY en el mismo período: <span class="text-white">${pc(r.spy_medio_pct)}</span></div>
+                    <div class="text-gray-300">Le ganaron al SPY: <span class="text-white font-bold">${r.le_ganaron_spy} de ${r.n} (${r.pct_le_ganaron_spy}%)</span> · exceso mediano: <span class="${cl(r.exceso_mediano_pct)}">${pc(r.exceso_mediano_pct)}</span></div>
+                    <div class="text-gray-500">De los que entraron, ${r.siguen_en_top} siguen hoy en el Top 30.</div>` : '<div class="text-gray-500">Todavía no pasó ninguna rueda desde un ingreso.</div>'}
+                    ${filas.length ? `<div class="overflow-x-auto pt-2"><table class="w-full text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">Ticker</th><th class="font-normal">Entró</th><th class="font-normal">Ruedas</th><th class="font-normal">Rinde</th><th class="font-normal">SPY</th><th class="font-normal">Exceso</th><th class="font-normal">¿Sigue?</th></tr></thead><tbody>
+                        ${filas.map(f => `<tr class="border-t border-gray-800 text-center"><td class="text-left font-bold text-white">${f.ticker}</td><td class="text-gray-400">${f.fecha_foto.slice(5)}</td><td class="text-gray-400">${f.sesiones}</td><td class="${cl(f.ret_pct)}">${pc(f.ret_pct)}</td><td class="text-gray-400">${pc(f.spy_pct)}</td><td class="${cl(f.exceso_pct)} font-bold">${pc(f.exceso_pct)}</td><td class="${f.sigue_en_top ? 'text-pos' : 'text-gray-600'}">${f.sigue_en_top ? 'sí' : 'no'}</td></tr>`).join('')}
+                    </tbody></table></div><div class="text-[9px] text-gray-600">Últimos ${filas.length} ingresos. Último cierre medido: ${a.fecha_ultimo_cierre}.</div>` : ''}
+                </div>`;
+            }
+            if (h) cont.innerHTML = h + `<div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
@@ -4027,7 +4066,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
-            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); }
+            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); }
             if (name === 'alertas') fetchPreapertura();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             if (name === 'ideas') { cargarIdeasExternas(); if (!nivelesSeg) cargarNivelesSeg(); }
