@@ -1,0 +1,46 @@
+name: Antes de la apertura
+
+# Aparte del radar (no toca el ranking ni la Auditoria). Corre ~10:10 hora argentina, antes de que
+# abra Wall Street (lunes a viernes), y se puede disparar a mano desde Actions -> Run workflow.
+on:
+  schedule:
+    - cron: '10 13 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      enviar:
+        description: 'Mandar el aviso por Telegram (1 = si, 0 = no)'
+        default: '1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: preapertura
+  cancel-in-progress: false
+
+jobs:
+  preapertura:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Correr
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PREAPERTURA_ENVIAR: ${{ github.event.inputs.enviar || '1' }}
+        run: python scripts/preapertura.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          for f in data/preapertura.json data/log_preapertura.jsonl data/auditoria_preapertura.json data/balances_cache.json; do
+            [ -f "$f" ] && git add "$f"
+          done
+          git diff --staged --quiet || git commit -m "Antes de la apertura [skip ci]"
+          git pull --rebase
+          git push
