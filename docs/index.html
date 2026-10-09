@@ -488,6 +488,28 @@
                 </div>
             </div>
         </section>
+
+        <!-- Cuadrante de ETFs contra el SPY (9/10, estilo Warren Bife) -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de ETFs contra el SPY</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Otra forma de ver la rotación, más parecida a la de Warren. Acá cada ETF se mide <span class="text-gray-300">directamente contra el SPY</span> y no contra el ranking de todo el universo.
+                <span class="text-white">Eje horizontal (fuerza):</span> cuánto está hoy el ETF por encima o por debajo de su propio promedio de 10 semanas contra el SPY, en %. A la derecha del cero le va mejor que de costumbre al SPY.
+                <span class="text-white">Eje vertical (aceleración):</span> cuánto cambió esa fuerza en las últimas 4 semanas, en %. Arriba del cero está mejorando, abajo empeorando.
+                Los cuatro cuadrantes se leen igual que en el otro gráfico: <span class="text-pos">Líder</span> (fuerte y mejorando), <span class="text-blueAlert">Debilitándose</span> (fuerte pero empeorando),
+                <span class="text-neg">Rezagado</span> (débil y empeorando) y <span class="text-accent">Mejorando</span> (débil pero mejorando). La estela muestra las últimas 16 semanas. Con ▶ se reproduce semana a semana.
+                Es una forma de mirar dónde está el dinero, no una señal de compra ni de venta.
+            </div>
+            <div class="mb-3 flex flex-wrap items-center gap-2">
+                <input id="rse-buscador" type="text" placeholder="Uno o varios ETFs (ej. XLF, XLK, ILF)..."
+                    class="w-full sm:w-64 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
+                    oninput="rseDibujar()">
+                <button onclick="document.getElementById('rse-buscador').value='';rseDibujar()" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-500 hover:text-white">Limpiar</button>
+            </div>
+            <div id="rse-chart" class="bg-surface p-3 rounded-sm border border-surface"><div class="font-mono text-xs text-gray-500">Cargando...</div></div>
+            <div id="rse-lectura"></div>
+        </section>
+
         <!-- 4d. Buscador por sector / subcategoría / tema (pedido de Victoria, 6/10).
              Solo lee datos que ya están en el ranking: no toca ninguna señal. -->
         <section>
@@ -4068,6 +4090,7 @@
             if (name === 'historial' && historialData === null) fetchHistorialData();
             if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); }
             if (name === 'alertas') fetchPreapertura();
+            if (name === 'universo' && !rseData) fetchRSE();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             if (name === 'ideas') { cargarIdeasExternas(); if (!nivelesSeg) cargarNivelesSeg(); }
             window.scrollTo({ top: 0, behavior: 'instant' });
@@ -6594,6 +6617,161 @@
             }
             renderEarningsSemana();
         }
+
+        // =====================================================================
+        // CUADRANTE DE ETFs CONTRA EL SPY (9/10/2026, estilo Warren Bife) -- aditivo:
+        // lee data/rs_spy_etfs.json (scripts/rs_spy_etfs.py). No toca el otro cuadrante.
+        // =====================================================================
+        const RSE_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_spy_etfs.json';
+        const RSE_COL = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
+        const RSE_W = 440, RSE_H = 420, RSE_PL = 46, RSE_PR = 14, RSE_PT = 14, RSE_PB = 36;
+        let rseData = null, rseIdx = null, rseTimer = null, rsePick = null;
+
+        async function fetchRSE() {
+            const cont = document.getElementById('rse-chart');
+            if (!cont) return;
+            try {
+                const r = await fetch(`${RSE_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!r.ok) throw new Error('http ' + r.status);
+                rseData = await r.json();
+            } catch (e) {
+                rseData = null;
+                cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Todavía no hay datos de este cuadrante. Se generan con el workflow "Cuadrante de ETFs contra el SPY".</div>';
+                return;
+            }
+            rseDibujar();
+        }
+        function rseCuadrante(x, y) { return x >= 0 ? (y >= 0 ? 'Líder' : 'Debilitándose') : (y >= 0 ? 'Mejorando' : 'Rezagado'); }
+        function rseSeleccion() {
+            const txt = (document.getElementById('rse-buscador')?.value ?? '').trim().toUpperCase();
+            if (!txt || !rseData) return [];
+            return [...new Set(txt.split(/[\s,;]+/).filter(Boolean))].filter(t => rseData.etfs[t]).slice(0, 15);
+        }
+        function rseToggleAnim() {
+            if (rseTimer) { clearInterval(rseTimer); rseTimer = null; rseIdx = null; rseDibujar(); return; }
+            rseIdx = 0; rseDibujar();
+            rseTimer = setInterval(() => {
+                const L = Math.max(...Object.values(rseData.etfs).map(p => p.length));
+                rseIdx += 1;
+                if (rseIdx >= L - 1) { clearInterval(rseTimer); rseTimer = null; rseIdx = null; }
+                rseDibujar();
+            }, 600);
+        }
+        function rseDibujar() {
+            const cont = document.getElementById('rse-chart');
+            if (!cont || !rseData) return;
+            const etfs = rseData.etfs, tks = Object.keys(etfs);
+            if (!tks.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
+            const sel = rseSeleccion(), haySel = sel.length > 0;
+            const L = Math.max(...tks.map(t => etfs[t].length));
+            const k = rseIdx === null ? L : rseIdx + 1;
+            const q98 = (arr) => { const a = arr.map(Math.abs).sort((p, q) => p - q); return a[Math.min(a.length - 1, Math.floor(a.length * 0.98))] || 1; };
+            const todosX = [], todosY = [];
+            for (const t of tks) for (const p of etfs[t]) { todosX.push(p.x); todosY.push(p.y); }
+            const xm = Math.max(1, q98(todosX) * 1.1), ym = Math.max(1, q98(todosY) * 1.1);
+            const pw = RSE_W - RSE_PL - RSE_PR, ph = RSE_H - RSE_PT - RSE_PB;
+            const cl = (v, m) => Math.max(-m, Math.min(m, v));
+            const sx = (x) => RSE_PL + (cl(x, xm) + xm) / (2 * xm) * pw;
+            const sy = (y) => RSE_PT + (1 - (cl(y, ym) + ym) / (2 * ym)) * ph;
+            const fmt = (v) => (Math.abs(v) >= 10 ? v.toFixed(0) : v.toFixed(1));
+            let s = `<svg id="rse-svg" viewBox="0 0 ${RSE_W} ${RSE_H}" class="w-full" style="touch-action:manipulation">`;
+            const x0 = sx(0), y0 = sy(0);
+            s += `<rect x="${x0}" y="${RSE_PT}" width="${RSE_PL + pw - x0}" height="${y0 - RSE_PT}" fill="${RSE_COL['Líder']}" opacity="0.07"/>`;
+            s += `<rect x="${x0}" y="${y0}" width="${RSE_PL + pw - x0}" height="${RSE_PT + ph - y0}" fill="${RSE_COL['Debilitándose']}" opacity="0.07"/>`;
+            s += `<rect x="${RSE_PL}" y="${RSE_PT}" width="${x0 - RSE_PL}" height="${y0 - RSE_PT}" fill="${RSE_COL['Mejorando']}" opacity="0.07"/>`;
+            s += `<rect x="${RSE_PL}" y="${y0}" width="${x0 - RSE_PL}" height="${RSE_PT + ph - y0}" fill="${RSE_COL['Rezagado']}" opacity="0.07"/>`;
+            s += `<line x1="${x0}" y1="${RSE_PT}" x2="${x0}" y2="${RSE_PT + ph}" stroke="#4b5563" stroke-width="1"/><line x1="${RSE_PL}" y1="${y0}" x2="${RSE_PL + pw}" y2="${y0}" stroke="#4b5563" stroke-width="1"/>`;
+            for (const f of [-1, -0.5, 0.5, 1]) {
+                s += `<text x="${sx(f * xm)}" y="${RSE_H - RSE_PB + 13}" text-anchor="middle" font-size="9" fill="#6b7280" font-family="monospace">${fmt(f * xm)}</text>`;
+                s += `<text x="${RSE_PL - 5}" y="${sy(f * ym) + 3}" text-anchor="end" font-size="9" fill="#6b7280" font-family="monospace">${fmt(f * ym)}</text>`;
+            }
+            s += `<text x="${RSE_PL + 4}" y="${RSE_PT + 11}" font-size="9" fill="${RSE_COL['Mejorando']}" font-family="monospace">MEJORANDO</text>`;
+            s += `<text x="${RSE_PL + pw - 4}" y="${RSE_PT + 11}" text-anchor="end" font-size="9" fill="${RSE_COL['Líder']}" font-family="monospace">LÍDER</text>`;
+            s += `<text x="${RSE_PL + 4}" y="${RSE_PT + ph - 5}" font-size="9" fill="${RSE_COL['Rezagado']}" font-family="monospace">REZAGADO</text>`;
+            s += `<text x="${RSE_PL + pw - 4}" y="${RSE_PT + ph - 5}" text-anchor="end" font-size="9" fill="${RSE_COL['Debilitándose']}" font-family="monospace">DEBILITÁNDOSE</text>`;
+            s += `<text x="${RSE_PL + pw / 2}" y="${RSE_H - 4}" text-anchor="middle" font-size="9" fill="#9ca3af" font-family="monospace">Fuerza vs SPY (%): ← más débil · más fuerte →</text>`;
+            s += `<text transform="rotate(-90 11 ${RSE_PT + ph / 2})" x="11" y="${RSE_PT + ph / 2}" text-anchor="middle" font-size="9" fill="#9ca3af" font-family="monospace">Aceleración (%)</text>`;
+            const info = [];
+            for (const t of tks) {
+                const pts = etfs[t].slice(0, Math.min(k, etfs[t].length));
+                const ult = pts[pts.length - 1];
+                const cuad = rseCuadrante(ult.x, ult.y);
+                const esSel = sel.includes(t) || rsePick === t;
+                const dim = haySel && !esSel;
+                info.push({ t, ult, cuad, esSel, cx: sx(ult.x), cy: sy(ult.y), dist: Math.abs(ult.x) / xm + Math.abs(ult.y) / ym });
+                const traza = pts.map(p => `${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)}`).join(' ');
+                s += `<polyline points="${traza}" fill="none" stroke="${RSE_COL[cuad]}" stroke-width="${esSel ? 2 : 1}" opacity="${dim ? 0.08 : (esSel || !haySel ? (esSel ? 0.9 : 0.16) : 0.1)}" stroke-linejoin="round"/>`;
+            }
+            const colocadas = [];
+            const aEtiquetar = new Set(info.filter(i => i.esSel).map(i => i.t));
+            if (!haySel) info.slice().sort((a, b) => b.dist - a.dist).slice(0, 10).forEach(i => aEtiquetar.add(i.t));
+            for (const i of info.sort((a, b) => a.esSel - b.esSel)) {
+                const dim = haySel && !i.esSel;
+                s += `<circle cx="${i.cx.toFixed(1)}" cy="${i.cy.toFixed(1)}" r="${i.esSel ? 5.5 : 4}" fill="${RSE_COL[i.cuad]}" opacity="${dim ? 0.3 : 0.95}" stroke="${i.esSel ? '#fff' : '#0B0E14'}" stroke-width="${i.esSel ? 1.5 : 1}"/>`;
+            }
+            for (const i of info) {
+                if (!aEtiquetar.has(i.t)) continue;
+                if (!i.esSel && colocadas.some(c => Math.abs(c[0] - i.cx) < 26 && Math.abs(c[1] - i.cy) < 10)) continue;
+                colocadas.push([i.cx, i.cy]);
+                const izq = i.cx > RSE_PL + pw - 40;
+                s += `<text x="${izq ? i.cx - 8 : i.cx + 8}" y="${i.cy - 6}" text-anchor="${izq ? 'end' : 'start'}" font-size="10" font-weight="bold" fill="#e5e7eb" font-family="monospace">${i.t}</text>`;
+            }
+            s += `</svg>`;
+            const fechaK = (() => { const p = etfs[tks[0]]; return p[Math.min(k, p.length) - 1]?.fecha ?? ''; })();
+            const unico = rsePick ?? (sel.length === 1 ? sel[0] : null);
+            let detalle = 'Tocá un punto para ver su detalle.';
+            if (unico && etfs[unico]) {
+                const pts = etfs[unico], u = pts[Math.min(k, pts.length) - 1], c = rseCuadrante(u.x, u.y);
+                const nm = (typeof nombreEmpresa === 'function' ? nombreEmpresa(unico) : '') || '';
+                detalle = `<span style="color:${RSE_COL[c]}" class="font-bold">${c}</span> · <span class="text-white font-bold">${unico}</span> ${nm} · Fuerza vs SPY: <span class="text-white">${u.x >= 0 ? '+' : ''}${u.x.toFixed(1)}%</span> · Aceleración: <span class="text-white">${u.y >= 0 ? '+' : ''}${u.y.toFixed(1)}%</span>`;
+            }
+            const leyenda = Object.entries(RSE_COL).map(([n, c]) => `<span class="mr-3"><span style="color:${c}">●</span> ${n}</span>`).join('');
+            cont.innerHTML = `${s}
+                <div class="font-mono text-[11px] text-gray-400 mt-2 min-h-[1.5rem]">${detalle}</div>
+                <div class="font-mono text-[10px] text-gray-500 mt-1">${leyenda}</div>
+                <div class="flex items-center gap-3 mt-2 font-mono text-[10px] text-gray-500">
+                    <button onclick="rseToggleAnim()" class="px-2.5 py-1.5 rounded-sm border border-surface uppercase text-gray-300 hover:text-white">${rseTimer ? '⏸ Pausar' : '▶ Reproducir'}</button>
+                    <span>${rseIdx === null ? 'Hoy' : `Semana ${k}/${L}`} · cierre al ${fechaK}</span>
+                </div>`;
+            const svg = document.getElementById('rse-svg');
+            if (svg) svg.addEventListener('click', (ev) => {
+                const r = svg.getBoundingClientRect(), esc = RSE_W / r.width;
+                const px = (ev.clientX - r.left) * esc, py = (ev.clientY - r.top) * esc;
+                let mejor = null, md = 18;
+                for (const i of info) { const d = Math.hypot(i.cx - px, i.cy - py); if (d < md) { md = d; mejor = i.t; } }
+                rsePick = mejor; rseDibujar();
+            });
+            rseLectura(sel);
+        }
+        function rseLectura(sel) {
+            const cont = document.getElementById('rse-lectura');
+            if (!cont || !rseData) return;
+            const etfs = rseData.etfs;
+            const lista = (sel && sel.length ? sel : Object.keys(etfs));
+            const tag = (c) => `<span style="color:${RSE_COL[c]}" class="font-bold">${c}</span>`;
+            const cambios = [], largos = [];
+            for (const t of lista) {
+                const p = etfs[t]; if (!p || p.length < 2) continue;
+                const u = p[p.length - 1], a = p[p.length - 2];
+                const cu = rseCuadrante(u.x, u.y), ca = rseCuadrante(a.x, a.y);
+                let sem = 1; for (let i = p.length - 2; i >= 0 && rseCuadrante(p[i].x, p[i].y) === cu; i--) sem++;
+                if (cu !== ca) cambios.push({ t, ca, cu, x: u.x });
+                else if (sem >= 5) largos.push({ t, cu, sem });
+            }
+            const pri = { 'Líder': 0, 'Mejorando': 1, 'Debilitándose': 2, 'Rezagado': 3 };
+            cambios.sort((a, b) => pri[a.cu] - pri[b.cu]);
+            const frase = (c) => {
+                const e = c.cu === 'Líder' ? 'pasó a liderar contra el SPY.' : c.cu === 'Mejorando' ? 'todavía rinde menos que el SPY, pero ya acorta la brecha.' : c.cu === 'Debilitándose' ? 'sigue por encima del SPY, pero perdió impulso.' : 'sigue perdiendo contra el SPY.';
+                return `<div class="py-0.5"><span class="font-bold text-white cursor-pointer hover:text-accent" onclick="document.getElementById('rse-buscador').value='${c.t}';rsePick=null;rseDibujar()">${c.t}</span> ${tag(c.ca)} → ${tag(c.cu)} <span class="text-gray-500">${e}</span></div>`;
+            };
+            largos.sort((a, b) => b.sem - a.sem);
+            cont.innerHTML = `<div class="bg-surface border border-surface rounded-sm p-3 mt-3 font-mono text-[11px] leading-relaxed">
+                <div class="text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Lectura — cambios de cuadrante en la última semana</div>
+                ${cambios.length ? cambios.slice(0, 12).map(frase).join('') : '<div class="text-gray-500">Ningún ETF de esta vista cambió de cuadrante esta semana.</div>'}
+                ${largos.length ? `<div class="text-gray-500 mt-2">Más tiempo en el mismo cuadrante: ${largos.slice(0, 6).map(q => `<span class="text-gray-300">${q.t}</span> ${tag(q.cu)} (${q.sem} sem)`).join(' · ')}</div>` : ''}
+                <div class="text-gray-600 text-[10px] mt-2">Se calcula con cierres semanales de cada ETF contra el SPY. Describe lo que pasó; no anticipa lo que va a pasar.</div></div>`;
+        }
+        fetchRSE();
     </script>
 </body>
 </html>
