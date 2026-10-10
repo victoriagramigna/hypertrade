@@ -268,6 +268,7 @@
         <section class="mb-6">
             <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
                 <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest">🎯 Confluencia Alcista <span id="confluencia-count" class="text-gray-500 normal-case"></span></h2>
+                <div id="confluencia-modo" class="flex gap-1 font-mono text-[10px] uppercase"></div>
             </div>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
                 Un filtro aparte, no una alerta más: junta tickers con <span class="text-white">3 o más</span> de estas 4 señales técnicas
@@ -278,6 +279,7 @@
                 <span class="cursor-help border-b border-dashed border-gray-600" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span> --
                 <span class="text-white">a propósito sin usar el Radar Score</span> para decidir si aparece o no: la idea es que varias razones
                 distintas apuntando para el mismo lado valen más que un solo número compuesto. El Radar Score de cada uno se muestra igual, solo de referencia.
+                <span class="text-white">Matriz:</span> la misma lista en filas, un punto por cada señal encendida, para comparar de un vistazo quién junta cuáles. "FR" es la Fuerza Relativa (0-100) y "Hace" cuánto pasó desde que se encendió la señal. Tocá un encabezado para ordenar y una fila para abrir la ficha. Con <span class="text-white">Tarjetas</span> volvés a la vista de siempre.
             </div>
             <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
@@ -1663,9 +1665,15 @@
         // 'confluencia_alcista'), pero mostrado en su propio panel arriba de todo,
         // ordenado por cantidad de chips y, dentro de eso, por más reciente --
         // sin ordenar nunca por Radar Score (ese dato se muestra solo de referencia).
+        let confModo = 'matriz', confOrden = 'n', confData = null;
+        function confCambiar(m) { confModo = m; if (confData) renderConfluencia(confData); }
+        function confOrdenar(k) { confOrden = k; if (confData) renderConfluencia(confData); }
         function renderConfluencia(data) {
+            confData = data;
             const container = document.getElementById('confluencia-container');
             const countEl = document.getElementById('confluencia-count');
+            const modoEl = document.getElementById('confluencia-modo');
+            if (modoEl) modoEl.innerHTML = [['matriz', 'Matriz'], ['tarjetas', 'Tarjetas']].map(([m, t]) => `<button onclick="confCambiar('${m}')" class="px-2.5 py-1 rounded-sm border ${confModo === m ? 'bg-blueAlert text-white border-blueAlert font-bold' : 'border-surface text-gray-400 hover:text-white'}">${t}</button>`).join('');
             const todas = (data?.alertas ?? []).filter(a => a?.Tipo === 'confluencia_alcista');
 
             countEl.textContent = `(${todas.length})`;
@@ -1689,6 +1697,38 @@
                 'ATR COMPRIMIDO': 'El rango de movimiento reciente se comprimió respecto al de más largo plazo -- volatilidad baja.',
             };
 
+            if (confModo === 'matriz') {
+                container.className = 'max-h-[24rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar';
+                const COLS = ['AVWAP SOPORTE', 'CRUCE 52W', 'TENDENCIA+', 'ATR COMPRIMIDO'];
+                const CORTO = { 'AVWAP SOPORTE': 'AVWAP', 'CRUCE 52W': '52W', 'TENDENCIA+': 'Tend.+', 'ATR COMPRIMIDO': 'ATR' };
+                const rk = new Map((data?.ranking ?? []).map(x => [x.Ticker, x]));
+                const ahora = Date.now();
+                const filas = ordenadas.map(a => {
+                    const fe = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : null;
+                    return { a, n: (a?.Señales ?? []).length, radar: a?.Radar_Score ?? null, fr: rk.get(a?.Ticker)?.RS_Score ?? null, hace: fe ? (ahora - fe) / 3600000 : null };
+                });
+                const cmp = { n: (p, q) => q.n - p.n || (q.radar ?? 0) - (p.radar ?? 0), radar: (p, q) => (q.radar ?? -1) - (p.radar ?? -1), fr: (p, q) => (q.fr ?? -1) - (p.fr ?? -1), hace: (p, q) => (p.hace ?? 1e9) - (q.hace ?? 1e9) };
+                filas.sort(cmp[confOrden] ?? cmp.n);
+                const th = (k, t, tip) => `<th class="px-1.5 py-1 text-[9px] uppercase font-normal cursor-pointer ${confOrden === k ? 'text-blueAlert' : 'text-gray-500'} hover:text-white" title="${tip}" onclick="confOrdenar('${k}')">${t}${confOrden === k ? ' ▾' : ''}</th>`;
+                const horas = (v) => v === null ? '—' : v < 1 ? 'menos de 1 h' : v < 48 ? Math.round(v) + ' h' : Math.round(v / 24) + ' d';
+                container.innerHTML = `<table class="w-full font-mono text-xs"><thead><tr>
+                    <th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Ticker</th>
+                    ${COLS.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${tooltipsChip[c]}">${CORTO[c]}</th>`).join('')}
+                    ${th('n', 'Señales', 'Cuántas de las 4 señales están encendidas')}${th('radar', 'Radar', 'Radar Score (solo de referencia, no decide si aparece)')}${th('fr', 'FR', 'Fuerza Relativa (0-100)')}${th('hace', 'Hace', 'Tiempo desde que se encendió la señal')}
+                    <th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Sector</th><th class="px-1.5 py-1 text-right text-[9px] uppercase text-gray-500 font-normal">Precio</th></tr></thead><tbody>
+                    ${filas.map(o => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer" onclick="abrirFicha('${o.a?.Ticker}')">
+                        <td class="px-1.5 py-1 text-left whitespace-nowrap font-bold text-white">${logoInline(o.a?.Ticker, 14)}${o.a?.Ticker ?? '—'}</td>
+                        ${COLS.map(c => `<td class="px-1.5 py-1 text-center">${(o.a?.Señales ?? []).includes(c) ? '<span class="inline-block w-2 h-2 rounded-full bg-blueAlert"></span>' : '<span class="inline-block w-1 h-1 rounded-full bg-gray-700"></span>'}</td>`).join('')}
+                        <td class="px-1.5 py-1 text-center text-blueAlert font-bold">${o.n}/4</td>
+                        <td class="px-1.5 py-1 text-center text-gray-300">${o.radar != null ? o.radar.toFixed(0) : '—'}</td>
+                        <td class="px-1.5 py-1 text-center text-gray-300">${o.fr != null ? o.fr.toFixed(0) : '—'}</td>
+                        <td class="px-1.5 py-1 text-center text-gray-500 whitespace-nowrap">${horas(o.hace)}</td>
+                        <td class="px-1.5 py-1 text-left text-[10px] uppercase text-gray-500 whitespace-nowrap">${o.a?.Sector ?? '—'}</td>
+                        <td class="px-1.5 py-1 text-right text-gray-400">${o.a?.Precio != null ? '$' + o.a.Precio : ''}</td></tr>`).join('')}
+                    </tbody></table>`;
+                return;
+            }
+            container.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar';
             container.innerHTML = ordenadas.map(a => {
                 const chips = (a?.Señales ?? []).map(nombre =>
                     `<span class="signal-chip text-blueAlert border-blueAlert cursor-help" title="${tooltipsChip[nombre] ?? ''}">${nombre}</span>`
