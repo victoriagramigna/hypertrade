@@ -533,6 +533,21 @@
             <div id="buscador-subclase-resultado" class="bg-surface p-3 rounded-sm border border-surface font-mono text-xs"></div>
         </section>
         <!-- Sectores y subsectores (9/10, inspirado en Warren Bife) -->
+        <!-- Sectores contra el SPY (10/10): vista de conjunto, solo lee el ranking que ya existe -->
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Sectores contra el SPY</h2>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Todas las acciones del universo agrupadas por sector (sin ETFs), para ver qué sectores le ganan o le pierden al SPY en conjunto y no ticker por ticker.
+                <span class="text-white">vs SPY 1m / 3m / 6m:</span> la mediana de rendimiento de las acciones del sector menos lo que rindió el SPY en ese período, en puntos.
+                <span class="text-white">Le ganan 3m:</span> qué % de las acciones del sector rindió más que el SPY en 3 meses.
+                <span class="text-white">Sobre SMA50:</span> % de acciones por encima de su media de 50 ruedas (amplitud: si el sector sube por muchas o por pocas).
+                <span class="text-white">Cambio FR sem.:</span> mediana de cuánto cambió su Fuerza Relativa en la semana (mide aceleración).
+                <span class="text-white">Lectura:</span> <span class="text-pos">Fuerte y acelera</span> (gana a 3m y su FR sube), <span class="text-blueAlert">Fuerte y frena</span> (o \"Fuerte a 3m, mes flojo\": gana a 3 meses pero el último mes rindió más de 3 puntos menos que el SPY), <span class="text-accent">Débil pero acelera</span> (pierde a 3m pero su FR sube: es lo más parecido a un posible "batacazo", sin garantías) y <span class="text-neg">Débil y sigue cayendo</span>.
+                Tocá un encabezado para ordenar y una fila para abrir el sector. Con menos de 8 acciones el dato es poco confiable (se marca). Describe lo que pasó; no anticipa nada ni es una recomendación.
+            </div>
+            <div id="sspy-cont" class="bg-surface p-3 rounded-sm border border-surface overflow-x-auto"></div>
+        </section>
+
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Sectores y subsectores</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
@@ -6659,8 +6674,56 @@
             if (b) b.innerHTML = cuerpo(data?.top30_radar_nuevos_hoy ?? [], x => _num(x.Radar_Score) === null ? '—' : x.Radar_Score.toFixed(0), 'Radar');
         }
 
+        // ---------- Sectores contra el SPY (10/10) ----------
+        let sspyOrden = 'vs3', sspyData = null;
+        function sspyOrdenar(k) { sspyOrden = k; if (sspyData) renderSectoresVsSPY(sspyData); }
+        function renderSectoresVsSPY(data) {
+            sspyData = data;
+            const cont = document.getElementById('sspy-cont');
+            if (!cont) return;
+            const r = data?.ranking ?? [];
+            const spy = r.find(x => x.Ticker === 'SPY');
+            if (!spy || !r.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
+            const med = (a) => { const v = a.filter(x => typeof x === 'number' && isFinite(x)).sort((p, q) => p - q); return v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : null; };
+            const grupos = {};
+            for (const x of r) { if (x.Sector === 'ETF' || x.Ticker === 'SPY') continue; (grupos[x.Sector ?? 'Otros'] = grupos[x.Sector ?? 'Otros'] ?? []).push(x); }
+            const filas = Object.entries(grupos).map(([s, l]) => {
+                const dif = (k) => { const m = med(l.map(x => x[k])); return m === null || typeof spy[k] !== 'number' ? null : m - spy[k]; };
+                const gana = (k) => { const v = l.filter(x => typeof x[k] === 'number'); return v.length && typeof spy[k] === 'number' ? 100 * v.filter(x => x[k] > spy[k]).length / v.length : null; };
+                const sma = l.length ? 100 * l.filter(x => x.Sobre_SMA50 === true).length / l.length : null;
+                const dRS = med(l.map(x => x.Delta_RS_semana));
+                const vs3 = dif('Ret_3m_%');
+                let lect = '—', col = 'text-gray-500';
+                if (vs3 !== null && dRS !== null) {
+                    const v1 = dif('Ret_1m_%');
+                    if (vs3 >= 0 && v1 !== null && v1 < -3) { lect = 'Fuerte a 3m, mes flojo'; col = 'text-blueAlert'; }
+                    else if (vs3 >= 0 && dRS >= 0) { lect = 'Fuerte y acelera'; col = 'text-pos'; }
+                    else if (vs3 >= 0) { lect = 'Fuerte y frena'; col = 'text-blueAlert'; }
+                    else if (dRS >= 0) { lect = 'Débil pero acelera'; col = 'text-accent'; }
+                    else { lect = 'Débil y sigue cayendo'; col = 'text-neg'; }
+                }
+                return { s, n: l.length, vs1: dif('Ret_1m_%'), vs3, vs6: dif('Ret_6m_%'), gana3: gana('Ret_3m_%'), sma, fr: med(l.map(x => x.RS_Score)), dRS, lect, col };
+            });
+            const claves = { vs1: 'vs1', vs3: 'vs3', vs6: 'vs6', gana3: 'gana3', sma: 'sma', fr: 'fr', dRS: 'dRS', n: 'n' };
+            filas.sort((a, b) => (b[claves[sspyOrden]] ?? -1e9) - (a[claves[sspyOrden]] ?? -1e9));
+            const pp = (v) => v === null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1);
+            const cc = (v) => v === null ? 'text-gray-500' : (v >= 0 ? 'text-pos' : 'text-neg');
+            const th = (k, t, tip) => `<th class="font-normal px-1.5 py-1 cursor-pointer ${sspyOrden === k ? 'text-accent' : 'text-gray-500'} hover:text-white" title="${tip}" onclick="sspyOrdenar('${k}')">${t}${sspyOrden === k ? ' ▾' : ''}</th>`;
+            cont.innerHTML = `<table class="w-full font-mono text-[11px] whitespace-nowrap"><thead><tr class="text-[9px] uppercase">
+                <th class="text-left font-normal px-1.5 py-1 text-gray-500">Sector</th>${th('n', 'Casos', 'Cantidad de acciones del sector')}${th('vs1', 'vs SPY 1m', 'Mediana del sector menos SPY, 1 mes')}${th('vs3', 'vs SPY 3m', 'Mediana del sector menos SPY, 3 meses')}${th('vs6', 'vs SPY 6m', 'Mediana del sector menos SPY, 6 meses')}${th('gana3', 'Le ganan 3m', '% de acciones que rindieron más que el SPY en 3 meses')}${th('sma', 'Sobre SMA50', '% de acciones sobre su media de 50 ruedas')}${th('fr', 'FR', 'Fuerza Relativa mediana (0-100)')}${th('dRS', 'Cambio FR sem.', 'Cambio semanal mediano de la Fuerza Relativa')}<th class="text-left font-normal px-1.5 py-1 text-gray-500">Lectura</th></tr></thead><tbody>
+                ${filas.map(f => `<tr class="border-t border-gray-800 text-center cursor-pointer hover:bg-base" onclick="ssElegir('${f.s.replace(/'/g, "\\'")}'); document.getElementById('ss-cont')?.scrollIntoView({behavior:'smooth', block:'start'})">
+                    <td class="text-left px-1.5 py-1 text-white font-bold">${f.s}</td>
+                    <td class="${f.n < 8 ? 'text-gray-600' : 'text-gray-400'}" title="${f.n < 8 ? 'Pocos casos: dato poco confiable' : ''}">${f.n}${f.n < 8 ? '*' : ''}</td>
+                    <td class="${cc(f.vs1)}">${pp(f.vs1)}</td><td class="${cc(f.vs3)} font-bold">${pp(f.vs3)}</td><td class="${cc(f.vs6)}">${pp(f.vs6)}</td>
+                    <td class="text-gray-300">${f.gana3 === null ? '—' : f.gana3.toFixed(0) + '%'}</td><td class="text-gray-300">${f.sma === null ? '—' : f.sma.toFixed(0) + '%'}</td>
+                    <td class="text-gray-300">${f.fr === null ? '—' : f.fr.toFixed(0)}</td><td class="${cc(f.dRS)}">${pp(f.dRS)}</td>
+                    <td class="text-left px-1.5 ${f.col}">${f.lect}</td></tr>`).join('')}
+                </tbody></table>
+                <div class="text-[9px] text-gray-600 mt-2">* menos de 8 acciones: poco confiable. SPY de referencia: ${pp(spy['Ret_1m_%'] ?? null)}% en 1m, ${pp(spy['Ret_3m_%'] ?? null)}% en 3m, ${pp(spy['Ret_6m_%'] ?? null)}% en 6m. Medianas de las acciones, sin ponderar por tamaño.</div>`;
+        }
+
         function renderPanelesNuevos(data) {
-            for (const fn of [renderPulsoMercado, renderCartelera, renderSectoresSub, renderMatrizSenales, renderNuevosDetalle]) {
+            for (const fn of [renderPulsoMercado, renderCartelera, renderSectoresVsSPY, renderSectoresSub, renderMatrizSenales, renderNuevosDetalle]) {
                 try { fn(data); } catch (e) { console.warn('Panel nuevo:', fn.name, e); }
             }
             renderEarningsSemana();
