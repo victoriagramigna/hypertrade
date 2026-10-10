@@ -729,6 +729,14 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de ETFs: ¿sirve más el Corto o el Largo?</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cada viernes se anota en qué cuadrante estaba cada ETF según la versión Corto y según la Largo del cuadrante contra el SPY. Después se mide cuánto rindió el ETF contra el SPY 1, 2 y 4 semanas más tarde.
+                "Exceso" = lo que rindió el ETF menos lo que rindió el SPY en esas semanas; "le gana" = en cuántos casos fue positivo. Sirve para ver si estar en Líder o Mejorando después se tradujo en ganarle al SPY, y si cuando las dos versiones coinciden la señal vale más que cuando difieren.
+                Con pocas semanas no hay conclusión posible; recién con varios meses empieza a decir algo. Esto no cambia ninguna otra medición.</p>
+            <div id="aud-rse" class="space-y-3"><div class="text-gray-500 font-mono text-xs">Todavía no hay semanas registradas.</div></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Evolución mes a mes</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">Todas las señales juntas, agrupadas por el mes en que se dispararon. Sirve para ver si la app acierta de forma sostenida o solo tuvo algunas semanas buenas. "A favor" cuenta como ganancia que una señal bajista haya bajado.</p>
             <div id="aud-meses" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
@@ -4094,6 +4102,33 @@
             if (h) cont.innerHTML = h + `<div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
         }
 
+        const RSE_EVAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_spy_etfs_eval.json';
+        async function fetchAuditoriaRSE() {
+            const cont = document.getElementById('aud-rse');
+            if (!cont) return;
+            let a;
+            try {
+                const resp = await fetch(`${RSE_EVAL_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) return;
+                a = await resp.json();
+            } catch (e) { return; }
+            const pc = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%');
+            const cl = (v) => (v == null ? 'text-gray-500' : (v >= 0 ? 'text-pos' : 'text-neg'));
+            const celda = (x) => x ? `<span class="${cl(x.exceso_medio)}">${pc(x.exceso_medio)}</span> <span class="text-gray-600">(${x.pct_le_gana}% · n=${x.n})</span>` : '<span class="text-gray-600">—</span>';
+            const fila = (nombre, g) => g && g.n ? `<tr class="border-t border-gray-800 text-center"><td class="text-left text-gray-200">${nombre}</td><td class="text-gray-400">${g.n}</td><td>${celda(g.h1)}</td><td>${celda(g.h2)}</td><td>${celda(g.h4)}</td></tr>` : '';
+            const tabla = (titulo, filas) => `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px]"><div class="text-white font-bold mb-1">${titulo}</div>
+                <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">Grupo</th><th class="font-normal">Casos</th><th class="font-normal">+1 sem</th><th class="font-normal">+2 sem</th><th class="font-normal">+4 sem</th></tr></thead><tbody>${filas}</tbody></table></div>
+                <div class="text-[9px] text-gray-600 mt-1">Cada celda: exceso medio contra el SPY (% de casos en que le ganó · cantidad de casos).</div></div>`;
+            const G = a.grupos ?? {};
+            const qs = ['Líder', 'Mejorando', 'Debilitándose', 'Rezagado'];
+            let h = `<div class="font-mono text-[11px] text-gray-300">Semanas registradas: <span class="text-white font-bold">${a.semanas_registradas}</span>${a.primera ? ` (del ${a.primera} al ${a.ultima})` : ''}${a.semanas_registradas < 8 ? ' <span class="text-gray-500">— muy pocas para sacar conclusiones</span>' : ''}</div>`;
+            if (!a.registros) { cont.innerHTML = h; return; }
+            h += tabla('Versión Corto, según el cuadrante', qs.map(q => fila(q, G['corto:' + q])).join(''));
+            h += tabla('Versión Largo, según el cuadrante', qs.map(q => fila(q, G['largo:' + q])).join(''));
+            h += tabla('¿Importa que las dos versiones coincidan?', fila('Coinciden', G['acuerdo:coinciden']) + fila('Difieren', G['acuerdo:difieren']));
+            cont.innerHTML = h;
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
@@ -4101,7 +4136,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
-            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); }
+            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); fetchAuditoriaRSE(); }
             if (name === 'alertas') fetchPreapertura();
             if (name === 'universo' && !rseData) fetchRSE();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
@@ -6673,6 +6708,42 @@
                 rseDibujar();
             }, 600);
         }
+        function rseExplicarTicker(t) {
+            const L = rseData?.etfs?.[t], C = rseData?.corto?.etfs?.[t];
+            if (!L || L.length < 2) return '';
+            const tag = (c) => `<span style="color:${RSE_COL[c]}" class="font-bold">${c}</span>`;
+            const sg = (v) => (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+            const info = (arr) => {
+                const u = arr[arr.length - 1], a = arr[arr.length - 2], c = rseCuadrante(u.x, u.y);
+                let sem = 1; for (let i = arr.length - 2; i >= 0 && rseCuadrante(arr[i].x, arr[i].y) === c; i--) sem++;
+                return { u, a, c, sem, dx: u.x - a.x };
+            };
+            const l = info(L), k = C && C.length >= 2 ? info(C) : null;
+            const frase = {
+                'Líder': 'rinde más que el SPY y viene mejorando',
+                'Debilitándose': 'rinde más que el SPY, pero perdió impulso',
+                'Mejorando': 'rinde menos que el SPY, pero ya acorta la brecha',
+                'Rezagado': 'rinde menos que el SPY y sigue perdiendo terreno'
+            };
+            const nm = (typeof nombreEmpresa === 'function' ? nombreEmpresa(t) : '') || '';
+            let f = `<div><span class="text-white font-bold">${t}</span> ${nm}</div>`;
+            if (k) f += `<div class="mt-1"><span class="text-gray-300">Corto</span> (lo reciente): ${tag(k.c)} desde hace ${k.sem} sem — ${frase[k.c]}. Fuerza ${sg(k.u.x)}, aceleración ${sg(k.u.y)}.</div>`;
+            f += `<div class="mt-1"><span class="text-gray-300">Largo</span> (el arrastre del mes): ${tag(l.c)} desde hace ${l.sem} sem — ${frase[l.c]}. Fuerza ${sg(l.u.x)}, aceleración ${sg(l.u.y)}.</div>`;
+            let lec;
+            if (!k) lec = 'Todavía no está la versión Corto, así que no se puede comparar.';
+            else if (k.c === l.c) lec = `Las dos miradas coinciden: es una lectura más sólida. ${k.c === 'Líder' ? 'El ETF lleva un tiempo ganándole al SPY y no hay señal de freno.' : k.c === 'Rezagado' ? 'El ETF lleva un tiempo perdiendo contra el SPY y no hay señal de recuperación.' : k.c === 'Mejorando' ? 'Sigue por debajo del SPY, pero la mejora se sostiene en las dos escalas.' : 'Sigue por encima del SPY, pero el freno se ve en las dos escalas.'}`;
+            else if (l.u.x < 0 && k.u.y > 0 && l.u.y <= 0) lec = 'Las miradas difieren: el mes fue malo contra el SPY, pero en las últimas semanas dejó de empeorar. Puede ser el comienzo de una recuperación, todavía sin confirmar (puede ser solo un rebote).';
+            else if (l.u.x > 0 && k.u.y < 0 && l.u.y >= 0) lec = 'Las miradas difieren: viene de un buen mes contra el SPY, pero en las últimas semanas perdió impulso. Puede ser una pausa o el comienzo de un giro; todavía sin confirmar.';
+            else if (l.u.x < 0 && k.u.y < 0 && l.u.y > 0) lec = 'Las miradas difieren: el último mes venía mejorando, pero las últimas semanas volvieron a empeorar. El rebote parece haberse frenado.';
+            else lec = 'Las miradas difieren: el Corto marca lo que pasó en las últimas semanas y el Largo el arrastre del mes. Hasta que coincidan, el giro no está confirmado.';
+            const mov = l.dx >= 0 ? 'mejoró' : 'empeoró';
+            return `<div class="bg-base border border-surface rounded-sm p-3 mt-2 font-mono text-[11px] leading-relaxed text-gray-400">
+                <div class="text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Qué estaría pasando</div>
+                ${f}
+                <div class="mt-2 text-gray-200">${lec}</div>
+                <div class="mt-1 text-gray-500">Esta semana su fuerza contra el SPY ${mov} ${Math.abs(l.dx).toFixed(1)} puntos (escala Largo).</div>
+                <div class="mt-1 text-gray-600 text-[10px]">Describe lo que ya pasó contra el SPY; no anticipa lo que va a pasar ni es una recomendación. En Auditoría se va midiendo si cada versión sirvió.</div></div>`;
+        }
         function rseBotones() {
             const bt = document.getElementById('rse-modo-botones'), ex = document.getElementById('rse-explica');
             if (!bt || !ex) return;
@@ -6757,6 +6828,7 @@
             const leyenda = Object.entries(RSE_COL).map(([n, c]) => `<span class="mr-3"><span style="color:${c}">●</span> ${n}</span>`).join('');
             cont.innerHTML = `${s}
                 <div class="font-mono text-[11px] text-gray-400 mt-2 min-h-[1.5rem]">${detalle}</div>
+                ${unico ? rseExplicarTicker(unico) : ''}
                 <div class="font-mono text-[10px] text-gray-500 mt-1">${leyenda}</div>
                 <div class="flex items-center gap-3 mt-2 font-mono text-[10px] text-gray-500">
                     <button onclick="rseToggleAnim()" class="px-2.5 py-1.5 rounded-sm border border-surface uppercase text-gray-300 hover:text-white">${rseTimer ? '⏸ Pausar' : '▶ Reproducir'}</button>
