@@ -1,0 +1,31 @@
+name: Cierres diarios (carga inicial)
+
+# Aparte, no toca el radar ni la Auditoria. Se corre SOLO a mano (una vez):
+# pestaña Actions -> "Cierres diarios (carga inicial)" -> Run workflow.
+# Agrega ~1 año de cierres a data/cierres_diarios.jsonl (solo fechas que faltan).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Cargar historia
+        run: python scripts/cierres_diarios.py --backfill
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/cierres_diarios.jsonl
+          git diff --staged --quiet || git commit -m "Cierres diarios: carga inicial [skip ci]"
+          git pull --rebase
+          git push
