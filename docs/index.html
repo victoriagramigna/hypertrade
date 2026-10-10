@@ -48,6 +48,20 @@
         ::-webkit-scrollbar-thumb { background: #121722; border: 1px solid #E0A458; }
         ::-webkit-scrollbar-corner { background: #0B0E14; }
         
+        /* Encabezados de tablas fijos al desplazarse (10/10): la fila de títulos queda arriba mientras se mueven las filas. */
+        .tabla-fija-cont { max-height: 26rem; overflow: auto; }
+        .tabla-fija-cont thead { position: sticky; top: 0; z-index: 20; }
+        .tabla-fija-cont thead th { background: #121722; }
+        div.overflow-x-auto:has(> table) { max-height: 26rem; overflow-y: auto; }
+        div.overflow-x-auto:has(> table) > table > thead { position: sticky; top: 0; z-index: 20; }
+        div.overflow-x-auto:has(> table) > table > thead th { background: #121722; }
+        #confluencia-container thead { position: sticky; top: 0; z-index: 20; }
+        #confluencia-container thead th { background: #121722; }
+        #confluencia-container thead th.sticky { z-index: 30; }
+        #confluencia-container td.sticky { z-index: 10; }
+        #sspy-cont { max-height: 30rem; overflow: auto; }
+        #sspy-cont thead { position: sticky; top: 0; z-index: 20; }
+        #sspy-cont thead th { background: #121722; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a2233; border: none; border-radius: 2px;}
 
@@ -279,16 +293,16 @@
                 <span class="cursor-help border-b border-dashed border-gray-600" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span> --
                 <span class="text-white">a propósito sin usar el Radar Score</span> para decidir si aparece o no: la idea es que varias razones
                 distintas apuntando para el mismo lado valen más que un solo número compuesto. El Radar Score de cada uno se muestra igual, solo de referencia.
-                <span class="text-white">Matriz:</span> la misma lista en filas, un punto por cada señal encendida, para comparar de un vistazo quién junta cuáles. "FR" es la Fuerza Relativa (0-100) y "Hace" cuánto pasó desde que se encendió la señal. Tocá un encabezado para ordenar y una fila para abrir la ficha. Con <span class="text-white">Tarjetas</span> volvés a la vista de siempre.
+                <span class="text-white">Matriz:</span> una sola tabla que junta dos miradas. A la izquierda (azul), las <span class="text-white">4 señales de confluencia</span> de las últimas 48 hs. A la derecha (verde), <span class="text-white">9 condiciones que se cumplen hoy</span> (sobre SMA50 y SMA200, FR de 70 o más, squeeze, VCP, apoyo en AVWAP, zona de demanda, tendencia semanal y volumen). Aparece quien tiene 3 o más de las 4 señales, o 6 o más de las 9 condiciones; con los botones de arriba filtrás por una u otra mirada. Un guion en "/4" quiere decir que no tiene señal de confluencia reciente, solo condiciones. "FR" es la Fuerza Relativa (0-100) y "Hace" cuánto pasó desde que se encendió la señal. Tocá un encabezado para ordenar y una fila para abrir la ficha. Con <span class="text-white">Tarjetas</span> volvés a la vista de siempre.
             </div>
             <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
 
         <!-- El Semillero: favoritos de Victoria (se guardan en este navegador). Informativo. -->
                 <section>
-            <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">🧩 Señales en matriz</h2>
+            <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">🧩 Bases VCP y MACD semanal</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
-                Tres vistas rápidas armadas con los datos del radar: una matriz de quién junta más condiciones a la vez, la lista de bases VCP y los MACD semanales cerca de cruzar.
+                Dos listas rápidas armadas con los datos del radar: las bases VCP y los MACD semanales cerca de cruzar. (La matriz de quién junta más condiciones a la vez ahora está unida a Confluencia Alcista, arriba.)
                 No son alertas nuevas ni reemplazan a las de arriba: sirven para ver el panorama y elegir qué mirar. Nada de acá es una recomendación de compra o venta.
             </div>
             <div id="matriz-cont"></div>
@@ -1665,7 +1679,8 @@
         // 'confluencia_alcista'), pero mostrado en su propio panel arriba de todo,
         // ordenado por cantidad de chips y, dentro de eso, por más reciente --
         // sin ordenar nunca por Radar Score (ese dato se muestra solo de referencia).
-        let confModo = 'matriz', confOrden = 'n', confData = null;
+        let confModo = 'matriz', confOrden = 'n', confData = null, confFiltro = 'todos';
+        function confFiltrar(k) { confFiltro = k; if (confData) renderConfluencia(confData); }
         function confCambiar(m) { confModo = m; if (confData) renderConfluencia(confData); }
         function confOrdenar(k) { confOrden = k; if (confData) renderConfluencia(confData); }
         function renderConfluencia(data) {
@@ -1677,7 +1692,8 @@
             const todas = (data?.alertas ?? []).filter(a => a?.Tipo === 'confluencia_alcista');
 
             countEl.textContent = `(${todas.length})`;
-            if (todas.length === 0) {
+            if (todas.length === 0 && confModo !== 'matriz') {
+                container.className = 'grid grid-cols-1 gap-3';
                 container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Sin coincidencias hoy -- ningún ticker llegó a 3 chips en las últimas 48hs.</div>';
                 return;
             }
@@ -1698,33 +1714,65 @@
             };
 
             if (confModo === 'matriz') {
-                container.className = 'max-h-[24rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar';
-                const COLS = ['AVWAP SOPORTE', 'CRUCE 52W', 'TENDENCIA+', 'ATR COMPRIMIDO'];
-                const CORTO = { 'AVWAP SOPORTE': 'AVWAP', 'CRUCE 52W': '52W', 'TENDENCIA+': 'Tend.+', 'ATR COMPRIMIDO': 'ATR' };
-                const rk = new Map((data?.ranking ?? []).map(x => [x.Ticker, x]));
+                container.className = 'max-h-[26rem] sm:max-h-[40rem] overflow-auto bg-surface rounded-sm border border-surface custom-scrollbar';
+                const rank = data?.ranking ?? [];
+                const zonas = {}; for (const z of (data?.zonas ?? [])) zonas[z.Ticker] = z;
+                const A = ['AVWAP SOPORTE', 'CRUCE 52W', 'TENDENCIA+', 'ATR COMPRIMIDO'];
+                const A_CORTO = { 'AVWAP SOPORTE': 'AVWAP', 'CRUCE 52W': '52W', 'TENDENCIA+': 'Tend.+', 'ATR COMPRIMIDO': 'ATR' };
+                const B = [
+                    ['SMA50', 'Sobre su media de 50', x => x.Sobre_SMA50 === true],
+                    ['SMA200', 'Sobre su media de 200', x => _num(x['Dist_SMA200_%']) !== null && x['Dist_SMA200_%'] > 0],
+                    ['RS≥70', 'Fuerza Relativa de 70 o más', x => _num(x.RS_Score) !== null && x.RS_Score >= 70],
+                    ['Squeeze', 'Bandas de Bollinger comprimidas', x => x.Squeeze_Comprimido === true],
+                    ['VCP', 'Patrón de contracción de volatilidad válido', x => x.VCP_valido === true],
+                    ['AVWAP', 'Apoya sobre un AVWAP', x => x.Apoyo_AVWAP === true],
+                    ['Demanda', 'Toca una zona de demanda', x => zonas[x.Ticker]?.Toca_Demanda === true],
+                    ['Sem.', 'Tendencia semanal a favor', x => x.Tendencia_Semanal === 'favor'],
+                    ['Vol', 'Volumen relativo alto', x => _num(x.Vol_rel) !== null && x.Vol_rel >= VOLUMEN_RELATIVO_MINIMO_JS],
+                ];
+                const rk = new Map(rank.map(x => [x.Ticker, x]));
+                const conf = new Map(todas.map(a => [a?.Ticker, a]));
+                const tickers = new Set([...conf.keys()]);
+                for (const x of rank) { if (x.Ticker !== 'SPY' && B.filter(c => c[2](x)).length >= 6) tickers.add(x.Ticker); }
                 const ahora = Date.now();
-                const filas = ordenadas.map(a => {
+                let filas = [...tickers].map(t => {
+                    const a = conf.get(t), x = rk.get(t) ?? {};
+                    const sa = a?.Señales ?? [];
+                    const fb = x.Ticker ? B.map(c => c[2](x)) : B.map(() => false);
                     const fe = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : null;
-                    return { a, n: (a?.Señales ?? []).length, radar: a?.Radar_Score ?? null, fr: rk.get(a?.Ticker)?.RS_Score ?? null, hace: fe ? (ahora - fe) / 3600000 : null };
+                    return { t, a, x, sa, nA: sa.length, fb, nB: fb.filter(Boolean).length,
+                        radar: a?.Radar_Score ?? x.Radar_Score ?? null, fr: x.RS_Score ?? null,
+                        hace: fe ? (ahora - fe) / 3600000 : null, sector: a?.Sector ?? x.Sector ?? '—', precio: a?.Precio ?? x.Precio ?? null };
                 });
-                const cmp = { n: (p, q) => q.n - p.n || (q.radar ?? 0) - (p.radar ?? 0), radar: (p, q) => (q.radar ?? -1) - (p.radar ?? -1), fr: (p, q) => (q.fr ?? -1) - (p.fr ?? -1), hace: (p, q) => (p.hace ?? 1e9) - (q.hace ?? 1e9) };
-                filas.sort(cmp[confOrden] ?? cmp.n);
-                const th = (k, t, tip) => `<th class="px-1.5 py-1 text-[9px] uppercase font-normal cursor-pointer ${confOrden === k ? 'text-blueAlert' : 'text-gray-500'} hover:text-white" title="${tip}" onclick="confOrdenar('${k}')">${t}${confOrden === k ? ' ▾' : ''}</th>`;
-                const horas = (v) => v === null ? '—' : v < 1 ? 'menos de 1 h' : v < 48 ? Math.round(v) + ' h' : Math.round(v / 24) + ' d';
-                container.innerHTML = `<table class="w-full font-mono text-xs"><thead><tr>
-                    <th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Ticker</th>
-                    ${COLS.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${tooltipsChip[c]}">${CORTO[c]}</th>`).join('')}
-                    ${th('n', 'Señales', 'Cuántas de las 4 señales están encendidas')}${th('radar', 'Radar', 'Radar Score (solo de referencia, no decide si aparece)')}${th('fr', 'FR', 'Fuerza Relativa (0-100)')}${th('hace', 'Hace', 'Tiempo desde que se encendió la señal')}
+                if (confFiltro === 'conf') filas = filas.filter(o => o.nA >= 3);
+                else if (confFiltro === 'cond') filas = filas.filter(o => o.nB >= 6);
+                const cmp = { nA: (p, q) => q.nA - p.nA || q.nB - p.nB || (q.radar ?? 0) - (p.radar ?? 0), nB: (p, q) => q.nB - p.nB || q.nA - p.nA, radar: (p, q) => (q.radar ?? -1) - (p.radar ?? -1), fr: (p, q) => (q.fr ?? -1) - (p.fr ?? -1), hace: (p, q) => (p.hace ?? 1e9) - (q.hace ?? 1e9) };
+                filas.sort(cmp[confOrden === 'n' ? 'nA' : confOrden] ?? cmp.nA);
+                const th = (k, t, tip) => `<th class="px-1.5 py-1 text-[9px] uppercase font-normal cursor-pointer whitespace-nowrap ${confOrden === k || (k === 'nA' && confOrden === 'n') ? 'text-blueAlert' : 'text-gray-500'} hover:text-white" title="${tip}" onclick="confOrdenar('${k}')">${t}${confOrden === k || (k === 'nA' && confOrden === 'n') ? ' ▾' : ''}</th>`;
+                const horas = (v) => v === null ? '—' : v < 1 ? '<1 h' : v < 48 ? Math.round(v) + ' h' : Math.round(v / 24) + ' d';
+                const dot = (on, cls) => on ? `<span class="inline-block w-2 h-2 rounded-full ${cls}"></span>` : '<span class="inline-block w-1 h-1 rounded-full bg-gray-700"></span>';
+                const nTodas = tickers.size;
+                const filtros = [['todos', `Todos (${nTodas})`], ['conf', 'Solo confluencia (3+ de 4)'], ['cond', 'Solo 6+ de 9 condiciones']].map(([k, t]) => `<button onclick="confFiltrar('${k}')" class="px-2 py-1 rounded-sm border ${confFiltro === k ? 'border-blueAlert text-blueAlert' : 'border-surface text-gray-500 hover:text-white'}">${t}</button>`).join('');
+                container.innerHTML = `<div class="flex flex-wrap gap-1 p-2 font-mono text-[10px] uppercase">${filtros}</div>
+                    <table class="w-full font-mono text-xs"><thead>
+                    <tr class="text-[9px] uppercase"><th></th><th colspan="4" class="text-center font-normal text-blueAlert border-b border-blueAlert/40" title="Señales que se encendieron en las últimas 48 h">Confluencia (48 h)</th><th></th><th colspan="9" class="text-center font-normal text-pos border-b border-pos/40" title="Condiciones que se cumplen hoy">Condiciones de hoy</th><th colspan="6"></th></tr>
+                    <tr><th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal sticky left-0 bg-surface">Ticker</th>
+                    ${A.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${tooltipsChip[c]}">${A_CORTO[c]}</th>`).join('')}
+                    ${th('nA', '/4', 'Cuántas de las 4 señales de confluencia están encendidas')}
+                    ${B.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${c[1]}">${c[0]}</th>`).join('')}
+                    ${th('nB', '/9', 'Cuántas de las 9 condiciones se cumplen hoy')}${th('radar', 'Radar', 'Radar Score (solo de referencia)')}${th('fr', 'FR', 'Fuerza Relativa (0-100)')}${th('hace', 'Hace', 'Tiempo desde que se encendió la señal de confluencia')}
                     <th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Sector</th><th class="px-1.5 py-1 text-right text-[9px] uppercase text-gray-500 font-normal">Precio</th></tr></thead><tbody>
-                    ${filas.map(o => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer" onclick="abrirFicha('${o.a?.Ticker}')">
-                        <td class="px-1.5 py-1 text-left whitespace-nowrap font-bold text-white">${logoInline(o.a?.Ticker, 14)}${o.a?.Ticker ?? '—'}</td>
-                        ${COLS.map(c => `<td class="px-1.5 py-1 text-center">${(o.a?.Señales ?? []).includes(c) ? '<span class="inline-block w-2 h-2 rounded-full bg-blueAlert"></span>' : '<span class="inline-block w-1 h-1 rounded-full bg-gray-700"></span>'}</td>`).join('')}
-                        <td class="px-1.5 py-1 text-center text-blueAlert font-bold">${o.n}/4</td>
+                    ${filas.map(o => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer" onclick="abrirFicha('${o.t}')">
+                        <td class="px-1.5 py-1 text-left whitespace-nowrap font-bold text-white sticky left-0 bg-surface">${logoInline(o.t, 14)}${o.t}</td>
+                        ${A.map(c => `<td class="px-1.5 py-1 text-center">${dot(o.sa.includes(c), 'bg-blueAlert')}</td>`).join('')}
+                        <td class="px-1.5 py-1 text-center ${o.nA >= 3 ? 'text-blueAlert font-bold' : 'text-gray-600'}">${o.a ? o.nA + '/4' : '—'}</td>
+                        ${o.fb.map(v => `<td class="px-1.5 py-1 text-center">${dot(v, 'bg-pos')}</td>`).join('')}
+                        <td class="px-1.5 py-1 text-center ${o.nB >= 6 ? 'text-pos font-bold' : 'text-gray-500'}">${o.nB}/9</td>
                         <td class="px-1.5 py-1 text-center text-gray-300">${o.radar != null ? o.radar.toFixed(0) : '—'}</td>
                         <td class="px-1.5 py-1 text-center text-gray-300">${o.fr != null ? o.fr.toFixed(0) : '—'}</td>
                         <td class="px-1.5 py-1 text-center text-gray-500 whitespace-nowrap">${horas(o.hace)}</td>
-                        <td class="px-1.5 py-1 text-left text-[10px] uppercase text-gray-500 whitespace-nowrap">${o.a?.Sector ?? '—'}</td>
-                        <td class="px-1.5 py-1 text-right text-gray-400">${o.a?.Precio != null ? '$' + o.a.Precio : ''}</td></tr>`).join('')}
+                        <td class="px-1.5 py-1 text-left text-[10px] uppercase text-gray-500 whitespace-nowrap">${o.sector}</td>
+                        <td class="px-1.5 py-1 text-right text-gray-400">${o.precio != null ? '$' + o.precio : ''}</td></tr>`).join('')}
                     </tbody></table>`;
                 return;
             }
@@ -6652,11 +6700,6 @@
             const macHtml = mac.length ? mac.map(o => _chipTk(o.x.Ticker, `<span class="${o.d >= 0 ? 'text-pos' : 'text-neg'} text-[10px]">${o.d >= 0 ? 'apenas arriba' : 'apenas abajo'}</span><span class="text-gray-600 text-[10px]">RSI sem ${_num(o.x.RSI_Semanal) === null ? '—' : o.x.RSI_Semanal.toFixed(0)}</span>`)).join('') : '<div class="font-mono text-[11px] text-gray-600">Ninguno cerca del cruce hoy.</div>';
 
             cont.innerHTML = `
-                <div class="bg-surface border border-surface rounded-sm p-3 mb-3">
-                    <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Matriz: quién junta más señales a la vez (6 o más de ${COLS.length})</div>
-                    ${matriz}
-                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Cada punto verde es una condición que hoy se cumple. Pasá el dedo/mouse por el encabezado para ver qué mide cada columna. Tocá una fila para abrir la ficha. Es un resumen de condiciones, no una orden de compra.</div>
-                </div>
                 <div class="bg-surface border border-surface rounded-sm p-3 mb-3">
                     <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Bases VCP (volatilidad contraída)</div>
                     ${vcpHtml}
