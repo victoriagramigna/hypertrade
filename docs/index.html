@@ -52,9 +52,10 @@
         .tabla-fija-cont { max-height: 26rem; overflow: auto; }
         .tabla-fija-cont thead { position: sticky; top: 0; z-index: 20; }
         .tabla-fija-cont thead th { background: #121722; }
-        div.overflow-x-auto:has(> table) { max-height: 26rem; overflow-y: auto; }
-        div.overflow-x-auto:has(> table) > table > thead { position: sticky; top: 0; z-index: 20; }
-        div.overflow-x-auto:has(> table) > table > thead th { background: #121722; }
+        /* Tablas que entran en el ancho de la pantalla: el título queda fijo mientras se desplaza la PÁGINA (overflow clip no crea un contenedor de scroll, así que el sticky se apoya en la pantalla) */
+        div.overflow-x-auto:not(.ancho):has(> table) { overflow-x: clip; overflow-y: visible; }
+        div.overflow-x-auto:not(.ancho):has(> table) > table > thead { position: sticky; top: 0; z-index: 20; }
+        div.overflow-x-auto:not(.ancho):has(> table) > table > thead th { background: #121722; }
         #confluencia-container thead { position: sticky; top: 0; z-index: 20; }
         #confluencia-container thead th { background: #121722; }
         #confluencia-container thead th.sticky { z-index: 30; }
@@ -3890,7 +3891,7 @@
                 else o.otras++;
             });
             const filas = Object.entries(porFuente).map(([fu, o]) => `<tr class="border-t border-gray-800"><td class="py-1 pr-2 text-white">${_esc(fu)}</td><td class="text-center">${o.total}</td><td class="text-center text-gray-300">${o.abierta}</td><td class="text-center text-accent">${o.duda}</td><td class="text-center text-neg">${o.rota}</td><td class="text-center text-pos">${o.cumplida}</td><td class="text-center text-gray-500">${o.otras}</td></tr>`).join('');
-            document.getElementById('ideas-resumen').innerHTML = `<div class="font-mono text-[10px] text-gray-500 border border-surface rounded-sm p-2 overflow-x-auto">
+            document.getElementById('ideas-resumen').innerHTML = `<div class="font-mono text-[10px] text-gray-500 border border-surface rounded-sm p-2 overflow-x-auto ancho">
                 <div class="text-gray-300 font-bold mb-1">Resumen por cuenta <span class="font-normal text-gray-600">-- con el precio de la última corrida; con pocas ideas no se puede concluir nada</span></div>
                 <table class="w-full"><thead><tr class="text-gray-500"><th class="text-left font-normal">Cuenta</th><th class="font-normal" title="Ideas registradas">Total</th><th class="font-normal" title="Abiertas, sin llegar al objetivo ni romper">Abiertas</th><th class="font-normal" title="A 2% o menos del nivel donde falla">En duda</th><th class="font-normal" title="Precio por debajo del nivel donde falla">Rotas</th><th class="font-normal" title="Precio en el objetivo o más arriba">Objetivo</th><th class="font-normal" title="Sin niveles o sin precio en el radar">Sin medir</th></tr></thead><tbody>${filas}</tbody></table></div>`;
             // filtros por cuenta
