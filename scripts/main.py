@@ -51,6 +51,7 @@ from evaluacion_sistema import evaluar_sistema
 from auditoria import correr_auditoria
 from regimen_score import calcular_regimen_score, contar_extremos_52w
 from amplitud_historial import registrar_y_obtener_serie
+from cierres_diarios import registrar as registrar_cierres
 from cuidados import puntos_de_cuidado
 from confluencia import detectar_confluencia
 from rotacion_sectorial import actualizar_rotacion_sectorial
@@ -199,6 +200,9 @@ def main():
         except Exception as e:
             log.error(f"Historial de amplitud falló, no afecta al resto de la corrida: {e}")
             amplitud_historial = []
+
+    # 2c. Cierres diarios de todos los tickers (append-only, solo consulta)
+    registrar_cierres(precios, TICKERS, BENCHMARK, ahora, corrida_degradada)
 
     # 3. RS Score + indicadores completos
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes, precios_ohlc)

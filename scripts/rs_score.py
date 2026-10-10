@@ -162,6 +162,11 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
             # asignada (sectores que ya eran lo bastante específicos).
             "Subcategoria": SUBCATEGORIAS.get(ticker),
             "Precio": round(precio_actual, 2),
+            # Dato agregado el 10/10 (pedido de Victoria): cierre anterior y variación del día. Solo informativo,
+            # no entra en ningún cálculo. Durante la rueda es parcial (compara el último precio contra el cierre de ayer).
+            "Cierre_previo": round(float(close.iloc[-2]), 2) if len(close) >= 2 else None,
+            "Var_dia_%": round((float(precio_actual) / float(close.iloc[-2]) - 1) * 100, 2) if len(close) >= 2 and float(close.iloc[-2]) > 0 else None,
+            "Fecha_dato": str(close.index[-1])[:10],
             "RS_raw": rs_raw,
             # Retornos crudos (sin redondear) -- se necesitan para el promedio
             # sectorial de RS_Score_Sector más abajo; se descartan al final.
