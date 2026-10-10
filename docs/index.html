@@ -480,6 +480,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                 <div>
                     <div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mb-2">Recién a Líderes / Mejorando</div>
+                    <div class="font-mono text-[10px] text-gray-500 mb-2 leading-relaxed">Buscá por ticker, empresa, sector o tema (ej. <span class="text-gray-300">bancos</span>, <span class="text-gray-300">energía</span>, <span class="text-gray-300">brasil</span>, <span class="text-gray-300">AAPL</span>). Si escribís varias palabras, tienen que cumplirse todas. Solo filtra la lista de abajo.</div>
+                    <input id="recien-buscador" type="text" placeholder="Filtrar esta lista..." oninput="if (rotacionTickerUltimoData) renderTablasRotacionTicker(rotacionTickerUltimoData.rotacion_ticker ?? {})"
+                        class="w-full bg-base border border-surface rounded-sm px-3 py-1.5 mb-2 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent">
                     <div id="rotacion-recien-lideres" class="bg-surface p-3 rounded-sm border border-surface space-y-3"></div>
                 </div>
                 <div>
@@ -492,14 +495,14 @@
         <!-- Cuadrante de ETFs contra el SPY (9/10, estilo Warren Bife) -->
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cuadrante de ETFs contra el SPY</h2>
-            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+            <div class="font-mono text-[11px] text-gray-500 mb-2 leading-relaxed">
                 Otra forma de ver la rotación, más parecida a la de Warren. Acá cada ETF se mide <span class="text-gray-300">directamente contra el SPY</span> y no contra el ranking de todo el universo.
-                <span class="text-white">Eje horizontal (fuerza):</span> cuánto está hoy el ETF por encima o por debajo de su propio promedio de 10 semanas contra el SPY, en %. A la derecha del cero le va mejor que de costumbre al SPY.
-                <span class="text-white">Eje vertical (aceleración):</span> cuánto cambió esa fuerza en las últimas 4 semanas, en %. Arriba del cero está mejorando, abajo empeorando.
                 Los cuatro cuadrantes se leen igual que en el otro gráfico: <span class="text-pos">Líder</span> (fuerte y mejorando), <span class="text-blueAlert">Debilitándose</span> (fuerte pero empeorando),
                 <span class="text-neg">Rezagado</span> (débil y empeorando) y <span class="text-accent">Mejorando</span> (débil pero mejorando). La estela muestra las últimas 16 semanas. Con ▶ se reproduce semana a semana.
                 Es una forma de mirar dónde está el dinero, no una señal de compra ni de venta.
             </div>
+            <div id="rse-modo-botones" class="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase"></div>
+            <div id="rse-explica" class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed"></div>
             <div class="mb-3 flex flex-wrap items-center gap-2">
                 <input id="rse-buscador" type="text" placeholder="Uno o varios ETFs (ej. XLF, XLK, ILF)..."
                     class="w-full sm:w-64 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
@@ -3591,13 +3594,23 @@
             const contAceleracion = document.getElementById('rotacion-aceleracion-inusual');
             if (!contLideres || !contAceleracion) return;
 
-            const recien = rt.recien_a_lideres ?? [];
+            let recien = rt.recien_a_lideres ?? [];
+            const totalRecien = recien.length;
+            const palabrasR = (typeof _norm === 'function' ? _norm(document.getElementById('recien-buscador')?.value) : '').split(/\s+/).filter(Boolean);
+            if (palabrasR.length) {
+                const rk = new Map((rotacionTickerUltimoData?.ranking ?? []).map(r => [r.Ticker, r]));
+                recien = recien.filter(e => {
+                    const r = rk.get(e.ticker);
+                    const hay = _norm([e.ticker, e.sector, r?.Subcategoria, TEMAS_EXTRA[e.ticker], NOMBRES_EMPRESA[e.ticker], e.es_etf ? 'etf' : 'accion', e.cuadrante_nuevo].join(' '));
+                    return palabrasR.every(w => hay.includes(w));
+                });
+            }
             const acciones = recien.filter(e => !e.es_etf);
             const etfs = recien.filter(e => e.es_etf);
             if (recien.length === 0) {
-                contLideres.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Sin entradas nuevas en los últimos 10 días.</div>';
+                contLideres.innerHTML = totalRecien === 0 ? '<div class="text-gray-500 font-mono text-[11px]">Sin entradas nuevas en los últimos 10 días.</div>' : '<div class="text-gray-500 font-mono text-[11px]">Ninguna coincide con la búsqueda (hay ' + totalRecien + ' en la lista completa).</div>';
             } else {
-                contLideres.innerHTML = `
+                contLideres.innerHTML = (palabrasR.length ? `<div class="font-mono text-[10px] text-gray-500">${recien.length} de ${totalRecien}</div>` : '') + `
                     ${acciones.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mb-1">Acciones</div>${acciones.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
                     ${etfs.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mt-3 mb-1">ETFs</div>${etfs.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
                 `;
@@ -6625,7 +6638,10 @@
         const RSE_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_spy_etfs.json';
         const RSE_COL = { 'Líder': '#6FCF97', 'Mejorando': '#E0A458', 'Debilitándose': '#3b82f6', 'Rezagado': '#D9694F' };
         const RSE_W = 440, RSE_H = 420, RSE_PL = 46, RSE_PR = 14, RSE_PT = 14, RSE_PB = 36;
-        let rseData = null, rseIdx = null, rseTimer = null, rsePick = null;
+        let rseData = null, rseIdx = null, rseTimer = null, rsePick = null, rseModo = 'corto';
+        function rseEtfs() { return (rseModo === 'corto' && rseData?.corto?.etfs) ? rseData.corto.etfs : (rseData?.etfs ?? {}); }
+        function rseParams() { return (rseModo === 'corto' && rseData?.corto?.params) ? rseData.corto.params : (rseData?.params ?? { semanas_promedio: 10, semanas_aceleracion: 4 }); }
+        function rseCambiarModo(m) { rseModo = m; rsePick = null; if (rseTimer) { clearInterval(rseTimer); rseTimer = null; } rseIdx = null; rseDibujar(); }
 
         async function fetchRSE() {
             const cont = document.getElementById('rse-chart');
@@ -6645,22 +6661,35 @@
         function rseSeleccion() {
             const txt = (document.getElementById('rse-buscador')?.value ?? '').trim().toUpperCase();
             if (!txt || !rseData) return [];
-            return [...new Set(txt.split(/[\s,;]+/).filter(Boolean))].filter(t => rseData.etfs[t]).slice(0, 15);
+            return [...new Set(txt.split(/[\s,;]+/).filter(Boolean))].filter(t => rseEtfs()[t]).slice(0, 15);
         }
         function rseToggleAnim() {
             if (rseTimer) { clearInterval(rseTimer); rseTimer = null; rseIdx = null; rseDibujar(); return; }
             rseIdx = 0; rseDibujar();
             rseTimer = setInterval(() => {
-                const L = Math.max(...Object.values(rseData.etfs).map(p => p.length));
+                const L = Math.max(...Object.values(rseEtfs()).map(p => p.length));
                 rseIdx += 1;
                 if (rseIdx >= L - 1) { clearInterval(rseTimer); rseTimer = null; rseIdx = null; }
                 rseDibujar();
             }, 600);
         }
+        function rseBotones() {
+            const bt = document.getElementById('rse-modo-botones'), ex = document.getElementById('rse-explica');
+            if (!bt || !ex) return;
+            const hayCorto = !!rseData?.corto?.etfs;
+            if (!hayCorto) rseModo = 'largo';
+            const btn = (m, txt) => `<button onclick="rseCambiarModo('${m}')" class="px-3 py-1.5 rounded-sm border ${rseModo === m ? 'bg-accent text-base border-accent font-bold' : 'border-surface text-gray-400 hover:text-white'}">${txt}</button>`;
+            bt.innerHTML = (hayCorto ? btn('corto', 'Corto (reacciona rápido)') + btn('largo', 'Largo (más estable)') : '<span class="text-gray-500">Versión Largo (la versión Corto aparece tras la próxima corrida del workflow)</span>');
+            const pr = rseParams();
+            ex.innerHTML = `<span class="text-white">Eje horizontal (fuerza):</span> cuánto está hoy el ETF por encima o por debajo de su propio promedio de ${pr.semanas_promedio} semanas contra el SPY, en %. A la derecha del cero le va mejor que de costumbre al SPY.
+                <span class="text-white">Eje vertical (aceleración):</span> cuánto cambió esa fuerza en las últimas ${pr.semanas_aceleracion} semanas, en %. Arriba del cero está mejorando, abajo empeorando.
+                ${rseModo === 'corto' ? '<span class="text-gray-300">Corto:</span> mira lo que pasó en las últimas semanas, así que cambia de cuadrante más seguido. Es el que más se parece al de Warren.' : '<span class="text-gray-300">Largo:</span> mira un arrastre de aproximadamente un mes; es más estable pero tarda más en reflejar un giro reciente.'}`;
+        }
         function rseDibujar() {
             const cont = document.getElementById('rse-chart');
             if (!cont || !rseData) return;
-            const etfs = rseData.etfs, tks = Object.keys(etfs);
+            rseBotones();
+            const etfs = rseEtfs(), tks = Object.keys(etfs);
             if (!tks.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
             const sel = rseSeleccion(), haySel = sel.length > 0;
             const L = Math.max(...tks.map(t => etfs[t].length));
@@ -6746,7 +6775,7 @@
         function rseLectura(sel) {
             const cont = document.getElementById('rse-lectura');
             if (!cont || !rseData) return;
-            const etfs = rseData.etfs;
+            const etfs = rseEtfs();
             const lista = (sel && sel.length ? sel : Object.keys(etfs));
             const tag = (c) => `<span style="color:${RSE_COL[c]}" class="font-bold">${c}</span>`;
             const cambios = [], largos = [];
@@ -6769,7 +6798,7 @@
                 <div class="text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Lectura — cambios de cuadrante en la última semana</div>
                 ${cambios.length ? cambios.slice(0, 12).map(frase).join('') : '<div class="text-gray-500">Ningún ETF de esta vista cambió de cuadrante esta semana.</div>'}
                 ${largos.length ? `<div class="text-gray-500 mt-2">Más tiempo en el mismo cuadrante: ${largos.slice(0, 6).map(q => `<span class="text-gray-300">${q.t}</span> ${tag(q.cu)} (${q.sem} sem)`).join(' · ')}</div>` : ''}
-                <div class="text-gray-600 text-[10px] mt-2">Se calcula con cierres semanales de cada ETF contra el SPY. Describe lo que pasó; no anticipa lo que va a pasar.</div></div>`;
+                <div class="text-gray-600 text-[10px] mt-2">Se calcula con cierres semanales de cada ETF contra el SPY (versión ${rseModo === 'corto' ? 'Corto' : 'Largo'}). Describe lo que pasó; no anticipa lo que va a pasar.</div></div>`;
         }
         fetchRSE();
     </script>
