@@ -1480,6 +1480,16 @@
                     </div>`;
                 }
 
+                // Aclaración (10/10): una alerta de VENTA puede convivir con chips "alcistas" (soporte, tendencia). No se contradicen:
+                // la venta describe lo que acaba de pasar (p. ej. una ruptura de piso) y los chips describen el contexto técnico.
+                // Solo informativo; no cambia ningún cálculo ni la recomendación.
+                let ventaConChipsHtml = '';
+                if (recomendacion === 'VENTA' && (alerta?.Apoyo_AVWAP || alerta?.Cruce_AVWAP_52w || alerta?.Pendiente_OK)) {
+                    ventaConChipsHtml = `<div class="mt-2 border border-gray-600 text-gray-400 bg-base font-mono text-[11px] px-2 py-1.5 rounded-sm leading-relaxed">
+                        ℹ️ Esta alerta marca una <span class="text-neg font-bold">VENTA</span> por lo que acaba de pasar con el precio (por ejemplo, perdió un piso). Los chips azules, verdes y naranjas de arriba describen el <span class="text-white">contexto técnico</span> del ticker (apoya en una media, tendencia de medias) y no cancelan la alerta: son dos lecturas distintas que hoy no coinciden. Conviene mirar las dos antes de decidir.
+                    </div>`;
+                }
+
                 // Aviso de volumen bajo en un Gap alcista: esta señal NO exige
                 // volumen alto para dispararse (solo mira el % de suba y la
                 // macrotendencia), así que puede salir con volumen flojo -- lo
@@ -1647,6 +1657,7 @@
                         ${chipsHtml}
                         ${cuidadosAvisoHtml}
                         ${regimenAvisoHtml}
+                        ${ventaConChipsHtml}
                         ${volumenBajoAvisoHtml}
                         ${radarScoreHtml}
                         <div class="flex justify-between font-mono text-xs text-gray-500 border-t border-base pt-2 mt-3">
