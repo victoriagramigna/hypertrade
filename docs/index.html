@@ -4247,7 +4247,7 @@
         }
 
         // ---------- Aviso de feriados (10/10) ----------
-        const FERIADOS_ARG = [{ fecha: '2026-10-12', nombre: 'Día del Respeto a la Diversidad Cultural' }];
+        const FERIADOS_ARG = [{ fecha: '2026-10-12', nombre: 'Día de la Raza' }];
         function renderAvisoFeriado() {
             const el = document.getElementById('feriado-banner');
             if (!el) return;
@@ -4261,6 +4261,49 @@
             el.classList.remove('hidden');
         }
         renderAvisoFeriado();
+
+        // ---------- Explicaciones plegables (10/10) ----------
+        // Cada texto largo de explicación (arriba de cada cuadro) queda oculto detrás de un botón "ⓘ Qué es esto".
+        // El texto es el mismo, solo se pliega. Con la barra de arriba se muestran u ocultan todas a la vez (queda guardado en el dispositivo).
+        function plegarExplicaciones() {
+            const KEY = 'expl_visibles_v1';
+            let visibles = false;
+            try { visibles = localStorage.getItem(KEY) === '1'; } catch (e) {}
+            const cand = [...document.querySelectorAll('section > div, section > p')].filter(el => {
+                if (el.closest('details.expl') || el.querySelector('input, select, button, table')) return false;
+                const c = el.className || '';
+                if (!/font-mono/.test(c) || !/text-gray-(400|500)/.test(c)) return false;
+                if (!/leading-relaxed|mb-3/.test(c)) return false;
+                if ((el.textContent || '').trim().length < 120) return false;
+                const prev = el.previousElementSibling;
+                return !!prev && (prev.tagName === 'H2' || !!prev.querySelector?.('h2'));
+            });
+            for (const el of cand) {
+                const d = document.createElement('details');
+                d.className = 'expl mb-3';
+                d.open = visibles;
+                const s = document.createElement('summary');
+                s.className = 'cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent';
+                s.textContent = 'ⓘ Qué es esto (tocá para ver)';
+                el.parentNode.insertBefore(d, el);
+                d.appendChild(s);
+                el.classList.remove('mb-3', 'mb-4', 'mb-2');
+                el.classList.add('mt-2');
+                d.appendChild(el);
+            }
+            const barra = document.createElement('div');
+            barra.id = 'expl-barra';
+            barra.className = 'mb-4 flex items-center gap-2 font-mono text-[10px] uppercase text-gray-500';
+            barra.innerHTML = `<span>ⓘ Explicaciones:</span>
+                <button id="expl-mostrar" class="px-2.5 py-1 rounded-sm border border-surface hover:text-white">Mostrar todas</button>
+                <button id="expl-ocultar" class="px-2.5 py-1 rounded-sm border border-surface hover:text-white">Ocultar todas</button>`;
+            const header = document.querySelector('header');
+            if (header) header.insertAdjacentElement('afterend', barra);
+            const poner = (v) => { document.querySelectorAll('details.expl').forEach(d => { d.open = v; }); try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {} };
+            document.getElementById('expl-mostrar').onclick = () => poner(true);
+            document.getElementById('expl-ocultar').onclick = () => poner(false);
+        }
+        try { plegarExplicaciones(); } catch (e) { console.warn('Explicaciones plegables:', e); }
 
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
