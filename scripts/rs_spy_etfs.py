@@ -31,6 +31,7 @@ PUNTOS = 16         # semanas de recorrido que se guardan
 RUTA_SALIDA = "data/rs_spy_etfs.json"
 RUTA_LOG = "data/log_rs_spy_etfs.jsonl"          # bitacora (solo se agrega, nunca se reescribe)
 RUTA_EVAL = "data/rs_spy_etfs_eval.json"
+RUTA_VENTANAS = "data/rs_spy_etfs_ventanas.json"   # prueba de ventanas (solo para ajustar; no lo usa la app)
 HORIZONTES = (1, 2, 4)                            # semanas hacia adelante para medir
 
 
@@ -166,6 +167,17 @@ def evaluar(eventos):
             "registros": len(filas), "grupos": grupos}
 
 
+def probar_ventanas(precios, etfs, ns=(4, 5, 6, 7, 8, 10), ks=(1, 2, 3, 4)):
+    """Ultimo punto (fuerza, aceleracion) de cada ETF para varias combinaciones de ventanas.
+    Sirve para elegir la que mas se parece a una referencia externa; no se usa en la app."""
+    out = {}
+    for n in ns:
+        for k in ks:
+            r = calcular(precios, etfs, n, k)
+            out[f"{n}-{k}"] = {t: [p[-1]["x"], p[-1]["y"]] for t, p in r["etfs"].items()}
+    return {"fecha_ultimo_cierre": calcular(precios, etfs)["fecha_ultimo_cierre"], "combinaciones": out}
+
+
 def correr():
     from top30_retorno import bajar_precios
     etfs = etfs_del_universo()
@@ -177,6 +189,11 @@ def correr():
     log.info(f"Bitacora: {n_nuevos} registros nuevos")
     with open(RUTA_EVAL, "w", encoding="utf-8") as f:
         json.dump(evaluar(leer_log()), f, ensure_ascii=False)
+    try:
+        with open(RUTA_VENTANAS, "w", encoding="utf-8") as f:
+            json.dump(probar_ventanas(precios, etfs), f, ensure_ascii=False)
+    except Exception as e:
+        log.warning(f"Prueba de ventanas: {e}")
     res.pop("cierre_semana", None)
     with open(RUTA_SALIDA, "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False)
