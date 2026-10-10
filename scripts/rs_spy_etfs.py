@@ -23,8 +23,10 @@ import pandas as pd
 
 log = logging.getLogger("radar.rs_spy_etfs")
 
-N_SEMANAS = 10      # ventana del promedio de RS
-K_SEMANAS = 4       # ventana de la aceleracion
+N_SEMANAS = 10      # ventana del promedio de RS  (version "Largo")
+K_SEMANAS = 4       # ventana de la aceleracion    (version "Largo")
+N_CORTO = 5         # version "Corto" (se parece mas a la de Warren, 10/10): promedio de 5 semanas
+K_CORTO = 2         # y aceleracion de 2 semanas
 PUNTOS = 16         # semanas de recorrido que se guardan
 RUTA_SALIDA = "data/rs_spy_etfs.json"
 
@@ -43,8 +45,10 @@ def semanal(df):
     return df.loc[ultimos.values]
 
 
-def calcular(precios, etfs):
+def calcular(precios, etfs, n=None, k=None):
     """precios: dict ticker -> Series de cierres. Devuelve dict listo para guardar."""
+    n = n or N_SEMANAS
+    k = k or K_SEMANAS
     if "SPY" not in precios:
         raise ValueError("falta SPY")
     cols = {t: precios[t] for t in ["SPY"] + [e for e in etfs if e in precios]}
@@ -56,15 +60,15 @@ def calcular(precios, etfs):
         if t == "SPY":
             continue
         rs = (w[t] / w["SPY"]).dropna()
-        ratio = 100 * rs / rs.rolling(N_SEMANAS).mean()
-        mom = 100 * ratio / ratio.shift(K_SEMANAS)
+        ratio = 100 * rs / rs.rolling(n).mean()
+        mom = 100 * ratio / ratio.shift(k)
         pts = pd.DataFrame({"x": ratio - 100, "y": mom - 100}).dropna().tail(PUNTOS)
         if len(pts) < 2:
             continue
         out[t] = [{"fecha": str(i)[:10], "x": round(float(r.x), 2), "y": round(float(r.y), 2)} for i, r in pts.iterrows()]
     return {"generado_utc": datetime.now(timezone.utc).isoformat(),
             "fecha_ultimo_cierre": str(w.index[-1])[:10],
-            "params": {"semanas_promedio": N_SEMANAS, "semanas_aceleracion": K_SEMANAS},
+            "params": {"semanas_promedio": n, "semanas_aceleracion": k},
             "etfs": out}
 
 
@@ -73,6 +77,8 @@ def correr():
     etfs = etfs_del_universo()
     precios = bajar_precios(etfs + ["SPY"], periodo="2y")
     res = calcular(precios, etfs)
+    c = calcular(precios, etfs, N_CORTO, K_CORTO)
+    res["corto"] = {"params": c["params"], "etfs": c["etfs"]}
     with open(RUTA_SALIDA, "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False)
     log.info(f"ETFs medidos contra el SPY: {len(res['etfs'])} de {len(etfs)}")
