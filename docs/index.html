@@ -87,6 +87,8 @@
     <div id="error-message" class="hidden bg-neg/20 text-neg border border-neg p-4 mb-6 font-mono text-sm rounded-sm"></div>
 
     <!-- Banner de corrida degradada (falló una porción grande del universo -- RS Score no confiable) -->
+    <!-- Aviso de feriados argentinos (10/10): se muestra solo en los 3 días previos y el día mismo. Para sumar otro, agregarlo a FERIADOS_ARG. -->
+    <div id="feriado-banner" class="hidden bg-accent/10 text-accent border border-accent p-3 mb-4 font-mono text-[11px] rounded-sm leading-relaxed"></div>
     <div id="degraded-banner" class="hidden bg-neg/20 text-neg border border-neg p-4 mb-6 font-mono text-sm rounded-sm"></div>
 
     <!-- Encabezado persistente: título, T-0, badges -- visible en todas las solapas -->
@@ -4143,6 +4145,22 @@
             h += tabla('¿Importa que las dos versiones coincidan?', fila('Coinciden', G['acuerdo:coinciden']) + fila('Difieren', G['acuerdo:difieren']));
             cont.innerHTML = h;
         }
+
+        // ---------- Aviso de feriados (10/10) ----------
+        const FERIADOS_ARG = [{ fecha: '2026-10-12', nombre: 'Día del Respeto a la Diversidad Cultural' }];
+        function renderAvisoFeriado() {
+            const el = document.getElementById('feriado-banner');
+            if (!el) return;
+            const hoy = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+            hoy.setHours(0, 0, 0, 0);
+            const prox = FERIADOS_ARG.map(f => ({ ...f, d: new Date(f.fecha + 'T00:00:00') })).filter(f => { const dias = Math.round((f.d - hoy) / 86400000); return dias >= 0 && dias <= 3; })[0];
+            if (!prox) { el.classList.add('hidden'); return; }
+            const dias = Math.round((prox.d - hoy) / 86400000);
+            const cuando = dias === 0 ? 'Hoy' : dias === 1 ? 'Mañana' : `El ${prox.d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+            el.innerHTML = `<span class="font-bold uppercase tracking-widest">Feriado en Argentina</span> — ${cuando} (${prox.fecha.split('-').reverse().join('/')}, ${prox.nombre}) el mercado local y los <span class="font-bold">CEDEARs no operan</span>. Wall Street sí abre, así que los precios en dólares se mueven, pero no se puede comprar ni vender CEDEARs hasta el día hábil siguiente. Las alertas del radar siguen corriendo.`;
+            el.classList.remove('hidden');
+        }
+        renderAvisoFeriado();
 
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
