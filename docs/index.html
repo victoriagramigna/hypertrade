@@ -294,7 +294,7 @@
                 <span class="cursor-help border-b border-dashed border-gray-600" title="El rango de movimiento reciente (ATR10) se comprimió respecto al de más largo plazo (ATR50): la volatilidad bajó, algo común antes de una ruptura.">ATR COMPRIMIDO</span> --
                 <span class="text-white">a propósito sin usar el Radar Score</span> para decidir si aparece o no: la idea es que varias razones
                 distintas apuntando para el mismo lado valen más que un solo número compuesto. El Radar Score de cada uno se muestra igual, solo de referencia.
-                <span class="text-white">Matriz:</span> una sola tabla que junta dos miradas. A la izquierda (azul), las <span class="text-white">4 señales de confluencia</span> de las últimas 48 hs. A la derecha (verde), <span class="text-white">9 condiciones que se cumplen hoy</span> (sobre SMA50 y SMA200, FR de 70 o más, squeeze, VCP, apoyo en AVWAP, zona de demanda, tendencia semanal y volumen). Aparece quien tiene 3 o más de las 4 señales, o 6 o más de las 9 condiciones; con los botones de arriba filtrás por una u otra mirada. Un guion en "/4" quiere decir que no tiene señal de confluencia reciente, solo condiciones. "FR" es la Fuerza Relativa (0-100) y "Hace" cuánto pasó desde que se encendió la señal. Tocá un encabezado para ordenar y una fila para abrir la ficha. Con <span class="text-white">Tarjetas</span> volvés a la vista de siempre.
+                <span class="text-white">Matriz:</span> una sola tabla que junta dos miradas. A la izquierda (azul), las <span class="text-white">4 señales de confluencia</span> de las últimas 48 hs. A la derecha (verde), <span class="text-white">9 condiciones que se cumplen hoy</span> (sobre SMA50 y SMA200, FR de 70 o más, squeeze, VCP, apoyo en AVWAP, zona de demanda, tendencia semanal y volumen). Aparece quien tiene 3 o más de las 4 señales, o 6 o más de las 9 condiciones; con los botones de arriba filtrás por una u otra mirada. Un guion en "/4" quiere decir que no tiene señal de confluencia reciente, solo condiciones. "FR" es la Fuerza Relativa (0-100) y "Hoy" la variación del día contra el cierre anterior (aparece desde la próxima corrida del radar; durante la rueda es parcial) y "Hace" cuánto pasó desde que se encendió la señal. Tocá un encabezado para ordenar y una fila para abrir la ficha. Con <span class="text-white">Tarjetas</span> volvés a la vista de siempre.
             </div>
             <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
@@ -599,6 +599,13 @@
         <!-- Panel CEDEAR caro/barato -->
             <section>
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">CEDEAR caro/barato</h2>
+                <div class="mb-3 flex flex-wrap items-center gap-2">
+                    <input id="cedears-buscador" type="text" placeholder="Buscar ticker o empresa (ej. AAPL, banco, oro)..."
+                        class="w-full sm:w-72 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
+                        oninput="if (cedearData) renderCedearPanel(cedearData)">
+                    <button onclick="document.getElementById('cedears-buscador').value='';if (cedearData) renderCedearPanel(cedearData)" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-500 hover:text-white">Limpiar</button>
+                    <span id="cedears-conteo" class="font-mono text-[10px] text-gray-500"></span>
+                </div>
                 <div id="cedears-panel" class="bg-surface p-4 space-y-1 rounded-sm border border-surface max-h-[400px] overflow-y-auto custom-scrollbar"></div>
             </section>
     </div>
@@ -1184,7 +1191,9 @@
             document.getElementById('chip-explain').classList.add('hidden');
         });
 
+        let cedearData = null;
         function renderCedearPanel(data) {
+            cedearData = data;
             const container = document.getElementById('cedears-panel');
             const info = data?.cedears_pricing;
             if (!info || info.sin_datos) {
@@ -1196,11 +1205,37 @@
                 container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Sin datos disponibles.</div>';
                 return;
             }
-            items.sort((a, b) => Math.abs(b['Brecha_%']) - Math.abs(a['Brecha_%']));
+            // Dato dudoso (10/10): una brecha mayor a ±50% entre el CEDEAR y su valor teórico casi nunca es una oportunidad real:
+            // lo más probable es que el ratio cargado esté desactualizado (split, cambio de ratio) o que el precio de data912 sea de otro instrumento.
+            const DUDOSO_PCT = 50;
+            const esDudoso = (c) => Math.abs(c['Brecha_%']) > DUDOSO_PCT;
+            items.sort((a, b) => (esDudoso(a) - esDudoso(b)) || (Math.abs(b['Brecha_%']) - Math.abs(a['Brecha_%'])));
 
-            container.innerHTML = items.map(c => {
+            // Buscador (10/10): filtra por ticker o nombre de la empresa; con varias palabras se tienen que cumplir todas.
+            const palabras = _norm(document.getElementById('cedears-buscador')?.value).split(/\s+/).filter(Boolean);
+            const todos = items.length;
+            const visibles = palabras.length ? items.filter(c => { const hay = _norm(c.Ticker + ' ' + nombreEmpresa(c.Ticker) + ' ' + (TEMAS_EXTRA[c.Ticker] ?? '')); return palabras.every(w => hay.includes(w)); }) : items;
+            const conteo = document.getElementById('cedears-conteo');
+            const nDud = items.filter(esDudoso).length;
+            if (conteo) conteo.textContent = (palabras.length ? `${visibles.length} de ${todos}` : `${todos} CEDEARs`) + (nDud ? ` · ${nDud} con dato dudoso (al final)` : '');
+            if (!visibles.length) { container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Ningún CEDEAR coincide con la búsqueda.</div>'; return; }
+
+            container.innerHTML = visibles.map(c => {
                 const brecha = c['Brecha_%'];
                 const esCaro = brecha > 0;
+                if (esDudoso(c)) {
+                    const impl = c.Precio_real_ARS > 0 && c.Ratio ? (c.Precio_teorico_ARS * c.Ratio / c.Precio_real_ARS) : null;
+                    const implTxt = impl === null ? '' : (impl > 1000 ? 'un valor absurdo' : impl.toLocaleString('es-AR', { maximumFractionDigits: 2 }));
+                    return `
+                    <div class="py-2 border-b border-gray-800 last:border-0 opacity-90">
+                        <div class="flex justify-between items-center">
+                            <div class="font-mono text-sm font-bold text-gray-300">${logoInline(c.Ticker)}${c.Ticker}${nombreChico(c.Ticker)}</div>
+                            <span class="border border-gray-600 text-gray-400 px-2 py-1 rounded-sm font-mono text-xs font-bold whitespace-nowrap" title="Brecha de ${brecha}% respecto al teórico: demasiado grande para ser real">⚠ DATO DUDOSO</span>
+                        </div>
+                        <div class="font-mono text-[10px] text-gray-500">real $${c.Precio_real_ARS.toLocaleString('es-AR')} · teórico $${c.Precio_teorico_ARS.toLocaleString('es-AR')} · brecha calculada ${brecha > 0 ? '+' : ''}${brecha}%</div>
+                        <div class="font-mono text-[10px] text-gray-500 mt-1 leading-relaxed">Una brecha tan grande casi nunca es una oportunidad: lo más probable es que el ratio cargado (${c.Ratio} CEDEAR${c.Ratio === 1 ? '' : 'S'} por acción) esté desactualizado, o que el precio de data912 sea de otro instrumento. Con ese precio real, el ratio implícito sería ${implTxt}. No lo tomes como caro ni barato hasta revisarlo.</div>
+                    </div>`;
+                }
                 const color = esCaro ? 'text-neg border-neg' : 'text-pos border-pos';
                 return `
                     <div class="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
@@ -1753,12 +1788,12 @@
                     const fb = x.Ticker ? B.map(c => c[2](x)) : B.map(() => false);
                     const fe = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : null;
                     return { t, a, x, sa, nA: sa.length, fb, nB: fb.filter(Boolean).length,
-                        radar: a?.Radar_Score ?? x.Radar_Score ?? null, fr: x.RS_Score ?? null,
+                        radar: a?.Radar_Score ?? x.Radar_Score ?? null, fr: x.RS_Score ?? null, hoy: (typeof x['Var_dia_%'] === 'number') ? x['Var_dia_%'] : null,
                         hace: fe ? (ahora - fe) / 3600000 : null, sector: a?.Sector ?? x.Sector ?? '—', precio: a?.Precio ?? x.Precio ?? null };
                 });
                 if (confFiltro === 'conf') filas = filas.filter(o => o.nA >= 3);
                 else if (confFiltro === 'cond') filas = filas.filter(o => o.nB >= 6);
-                const cmp = { nA: (p, q) => q.nA - p.nA || q.nB - p.nB || (q.radar ?? 0) - (p.radar ?? 0), nB: (p, q) => q.nB - p.nB || q.nA - p.nA, radar: (p, q) => (q.radar ?? -1) - (p.radar ?? -1), fr: (p, q) => (q.fr ?? -1) - (p.fr ?? -1), hace: (p, q) => (p.hace ?? 1e9) - (q.hace ?? 1e9) };
+                const cmp = { nA: (p, q) => q.nA - p.nA || q.nB - p.nB || (q.radar ?? 0) - (p.radar ?? 0), nB: (p, q) => q.nB - p.nB || q.nA - p.nA, radar: (p, q) => (q.radar ?? -1) - (p.radar ?? -1), fr: (p, q) => (q.fr ?? -1) - (p.fr ?? -1), hace: (p, q) => (p.hace ?? 1e9) - (q.hace ?? 1e9), hoy: (p, q) => (q.hoy ?? -1e9) - (p.hoy ?? -1e9) };
                 filas.sort(cmp[confOrden === 'n' ? 'nA' : confOrden] ?? cmp.nA);
                 const th = (k, t, tip) => `<th class="px-1.5 py-1 text-[9px] uppercase font-normal cursor-pointer whitespace-nowrap ${confOrden === k || (k === 'nA' && confOrden === 'n') ? 'text-blueAlert' : 'text-gray-500'} hover:text-white" title="${tip}" onclick="confOrdenar('${k}')">${t}${confOrden === k || (k === 'nA' && confOrden === 'n') ? ' ▾' : ''}</th>`;
                 const horas = (v) => v === null ? '—' : v < 1 ? '<1 h' : v < 48 ? Math.round(v) + ' h' : Math.round(v / 24) + ' d';
@@ -1767,12 +1802,12 @@
                 const filtros = [['todos', `Todos (${nTodas})`], ['conf', 'Solo confluencia (3+ de 4)'], ['cond', 'Solo 6+ de 9 condiciones']].map(([k, t]) => `<button onclick="confFiltrar('${k}')" class="px-2 py-1 rounded-sm border ${confFiltro === k ? 'border-blueAlert text-blueAlert' : 'border-surface text-gray-500 hover:text-white'}">${t}</button>`).join('');
                 container.innerHTML = `<div class="flex flex-wrap gap-1 p-2 font-mono text-[10px] uppercase">${filtros}</div>
                     <table class="w-full font-mono text-xs"><thead>
-                    <tr class="text-[9px] uppercase"><th></th><th colspan="4" class="text-center font-normal text-blueAlert border-b border-blueAlert/40" title="Señales que se encendieron en las últimas 48 h">Confluencia (48 h)</th><th></th><th colspan="9" class="text-center font-normal text-pos border-b border-pos/40" title="Condiciones que se cumplen hoy">Condiciones de hoy</th><th colspan="6"></th></tr>
+                    <tr class="text-[9px] uppercase"><th></th><th colspan="4" class="text-center font-normal text-blueAlert border-b border-blueAlert/40" title="Señales que se encendieron en las últimas 48 h">Confluencia (48 h)</th><th></th><th colspan="9" class="text-center font-normal text-pos border-b border-pos/40" title="Condiciones que se cumplen hoy">Condiciones de hoy</th><th colspan="7"></th></tr>
                     <tr><th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal sticky left-0 bg-surface">Ticker</th>
                     ${A.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${tooltipsChip[c]}">${A_CORTO[c]}</th>`).join('')}
                     ${th('nA', '/4', 'Cuántas de las 4 señales de confluencia están encendidas')}
                     ${B.map(c => `<th class="px-1.5 py-1 text-[9px] uppercase text-gray-500 font-normal cursor-help" title="${c[1]}">${c[0]}</th>`).join('')}
-                    ${th('nB', '/9', 'Cuántas de las 9 condiciones se cumplen hoy')}${th('radar', 'Radar', 'Radar Score (solo de referencia)')}${th('fr', 'FR', 'Fuerza Relativa (0-100)')}${th('hace', 'Hace', 'Tiempo desde que se encendió la señal de confluencia')}
+                    ${th('nB', '/9', 'Cuántas de las 9 condiciones se cumplen hoy')}${th('radar', 'Radar', 'Radar Score (solo de referencia)')}${th('fr', 'FR', 'Fuerza Relativa (0-100)')}${th('hoy', 'Hoy', 'Variación del día contra el cierre anterior (durante la rueda es parcial)')}${th('hace', 'Hace', 'Tiempo desde que se encendió la señal de confluencia')}
                     <th class="px-1.5 py-1 text-left text-[9px] uppercase text-gray-500 font-normal">Sector</th><th class="px-1.5 py-1 text-right text-[9px] uppercase text-gray-500 font-normal">Precio</th></tr></thead><tbody>
                     ${filas.map(o => `<tr class="border-t border-gray-800 hover:bg-base cursor-pointer" onclick="abrirFicha('${o.t}')">
                         <td class="px-1.5 py-1 text-left whitespace-nowrap font-bold text-white sticky left-0 bg-surface">${logoInline(o.t, 14)}${o.t}</td>
@@ -1782,6 +1817,7 @@
                         <td class="px-1.5 py-1 text-center ${o.nB >= 6 ? 'text-pos font-bold' : 'text-gray-500'}">${o.nB}/9</td>
                         <td class="px-1.5 py-1 text-center text-gray-300">${o.radar != null ? o.radar.toFixed(0) : '—'}</td>
                         <td class="px-1.5 py-1 text-center text-gray-300">${o.fr != null ? o.fr.toFixed(0) : '—'}</td>
+                        <td class="px-1.5 py-1 text-center whitespace-nowrap ${o.hoy === null ? 'text-gray-600' : (o.hoy >= 0 ? 'text-pos' : 'text-neg')}">${o.hoy === null ? '—' : (o.hoy >= 0 ? '+' : '') + o.hoy.toFixed(1) + '%'}</td>
                         <td class="px-1.5 py-1 text-center text-gray-500 whitespace-nowrap">${horas(o.hace)}</td>
                         <td class="px-1.5 py-1 text-left text-[10px] uppercase text-gray-500 whitespace-nowrap">${o.sector}</td>
                         <td class="px-1.5 py-1 text-right text-gray-400">${o.precio != null ? '$' + o.precio : ''}</td></tr>`).join('')}
@@ -3316,13 +3352,13 @@
                 <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Cuadrante de rotación sectorial">
                     ${zonas}${ejes}${etiquetasCuadrante}${ejesTexto}${colasSvg}${puntosSvg}
                 </svg>
+                ${controlAnimacion}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Debilitándose']}"></span> Debilitándose: fuerte pero empeorando</div>
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Mejorando']}"></span> Mejorando: débil pero mejorando</div>
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${COLOR['Rezagado']}"></span> Rezagado: débil y empeorando</div>
                 </div>
-                ${controlAnimacion}
                 ${hayRecorridoLargo ? '<div class="font-mono text-[10px] text-gray-600 mt-2">La cola muestra el recorrido de las últimas semanas -- de dónde viene cada sector, no solo dónde está parado hoy.</div>' : ''}
                 <div class="font-mono text-[9px] uppercase tracking-widest text-gray-600 mt-4 pt-3 border-t border-base">Detalle (los números del círculo acá abajo son los mismos del gráfico, para los sectores muy juntos)</div>
                 ${listaSectoresHtml}
@@ -3641,7 +3677,7 @@
                     ? (rotacionTickerAnimIndex == null ? '' : `Semana ${idxFrame + 1}/${F} (hoy)`)
                     : `Semana ${idxFrame + 1}/${F}`;
                 controlAnimacionTicker = `
-                    <div class="flex items-center gap-3 mt-3 font-mono text-[10px]">
+                    <div class="flex items-center gap-3 mt-2 font-mono text-[10px]">
                         <button onclick="toggleAnimacionRotacionTicker()" class="px-3 py-1 rounded-sm border border-gray-700 text-gray-300 hover:border-accent hover:text-accent">
                             ${rotacionTickerAnimTimer ? '⏸ Pausar' : '▶ Reproducir recorrido'}
                         </button>
@@ -3681,6 +3717,7 @@
                 <svg id="rt-svg" viewBox="0 0 ${ROT_W} ${ROT_H}" class="w-full h-auto select-none" style="touch-action:pan-y" role="img" aria-label="Cuadrante de rotación por ticker (burbujas)">
                     <g id="rt-plot"></g>
                 </svg>
+                ${controlAnimacionTicker}
                 <div id="rt-pick" class="font-mono text-[11px] mt-2 min-h-[1.25rem]"></div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[9px] mt-3">
                     <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full inline-block" style="background:${ROT_COLOR['Líder']}"></span> Líder: fuerte y mejorando</div>
@@ -3693,7 +3730,6 @@
                     Una burbuja pegada al borde de arriba o de abajo cambió más que el rango del gráfico (se recorta el 2% más extremo para que el resto se pueda leer).
                 </div>
                 ${info}
-                ${controlAnimacionTicker}
                 ${sinHistorial.length ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${sinHistorial.length} ticker(s) todavía juntando historial.</div>` : ''}
             `;
             rotDibujar();
@@ -6707,6 +6743,7 @@
                     <div class="flex justify-between text-gray-400"><span>${dot(x['Dist_SMA200_%'])}SMA200</span><span class="${_col(x['Dist_SMA200_%'])}">${_pct(x['Dist_SMA200_%'], 1)}</span></div>
                     <div class="flex justify-between text-gray-400"><span>${dot(x['Dist_SMA50_%'])}SMA50</span><span class="${_col(x['Dist_SMA50_%'])}">${_pct(x['Dist_SMA50_%'], 1)}</span></div>
                     <div class="flex justify-between text-gray-400"><span>RSI</span><span class="text-gray-200">${_num(x.RSI) === null ? '—' : x.RSI.toFixed(0)}</span></div>
+                    ${_num(x['Var_dia_%']) === null ? '' : `<div class="flex justify-between text-gray-400"><span>Hoy</span><span class="${_col(x['Var_dia_%'])}">${_pct(x['Var_dia_%'], 1)}</span></div>`}
                     ${(x.Squeeze_Comprimido || x.VCP_valido) ? `<div class="mt-1">${x.Squeeze_Comprimido ? '<span class="text-[8px] uppercase border border-blueAlert text-blueAlert rounded-sm px-1 mr-1">squeeze</span>' : ''}${x.VCP_valido ? '<span class="text-[8px] uppercase border border-accent text-accent rounded-sm px-1">VCP</span>' : ''}</div>` : ''}
                 </div>`;
             const orden = Object.keys(grupos).sort((a, b) => media(grupos[b]) - media(grupos[a]));
@@ -7046,13 +7083,14 @@
             }
             const leyenda = Object.entries(RSE_COL).map(([n, c]) => `<span class="mr-3"><span style="color:${c}">●</span> ${n}</span>`).join('');
             cont.innerHTML = `${s}
-                <div class="font-mono text-[11px] text-gray-400 mt-2 min-h-[1.5rem]">${detalle}</div>
-                ${unico ? rseExplicarTicker(unico) : ''}
-                <div class="font-mono text-[10px] text-gray-500 mt-1">${leyenda}</div>
                 <div class="flex items-center gap-3 mt-2 font-mono text-[10px] text-gray-500">
                     <button onclick="rseToggleAnim()" class="px-2.5 py-1.5 rounded-sm border border-surface uppercase text-gray-300 hover:text-white">${rseTimer ? '⏸ Pausar' : '▶ Reproducir'}</button>
                     <span>${rseIdx === null ? 'Hoy' : `Semana ${k}/${L}`} · cierre al ${fechaK}</span>
-                </div>`;
+                </div>
+                <div class="font-mono text-[11px] text-gray-400 mt-2 min-h-[1.5rem]">${detalle}</div>
+                ${unico ? rseExplicarTicker(unico) : ''}
+                <div class="font-mono text-[10px] text-gray-500 mt-1">${leyenda}</div>
+`;
             const svg = document.getElementById('rse-svg');
             if (svg) svg.addEventListener('click', (ev) => {
                 const r = svg.getBoundingClientRect(), esc = RSE_W / r.width;
