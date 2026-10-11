@@ -5798,8 +5798,8 @@
                 if (distTecho >= 0 && distTecho <= CUIDADO_TECHO_AVWAP_PCT) {
                     const conVolumen = tickerData.Vol_rel != null && tickerData.Vol_rel >= CUIDADO_VOLUMEN_ALTO;
                     cuidados.push(conVolumen
-                        ? '🧱 Cerca del techo de su rango de 52 semanas, con volumen alto -- puede estar tocando una resistencia'
-                        : '🧱 Cerca del techo de su rango de 52 semanas');
+                        ? `🧱 Cerca de su AVWAP desde el máximo de 52 semanas (US$${Number(tickerData.AVWAP_52W_High).toFixed(2).replace('.', ',')}), con volumen alto: posible resistencia, donde pueden vender quienes compraron más arriba`
+                        : `🧱 Cerca de su AVWAP desde el máximo de 52 semanas (US$${Number(tickerData.AVWAP_52W_High).toFixed(2).replace('.', ',')}): posible resistencia, donde pueden vender quienes compraron más arriba`);
                 }
             }
             return cuidados;
@@ -6164,6 +6164,13 @@
                 const dist50Ctx = tickerData?.['Dist_SMA50_%'];
                 const dist200Ctx = tickerData?.['Dist_SMA200_%'];
                 const squeezeCtx = tickerData?.Squeeze_Comprimido;
+                // Precios entre paréntesis (10/10): SMA50, SMA200 y máximo de 52 semanas. Si el radar todavía no trae Max_52w, se deduce de la distancia (≈).
+                const usd = (x) => `US$${Number(x).toFixed(2).replace('.', ',')}`;
+                const sma50Txt = tickerData?.SMA50 != null ? ` <span class="text-gray-500">(${usd(tickerData.SMA50)})</span>` : '';
+                const sma200Txt = tickerData?.SMA200 != null ? ` <span class="text-gray-500">(${usd(tickerData.SMA200)})</span>` : '';
+                const max52Val = tickerData?.Max_52w != null ? Number(tickerData.Max_52w)
+                    : (tickerData?.Precio != null && dist52wCtx != null ? Number(tickerData.Precio) / (1 + dist52wCtx / 100) : null);
+                const max52Txt = max52Val != null ? ` <span class="text-gray-500">(máx. ${tickerData?.Max_52w != null ? '' : '≈'}${usd(max52Val)})</span>` : '';
                 const radarScoreCtx = tickerData?.Radar_Score;
 
                 const contextoTecnicoHtml = tickerData ? `
@@ -6176,15 +6183,15 @@
                             </div>
                             <div title="Qué tan lejos está el precio de hoy del valor más alto que tocó en los últimos 12 meses.">
                                 <div class="text-gray-600 text-[10px] uppercase">Dist. máx. 52 semanas</div>
-                                <div class="text-white">${dist52wCtx != null ? `${dist52wCtx > 0 ? '+' : ''}${dist52wCtx.toFixed(1)}%` : '—'}</div>
+                                <div class="text-white">${dist52wCtx != null ? `${dist52wCtx > 0 ? '+' : ''}${dist52wCtx.toFixed(1)}%` : '—'}${max52Txt}</div>
                             </div>
                             <div title="Qué tan lejos está el precio de su promedio móvil de 50 días. Muy extendido (bien por arriba) sugiere que subió rápido y podría hacer una pausa; muy por debajo sugiere debilidad de corto plazo.">
                                 <div class="text-gray-600 text-[10px] uppercase">Extensión vs. SMA50</div>
-                                <div class="text-white">${dist50Ctx != null ? `${dist50Ctx > 0 ? '+' : ''}${dist50Ctx.toFixed(1)}%` : '—'}</div>
+                                <div class="text-white">${dist50Ctx != null ? `${dist50Ctx > 0 ? '+' : ''}${dist50Ctx.toFixed(1)}%` : '—'}${sma50Txt}</div>
                             </div>
                             <div title="Qué tan lejos está el precio de su promedio móvil de 200 días -- la referencia de tendencia de más largo plazo. Negativo significa que cotiza por debajo.">
                                 <div class="text-gray-600 text-[10px] uppercase">Extensión vs. SMA200</div>
-                                <div class="text-white">${dist200Ctx != null ? `${dist200Ctx > 0 ? '+' : ''}${dist200Ctx.toFixed(1)}%` : '—'}</div>
+                                <div class="text-white">${dist200Ctx != null ? `${dist200Ctx > 0 ? '+' : ''}${dist200Ctx.toFixed(1)}%` : '—'}${sma200Txt}</div>
                             </div>
                             <div class="col-span-2" title="Las bandas de Bollinger se comprimieron: suele preceder a un movimiento más fuerte de lo normal -- pero esto NO dice para qué lado (ni alcista ni bajista). Solo avisa 'prestá atención'.">
                                 <div class="text-gray-600 text-[10px] uppercase">Squeeze de Bollinger</div>
