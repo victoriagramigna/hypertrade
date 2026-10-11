@@ -175,6 +175,7 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
             "Ret_6m_%": round(ret_6m * 100, 1),
             "Sobre_SMA50": bool(precio_actual > sma50),
             "Dist_Max52w_%": round((precio_actual / max_52w - 1) * 100, 1),
+            "Max_52w": round(float(max_52w), 2),   # 10/10: precio del máximo de 52 semanas (solo informativo, para mostrarlo en pantalla)
             "SMA50": round(float(sma50), 2) if pd.notna(sma50) else None,
             "Dist_SMA50_%": round((precio_actual / sma50 - 1) * 100, 2) if pd.notna(sma50) else None,
         }
