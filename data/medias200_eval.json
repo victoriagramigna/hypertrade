@@ -1,0 +1,178 @@
+{
+ "generado_utc": "2026-10-11T15:13:56.823696+00:00",
+ "ultimo_cierre": "2026-10-09",
+ "primera": "2026-07-17",
+ "ultima": "2026-10-09",
+ "registros": 1762,
+ "tipos": {
+  "sma_pierde": {
+   "n": 412,
+   "reconstruidos": 399,
+   "h": {
+    "1": {
+     "n": 408,
+     "ret_medio": 0.4,
+     "exceso_medio": 0.27,
+     "pct_le_gana": 49.0,
+     "pct_cae": 48.0
+    },
+    "5": {
+     "n": 383,
+     "ret_medio": 1.26,
+     "exceso_medio": 0.69,
+     "pct_le_gana": 47.0,
+     "pct_cae": 49.0
+    },
+    "10": {
+     "n": 347,
+     "ret_medio": 0.49,
+     "exceso_medio": -0.45,
+     "pct_le_gana": 41.0,
+     "pct_cae": 54.0
+    },
+    "20": {
+     "n": 265,
+     "ret_medio": 0.17,
+     "exceso_medio": -0.89,
+     "pct_le_gana": 43.0,
+     "pct_cae": 52.0
+    }
+   },
+   "falsas_alarmas": {
+    "n": 383,
+    "pct": 60.0
+   }
+  },
+  "ema_pierde": {
+   "n": 487,
+   "reconstruidos": 475,
+   "h": {
+    "1": {
+     "n": 482,
+     "ret_medio": 0.35,
+     "exceso_medio": 0.23,
+     "pct_le_gana": 51.0,
+     "pct_cae": 48.0
+    },
+    "5": {
+     "n": 456,
+     "ret_medio": 1.18,
+     "exceso_medio": 0.68,
+     "pct_le_gana": 46.0,
+     "pct_cae": 49.0
+    },
+    "10": {
+     "n": 412,
+     "ret_medio": 0.7,
+     "exceso_medio": -0.16,
+     "pct_le_gana": 41.0,
+     "pct_cae": 56.0
+    },
+    "20": {
+     "n": 314,
+     "ret_medio": -0.44,
+     "exceso_medio": -1.45,
+     "pct_le_gana": 38.0,
+     "pct_cae": 58.0
+    }
+   },
+   "falsas_alarmas": {
+    "n": 456,
+    "pct": 59.0
+   }
+  },
+  "sma_recupera": {
+   "n": 396,
+   "reconstruidos": 378,
+   "h": {
+    "1": {
+     "n": 387,
+     "ret_medio": 0.13,
+     "exceso_medio": 0.07,
+     "pct_le_gana": 50.0,
+     "pct_cae": 50.0
+    },
+    "5": {
+     "n": 349,
+     "ret_medio": 0.49,
+     "exceso_medio": 0.02,
+     "pct_le_gana": 45.0,
+     "pct_cae": 51.0
+    },
+    "10": {
+     "n": 331,
+     "ret_medio": 1.08,
+     "exceso_medio": 0.22,
+     "pct_le_gana": 49.0,
+     "pct_cae": 46.0
+    },
+    "20": {
+     "n": 273,
+     "ret_medio": 0.08,
+     "exceso_medio": -0.79,
+     "pct_le_gana": 45.0,
+     "pct_cae": 52.0
+    }
+   },
+   "falsas_alarmas": {
+    "n": 349,
+    "pct": 56.0
+   }
+  },
+  "ema_recupera": {
+   "n": 467,
+   "reconstruidos": 444,
+   "h": {
+    "1": {
+     "n": 459,
+     "ret_medio": -0.11,
+     "exceso_medio": -0.09,
+     "pct_le_gana": 50.0,
+     "pct_cae": 54.0
+    },
+    "5": {
+     "n": 415,
+     "ret_medio": -0.04,
+     "exceso_medio": -0.44,
+     "pct_le_gana": 43.0,
+     "pct_cae": 53.0
+    },
+    "10": {
+     "n": 394,
+     "ret_medio": 1.05,
+     "exceso_medio": 0.22,
+     "pct_le_gana": 49.0,
+     "pct_cae": 48.0
+    },
+    "20": {
+     "n": 320,
+     "ret_medio": -0.65,
+     "exceso_medio": -1.52,
+     "pct_le_gana": 38.0,
+     "pct_cae": 58.0
+    }
+   },
+   "falsas_alarmas": {
+    "n": 415,
+    "pct": 60.0
+   }
+  }
+ },
+ "adelanto": {
+  "ema_primero": 110,
+  "sma_primero": 107,
+  "mismo_dia": 179,
+  "solo_ema": 91,
+  "solo_sma": 32,
+  "dias_medio_ventaja_ema": 0.5
+ },
+ "horizontes": [
+  1,
+  5,
+  10,
+  20
+ ],
+ "falsa_alarma_ruedas": 5,
+ "ventana_adelanto": 20,
+ "nota": "Cruces de la SMA200 y de la EMA200 de cada ticker (cierre diario). 'Exceso' = rendimiento del ticker menos el del SPY a las N ruedas. 'Falsa alarma' = a las 5 ruedas el precio volvio al lado anterior de la misma media. Los cruces con fecha vieja se reconstruyeron desde los cierres guardados (hay pocos meses de historia); los nuevos se anotan dia a dia. Informativo, no es una recomendacion."
+}
