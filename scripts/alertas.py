@@ -295,6 +295,9 @@ def detectar_alertas(precios: dict, volumenes: dict, tickers_sector: dict, bench
                 "Vol_rel": round(vol_rel_hoy, 2),
                 "SMA21": round(sma_cortas[21].iloc[-1], 2) if not pd.isna(sma_cortas[21].iloc[-1]) else None,
                 "Precio": round(float(precio_hoy), 2),
+                # 10/10 (pedido de Victoria): datos para explicar el cruce de "Rompió piso" (solo informativos, no entran en ningún cálculo)
+                **({"EMA200": round(float(ema200_hoy), 2), "EMA200_ayer": round(float(ema200.iloc[-2]), 2),
+                    "Precio_ayer": round(float(precio_ayer), 2)} if estado_key in ("deterioro", "stop_loss") else {}),
                 "fecha_evento": fecha_evento,
             })
 
