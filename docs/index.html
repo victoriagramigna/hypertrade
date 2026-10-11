@@ -502,11 +502,11 @@
                     <div class="font-mono text-[10px] text-gray-500 mb-2 leading-relaxed">Buscá por ticker, empresa, sector o tema (ej. <span class="text-gray-300">bancos</span>, <span class="text-gray-300">energía</span>, <span class="text-gray-300">brasil</span>, <span class="text-gray-300">AAPL</span>). Si escribís varias palabras, tienen que cumplirse todas. Solo filtra la lista de abajo.</div>
                     <input id="recien-buscador" type="text" placeholder="Filtrar esta lista..." oninput="if (rotacionTickerUltimoData) renderTablasRotacionTicker(rotacionTickerUltimoData.rotacion_ticker ?? {})"
                         class="w-full bg-base border border-surface rounded-sm px-3 py-1.5 mb-2 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent">
-                    <div id="rotacion-recien-lideres" class="bg-surface p-3 rounded-sm border border-surface space-y-3"></div>
+                    <div id="rotacion-recien-lideres" class="bg-surface p-3 rounded-sm border border-surface space-y-3 max-h-[60vh] overflow-y-auto overscroll-contain"></div>
                 </div>
                 <div>
                     <div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mb-2">Aceleración inusual (7 días)</div>
-                    <div id="rotacion-aceleracion-inusual" class="bg-surface p-3 rounded-sm border border-surface space-y-3"></div>
+                    <div id="rotacion-aceleracion-inusual" class="bg-surface p-3 rounded-sm border border-surface space-y-3 max-h-[60vh] overflow-y-auto overscroll-contain"></div>
                 </div>
             </div>
         </section>
@@ -675,6 +675,8 @@
 
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Avisos por mail</h2>
+            <details id="avisos-mail-det" class="mb-2">
+            <summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent mb-2">Mostrar / ocultar avisos por mail (tocá para ver)</summary>
             <div class="bg-surface p-4 rounded-sm border border-surface font-mono text-xs space-y-3">
                 <div class="text-gray-400">
                     Para que el sistema te avise por mail (stop tocado, objetivo de ganancia, pérdida de fuerza técnica) incluso sin tener esta página abierta, conectá esta cartera con GitHub -- una sola vez. Después, cada compra o venta que anotes se sincroniza sola, sin que tengas que copiar ni pegar nada.
@@ -711,6 +713,7 @@
                     <div class="text-gray-600 text-[10px] mt-1">Trae lo último guardado en <code class="text-accent">data/mi_cartera.json</code> del repo. Sirve si cambiaste de navegador, se borró el caché, o esta lista quedó vacía por error -- nunca escribe nada, solo lee.</div>
                 </div>
             </div>
+            </details>
         </section>
 
         <section>
@@ -1011,7 +1014,7 @@
 
             if (alerta) {
                 const recomendacion = alerta?.['Recomendación final'] ?? '—';
-                const estado = alerta?.Estado ?? '—';
+                const estado = ((alerta?.Estado ?? '—') + '').replace('(SMA200)', '(EMA200)');
                 const tipo = alerta?.Tipo ?? 'tecnico';
                 
                 let recColor = 'text-accent border-accent'; 
@@ -1035,6 +1038,7 @@
                             <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
                         </div>
                         <div class="font-mono text-sm text-gray-300">${estado}</div>
+                        ${cruceEma200Html(alerta)}
                     </div>
                 `;
             }
@@ -1348,7 +1352,7 @@
                 const recomendacion = alerta?.['Recomendación final'] ?? '—';
                 const ticker = alerta?.Ticker ?? '—';
                 const sector = alerta?.Sector ?? '—';
-                const estado = alerta?.Estado ?? '—';
+                const estado = ((alerta?.Estado ?? '—') + '').replace('(SMA200)', '(EMA200)');
                 const score = alerta?.Score ?? '—';
                 const ajustado = alerta?.['Ajustado por'] ?? '—';
                 const tipo = alerta?.Tipo ?? 'tecnico';
@@ -1520,9 +1524,9 @@
                 // Solo informativo; no cambia ningún cálculo ni la recomendación.
                 let ventaConChipsHtml = '';
                 if (recomendacion === 'VENTA' && (alerta?.Apoyo_AVWAP || alerta?.Cruce_AVWAP_52w || alerta?.Pendiente_OK)) {
-                    ventaConChipsHtml = `<div class="mt-2 border border-gray-600 text-gray-400 bg-base font-mono text-[11px] px-2 py-1.5 rounded-sm leading-relaxed">
+                    ventaConChipsHtml = `<details class="mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="mt-2 border border-gray-600 text-gray-400 bg-base font-mono text-[11px] px-2 py-1.5 rounded-sm leading-relaxed">
                         ℹ️ Esta alerta marca una <span class="text-neg font-bold">VENTA</span> por lo que acaba de pasar con el precio (por ejemplo, perdió un piso). Los chips azules, verdes y naranjas de arriba describen el <span class="text-white">contexto técnico</span> del ticker (apoya en una media, tendencia de medias) y no cancelan la alerta: son dos lecturas distintas que hoy no coinciden. Conviene mirar las dos antes de decidir.
-                    </div>`;
+                    </div></details>`;
                 }
 
                 // Aviso de volumen bajo en un Gap alcista: esta señal NO exige
@@ -1688,6 +1692,7 @@
                             <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
                         </div>
                         <div class="font-mono text-sm text-gray-300">${estado}</div>
+                        ${cruceEma200Html(alerta)}
                         ${otrasSeñalesHtml}
                         ${chipsHtml}
                         ${cuidadosAvisoHtml}
@@ -2178,20 +2183,36 @@
             const base = tipo === 'entrada' ? 'tendencia sana para esperar un retroceso a un apoyo' : 'sostiene su media de 50';
             return { k, cls, txt, notas, base };
         }
+        // "Rompió piso" (10/10): el radar compara contra la EMA200 (media exponencial de 200 ruedas), no la SMA200.
+        // Esta línea dice qué pasó en concreto. Con los datos nuevos (EMA200, Precio_ayer, EMA200_ayer) muestra cuánto cruzó.
+        function cruceEma200Html(al) {
+            if (!al || !/Rompió piso/.test(al.Estado ?? '')) return '';
+            const f = (x, d = 2) => Number(x).toFixed(d).replace('.', ',');
+            let txt = 'Hoy el precio cerró <span class="text-white">por debajo</span> de su EMA200 (media exponencial de 200 ruedas) y ayer no lo estaba: cruzó hacia abajo.';
+            const e = Number(al.EMA200), pa = Number(al.Precio_ayer), ea = Number(al.EMA200_ayer), p = Number(al.Precio);
+            if (al.EMA200 != null && al.Precio_ayer != null && al.EMA200_ayer != null && e > 0 && ea > 0) {
+                const hoy = (p / e - 1) * 100, ayer = (pa / ea - 1) * 100;
+                const pc = (x) => f(Math.abs(x), Math.abs(x) < 1 ? 2 : 1);
+                txt = `Cerró en <span class="text-white">${f(p)}</span>, ${pc(hoy)}% <span class="text-neg">por debajo</span> de su EMA200 (${f(e)}). Ayer había cerrado en ${f(pa)}, ${pc(ayer)}% ${ayer >= 0 ? 'por encima' : 'por debajo'} de ella (${f(ea)}). ${Math.abs(hoy) < 1 ? '<span class="text-gray-500">El cruce es chico: cualquier rebote lo deshace.</span>' : ''}`;
+            }
+            return `<div class="font-mono text-[11px] text-gray-400 mt-1 leading-relaxed">${txt}</div>`;
+        }
         function premisaHtml(tipo, r, z) {
             const c = premisaCalc(tipo, r, z); if (!c) return '';
             const extra = c.notas.length ? ` <span class="text-gray-400">Además: ${c.notas.join(' y ')}.</span>` : '';
             return `<div class="mt-1" title="Se calcula sola con los datos de la última corrida del radar."><span class="text-accent font-bold">Premisa (${c.base}):</span> <span class="font-bold ${c.cls}">${c.k}</span> <span class="text-gray-300">-- ${c.txt}</span>${extra}</div>
-                <div class="text-gray-600">Vigente: sobre las medias de 50 y 200. Debilitada: perdió la de 50. Rota: perdió también la de 200. Invalidada: cayó bajo el piso de la zona de demanda. Informativo, no una orden.</div>`;
+`;
         }
         function semilleroObjetivoHtml(t, r, z) {
             const [tipo, porque] = SEMILLERO_OBJETIVO[t] ?? ['favorito', 'Agregado por vos a tu lista de favoritos.'];
             const filas = (SEMILLERO_SIGNIFICADOS[tipo] ?? []).map(([a, b]) => `<li><span class="text-gray-300">${a}:</span> ${b}</li>`).join('');
             return `<div class="font-mono text-[10px] mt-2 pt-2 border-t border-gray-800 leading-relaxed">
                 <div><span class="text-accent font-bold">Por qué lo seguimos:</span> <span class="text-gray-300">${porque}</span></div>
-                ${premisaHtml(tipo, r, z)}
+                ${(() => { const ph = premisaHtml(tipo, r, z); return ph; })()}
+                <details class="mt-1"><summary class="cursor-pointer select-none uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary>
+                ${premisaHtml(tipo, r, z) ? `<div class="text-gray-600 mt-1">Vigente: sobre las medias de 50 y 200. Debilitada: perdió la de 50. Rota: perdió también la de 200. Invalidada: cayó bajo el piso de la zona de demanda. Informativo, no una orden.</div>` : ''}
                 <div class="text-gray-400 font-bold mt-1">Qué significa cada dato, para este objetivo</div>
-                <ul class="list-disc pl-4 text-gray-500">${filas}</ul>
+                <ul class="list-disc pl-4 text-gray-500">${filas}</ul></details>
             </div>`;
         }
 
