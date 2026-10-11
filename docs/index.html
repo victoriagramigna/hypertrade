@@ -781,6 +781,12 @@
         </section>
 
         <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Medias de 200: ¿SMA o EMA?</h2>
+            <p class="font-mono text-[10px] text-gray-500 mb-3">Cada vez que un ticker cruza su SMA200 (media simple de 200 ruedas) o su EMA200 (exponencial, reacciona antes) con el cierre diario, se anota. Después se mide cuánto rindió contra el SPY a 1, 5, 10 y 20 ruedas. "Pierde" = el cierre pasó de arriba a abajo (posible salida); "recupera" = de abajo a arriba (posible entrada). "Falsa alarma" = a las 5 ruedas el precio volvió al lado anterior de la misma media. También cuenta cuál de las dos avisó primero. Los cruces viejos se reconstruyeron con los cierres guardados (hay pocos meses y un solo tipo de mercado); los nuevos se anotan solos. Con pocos casos no hay conclusión; es para decidir con datos cuál usar. No cambia ninguna alerta.</p>
+            <div id="aud-m200" class="space-y-3"><div class="text-gray-500 font-mono text-xs">Todavía no hay cruces registrados.</div></div>
+        </section>
+
+        <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Evolución mes a mes</h2>
             <p class="font-mono text-[10px] text-gray-500 mb-3">Todas las señales juntas, agrupadas por el mes en que se dispararon. Sirve para ver si la app acierta de forma sostenida o solo tuvo algunas semanas buenas. "A favor" cuenta como ganancia que una señal bajista haya bajado.</p>
             <div id="aud-meses" class="bg-surface p-4 rounded-sm border border-surface space-y-2"></div>
@@ -4276,6 +4282,39 @@
             if (h) cont.innerHTML = h + `<div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
         }
 
+        const M200_EVAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/medias200_eval.json';
+        async function fetchAuditoriaM200() {
+            const cont = document.getElementById('aud-m200');
+            if (!cont) return;
+            let a;
+            try {
+                const resp = await fetch(`${M200_EVAL_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resp.ok) return;
+                a = await resp.json();
+            } catch (e) { return; }
+            if (!a.registros) return;
+            const pc = (v) => (v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%');
+            const cl = (v) => (v == null ? 'text-gray-500' : (v >= 0 ? 'text-pos' : 'text-neg'));
+            const NOM = { sma_pierde: 'SMA200 la pierde', ema_pierde: 'EMA200 la pierde', sma_recupera: 'SMA200 la recupera', ema_recupera: 'EMA200 la recupera' };
+            const hs = (a.horizontes ?? [1, 5, 10, 20]).map(String);
+            const celda = (x) => x ? `<span class="${cl(x.exceso_medio)}">${pc(x.exceso_medio)}</span> <span class="text-gray-600">(${x.pct_le_gana}%)</span>` : '<span class="text-gray-600">—</span>';
+            const filas = Object.keys(NOM).map(t => {
+                const g = a.tipos?.[t]; if (!g || !g.n) return '';
+                return `<tr class="border-t border-gray-800 text-center"><td class="text-left text-gray-200">${NOM[t]}</td><td class="text-gray-400">${g.n}</td>${hs.map(h => `<td>${celda(g.h?.[h])}</td>`).join('')}<td class="text-gray-300">${g.falsas_alarmas?.pct != null ? g.falsas_alarmas.pct + '%' : '—'}</td></tr>`;
+            }).join('');
+            const d = a.adelanto ?? {};
+            const tot = (d.ema_primero ?? 0) + (d.sma_primero ?? 0) + (d.mismo_dia ?? 0);
+            let h = `<div class="font-mono text-[11px] text-gray-300">Cruces registrados: <span class="text-white font-bold">${a.registros}</span> (del ${a.primera} al ${a.ultima}) <span class="text-gray-500">— la mayoría reconstruidos; el período es corto</span></div>
+                <div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px]"><div class="text-white font-bold mb-1">Rendimiento después del cruce, contra el SPY</div>
+                <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">Cruce</th><th class="font-normal">Casos</th>${hs.map(x => `<th class="font-normal">+${x} r.</th>`).join('')}<th class="font-normal">Falsas alarmas</th></tr></thead><tbody>${filas}</tbody></table></div>
+                <div class="text-[9px] text-gray-600 mt-1">Cada celda: exceso medio contra el SPY (% de casos en que le ganó). Para los "pierde", un exceso negativo significa que la señal anticipó bien la caída.</div></div>
+                <div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] space-y-1"><div class="text-white font-bold">¿Cuál avisa primero? (al perder la media)</div>
+                <div class="text-gray-300">La EMA200 avisó antes: <span class="text-white font-bold">${d.ema_primero ?? 0}</span> · La SMA200 avisó antes: <span class="text-white font-bold">${d.sma_primero ?? 0}</span> · Mismo día: <span class="text-white font-bold">${d.mismo_dia ?? 0}</span>${tot ? '' : ''}</div>
+                <div class="text-gray-400">Solo cruzó la EMA: ${d.solo_ema ?? 0} · Solo cruzó la SMA: ${d.solo_sma ?? 0} (en una ventana de ${a.ventana_adelanto ?? 20} ruedas)</div></div>
+                <div class="font-mono text-[9px] text-gray-600">${a.nota ?? ''}</div>`;
+            cont.innerHTML = h;
+        }
+
         const RSE_EVAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_spy_etfs_eval.json';
         async function fetchAuditoriaRSE() {
             const cont = document.getElementById('aud-rse');
@@ -4369,7 +4408,7 @@
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
             if (name === 'historial' && historialData === null) fetchHistorialData();
-            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); fetchAuditoriaRSE(); }
+            if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); fetchAuditoriaRSE(); fetchAuditoriaM200(); }
             if (name === 'alertas') fetchPreapertura();
             if (name === 'universo' && !rseData) fetchRSE();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
