@@ -519,14 +519,16 @@
                 Los cuatro cuadrantes se leen igual que en el otro gráfico: <span class="text-pos">Líder</span> (fuerte y mejorando), <span class="text-blueAlert">Debilitándose</span> (fuerte pero empeorando),
                 <span class="text-neg">Rezagado</span> (débil y empeorando) y <span class="text-accent">Mejorando</span> (débil pero mejorando). La estela muestra las últimas 16 semanas. Con ▶ se reproduce semana a semana.
                 Es una forma de mirar dónde está el dinero, no una señal de compra ni de venta.
+                Con <span class="text-gray-300">Vista</span> elegís qué ETFs se dibujan (por ejemplo solo los 11 sectoriales, como en el gráfico de Warren) y la escala se ajusta a lo que queda.
             </div>
             <div id="rse-modo-botones" class="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase"></div>
+            <div id="rse-vista-botones" class="mb-2 flex flex-wrap items-center gap-1.5 font-mono text-[10px] uppercase"></div>
             <div id="rse-explica" class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed"></div>
             <div class="mb-3 flex flex-wrap items-center gap-2">
                 <input id="rse-buscador" type="text" placeholder="Uno o varios ETFs (ej. XLF, XLK, ILF)..."
                     class="w-full sm:w-64 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
                     oninput="rseDibujar()">
-                <button onclick="document.getElementById('rse-buscador').value='';rseDibujar()" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-500 hover:text-white">Limpiar</button>
+                <button onclick="document.getElementById('rse-buscador').value='';rsePick=null;rseSoloSel=false;rseDibujar()" class="px-2.5 py-1.5 rounded-sm border border-surface font-mono text-[10px] uppercase text-gray-500 hover:text-white">Limpiar</button>
             </div>
             <div id="rse-chart" class="bg-surface p-3 rounded-sm border border-surface"><div class="font-mono text-xs text-gray-500">Cargando...</div></div>
             <div id="rse-lectura"></div>
@@ -6999,6 +7001,44 @@
         let rseData = null, rseIdx = null, rseTimer = null, rsePick = null, rseModo = 'corto';
         function rseEtfs() { return (rseModo === 'corto' && rseData?.corto?.etfs) ? rseData.corto.etfs : (rseData?.etfs ?? {}); }
         function rseParams() { return (rseModo === 'corto' && rseData?.corto?.params) ? rseData.corto.params : (rseData?.params ?? { semanas_promedio: 10, semanas_aceleracion: 4 }); }
+        // Vistas: qué ETFs se dibujan. "Todos" es la vista de siempre; las demás agrupan por tema.
+        // (Un ETF que no esté en ninguna lista solo aparece en "Todos".)
+        const RSE_GRUPOS = {
+            todos:       { n: 'Todos', t: null },
+            sectoriales: { n: 'Sectoriales EEUU', t: ['XLB', 'XLC', 'XLE', 'XLF', 'XLI', 'XLK', 'XLP', 'XLRE', 'XLU', 'XLV', 'XLY'] },
+            indices:     { n: 'Índices y apalancados', t: ['DIA', 'IVV', 'IWM', 'QQQ', 'RSP', 'SPXL', 'TQQQ', 'SH'] },
+            paises:      { n: 'Países y regiones', t: ['ACWI', 'EEM', 'EFA', 'EWJ', 'EWY', 'EWZ', 'FXI', 'IEMG', 'ILF', 'VEA'] },
+            materias:    { n: 'Materias primas', t: ['COPX', 'GDX', 'GLD', 'SLV', 'USO', 'XME'] },
+            tematicos:   { n: 'Temáticos', t: ['ARKK', 'CIBR', 'IBB', 'ICLN', 'ITA', 'SMH'] },
+            cripto:      { n: 'Cripto y volatilidad', t: ['IBIT', 'ETHA', 'VXX'] }
+        };
+        let rseGrupo = 'todos', rseSoloSel = false;
+        function rseDetenerAnim() { if (rseTimer) { clearInterval(rseTimer); rseTimer = null; } rseIdx = null; }
+        function rseCambiarGrupo(g) { rseGrupo = g; rsePick = null; rseDetenerAnim(); rseDibujar(); }
+        function rseToggleSolo() { rseSoloSel = !rseSoloSel; rsePick = null; rseDetenerAnim(); rseDibujar(); }
+        // Devuelve los tickers que se dibujan. Lo buscado siempre aparece, aunque no sea del grupo.
+        function rseVisibles(etfs, sel) {
+            const todos = Object.keys(etfs);
+            if (rseSoloSel && sel.length) return todos.filter(t => sel.includes(t));
+            const g = RSE_GRUPOS[rseGrupo]?.t;
+            if (!g) return todos;
+            const permitidos = new Set([...g, ...sel]);
+            return todos.filter(t => permitidos.has(t));
+        }
+        function rseVistaBotones() {
+            const el = document.getElementById('rse-vista-botones');
+            if (!el) return;
+            const etfs = rseEtfs(), sel = rseSeleccion();
+            const on = 'bg-accent text-base border-accent font-bold', off = 'border-surface text-gray-400 hover:text-white';
+            const grupos = Object.entries(RSE_GRUPOS).map(([id, g]) => {
+                const n = g.t ? g.t.filter(t => etfs[t]).length : Object.keys(etfs).length;
+                if (!n) return '';
+                return `<button onclick="rseCambiarGrupo('${id}')" class="px-2.5 py-1.5 rounded-sm border ${(rseGrupo === id && !(rseSoloSel && sel.length)) ? on : off}">${g.n} (${n})</button>`;
+            }).join('');
+            const solo = `<button onclick="rseToggleSolo()" class="px-2.5 py-1.5 rounded-sm border ${rseSoloSel ? on : off}" title="Oculta todos los ETFs menos los que escribiste en el buscador">Solo lo buscado</button>`;
+            const aviso = (rseSoloSel && !sel.length) ? '<span class="text-gray-500 normal-case">Escribí uno o más ETFs arriba para usar esta vista.</span>' : '';
+            el.innerHTML = `<span class="text-gray-500 mr-1">Vista:</span>${grupos}<span class="text-gray-600 mx-1">|</span>${solo}${aviso}`;
+        }
         function rseCambiarModo(m) { rseModo = m; rsePick = null; if (rseTimer) { clearInterval(rseTimer); rseTimer = null; } rseIdx = null; rseDibujar(); }
 
         async function fetchRSE() {
@@ -7083,9 +7123,11 @@
             const cont = document.getElementById('rse-chart');
             if (!cont || !rseData) return;
             rseBotones();
-            const etfs = rseEtfs(), tks = Object.keys(etfs);
-            if (!tks.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
+            rseVistaBotones();
+            const etfs = rseEtfs();
             const sel = rseSeleccion(), haySel = sel.length > 0;
+            const tks = rseVisibles(etfs, sel);
+            if (!tks.length) { cont.innerHTML = '<div class="font-mono text-xs text-gray-500">Sin datos.</div>'; return; }
             const L = Math.max(...tks.map(t => etfs[t].length));
             const k = rseIdx === null ? L : rseIdx + 1;
             const q98 = (arr) => { const a = arr.map(Math.abs).sort((p, q) => p - q); return a[Math.min(a.length - 1, Math.floor(a.length * 0.98))] || 1; };
@@ -7127,7 +7169,7 @@
             }
             const colocadas = [];
             const aEtiquetar = new Set(info.filter(i => i.esSel).map(i => i.t));
-            if (!haySel) info.slice().sort((a, b) => b.dist - a.dist).slice(0, 10).forEach(i => aEtiquetar.add(i.t));
+            if (!haySel) info.slice().sort((a, b) => b.dist - a.dist).slice(0, tks.length <= 14 ? tks.length : 10).forEach(i => aEtiquetar.add(i.t));
             for (const i of info.sort((a, b) => a.esSel - b.esSel)) {
                 const dim = haySel && !i.esSel;
                 s += `<circle cx="${i.cx.toFixed(1)}" cy="${i.cy.toFixed(1)}" r="${i.esSel ? 5.5 : 4}" fill="${RSE_COL[i.cuad]}" opacity="${dim ? 0.3 : 0.95}" stroke="${i.esSel ? '#fff' : '#0B0E14'}" stroke-width="${i.esSel ? 1.5 : 1}"/>`;
@@ -7172,7 +7214,7 @@
             const cont = document.getElementById('rse-lectura');
             if (!cont || !rseData) return;
             const etfs = rseEtfs();
-            const lista = (sel && sel.length ? sel : Object.keys(etfs));
+            const lista = (sel && sel.length ? sel : rseVisibles(etfs, []));
             const tag = (c) => `<span style="color:${RSE_COL[c]}" class="font-bold">${c}</span>`;
             const cambios = [], largos = [];
             for (const t of lista) {
