@@ -1,7 +1,85 @@
 {
- "evaluados": [],
- "base_por_fecha": {},
- "resumen": {},
- "actualizado_utc": "2026-10-09T11:16:59.363225+00:00",
+ "evaluados": [
+  {
+   "id": "PRE-FCX-2026-10-09-gap_candidato",
+   "fecha": "2026-10-09",
+   "ticker": "FCX",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.33,
+   "balance": null,
+   "ret_cierre_pct": 3.58,
+   "gap_apertura_pct": 2.64,
+   "gap_real": true
+  },
+  {
+   "id": "PRE-DAL-2026-10-09-balance",
+   "fecha": "2026-10-09",
+   "ticker": "DAL",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "hoy",
+   "ret_cierre_pct": 0.04,
+   "gap_apertura_pct": -2.99,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-XP-2026-10-09-gap_candidato",
+   "fecha": "2026-10-09",
+   "ticker": "XP",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.95,
+   "balance": null,
+   "ret_cierre_pct": 6.65,
+   "gap_apertura_pct": 2.91,
+   "gap_real": true
+  },
+  {
+   "id": "PRE-SBS-2026-10-09-gap_candidato",
+   "fecha": "2026-10-09",
+   "ticker": "SBS",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.8,
+   "balance": null,
+   "ret_cierre_pct": 2.28,
+   "gap_apertura_pct": 1.82,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-SNAP-2026-10-09-gap_candidato",
+   "fecha": "2026-10-09",
+   "ticker": "SNAP",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.39,
+   "balance": null,
+   "ret_cierre_pct": 6.31,
+   "gap_apertura_pct": 2.3,
+   "gap_real": true
+  }
+ ],
+ "base_por_fecha": {
+  "2026-10-09": {
+   "n": 191,
+   "pct_gap": 14.14
+  }
+ },
+ "resumen": {
+  "gap_candidato": {
+   "n": 4,
+   "gap_real": 3,
+   "pct_gap_real": 75.0,
+   "mediana_ret_cierre_pct": 4.95,
+   "mov_abs_mediano_pct": 4.95,
+   "pct_gap_normal": 14.1
+  },
+  "balance": {
+   "n": 1,
+   "gap_real": 0,
+   "pct_gap_real": 0.0,
+   "mediana_ret_cierre_pct": 0.04,
+   "mov_abs_mediano_pct": 0.04,
+   "pct_gap_normal": 14.1
+  }
+ },
+ "actualizado_utc": "2026-10-12T21:42:42.412467+00:00",
  "nota": "Se mide el cierre del dia del aviso contra el cierre anterior. 'pct_gap_normal' es la frecuencia habitual de gaps de +3% entre los papeles con macrotendencia ese mismo dia (con muestras chicas no concluye nada)."
 }
