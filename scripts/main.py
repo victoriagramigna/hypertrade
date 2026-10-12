@@ -37,6 +37,7 @@ from telegram_bot import (notificar_alertas, notificar_datos_desactualizados, no
 from macro_local import traer_contexto_macro
 from frescura import evaluar_frescura
 from cedear_pricing import calcular_brechas_cedear
+from sectores_hoy import calcular as calcular_sectores_hoy
 from movimientos import detectar_movimientos_diarios
 from bitacora import registrar_eventos
 from top30_nuevos import registrar_y_comparar_top30, registrar_y_comparar_top30_radar
@@ -444,6 +445,7 @@ def main():
         "contexto_macro": contexto_macro,
         "cedears_pricing": cedears_pricing,
         "ratios_cedear": RATIOS_CEDEAR,   # dato fijo de config.py: Mi Cartera lo usa aunque cedears_pricing venga vacío (CCL caído / feriado)
+        "sectores_hoy": calcular_sectores_hoy(precios, BENCHMARK),   # cuadro "Sectores hoy" de Inicio (solo informativo)
         "movimientos_dia": movimientos_dia,
         # Precio del SPY -- Mi Cartera lo guarda al comprar y al vender, para
         # poder comparar cada operación real contra el mercado (Auditoría)
