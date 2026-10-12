@@ -201,6 +201,14 @@
         </div>
 
         <!-- Pulso del mercado: fila KPI + balances de la semana (9/10, inspirado en Warren Bife) -->
+        <section id="sectores-hoy-section">
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Sectores hoy</h2>
+            <details class="expl mb-3"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary>
+                <div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">Cada fila es un ETF que agrupa a las empresas más grandes de un sector de EE.UU. (por ejemplo XLK = tecnología). Sirve para ver de un vistazo qué sectores suben y cuáles caen hoy, y si el mercado se está moviendo por rotación (unos suben mientras otros bajan) o todos juntos. "vs SPY" es la diferencia, en puntos porcentuales, contra el índice S&P 500 en el mismo día. Se actualiza con cada corrida del radar durante la rueda. Informativo, no es una recomendación.</div>
+            </details>
+            <div id="sectores-hoy-cont" class="bg-surface p-3 rounded-sm border border-surface font-mono text-[11px]"><div class="text-gray-500">Cargando...</div></div>
+        </section>
+
         <section id="pulso-section">
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">📊 Pulso del mercado</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
@@ -2411,6 +2419,49 @@
             if (i) i.addEventListener('keydown', e => { if (e.key === 'Enter') agregarSemillero(); });
         });
 
+        // ---------- Sectores hoy (12/10) ----------
+        // Los 11 ETFs sectoriales SPDR, con el sector entre paréntesis. Día y precio salen del ranking de la última corrida;
+        // 5 días y 1 mes salen de data.sectores_hoy (si el radar ya lo trae). Solo informativo.
+        const SECTORES_HOY_INFO = {
+            XLK: ['Tecnología', 'Apple, Microsoft, Nvidia'], XLC: ['Comunicaciones', 'Alphabet, Meta, Netflix'],
+            XLY: ['Consumo discrecional', 'Amazon, Tesla, Home Depot'], XLP: ['Consumo básico', 'Walmart, Costco, Coca-Cola'],
+            XLV: ['Salud', 'Eli Lilly, UnitedHealth, J&J'], XLF: ['Financiero', 'JPMorgan, Visa, Berkshire'],
+            XLE: ['Energía', 'ExxonMobil, Chevron'], XLI: ['Industriales', 'GE Aerospace, Caterpillar, RTX'],
+            XLB: ['Materiales', 'Linde, Sherwin-Williams, Freeport'], XLU: ['Servicios públicos', 'NextEra, Southern Co., Duke'],
+            XLRE: ['Inmobiliario', 'Prologis, American Tower, Welltower'],
+        };
+        function renderSectoresHoy(data) {
+            const cont = document.getElementById('sectores-hoy-cont');
+            if (!cont) return;
+            const rk = Object.fromEntries((data?.ranking ?? []).map(r => [r.Ticker, r]));
+            const extra = Object.fromEntries((data?.sectores_hoy?.sectores ?? []).map(r => [r.Ticker, r]));
+            const spyDia = rk.SPY?.['Var_dia_%'] ?? data?.sectores_hoy?.['spy_dia_%'] ?? null;
+            const filas = Object.keys(SECTORES_HOY_INFO).map(t => {
+                const r = rk[t]; const e = extra[t];
+                const dia = r?.['Var_dia_%'] ?? e?.['Var_dia_%'] ?? null;
+                if (dia == null) return null;
+                return { t, nombre: SECTORES_HOY_INFO[t][0], dia, precio: r?.Precio ?? e?.Precio, vs: spyDia != null ? dia - spyDia : null, d5: e?.['Ret_5d_%'] ?? null, m1: e?.['Ret_1m_%'] ?? null };
+            }).filter(Boolean).sort((a, b) => b.dia - a.dia);
+            if (!filas.length) { cont.innerHTML = '<div class="text-gray-500">Sin datos de sectores en esta corrida.</div>'; return; }
+            const f = (x, d = 2) => Number(x).toFixed(d).replace('.', ',');
+            const pc = (x, d = 2) => x == null ? '—' : (x >= 0 ? '+' : '') + f(x, d) + '%';
+            const pp = (x) => x == null ? '—' : (x >= 0 ? '+' : '') + f(x, 2);
+            const cl = (x) => x == null ? 'text-gray-500' : x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400';
+            const suben = filas.filter(x => x.dia > 0).length, mejor = filas[0], peor = filas[filas.length - 1];
+            let hora = '';
+            try { hora = new Date(data.generado_utc).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }); } catch (e) {}
+            const filaHtml = (x) => `<tr class="border-t border-gray-800"><td class="py-1 text-left"><span class="text-white font-bold">${x.t}</span> <span class="text-gray-500">(${x.nombre})</span></td><td class="text-right font-bold ${cl(x.dia)}">${pc(x.dia)}</td><td class="text-right ${cl(x.vs)}">${pp(x.vs)}</td></tr>`;
+            const tieneExtra = filas.some(x => x.d5 != null || x.m1 != null);
+            cont.innerHTML = `<div class="text-gray-300 mb-2"><span class="text-white font-bold">${suben} de ${filas.length}</span> sectores suben hoy. Mejor: <span class="${cl(mejor.dia)}">${mejor.nombre} (${pc(mejor.dia)})</span>. Peor: <span class="${cl(peor.dia)}">${peor.nombre} (${pc(peor.dia)})</span>.${spyDia != null ? ` SPY: <span class="${cl(spyDia)}">${pc(spyDia)}</span>.` : ''}</div>
+                <table class="w-full text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">ETF (sector)</th><th class="text-right font-normal">Hoy</th><th class="text-right font-normal">vs SPY</th></tr></thead><tbody>${filas.map(filaHtml).join('')}</tbody></table>
+                ${tieneExtra ? `<details class="mt-2"><summary class="cursor-pointer select-none text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">Ver 5 días y 1 mes</summary>
+                    <table class="w-full text-[11px] mt-1"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">ETF (sector)</th><th class="text-right font-normal">5 ruedas</th><th class="text-right font-normal">1 mes</th></tr></thead><tbody>${[...filas].sort((a, b) => (b.d5 ?? -99) - (a.d5 ?? -99)).map(x => `<tr class="border-t border-gray-800"><td class="py-1 text-left"><span class="text-white font-bold">${x.t}</span> <span class="text-gray-500">(${x.nombre})</span></td><td class="text-right ${cl(x.d5)}">${pc(x.d5, 1)}</td><td class="text-right ${cl(x.m1)}">${pc(x.m1, 1)}</td></tr>`).join('')}</tbody></table></details>` : ''}
+                <details class="mt-2"><summary class="cursor-pointer select-none text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">¿Qué empresas tiene cada uno?</summary>
+                    <ul class="mt-1 space-y-0.5 text-gray-400">${Object.entries(SECTORES_HOY_INFO).map(([t, [n, ej]]) => `<li><span class="text-white font-bold">${t}</span> (${n}): ${ej}…</li>`).join('')}</ul>
+                    <div class="text-[9px] text-gray-600 mt-1">Ejemplos de las empresas más grandes de cada ETF; la lista exacta y los pesos cambian con el tiempo.</div></details>
+                <div class="text-[9px] text-gray-600 mt-2">Última corrida del radar${hora ? ' (' + hora + ' hs)' : ''}. Durante la rueda son valores parciales; el dato final queda al cierre. Informativo.</div>`;
+        }
+
         function renderDashboard(data) {
             // Timestamp y 24hs format
             const fechaGenerado = data?.generado_utc;
@@ -2434,6 +2485,7 @@
             document.getElementById('ccl-auto').textContent = currentAutoCcl ? `$${currentAutoCcl.toFixed(2)}` : '—';
             document.getElementById('ccl-manual').dispatchEvent(new Event('input'));
             renderCedearPanel(data);
+            try { renderSectoresHoy(data); } catch (e) { console.warn('Sectores hoy:', e); }
             renderMovimientosDia(data);
             renderRegimen(data);
             renderExtremos52w(data);
