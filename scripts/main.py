@@ -25,7 +25,7 @@ import pandas as pd
 from datetime import datetime, timezone, timedelta
 
 from config import (TICKERS, BENCHMARK, SCORE_MINIMO_ALERTA, MODO, VIX_TICKER,
-                     UMBRAL_MOVIMIENTO_DIARIO_PCT, UMBRAL_CORRIDA_DEGRADADA_PCT)
+                     UMBRAL_MOVIMIENTO_DIARIO_PCT, UMBRAL_CORRIDA_DEGRADADA_PCT, RATIOS_CEDEAR)
 from datos import traer_datos
 from rs_score import calcular_rs_score
 from alertas import detectar_alertas
@@ -443,6 +443,7 @@ def main():
         "alertas": recomendaciones,
         "contexto_macro": contexto_macro,
         "cedears_pricing": cedears_pricing,
+        "ratios_cedear": RATIOS_CEDEAR,   # dato fijo de config.py: Mi Cartera lo usa aunque cedears_pricing venga vacío (CCL caído / feriado)
         "movimientos_dia": movimientos_dia,
         # Precio del SPY -- Mi Cartera lo guarda al comprar y al vender, para
         # poder comparar cada operación real contra el mercado (Auditoría)
