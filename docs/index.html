@@ -6031,7 +6031,12 @@
                 if (precioActual != null && p.precio > 0) {
                     gananciaPct = (precioActual / p.precio - 1) * 100;
                     const color = gananciaPct >= 0 ? 'text-pos' : 'text-neg';
-                    variacionHtml = `<span class="${color} font-bold">${gananciaPct >= 0 ? '+' : ''}${gananciaPct.toFixed(1)}%</span> (actual: $${precioActual.toFixed(2)})`;
+                    // % del día: precio actual contra el cierre de ayer (dato del radar)
+                    const vd = tickerData?.['Var_dia_%'];
+                    const hoyHtml = (typeof vd === 'number' && isFinite(vd))
+                        ? ` <span class="${vd >= 0 ? 'text-pos' : 'text-neg'}" title="Variación de hoy contra el cierre de ayer (${tickerData?.Cierre_previo != null ? '$' + Number(tickerData.Cierre_previo).toFixed(2) : 'dato del radar'}). Se actualiza con cada corrida del radar.">hoy ${vd >= 0 ? '+' : ''}${vd.toFixed(2)}%</span>`
+                        : '';
+                    variacionHtml = `<span class="${color} font-bold">${gananciaPct >= 0 ? '+' : ''}${gananciaPct.toFixed(1)}%</span> (actual: $${precioActual.toFixed(2)}${hoyHtml ? ' ·' + hoyHtml : ''})`;
                 }
 
                 // Stop inicial: se calcula UNA sola vez, al cargar la compra
