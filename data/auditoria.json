@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-13T02:33:49.891515+00:00",
+ "generado_utc": "2026-10-13T10:18:18.939555+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,7 +9,7 @@
   10,
   20
  ],
- "casos_total": 633,
+ "casos_total": 634,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
@@ -79,11 +79,11 @@
   {
    "señal": "Gap alcista con macrotendencia",
    "direccion": "alcista",
-   "casos_total": 91,
+   "casos_total": 92,
    "horizontes": {
     "5": {
      "n": 52,
-     "pendientes": 39,
+     "pendientes": 40,
      "aciertos": 25,
      "pct_aciertos": 48,
      "tocaron_stop": 5,
@@ -93,7 +93,7 @@
     },
     "10": {
      "n": 30,
-     "pendientes": 61,
+     "pendientes": 62,
      "aciertos": 15,
      "pct_aciertos": 50,
      "tocaron_stop": 8,
@@ -103,7 +103,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 91,
+     "pendientes": 92,
      "confiable": false
     }
    }
@@ -318,7 +318,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 370,
+   "casos": 371,
    "5": {
     "n": 124,
     "pct_aciertos": 61,
@@ -368,7 +368,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 451,
+   "casos": 452,
    "5": {
     "n": 229,
     "pct_aciertos": 52,
@@ -421,7 +421,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 167,
+   "casos": 168,
    "5": {
     "n": 72,
     "pct_aciertos": 56,
@@ -572,7 +572,7 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 214,
+   "casos": 215,
    "5": {
     "n": 102,
     "pct_aciertos": 63,
@@ -2444,6 +2444,22 @@
    "regimen_score": 69,
    "cuidados": [],
    "tendencia_semanal": "mixta",
+   "ruedas_transcurridas": 2,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "SHEL",
+   "fecha": "2026-10-08",
+   "señal": "Gap alcista con macrotendencia",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 99.85,
+   "radar_score": 44.6,
+   "regimen_score": 69,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
    "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
@@ -6041,26 +6057,6 @@
    "stop5": false,
    "r10": null,
    "r20": null
-  },
-  {
-   "ticker": "SPXL",
-   "fecha": "2026-10-03",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 282.7,
-   "radar_score": 47.3,
-   "regimen_score": 57,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 6,
-   "r5": 5.4,
-   "spy5": 1.16,
-   "vs_spy5": 4.24,
-   "acierto5": true,
-   "stop5": false,
-   "r10": null,
-   "r20": null
   }
  ],
  "top30_semanal": [
@@ -6080,7 +6076,7 @@
    "verdes5": 11,
    "medidos5": 30,
    "spy5": 0.42,
-   "univ5": -0.2,
+   "univ5": -0.18,
    "top10": null,
    "top20": null
   },
@@ -6097,7 +6093,7 @@
    "verdes10": 15,
    "medidos10": 30,
    "spy10": 1.63,
-   "univ10": 1.15,
+   "univ10": 1.17,
    "top20": null
   },
   {
@@ -6134,7 +6130,7 @@
    "verdes5": 18,
    "medidos5": 30,
    "spy5": 0.42,
-   "univ5": -0.2,
+   "univ5": -0.18,
    "top10": null,
    "top20": null
   },
@@ -6142,11 +6138,11 @@
    "semana": "2026-S40",
    "fecha": "2026-10-02",
    "n": 30,
-   "top5": 4.1,
-   "verdes5": 22,
-   "medidos5": 29,
+   "top5": 4.12,
+   "verdes5": 23,
+   "medidos5": 30,
    "spy5": 1.16,
-   "univ5": 1.46,
+   "univ5": 1.47,
    "top10": null,
    "top20": null
   }
@@ -6167,7 +6163,7 @@
    "10": {
     "semanas": 24,
     "top_prom": 1.45,
-    "univ_prom": 0.51,
+    "univ_prom": 0.52,
     "spy_prom": 0.72,
     "semanas_top_gana_univ": 13,
     "semanas_top_gana_spy": 14
