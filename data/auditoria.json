@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-12T21:35:21.155406+00:00",
+ "generado_utc": "2026-10-13T02:33:49.891515+00:00",
  "mis_operaciones": null,
  "muestra_minima": 10,
  "muestra_confiable": 30,
@@ -9,17 +9,17 @@
   10,
   20
  ],
- "casos_total": 631,
+ "casos_total": 633,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 174,
+   "casos_total": 177,
    "horizontes": {
     "5": {
      "n": 107,
-     "pendientes": 67,
+     "pendientes": 70,
      "aciertos": 57,
      "pct_aciertos": 53,
      "tocaron_stop": 10,
@@ -29,7 +29,7 @@
     },
     "10": {
      "n": 35,
-     "pendientes": 139,
+     "pendientes": 142,
      "aciertos": 16,
      "pct_aciertos": 46,
      "tocaron_stop": 9,
@@ -39,7 +39,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 174,
+     "pendientes": 177,
      "confiable": false
     }
    }
@@ -79,11 +79,11 @@
   {
    "señal": "Gap alcista con macrotendencia",
    "direccion": "alcista",
-   "casos_total": 92,
+   "casos_total": 91,
    "horizontes": {
     "5": {
      "n": 52,
-     "pendientes": 40,
+     "pendientes": 39,
      "aciertos": 25,
      "pct_aciertos": 48,
      "tocaron_stop": 5,
@@ -93,7 +93,7 @@
     },
     "10": {
      "n": 30,
-     "pendientes": 62,
+     "pendientes": 61,
      "aciertos": 15,
      "pct_aciertos": 50,
      "tocaron_stop": 8,
@@ -103,7 +103,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 92,
+     "pendientes": 91,
      "confiable": false
     }
    }
@@ -318,7 +318,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 368,
+   "casos": 370,
    "5": {
     "n": 124,
     "pct_aciertos": 61,
@@ -368,7 +368,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 449,
+   "casos": 451,
    "5": {
     "n": 229,
     "pct_aciertos": 52,
@@ -421,7 +421,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 168,
+   "casos": 167,
    "5": {
     "n": 72,
     "pct_aciertos": 56,
@@ -440,7 +440,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 318,
+   "casos": 321,
    "5": {
     "n": 188,
     "pct_aciertos": 52,
@@ -478,7 +478,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 71,
+   "casos": 72,
    "5": {
     "n": 51,
     "pct_aciertos": 35,
@@ -513,7 +513,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 154,
+   "casos": 156,
    "5": {
     "n": 84,
     "pct_aciertos": 64,
@@ -591,7 +591,7 @@
   },
   {
    "grupo": "🟡 Mixta (RSI y MACD semanal en desacuerdo)",
-   "casos": 118,
+   "casos": 119,
    "5": {
     "n": 59,
     "pct_aciertos": 51,
@@ -610,7 +610,7 @@
   },
   {
    "grupo": "🔴 En contra (RSI y MACD semanal bajistas)",
-   "casos": 106,
+   "casos": 107,
    "5": {
     "n": 57,
     "pct_aciertos": 54,
@@ -629,6 +629,60 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "TWLO",
+   "fecha": "2026-10-13",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 282.66,
+   "radar_score": 60.8,
+   "regimen_score": 73,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "BHP",
+   "fecha": "2026-10-13",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 86.72,
+   "radar_score": 46.7,
+   "regimen_score": 73,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "mixta",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "CRWV",
+   "fecha": "2026-10-13",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 80.26,
+   "radar_score": 25.3,
+   "regimen_score": 73,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "tendencia_semanal": "contra",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "CRM",
    "fecha": "2026-10-12",
@@ -2390,22 +2444,6 @@
    "regimen_score": 69,
    "cuidados": [],
    "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 2,
-   "r5": null,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "SHEL",
-   "fecha": "2026-10-08",
-   "señal": "Gap alcista con macrotendencia",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 99.85,
-   "radar_score": 44.6,
-   "regimen_score": 69,
-   "cuidados": [],
-   "tendencia_semanal": "favor",
    "ruedas_transcurridas": 2,
    "r5": null,
    "r10": null,
@@ -6023,51 +6061,6 @@
    "stop5": false,
    "r10": null,
    "r20": null
-  },
-  {
-   "ticker": "LIN",
-   "fecha": "2026-10-03",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 469.45,
-   "radar_score": 46.8,
-   "regimen_score": 57,
-   "cuidados": [
-    "sma50_bajando",
-    "bajo_sma200"
-   ],
-   "tendencia_semanal": "contra",
-   "ruedas_transcurridas": 6,
-   "r5": 3.04,
-   "spy5": 1.16,
-   "vs_spy5": 1.88,
-   "acierto5": true,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "DAL",
-   "fecha": "2026-10-03",
-   "señal": "Recién cruzó, sin confirmar",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 84.13,
-   "radar_score": 44.5,
-   "regimen_score": 57,
-   "cuidados": [
-    "sma50_bajando"
-   ],
-   "tendencia_semanal": "contra",
-   "ruedas_transcurridas": 6,
-   "r5": -2.33,
-   "spy5": 1.16,
-   "vs_spy5": -3.49,
-   "acierto5": false,
-   "stop5": false,
-   "r10": null,
-   "r20": null
   }
  ],
  "top30_semanal": [
@@ -6087,7 +6080,7 @@
    "verdes5": 11,
    "medidos5": 30,
    "spy5": 0.42,
-   "univ5": -0.18,
+   "univ5": -0.2,
    "top10": null,
    "top20": null
   },
@@ -6104,7 +6097,7 @@
    "verdes10": 15,
    "medidos10": 30,
    "spy10": 1.63,
-   "univ10": 1.17,
+   "univ10": 1.15,
    "top20": null
   },
   {
@@ -6141,7 +6134,7 @@
    "verdes5": 18,
    "medidos5": 30,
    "spy5": 0.42,
-   "univ5": -0.18,
+   "univ5": -0.2,
    "top10": null,
    "top20": null
   },
@@ -6149,11 +6142,11 @@
    "semana": "2026-S40",
    "fecha": "2026-10-02",
    "n": 30,
-   "top5": 4.12,
-   "verdes5": 23,
-   "medidos5": 30,
+   "top5": 4.1,
+   "verdes5": 22,
+   "medidos5": 29,
    "spy5": 1.16,
-   "univ5": 1.47,
+   "univ5": 1.46,
    "top10": null,
    "top20": null
   }
@@ -6174,7 +6167,7 @@
    "10": {
     "semanas": 24,
     "top_prom": 1.45,
-    "univ_prom": 0.52,
+    "univ_prom": 0.51,
     "spy_prom": 0.72,
     "semanas_top_gana_univ": 13,
     "semanas_top_gana_spy": 14
