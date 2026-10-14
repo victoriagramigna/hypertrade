@@ -4060,7 +4060,7 @@
                 if (av.length) filasN.push(`<div class="mt-1"><span class="text-gray-500">Avisos por Telegram del radar:</span> <span class="text-white">${av.map(n => f(n.nivel) + ' (' + n.direccion + ')').join(' · ')}</span></div>`);
                 const ent = est.entradas[i.id];
                 const desc = est.descartadas.includes(i.id);
-                const tv = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(i.ticker)}`;
+                const tv = tradingViewUrl(i.ticker);
                 const cedI = cedearDe(i.ticker);
                 const entARS = ent && ent.moneda === 'ARS';
                 const actualEnt = entARS ? cedI?.ars : precio;
@@ -4211,7 +4211,7 @@
             out.innerHTML = `<div class="bg-surface border border-surface rounded-sm p-3 font-mono text-[11px] leading-relaxed">${html.join('')}
                 <div class="flex flex-wrap gap-2 mt-3">
                     <button type="button" class="${bt}" onclick="radiografiaCopiar()" title="Copia la ficha como texto para pegarla en el chat con Claude">📋 Copiar para Claude</button>
-                    <a class="${bt}" href="https://www.tradingview.com/chart/?symbol=${encodeURIComponent(t)}" target="_blank" rel="noopener" title="Abre el gráfico en TradingView">📈 Gráfico</a>
+                    <a class="${bt}" href="${tradingViewUrl(t)}" target="_blank" rel="noopener" title="Abre el gráfico en TradingView">📈 Gráfico</a>
                 </div>
                 <div id="rx-copiado" class="text-gray-500 mt-2"></div>
                 <textarea id="rx-texto" class="hidden w-full mt-2 bg-base border border-gray-700 rounded-sm p-2 text-[10px] text-gray-300" rows="8" readonly></textarea>
@@ -5081,8 +5081,11 @@
         // abra la app, siempre, aunque no traiga el indicador AIO Pro
         // puesto automáticamente (eso Victoria lo carga a mano en su
         // cuenta de TradingView si quiere verlo con sus propios indicadores).
+        // Algunos tickers de Yahoo no se escriben igual en TradingView: sin esto "BRK-B"
+        // abría la acción de la bolsa de Londres (en peniques) en vez de la de Nueva York.
+        function tvSimbolo(ticker) { return ({ 'BRK-B': 'NYSE:BRK.B' })[ticker] || ticker; }
         function tradingViewUrl(ticker) {
-            return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(ticker)}`;
+            return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSimbolo(ticker))}`;
         }
         function tradingViewLinkHtml(ticker, texto = '📈 Ver gráfico') {
             return `<a href="${tradingViewUrl(ticker)}" target="_blank" rel="noopener" class="text-accent hover:underline" onclick="event.stopPropagation()">${texto}</a>`;
