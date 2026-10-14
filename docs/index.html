@@ -5727,6 +5727,16 @@
             const token = cargarTokenGithub();
             const statusEl = document.getElementById('sync-status');
             if (!token) return; // sin token conectado -- usar el botón de exportar manual
+            // Protección (13/10): una lista vacía NUNCA se sube. Si el navegador perdió las posiciones
+            // (caché borrado, otro navegador) y se sincronizaba la lista vacía, se pisaba el archivo
+            // del repo y no había nada que restaurar.
+            if (!Array.isArray(posiciones) || posiciones.length === 0) {
+                if (statusEl) {
+                    statusEl.textContent = '⚠ Lista vacía: no se subió al repo para no borrar lo guardado. Si las posiciones desaparecieron de este navegador, usá "Restaurar desde GitHub".';
+                    statusEl.classList.add('text-neg');
+                }
+                return;
+            }
 
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH_CARTERA}`;
