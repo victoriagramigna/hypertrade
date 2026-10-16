@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-16T20:01:19.497318+00:00",
+ "generado_utc": "2026-10-16T20:31:15.511914+00:00",
  "mis_operaciones": {
   "total": {
    "n": 7,
@@ -181,7 +181,7 @@
   10,
   20
  ],
- "casos_total": 826,
+ "casos_total": 827,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
@@ -227,8 +227,8 @@
      "aciertos": 68,
      "pct_aciertos": 52,
      "tocaron_stop": 8,
-     "ret_prom": 0.02,
-     "vs_spy_prom": 0.13,
+     "ret_prom": 0.01,
+     "vs_spy_prom": 0.12,
      "confiable": true
     },
     "10": {
@@ -263,7 +263,7 @@
      "pct_aciertos": 54,
      "tocaron_stop": 4,
      "ret_prom": 0.86,
-     "vs_spy_prom": 0.88,
+     "vs_spy_prom": 0.87,
      "confiable": true
     },
     "10": {
@@ -321,11 +321,11 @@
   {
    "señal": "Sacudón, sin definición clara",
    "direccion": "alcista",
-   "casos_total": 53,
+   "casos_total": 54,
    "horizontes": {
     "5": {
      "n": 43,
-     "pendientes": 10,
+     "pendientes": 11,
      "aciertos": 23,
      "pct_aciertos": 53,
      "tocaron_stop": 3,
@@ -335,7 +335,7 @@
     },
     "10": {
      "n": 28,
-     "pendientes": 25,
+     "pendientes": 26,
      "aciertos": 15,
      "pct_aciertos": 54,
      "tocaron_stop": 5,
@@ -345,7 +345,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 53,
+     "pendientes": 54,
      "confiable": false
     }
    }
@@ -508,7 +508,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 563,
+   "casos": 564,
    "5": {
     "n": 334,
     "pct_aciertos": 54,
@@ -583,7 +583,7 @@
   },
   {
    "franja": "40-59 Cauteloso",
-   "casos": 60,
+   "casos": 61,
    "5": {
     "n": 28,
     "pct_aciertos": 57,
@@ -636,7 +636,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 440,
+   "casos": 441,
    "5": {
     "n": 301,
     "pct_aciertos": 51,
@@ -655,7 +655,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 213,
+   "casos": 214,
    "5": {
     "n": 123,
     "pct_aciertos": 59,
@@ -693,7 +693,7 @@
   },
   {
    "grupo": "· Techo AVWAP con volumen",
-   "casos": 3,
+   "casos": 4,
    "5": {
     "n": 3,
     "pct_aciertos": 33,
@@ -703,8 +703,8 @@
    "10": {
     "n": 1,
     "pct_aciertos": 0,
-    "ret_prom": -3.97,
-    "vs_spy_prom": -3.14
+    "ret_prom": -4.07,
+    "vs_spy_prom": -3.24
    },
    "20": {
     "n": 0
@@ -790,18 +790,18 @@
   },
   {
    "grupo": "🟡 Mixta (RSI y MACD semanal en desacuerdo)",
-   "casos": 183,
+   "casos": 184,
    "5": {
     "n": 109,
     "pct_aciertos": 48,
-    "ret_prom": -0.92,
+    "ret_prom": -0.91,
     "vs_spy_prom": -1.25
    },
    "10": {
     "n": 44,
     "pct_aciertos": 36,
     "ret_prom": -3.58,
-    "vs_spy_prom": -4.15
+    "vs_spy_prom": -4.14
    },
    "20": {
     "n": 0
@@ -813,7 +813,7 @@
    "5": {
     "n": 97,
     "pct_aciertos": 52,
-    "ret_prom": -1.24,
+    "ret_prom": -1.25,
     "vs_spy_prom": -1.68
    },
    "10": {
@@ -1487,6 +1487,25 @@
     "rsi_alto"
    ],
    "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "GRMN",
+   "fecha": "2026-10-16",
+   "señal": "Sacudón, sin definición clara",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 284.79,
+   "radar_score": 57.6,
+   "regimen_score": 51,
+   "cuidados": [
+    "sma50_bajando",
+    "techo_avwap_volumen"
+   ],
+   "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 0,
    "r5": null,
    "r10": null,
@@ -4853,9 +4872,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 1.08,
+   "r5": 1.12,
    "spy5": -1.97,
-   "vs_spy5": 3.05,
+   "vs_spy5": 3.09,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -4962,9 +4981,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -16.61,
+   "r5": -16.65,
    "spy5": -1.97,
-   "vs_spy5": -14.64,
+   "vs_spy5": -14.68,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -4982,9 +5001,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -4.58,
+   "r5": -4.55,
    "spy5": -1.97,
-   "vs_spy5": -2.61,
+   "vs_spy5": -2.58,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5022,9 +5041,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -1.72,
+   "r5": -1.73,
    "spy5": -1.97,
-   "vs_spy5": 0.25,
+   "vs_spy5": 0.24,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5042,9 +5061,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 3.51,
+   "r5": 3.49,
    "spy5": -1.97,
-   "vs_spy5": 5.48,
+   "vs_spy5": 5.46,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5148,9 +5167,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 2.21,
+   "r5": 2.34,
    "spy5": -1.97,
-   "vs_spy5": 4.18,
+   "vs_spy5": 4.31,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5170,9 +5189,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -7.87,
+   "r5": -7.95,
    "spy5": -1.97,
-   "vs_spy5": -5.9,
+   "vs_spy5": -5.98,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5232,9 +5251,9 @@
    "cuidados": [],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 5,
-   "r5": -5.68,
+   "r5": -5.66,
    "spy5": -1.97,
-   "vs_spy5": -3.71,
+   "vs_spy5": -3.69,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5252,9 +5271,9 @@
    "cuidados": [],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 5,
-   "r5": -6.01,
+   "r5": -6.02,
    "spy5": -1.97,
-   "vs_spy5": -4.04,
+   "vs_spy5": -4.05,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5274,9 +5293,9 @@
    ],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 5,
-   "r5": -10.12,
+   "r5": -10.01,
    "spy5": -1.97,
-   "vs_spy5": -8.15,
+   "vs_spy5": -8.04,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -5356,9 +5375,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 0.49,
+   "r5": 0.66,
    "spy5": -1.97,
-   "vs_spy5": 2.46,
+   "vs_spy5": 2.63,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5376,9 +5395,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 5.69,
+   "r5": 5.68,
    "spy5": -1.97,
-   "vs_spy5": 7.66,
+   "vs_spy5": 7.65,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5463,9 +5482,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -1.66,
+   "r5": -1.76,
    "spy5": -1.97,
-   "vs_spy5": 0.31,
+   "vs_spy5": 0.21,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5486,9 +5505,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -10.96,
+   "r5": -11.23,
    "spy5": -1.97,
-   "vs_spy5": -8.99,
+   "vs_spy5": -9.26,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -5526,9 +5545,9 @@
    "cuidados": [],
    "tendencia_semanal": null,
    "ruedas_transcurridas": 5,
-   "r5": -5.1,
+   "r5": -5.03,
    "spy5": -1.97,
-   "vs_spy5": -3.13,
+   "vs_spy5": -3.06,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5546,9 +5565,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -3.25,
+   "r5": -3.17,
    "spy5": -1.97,
-   "vs_spy5": -1.28,
+   "vs_spy5": -1.2,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5608,9 +5627,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 0.17,
+   "r5": 0.19,
    "spy5": -1.97,
-   "vs_spy5": 2.14,
+   "vs_spy5": 2.16,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5632,9 +5651,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": 5.75,
+   "r5": 5.77,
    "spy5": -1.97,
-   "vs_spy5": 7.72,
+   "vs_spy5": 7.74,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5675,9 +5694,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": 11.28,
+   "r5": 11.29,
    "spy5": -1.97,
-   "vs_spy5": 13.25,
+   "vs_spy5": 13.26,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -5759,9 +5778,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": -16.45,
+   "r5": -16.41,
    "spy5": -1.97,
-   "vs_spy5": -14.48,
+   "vs_spy5": -14.44,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -5844,9 +5863,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -8.01,
+   "r5": -8.29,
    "spy5": -1.97,
-   "vs_spy5": -6.04,
+   "vs_spy5": -6.32,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -6312,26 +6331,6 @@
    "stop5": false,
    "r10": null,
    "r20": null
-  },
-  {
-   "ticker": "NBIS",
-   "fecha": "2026-10-08",
-   "señal": "Líder apoyando en soporte",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 226.46,
-   "radar_score": 72.2,
-   "regimen_score": 69,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 6,
-   "r5": -16.8,
-   "spy5": -0.28,
-   "vs_spy5": -16.52,
-   "acierto5": false,
-   "stop5": true,
-   "r10": null,
-   "r20": null
   }
  ],
  "top30_semanal": [
@@ -6422,7 +6421,7 @@
    "verdes10": 19,
    "medidos10": 30,
    "spy10": -0.83,
-   "univ10": -0.06,
+   "univ10": -0.07,
    "top20": null
   }
  ],
