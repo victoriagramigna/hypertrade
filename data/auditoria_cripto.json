@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-16T22:26:29.999897+00:00",
+ "generado_utc": "2026-10-17T02:42:51.845218+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,7 +7,7 @@
   7,
   14
  ],
- "casos_total": 8,
+ "casos_total": 9,
  "resumen_señales": [
   {
    "tipo": "Movimiento fuerte a la baja",
@@ -26,6 +26,32 @@
      "pendientes": 1,
      "aciertos": 2,
      "pct_aciertos": 100,
+     "confiable": false
+    },
+    "14": {
+     "n": 0,
+     "pendientes": 3,
+     "confiable": false
+    }
+   }
+  },
+  {
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "casos_total": 3,
+   "horizontes": {
+    "3": {
+     "n": 2,
+     "pendientes": 1,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "confiable": false
+    },
+    "7": {
+     "n": 1,
+     "pendientes": 2,
+     "aciertos": 0,
+     "pct_aciertos": 0,
      "confiable": false
     },
     "14": {
@@ -64,32 +90,6 @@
    }
   },
   {
-   "tipo": "RSI en sobreventa",
-   "direccion": "alcista",
-   "casos_total": 2,
-   "horizontes": {
-    "3": {
-     "n": 2,
-     "pendientes": 0,
-     "aciertos": 0,
-     "pct_aciertos": 0,
-     "confiable": false
-    },
-    "7": {
-     "n": 1,
-     "pendientes": 1,
-     "aciertos": 0,
-     "pct_aciertos": 0,
-     "confiable": false
-    },
-    "14": {
-     "n": 0,
-     "pendientes": 2,
-     "confiable": false
-    }
-   }
-  },
-  {
    "tipo": "Perdió su SMA50",
    "direccion": "bajista",
    "casos_total": 1,
@@ -120,6 +120,19 @@
   {
    "ticker": "ETH-USD",
    "nombre": "Ethereum",
+   "fecha": "2026-10-17",
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "precio_entrada": 2417.4,
+   "score": 60,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
    "fecha": "2026-10-14",
    "tipo": "Movimiento fuerte a la baja",
    "direccion": "bajista",
@@ -139,7 +152,7 @@
    "precio_entrada": 2512.2,
    "score": 45,
    "dias_transcurridos": 3,
-   "r3": -3.67,
+   "r3": -3.77,
    "acierto3": false,
    "r7": null,
    "r14": null
@@ -155,7 +168,7 @@
    "dias_transcurridos": 7,
    "r3": -1.79,
    "acierto3": false,
-   "r7": -2.77,
+   "r7": -2.87,
    "acierto7": false,
    "r14": null
   },
@@ -170,7 +183,7 @@
    "dias_transcurridos": 7,
    "r3": -1.79,
    "acierto3": true,
-   "r7": -2.77,
+   "r7": -2.87,
    "acierto7": true,
    "r14": null
   },
