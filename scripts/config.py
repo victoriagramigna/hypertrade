@@ -595,6 +595,7 @@ RATIOS_CEDEAR = {
     "NEE": 19, "DAL": 8, "FDX": 10, "DD": 5, "STLA": 5, "FCX": 3, "BG": 5,
     "HIMS": 4, "IVV": 692, "VEA": 10, "EFA": 18, "IBIT": 10, "SLV": 6,
     "USO": 15, "XLY": 43, "XLP": 16, "XLB": 18, "XLC": 19, "XLRE": 9,
+    "XLV": 29,   # Health Care Select Sector SPDR -- ratio 29:1 (Vertex Capital y Balanz), oct. 2026
     # --- Brasil (6/10): ITUB 1:1 según PDF oficial de BYMA 3/2/2026. ABEV queda sin
     # ratio: el PDF lo muestra "1:3" (formato fraccionario, igual que SAN) -- a confirmar.
     "ITUB": 1,
