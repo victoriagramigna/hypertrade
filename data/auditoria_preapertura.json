@@ -637,6 +637,72 @@
    "ret_cierre_pct": 1.61,
    "gap_apertura_pct": 1.29,
    "gap_real": false
+  },
+  {
+   "id": "PRE-TTE-2026-10-16-gap_candidato",
+   "fecha": "2026-10-16",
+   "ticker": "TTE",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.15,
+   "balance": null,
+   "ret_cierre_pct": 3.22,
+   "gap_apertura_pct": 2.01,
+   "gap_real": true
+  },
+  {
+   "id": "PRE-EQNR-2026-10-16-gap_candidato",
+   "fecha": "2026-10-16",
+   "ticker": "EQNR",
+   "tipo": "gap_candidato",
+   "pm_pct": 2.14,
+   "balance": null,
+   "ret_cierre_pct": 4.59,
+   "gap_apertura_pct": 2.11,
+   "gap_real": true
+  },
+  {
+   "id": "PRE-IBKR-2026-10-16-balance",
+   "fecha": "2026-10-16",
+   "ticker": "IBKR",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "hoy",
+   "ret_cierre_pct": -3.88,
+   "gap_apertura_pct": 0.27,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-TRV-2026-10-16-balance",
+   "fecha": "2026-10-16",
+   "ticker": "TRV",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "hoy",
+   "ret_cierre_pct": 1.47,
+   "gap_apertura_pct": -3.62,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-HDB-2026-10-16-balance",
+   "fecha": "2026-10-16",
+   "ticker": "HDB",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": 1.32,
+   "gap_apertura_pct": 0.76,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-IBN-2026-10-16-balance",
+   "fecha": "2026-10-16",
+   "ticker": "IBN",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": 1.87,
+   "gap_apertura_pct": 1.12,
+   "gap_real": false
   }
  ],
  "base_por_fecha": {
@@ -659,26 +725,30 @@
   "2026-10-15": {
    "n": 185,
    "pct_gap": 14.05
+  },
+  "2026-10-16": {
+   "n": 191,
+   "pct_gap": 3.14
   }
  },
  "resumen": {
   "gap_candidato": {
-   "n": 25,
-   "gap_real": 8,
-   "pct_gap_real": 32.0,
-   "mediana_ret_cierre_pct": 1.92,
-   "mov_abs_mediano_pct": 1.92,
-   "pct_gap_normal": 9.0
+   "n": 27,
+   "gap_real": 10,
+   "pct_gap_real": 37.0,
+   "mediana_ret_cierre_pct": 2.06,
+   "mov_abs_mediano_pct": 2.06,
+   "pct_gap_normal": 8.5
   },
   "balance": {
-   "n": 33,
+   "n": 37,
    "gap_real": 1,
-   "pct_gap_real": 3.0,
-   "mediana_ret_cierre_pct": -0.86,
+   "pct_gap_real": 2.7,
+   "mediana_ret_cierre_pct": -0.56,
    "mov_abs_mediano_pct": 1.76,
-   "pct_gap_normal": 7.2
+   "pct_gap_normal": 6.7
   }
  },
- "actualizado_utc": "2026-10-16T12:02:09.480390+00:00",
+ "actualizado_utc": "2026-10-19T12:34:02.753140+00:00",
  "nota": "Se mide el cierre del dia del aviso contra el cierre anterior. 'pct_gap_normal' es la frecuencia habitual de gaps de +3% entre los papeles con macrotendencia ese mismo dia (con muestras chicas no concluye nada)."
 }
