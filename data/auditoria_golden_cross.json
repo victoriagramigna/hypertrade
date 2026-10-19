@@ -1,42 +1,23 @@
 {
- "generado_utc": "2026-10-19T14:01:34.599133+00:00",
+ "generado_utc": "2026-10-19T14:31:20.990028+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 15,
  "horizontes": [
   10,
   20
  ],
- "casos_total": 25,
+ "casos_total": 27,
  "resumen_tipos": [
   {
    "tipo": "Golden Cross",
    "direccion": "alcista",
-   "casos_total": 12,
-   "horizontes": {
-    "10": {
-     "n": 2,
-     "pendientes": 10,
-     "aciertos": 1,
-     "pct_aciertos": 50,
-     "confiable": false
-    },
-    "20": {
-     "n": 0,
-     "pendientes": 12,
-     "confiable": false
-    }
-   }
-  },
-  {
-   "tipo": "Death Cross",
-   "direccion": "bajista",
    "casos_total": 13,
    "horizontes": {
     "10": {
      "n": 2,
      "pendientes": 11,
-     "aciertos": 0,
-     "pct_aciertos": 0,
+     "aciertos": 1,
+     "pct_aciertos": 50,
      "confiable": false
     },
     "20": {
@@ -45,9 +26,50 @@
      "confiable": false
     }
    }
+  },
+  {
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "casos_total": 14,
+   "horizontes": {
+    "10": {
+     "n": 2,
+     "pendientes": 12,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "confiable": false
+    },
+    "20": {
+     "n": 0,
+     "pendientes": 14,
+     "confiable": false
+    }
+   }
   }
  ],
  "detalle": [
+  {
+   "ticker": "MSTR",
+   "sector": "Fintech",
+   "fecha": "2026-10-19",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 135.71,
+   "sma200": 135.54,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "BKR",
+   "sector": "Energía",
+   "fecha": "2026-10-19",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 59.67,
+   "sma200": 59.67,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "PG",
    "sector": "Consumo",
@@ -287,8 +309,8 @@
    "direccion": "alcista",
    "sma50": 10.29,
    "sma200": 10.24,
-   "r10": 2.61,
-   "vs_spy10": 3.71,
+   "r10": 2.89,
+   "vs_spy10": 3.81,
    "acierto10": true,
    "r20": null
   },
@@ -300,8 +322,8 @@
    "direccion": "alcista",
    "sma50": 331.74,
    "sma200": 331.17,
-   "r10": -19.98,
-   "vs_spy10": -18.88,
+   "r10": -19.78,
+   "vs_spy10": -18.85,
    "acierto10": false,
    "r20": null
   },
@@ -313,8 +335,8 @@
    "direccion": "bajista",
    "sma50": 76.14,
    "sma200": 76.14,
-   "r10": 7.76,
-   "vs_spy10": 8.86,
+   "r10": 7.87,
+   "vs_spy10": 8.8,
    "acierto10": false,
    "r20": null
   },
@@ -326,8 +348,8 @@
    "direccion": "bajista",
    "sma50": 229.98,
    "sma200": 230.07,
-   "r10": 0.27,
-   "vs_spy10": 1.37,
+   "r10": 0.07,
+   "vs_spy10": 1.0,
    "acierto10": false,
    "r20": null
   }
