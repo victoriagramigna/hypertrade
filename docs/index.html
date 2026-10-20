@@ -882,53 +882,87 @@
         </section>
     </div>
 
+    <!-- ===== SOLAPA: MERCADO (20/10) =====
+         Vista compacta: cada ticker del universo con su precio y la variación contra el cierre previo, agrupado por sector.
+         Solo lee data/ultimo.json (ranking: Precio, Var_dia_%); no escribe nada ni toca la Auditoría. -->
+    <div id="tab-mercado" class="tab-content hidden-tab space-y-4">
+        <section>
+            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Mercado hoy <span id="mercado-count" class="text-gray-500 normal-case"></span></h2>
+            <details class="expl mb-3"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary>
+                <div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">Todos los tickers del universo, agrupados por sector, con el <span class="text-white">precio actual</span> y cuánto variaron <span class="text-white">contra el cierre de ayer</span>. Cuanto más intenso el color del cuadro, más fuerte el movimiento. Arriba de cada sector ves el <span class="text-white">promedio</span> y cuántos suben y cuántos bajan. Tocá un ticker para ver su tarjeta de alertas. Los datos son los de la última corrida del radar: durante la rueda son valores parciales y el dato final queda al cierre. "Solo con CEDEAR" muestra únicamente los que tienen CEDEAR. <span class="text-blueAlert">●</span> marca los que ya compraste: sale solo de tu solapa Cartera, así que si cargás o cerrás una compra ahí, se actualiza acá. <span class="text-accent">★</span> marca los de interés: es la misma lista de El Semillero, tocás la ☆ del cuadro y queda marcado en todos lados (y se sincroniza entre tus dispositivos). Con "Mostrar" filtrás solo los comprados o solo los de interés. Es informativo, no una recomendación.</div>
+            </details>
+            <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
+                <input id="mercado-q" type="text" placeholder="Buscar ticker o empresa" oninput="mercadoBusca=this.value;renderMercado(currentRadarData)" class="bg-surface border border-surface focus:border-accent focus:outline-none text-white px-2.5 py-1.5 rounded-sm text-[11px] normal-case w-44 placeholder-gray-600">
+                <button id="mercado-o-mayor" onclick="mercadoSetOrden('mayor')" class="px-2.5 py-1 rounded-sm border border-surface">Sube más</button>
+                <button id="mercado-o-menor" onclick="mercadoSetOrden('menor')" class="px-2.5 py-1 rounded-sm border border-surface">Baja más</button>
+                <button id="mercado-o-az" onclick="mercadoSetOrden('az')" class="px-2.5 py-1 rounded-sm border border-surface">A-Z</button>
+                <button id="mercado-cedear" onclick="mercadoToggleCedear()" class="px-2.5 py-1 rounded-sm border border-surface">Solo con CEDEAR</button>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
+                <span class="text-gray-500">Mostrar:</span>
+                <button id="mercado-m-todos" onclick="mercadoSetMarca('todos')" class="px-2.5 py-1 rounded-sm border border-surface">Todos</button>
+                <button id="mercado-m-comprados" onclick="mercadoSetMarca('comprados')" class="px-2.5 py-1 rounded-sm border border-surface">● Comprados</button>
+                <button id="mercado-m-interes" onclick="mercadoSetMarca('interes')" class="px-2.5 py-1 rounded-sm border border-surface">★ De interés</button>
+            </div>
+            <div class="font-mono text-[10px] text-gray-500 mb-2"><span class="text-blueAlert">●</span> ya comprado (sale de Mi Cartera) · <span class="text-accent">★</span> de interés (es tu Semillero; tocá la ☆ de un cuadro para marcarlo o sacarlo)</div>
+            <div id="mercado-resumen" class="font-mono text-[11px] text-gray-300 mb-3"></div>
+            <div id="mercado-lista" class="space-y-3"><div class="text-gray-500 font-mono text-[11px]">Cargando...</div></div>
+            <div id="mercado-pie" class="font-mono text-[9px] text-gray-600 mt-3"></div>
+        </section>
+    </div>
+
     <!-- Barra de navegación inferior fija -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-9 z-40 text-gray-500">
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-10 z-40 text-gray-500">
         
         <button class="tab-btn active flex flex-col items-center gap-1 py-2" data-tab="inicio" onclick="switchTab('inicio')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Inicio</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Inicio</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="alertas" onclick="switchTab('alertas')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Alertas</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Alertas</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="universo" onclick="switchTab('universo')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Universo</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Universo</span>
+        </button>
+        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="mercado" onclick="switchTab('mercado')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Mercado</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cedears" onclick="switchTab('cedears')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            <span class="text-[8px] font-mono uppercase">CEDEARs</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">CEDEARs</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="historial" onclick="switchTab('historial')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Historial</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Historial</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cartera" onclick="switchTab('cartera')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20v14H2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Cartera</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Cartera</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="auditoria" onclick="switchTab('auditoria')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Auditoría</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Auditoría</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cripto" onclick="switchTab('cripto')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.8 9a2 2 0 0 0-2-1.5h-1.6a1.9 1.9 0 0 0 0 3.8h1.6a1.9 1.9 0 0 1 0 3.7h-1.6a2 2 0 0 1-2-1.5M12 6v1.5M12 16.5V18"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Cripto</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Cripto</span>
         </button>
         <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="ideas" onclick="switchTab('ideas')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"></path></svg>
-            <span class="text-[8px] font-mono uppercase">Ideas</span>
+            <span class="text-[7px] tracking-tighter font-mono uppercase">Ideas</span>
         </button>
     </nav>
 
@@ -2486,6 +2520,7 @@
             document.getElementById('ccl-manual').dispatchEvent(new Event('input'));
             renderCedearPanel(data);
             try { renderSectoresHoy(data); } catch (e) { console.warn('Sectores hoy:', e); }
+            try { renderMercado(data); } catch (e) { console.warn('Mercado:', e); }
             renderMovimientosDia(data);
             renderRegimen(data);
             renderExtremos52w(data);
@@ -4468,6 +4503,94 @@
         }
         try { plegarExplicaciones(); } catch (e) { console.warn('Explicaciones plegables:', e); }
 
+
+        // ============ SOLAPA MERCADO (20/10) ============
+        // Cuadros compactos por sector: ticker, precio y % contra el cierre previo (Var_dia_% del ranking).
+        let mercadoOrden = 'mayor', mercadoSoloCedear = false, mercadoBusca = '', mercadoMarca = 'todos';
+        function mercadoSetMarca(m) { mercadoMarca = m; renderMercado(currentRadarData); }
+        function mercadoToggleInteres(t) { toggleSemillero(t); renderMercado(currentRadarData); }
+        function mercadoSetOrden(o) { mercadoOrden = o; renderMercado(currentRadarData); }
+        function mercadoToggleCedear() { mercadoSoloCedear = !mercadoSoloCedear; renderMercado(currentRadarData); }
+        function renderMercado(data) {
+            const lista = document.getElementById('mercado-lista');
+            if (!lista) return;
+            const marca = (id, on) => { const b = document.getElementById(id); if (b) { b.classList.toggle('text-accent', on); b.classList.toggle('border-accent', on); b.classList.toggle('text-gray-500', !on); } };
+            marca('mercado-o-mayor', mercadoOrden === 'mayor'); marca('mercado-o-menor', mercadoOrden === 'menor');
+            marca('mercado-o-az', mercadoOrden === 'az'); marca('mercado-cedear', mercadoSoloCedear);
+            marca('mercado-m-todos', mercadoMarca === 'todos'); marca('mercado-m-comprados', mercadoMarca === 'comprados'); marca('mercado-m-interes', mercadoMarca === 'interes');
+            let comprados = new Set(), interes = new Set();
+            try { comprados = new Set((cargarCartera() || []).map(x => String(x?.ticker || '').toUpperCase())); } catch (e) {}
+            try { interes = new Set(semilleroLeer()); } catch (e) {}
+            const todos = (data?.ranking ?? []).filter(r => r && r.Ticker && r.Precio != null);
+            if (!todos.length) { lista.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Sin datos en esta corrida.</div>'; return; }
+            const q = (mercadoBusca || '').trim().toLowerCase();
+            const items = todos.filter(r => {
+                if (mercadoSoloCedear && ratioCedearDe(r.Ticker) == null) return false;
+                if (mercadoMarca === 'comprados' && !comprados.has(r.Ticker)) return false;
+                if (mercadoMarca === 'interes' && !interes.has(r.Ticker)) return false;
+                if (!q) return true;
+                return r.Ticker.toLowerCase().includes(q) || (nombreEmpresa(r.Ticker) || '').toLowerCase().includes(q);
+            });
+            const num = (x) => (x === null || x === undefined || x === '' || !isFinite(Number(x))) ? null : Number(x);
+            const f2 = (x) => Number(x).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const pc = (x) => (x > 0 ? '+' : '') + f2(x) + '%';
+            const cls = (x) => x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400';
+            const grupos = {};
+            for (const r of items) { const k = r.Sector === 'ETF' ? 'ETFs' : (r.Sector ?? 'Otros'); (grupos[k] = grupos[k] || []).push(r); }
+            const info = Object.entries(grupos).map(([k, arr]) => {
+                const vals = arr.map(r => num(r['Var_dia_%'])).filter(v => v !== null);
+                const prom = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+                return { k, arr, prom, suben: vals.filter(v => v > 0).length, bajan: vals.filter(v => v < 0).length };
+            });
+            const key = (g) => g.prom === null ? (mercadoOrden === 'menor' ? Infinity : -Infinity) : g.prom;
+            info.sort((a, b) => {
+                if ((a.k === 'ETFs') !== (b.k === 'ETFs')) return a.k === 'ETFs' ? 1 : -1;
+                if (mercadoOrden === 'az') return a.k.localeCompare(b.k, 'es');
+                return mercadoOrden === 'menor' ? key(a) - key(b) : key(b) - key(a);
+            });
+            const ordenTicker = (a, b) => {
+                if (mercadoOrden === 'az') return a.Ticker.localeCompare(b.Ticker);
+                const va = num(a['Var_dia_%']), vb = num(b['Var_dia_%']);
+                const ka = va === null ? (mercadoOrden === 'menor' ? Infinity : -Infinity) : va;
+                const kb = vb === null ? (mercadoOrden === 'menor' ? Infinity : -Infinity) : vb;
+                return mercadoOrden === 'menor' ? ka - kb : kb - ka;
+            };
+            const tile = (r) => {
+                const v = num(r['Var_dia_%']);
+                const a = v === null ? 0 : Math.min(0.30, Math.abs(v) / 6 * 0.30);
+                const bg = v === null || v === 0 ? 'transparent' : (v > 0 ? `rgba(111,207,151,${a.toFixed(3)})` : `rgba(217,105,79,${a.toFixed(3)})`);
+                const nom = nombreEmpresa(r.Ticker);
+                const comp = comprados.has(r.Ticker), inte = interes.has(r.Ticker);
+                const borde = comp ? 'border-l-2 border-l-blueAlert' : '';
+                return `<div onclick="irAAlertasDeTicker('${r.Ticker}')" class="cursor-pointer text-left rounded-sm px-2 py-1.5 border border-surface hover:border-accent transition-colors min-w-0 ${borde}" style="background:${bg}" title="${nom ? nom + ' - ' : ''}${r.Ticker}${comp ? ' (comprado)' : ''}${inte ? ' (de interés)' : ''}">
+                    <div class="flex justify-between items-baseline gap-1"><span class="text-white font-bold text-[12px] truncate">${r.Ticker}${comp ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''}</span><span class="font-bold text-[11px] ${cls(v)}">${v === null ? '—' : pc(v)}</span></div>
+                    <div class="flex justify-between items-baseline gap-1 text-[10px] text-gray-400"><span class="truncate">${nom}</span><span class="shrink-0">${f2(r.Precio)}</span></div>
+                    <div class="flex justify-end -mb-0.5"><span onclick="event.stopPropagation();mercadoToggleInteres('${r.Ticker}')" class="text-accent text-[13px] leading-none px-1 py-0.5 -mr-1" title="${inte ? 'Sacar de El Semillero' : 'Marcar de interés (agregar a El Semillero)'}">${inte ? '★' : '☆'}</span></div>
+                </div>`;
+            };
+            const todosVals = items.map(r => num(r['Var_dia_%'])).filter(v => v !== null);
+            const suben = todosVals.filter(v => v > 0).length, bajan = todosVals.filter(v => v < 0).length;
+            const conProm = info.filter(g => g.prom !== null && g.k !== 'ETFs').slice().sort((a, b) => b.prom - a.prom);
+            const mejor = conProm[0], peor = conProm[conProm.length - 1];
+            document.getElementById('mercado-count').textContent = `(${items.length}${items.length !== todos.length ? ' de ' + todos.length : ''})`;
+            document.getElementById('mercado-resumen').innerHTML = items.length
+                ? `<span class="text-white font-bold">${suben}</span> <span class="text-pos">suben</span> · <span class="text-white font-bold">${bajan}</span> <span class="text-neg">bajan</span> · ${todosVals.length - suben - bajan} sin cambio.` +
+                  (mejor && peor && mejor.k !== peor.k ? ` Mejor sector: <span class="text-pos">${mejor.k} (${pc(mejor.prom)})</span>. Peor: <span class="text-neg">${peor.k} (${pc(peor.prom)})</span>.` : '')
+                : '';
+            lista.innerHTML = info.length ? info.map(g => `
+                <details open class="bg-surface rounded-sm border border-surface">
+                    <summary class="cursor-pointer select-none px-3 py-2 font-mono flex flex-wrap items-center justify-between gap-x-3 gap-y-0.5">
+                        <span class="text-white font-bold text-[12px] uppercase tracking-wider">${g.k} <span class="text-gray-500 normal-case font-normal text-[10px]">(${g.arr.length})</span></span>
+                        <span class="text-[10px] text-gray-400">promedio <span class="font-bold ${cls(g.prom)}">${g.prom === null ? '—' : pc(g.prom)}</span> · <span class="text-pos">${g.suben}▲</span> <span class="text-neg">${g.bajan}▼</span></span>
+                    </summary>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 p-2 font-mono">${g.arr.slice().sort(ordenTicker).map(tile).join('')}</div>
+                </details>`).join('') : '<div class="text-gray-500 font-mono text-[11px]">Ningún ticker coincide con el filtro.</div>';
+            let hora = '';
+            try { hora = new Date(data.generado_utc).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }); } catch (e) {}
+            const pie = document.getElementById('mercado-pie');
+            if (pie) pie.textContent = `Última corrida del radar${hora ? ' (' + hora + ' hs)' : ''}. Variación contra el cierre previo; durante la rueda son valores parciales. Informativo, no es una recomendación.`;
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
@@ -4477,6 +4600,7 @@
             if (name === 'historial' && historialData === null) fetchHistorialData();
             if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); fetchAuditoriaRSE(); fetchAuditoriaM200(); }
             if (name === 'alertas') fetchPreapertura();
+            if (name === 'mercado') { try { renderMercado(currentRadarData); } catch (e) { console.warn('Mercado:', e); } }
             if (name === 'universo' && !rseData) fetchRSE();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
             if (name === 'ideas') { cargarIdeasExternas(); if (!nivelesSeg) cargarNivelesSeg(); }
