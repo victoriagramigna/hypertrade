@@ -703,6 +703,105 @@
    "ret_cierre_pct": 1.87,
    "gap_apertura_pct": 1.12,
    "gap_real": false
+  },
+  {
+   "id": "PRE-HDB-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "HDB",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "hoy",
+   "ret_cierre_pct": -3.19,
+   "gap_apertura_pct": -4.78,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-IBN-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "IBN",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "hoy",
+   "ret_cierre_pct": -1.7,
+   "gap_apertura_pct": -2.63,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-EFX-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "EFX",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -1.66,
+   "gap_apertura_pct": -1.35,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-GE-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "GE",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -0.81,
+   "gap_apertura_pct": -0.2,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-GM-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "GM",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -1.44,
+   "gap_apertura_pct": -0.29,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-HAL-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "HAL",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -1.55,
+   "gap_apertura_pct": -0.15,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-MMM-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "MMM",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -1.66,
+   "gap_apertura_pct": 0.06,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-RTX-2026-10-19-balance",
+   "fecha": "2026-10-19",
+   "ticker": "RTX",
+   "tipo": "balance",
+   "pm_pct": null,
+   "balance": "manana",
+   "ret_cierre_pct": -0.93,
+   "gap_apertura_pct": -0.99,
+   "gap_real": false
+  },
+  {
+   "id": "PRE-GGB-2026-10-19-gap_candidato",
+   "fecha": "2026-10-19",
+   "ticker": "GGB",
+   "tipo": "gap_candidato",
+   "pm_pct": 3.59,
+   "balance": null,
+   "ret_cierre_pct": 2.19,
+   "gap_apertura_pct": 1.79,
+   "gap_real": false
   }
  ],
  "base_por_fecha": {
@@ -729,26 +828,30 @@
   "2026-10-16": {
    "n": 191,
    "pct_gap": 3.14
+  },
+  "2026-10-19": {
+   "n": 186,
+   "pct_gap": 6.99
   }
  },
  "resumen": {
   "gap_candidato": {
-   "n": 27,
+   "n": 28,
    "gap_real": 10,
-   "pct_gap_real": 37.0,
-   "mediana_ret_cierre_pct": 2.06,
-   "mov_abs_mediano_pct": 2.06,
+   "pct_gap_real": 35.7,
+   "mediana_ret_cierre_pct": 2.12,
+   "mov_abs_mediano_pct": 2.12,
    "pct_gap_normal": 8.5
   },
   "balance": {
-   "n": 37,
+   "n": 45,
    "gap_real": 1,
-   "pct_gap_real": 2.7,
-   "mediana_ret_cierre_pct": -0.56,
-   "mov_abs_mediano_pct": 1.76,
-   "pct_gap_normal": 6.7
+   "pct_gap_real": 2.2,
+   "mediana_ret_cierre_pct": -1.11,
+   "mov_abs_mediano_pct": 1.66,
+   "pct_gap_normal": 6.8
   }
  },
- "actualizado_utc": "2026-10-19T12:34:02.753140+00:00",
+ "actualizado_utc": "2026-10-20T17:56:31.710997+00:00",
  "nota": "Se mide el cierre del dia del aviso contra el cierre anterior. 'pct_gap_normal' es la frecuencia habitual de gaps de +3% entre los papeles con macrotendencia ese mismo dia (con muestras chicas no concluye nada)."
 }
