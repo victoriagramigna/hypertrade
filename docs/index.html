@@ -4679,7 +4679,7 @@
                 <div class="text-center font-mono text-xs text-gray-400 mt-1">${r.guia}</div>
                 <div class="space-y-3 mt-5">${partes}</div>
                 <div class="grid grid-cols-2 gap-2 mt-5">${bandas}</div>
-                <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">Mide el clima del mercado en general, no de una acción. No cambia el Radar Score: es una guía de cuánto arriesgar. Informativo, no es una recomendación.</div>`;
+                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Mide el clima del mercado en general, no de una acción. No cambia el Radar Score: es una guía de cuánto arriesgar. Informativo, no es una recomendación.</div></details>`;
         }
 
         // ============ NUEVOS MÁXIMOS/MÍNIMOS DE 52 SEMANAS (Inicio) ============
@@ -4702,7 +4702,7 @@
                         <div class="font-mono text-[10px] text-gray-500 uppercase tracking-wide">Nuevos mínimos<br>de 52 semanas hoy</div>
                     </div>
                 </div>
-                <div class="font-mono text-[10px] text-gray-600 mt-3 leading-relaxed">Cuántos tickers del universo cerraron HOY en su precio más alto o más bajo de las últimas 52 semanas. Muchos máximos nuevos = mercado sano empujando líderes; muchos mínimos nuevos = atención, el mercado se está debilitando por abajo. Informativo, no es una recomendación.</div>`;
+                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Cuántos tickers del universo cerraron HOY en su precio más alto o más bajo de las últimas 52 semanas. Muchos máximos nuevos = mercado sano empujando líderes; muchos mínimos nuevos = atención, el mercado se está debilitando por abajo. Informativo, no es una recomendación.</div></details>`;
         }
 
         // ============ HISTORIAL DE AMPLITUD -- TENDENCIA (Inicio) ============
@@ -4746,10 +4746,10 @@
                     </div>
                 </div>
                 ${svg}
-                <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">
+                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">
                     Desde ${primero.fecha} (${primero.pct_sma50}% / ${primero.pct_sma200}%) hasta ${ultimo.fecha} (${ultimo.pct_sma50}% / ${ultimo.pct_sma200}%).
                     Muestra si cada vez son MENOS las acciones las que sostienen al mercado (líneas bajando) aunque el índice general siga arriba -- una señal de alerta temprana. Informativo, no es una recomendación.
-                </div>`;
+                </div></details>`;
         }
 
         // ============ MOVIMIENTOS DEL DÍA (Inicio) ============
@@ -7073,12 +7073,12 @@
                 <div class="bg-surface border border-surface rounded-sm p-3 mb-3">
                     <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Bases VCP (volatilidad contraída)</div>
                     ${vcpHtml}
-                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Tickers con patrón VCP válido, ordenados por Radar Score. "Dist. máx 52s" dice qué tan lejos está del techo de 52 semanas. Hoy no calculamos un pivote exacto de ruptura: es una lista para mirar.</div>
+                    <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Tickers con patrón VCP válido, ordenados por Radar Score. "Dist. máx 52s" dice qué tan lejos está del techo de 52 semanas. Hoy no calculamos un pivote exacto de ruptura: es una lista para mirar.</div></details>
                 </div>
                 <div class="bg-surface border border-surface rounded-sm p-3">
                     <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">MACD semanal cerca de cruzar su señal (RS 60 o más)</div>
                     ${macHtml}
-                    <div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Muestra la distancia actual entre el MACD semanal y su línea de señal (a menos de 5%). Todavía no registramos la fecha exacta del cruce, así que acá ves el estado de hoy, no el momento en que cruzó.</div>
+                    <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-600 mt-2 leading-relaxed">Muestra la distancia actual entre el MACD semanal y su línea de señal (a menos de 5%). Todavía no registramos la fecha exacta del cruce, así que acá ves el estado de hoy, no el momento en que cruzó.</div></details>
                 </div>`;
         }
 
