@@ -631,6 +631,12 @@ BRECHA_CEDEAR_ALERTA_PCT = 3   # +/- 3% de diferencia se considera una distorsi�
 # --- Panel de "Movimientos del día" -- tickers que se movieron fuerte HOY (no en meses) ---
 UMBRAL_MOVIMIENTO_DIARIO_PCT = 5   # +/- 5% en un solo día entra al panel
 
+# --- Screener (solapa Mercado, 20/10) -- listas informativas, con registro propio (data/log_screener.jsonl) ---
+# MANTENER IGUAL en docs/index.html (constantes SCREENER_*): la pantalla y el registro usan la misma definición.
+SCREENER_ZONA_MA200_PCT = 1.0      # "Zona MA200": ticker a +/- 1% de su SMA200
+SCREENER_PULLBACK_RSI_MIN = 30     # "Pullback": sobre su SMA200 y con RSI (14) entre 30 y 40
+SCREENER_PULLBACK_RSI_MAX = 40
+
 # --- Ventana de vigencia de una alerta en el dashboard (ver bug de acumulación infinita) ---
 VENTANA_ALERTA_HORAS = 48   # una alerta deja de mostrarse en "Alertas Activas" pasadas estas horas
                              # desde que ese ESTADO empezó (no desde que se detectó por primera vez

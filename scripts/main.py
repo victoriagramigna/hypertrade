@@ -53,6 +53,7 @@ from auditoria import correr_auditoria
 from regimen_score import calcular_regimen_score, contar_extremos_52w
 from amplitud_historial import registrar_y_obtener_serie
 from cierres_diarios import registrar as registrar_cierres
+from screener import registrar as registrar_screener
 from cuidados import puntos_de_cuidado
 from confluencia import detectar_confluencia
 from rotacion_sectorial import actualizar_rotacion_sectorial
@@ -209,6 +210,9 @@ def main():
     df_rs = calcular_rs_score(precios, TICKERS, BENCHMARK, volumenes, precios_ohlc)
     rs_por_sector = df_rs.groupby("Sector")["RS_Score"].mean().to_dict() if not df_rs.empty else {}
     rs_por_ticker = dict(zip(df_rs["Ticker"], df_rs["RS_Score"])) if not df_rs.empty else {}
+
+    # 3-bis. Screener (Zona MA200 y Pullback): registro propio append-only + medicion (solo informativo, ver screener.py)
+    registrar_screener(df_rs, precios, BENCHMARK, ahora, corrida_degradada)
 
     # 3a. Cuadrante de Rotación Sectorial (Líder/Mejorando/Debilitándose/
     # Rezagado) -- no se calcula de nuevo nada, usa el rs_por_sector de

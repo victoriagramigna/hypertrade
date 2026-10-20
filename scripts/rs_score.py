@@ -173,6 +173,9 @@ def calcular_rs_score(precios: dict, tickers_sector: dict, benchmark: str, volum
             "_ret_1m": ret_1m, "_ret_3m": ret_3m, "_ret_6m": ret_6m,
             "Ret_1m_%": round(ret_1m * 100, 1), "Ret_3m_%": round(ret_3m * 100, 1),
             "Ret_6m_%": round(ret_6m * 100, 1),
+            # 20/10: retorno de 5 ruedas (misma cuenta que el cuadro "Sectores hoy"). Solo informativo (Screener, solapa Mercado):
+            # no entra en el RS, el Radar Score ni ninguna alerta.
+            "Ret_5d_%": round((float(precio_actual) / float(close.iloc[-6]) - 1) * 100, 2) if len(close) > 5 and float(close.iloc[-6]) > 0 else None,
             "Sobre_SMA50": bool(precio_actual > sma50),
             "Dist_Max52w_%": round((precio_actual / max_52w - 1) * 100, 1),
             "Max_52w": round(float(max_52w), 2),   # 10/10: precio del máximo de 52 semanas (solo informativo, para mostrarlo en pantalla)
