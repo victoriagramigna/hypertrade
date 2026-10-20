@@ -176,9 +176,6 @@ TICKERS = {
     "AMGN": "Salud",  # Amgen
     "XLV": "ETF",    # Health Care Select Sector SPDR
     "GILD": "Salud",  # Gilead Sciences
-    "ILMN": "Salud",  # Illumina
-    "REGN": "Salud",  # Regeneron
-    "CRSP": "Salud",  # CRISPR Therapeutics
     # --- Tickers del listado de CEDEARs de Caja de Valores (sept. 2026) que
     # todavía no estaban en el universo -- solo la parte de renta variable de
     # EE.UU. (mercado de origen NYSE/NASDAQ/CBOE), con ticker real confirmado
@@ -285,7 +282,6 @@ TICKERS = {
     # eléctricos para infraestructura de energía): se agrupa con GEV, CEG, TLN
     # y VST. Cambialo si preferís otro. Si Yahoo tiene menos de 200 ruedas de
     # historia (cotiza hace poco), aparece en tickers_fallidos con ese motivo.
-    "FPS": "Energía",   # Forgent
 }
 
 # --- Subcategoría por ticker -- PURAMENTE INFORMATIVA (se muestra chiquita
@@ -414,10 +410,10 @@ SUBCATEGORIAS = {
     "JNJ": "Farmacéuticas", "LLY": "Farmacéuticas", "MRK": "Farmacéuticas", "NVO": "Farmacéuticas",
     "NVS": "Farmacéuticas", "PFE": "Farmacéuticas",
     # Biotecnología
-    "AMGN": "Biotecnología", "BIIB": "Biotecnología", "CRSP": "Biotecnología", "GILD": "Biotecnología",
-    "MRNA": "Biotecnología", "REGN": "Biotecnología", "VRTX": "Biotecnología",
+    "AMGN": "Biotecnología", "BIIB": "Biotecnología", "GILD": "Biotecnología",
+    "MRNA": "Biotecnología", "VRTX": "Biotecnología",
     # Equipos médicos / diagnóstico
-    "ABT": "Equipos médicos/diagnóstico", "ILMN": "Equipos médicos/diagnóstico",
+    "ABT": "Equipos médicos/diagnóstico",
     "ISRG": "Equipos médicos/diagnóstico", "MDT": "Equipos médicos/diagnóstico",
     "TEM": "Equipos médicos/diagnóstico", "TMO": "Equipos médicos/diagnóstico",
     # Distribución / servicios de salud
@@ -596,6 +592,9 @@ RATIOS_CEDEAR = {
     "HIMS": 4, "IVV": 692, "VEA": 10, "EFA": 18, "IBIT": 10, "SLV": 6,
     "USO": 15, "XLY": 43, "XLP": 16, "XLB": 18, "XLC": 19, "XLRE": 9,
     "XLV": 29,   # Health Care Select Sector SPDR -- ratio 29:1 (Vertex Capital y Balanz), oct. 2026
+    # --- 20/10: ratios que faltaban (Vertex Capital; MP, O, GE, SMH, XLU y VXX confirmados también en Rankia; GE, AMGN, GILD,
+    # IBB, GLD, EEM, DIA, ETHA, CIBR y EWY verificados contra el precio del CEDEAR en data912, brecha <1%) ---
+    "MP": 10, "O": 13, "GE": 8, "AMGN": 30, "GILD": 4, "IBB": 27, "GLD": 50, "XLI": 28, "IWM": 10, "EEM": 5, "XLF": 2, "DIA": 20, "SH": 8, "ETHA": 5, "SMH": 50, "XLU": 15, "CIBR": 10, "TQQQ": 25, "VXX": 5, "ITA": 50, "ICLN": 5, "EWY": 50, "XME": 30, "RSP": 30,
     # --- Brasil (6/10): ITUB 1:1 según PDF oficial de BYMA 3/2/2026. ABEV queda sin
     # ratio: el PDF lo muestra "1:3" (formato fraccionario, igual que SAN) -- a confirmar.
     "ITUB": 1,
@@ -623,6 +622,7 @@ ALIAS_CEDEAR_DATA912 = {
     "AGRO": "ADGO",  # Adecoagro
     "BG": "BNG",     # Bunge (en Yahoo es BG; BYMA lo llama BNG)
     "TRV": "TRVV",   # Travelers
+    "BRK-B": "BRKB", # Berkshire Hathaway (en Yahoo es BRK-B; en BYMA/data912 el CEDEAR es BRKB)
 }
 
 # --- Umbral para marcar un CEDEAR como "caro" o "barato" respecto a su valor teórico ---
