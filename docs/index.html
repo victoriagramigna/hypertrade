@@ -4459,8 +4459,9 @@
         // El texto es el mismo, solo se pliega. Con la barra de arriba se muestran u ocultan todas a la vez (queda guardado en el dispositivo).
         function plegarExplicaciones() {
             const KEY = 'expl_visibles_v1';
+            // 20/10: las explicaciones arrancan SIEMPRE plegadas, en cada apertura de la app (ya no se recuerda el "Mostrar todas").
             let visibles = false;
-            try { visibles = localStorage.getItem(KEY) === '1'; } catch (e) {}
+            try { localStorage.removeItem(KEY); } catch (e) {}
             const cand = [...document.querySelectorAll('section > div, section > p')].filter(el => {
                 if (el.closest('details.expl') || el.querySelector('input, select, button, table')) return false;
                 const c = el.className || '';
@@ -4491,7 +4492,7 @@
                 <button id="expl-ocultar" class="px-2.5 py-1 rounded-sm border border-surface hover:text-white">Ocultar todas</button>`;
             const header = document.querySelector('header');
             if (header) header.insertAdjacentElement('afterend', barra);
-            const poner = (v) => { document.querySelectorAll('details.expl').forEach(d => { d.open = v; }); try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {} };
+            const poner = (v) => { document.querySelectorAll('details.expl').forEach(d => { d.open = v; });  };
             document.getElementById('expl-mostrar').onclick = () => poner(true);
             document.getElementById('expl-ocultar').onclick = () => poner(false);
         }
