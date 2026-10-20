@@ -878,30 +878,48 @@
     </div>
 
     <!-- ===== SOLAPA: MERCADO (20/10) =====
-         Vista compacta: cada ticker del universo con su precio y la variación contra el cierre previo, agrupado por sector.
-         Solo lee data/ultimo.json (ranking: Precio, Var_dia_%); no escribe nada ni toca la Auditoría. -->
+         Tres vistas: "Por sector" (cuadros con precio y % del día), "Rankings" (sectores por día / semana / mes) y "Screener"
+         (Zona MA200, Pullback, mejores y peores de la semana y del mes). Lee data/ultimo.json y, para la medición del Screener,
+         data/auditoria_screener.json. No escribe nada ni toca la Auditoría de siempre. -->
     <div id="tab-mercado" class="tab-content hidden-tab space-y-4">
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Mercado hoy <span id="mercado-count" class="text-gray-500 normal-case"></span></h2>
             <details class="expl mb-3"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary>
-                <div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">Todos los tickers del universo, agrupados por sector, con el <span class="text-white">precio actual</span> y cuánto variaron <span class="text-white">contra el cierre de ayer</span>. Cuanto más intenso el color del cuadro, más fuerte el movimiento. Arriba de cada sector ves el <span class="text-white">promedio</span> y cuántos suben y cuántos bajan. Tocá un ticker para ver su tarjeta de alertas. Los datos son los de la última corrida del radar: durante la rueda son valores parciales y el dato final queda al cierre. "Solo con CEDEAR" muestra únicamente los que tienen CEDEAR. <span class="text-blueAlert">●</span> marca los que ya compraste: sale solo de tu solapa Cartera, así que si cargás o cerrás una compra ahí, se actualiza acá. <span class="text-accent">★</span> marca los de interés: es la misma lista de El Semillero, tocás la ☆ del cuadro y queda marcado en todos lados (y se sincroniza entre tus dispositivos). Con "Mostrar" filtrás solo los comprados o solo los de interés. Es informativo, no una recomendación.</div>
+                <div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">
+                    Tres vistas del mismo universo, con los datos de la última corrida del radar (durante la rueda son valores parciales y el dato final queda al cierre).
+                    <br><span class="text-white">Por sector:</span> cada ticker con su <span class="text-white">precio</span> y cuánto varió <span class="text-white">contra el cierre de ayer</span>; cuanto más intenso el color, más fuerte el movimiento. Arriba de cada sector ves el promedio y cuántos suben y bajan. "RSI y β" suma esos dos datos a cada cuadro.
+                    <br><span class="text-white">Rankings:</span> los sectores ordenados por su rendimiento promedio del día, de la semana (5 ruedas) y del mes (21 ruedas). Sirve para ver divergencias: un sector que cae en el mes pero hoy rebota, o al revés.
+                    <br><span class="text-white">Screener:</span> listas para mirar, no señales. <span class="text-white">Zona MA200</span>: tickers a ±1% de su media de 200 ruedas. <span class="text-white">Pullback</span>: sobre su media de 200 ruedas pero con RSI entre 30 y 40 (retroceso dentro de una tendencia alcista). Y los mejores y peores de la semana y del mes. Cada rueda se guarda qué tickers estaban en las dos primeras listas y después se mide cómo les fue: ese resultado está al final de la vista.
+                    <br>"Solo con CEDEAR" muestra únicamente los que tienen CEDEAR. <span class="text-blueAlert">●</span> marca los que ya compraste (sale de tu solapa Cartera). <span class="text-accent">★</span> marca los de interés: es la lista de El Semillero; tocás la ☆ y queda marcado en todos lados. Tocá un ticker para ver su tarjeta de alertas. Es informativo, no una recomendación.
+                </div>
             </details>
-            <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
-                <input id="mercado-q" type="text" placeholder="Buscar ticker o empresa" oninput="mercadoBusca=this.value;renderMercado(currentRadarData)" class="bg-surface border border-surface focus:border-accent focus:outline-none text-white px-2.5 py-1.5 rounded-sm text-[11px] normal-case w-44 placeholder-gray-600">
-                <button id="mercado-o-mayor" onclick="mercadoSetOrden('mayor')" class="px-2.5 py-1 rounded-sm border border-surface">Sube más</button>
-                <button id="mercado-o-menor" onclick="mercadoSetOrden('menor')" class="px-2.5 py-1 rounded-sm border border-surface">Baja más</button>
-                <button id="mercado-o-az" onclick="mercadoSetOrden('az')" class="px-2.5 py-1 rounded-sm border border-surface">A-Z</button>
-                <button id="mercado-cedear" onclick="mercadoToggleCedear()" class="px-2.5 py-1 rounded-sm border border-surface">Solo con CEDEAR</button>
+            <div class="flex gap-2 mb-3 font-mono text-[11px] uppercase">
+                <button id="mercado-v-sector" onclick="mercadoVista('sector')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Por sector</button>
+                <button id="mercado-v-ranking" onclick="mercadoVista('ranking')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Rankings</button>
+                <button id="mercado-v-screener" onclick="mercadoVista('screener')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Screener</button>
             </div>
             <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
-                <span class="text-gray-500">Mostrar:</span>
+                <button id="mercado-cedear" onclick="mercadoToggleCedear()" class="px-2.5 py-1 rounded-sm border border-surface">Solo con CEDEAR</button>
+                <span class="text-gray-500 ml-1">Mostrar:</span>
                 <button id="mercado-m-todos" onclick="mercadoSetMarca('todos')" class="px-2.5 py-1 rounded-sm border border-surface">Todos</button>
                 <button id="mercado-m-comprados" onclick="mercadoSetMarca('comprados')" class="px-2.5 py-1 rounded-sm border border-surface">● Comprados</button>
                 <button id="mercado-m-interes" onclick="mercadoSetMarca('interes')" class="px-2.5 py-1 rounded-sm border border-surface">★ De interés</button>
             </div>
-            <div class="font-mono text-[10px] text-gray-500 mb-2"><span class="text-blueAlert">●</span> ya comprado (sale de Mi Cartera) · <span class="text-accent">★</span> de interés (es tu Semillero; tocá la ☆ de un cuadro para marcarlo o sacarlo)</div>
-            <div id="mercado-resumen" class="font-mono text-[11px] text-gray-300 mb-3"></div>
-            <div id="mercado-lista" class="space-y-3"><div class="text-gray-500 font-mono text-[11px]">Cargando...</div></div>
+            <div class="font-mono text-[10px] text-gray-500 mb-3"><span class="text-blueAlert">●</span> ya comprado (sale de Mi Cartera) · <span class="text-accent">★</span> de interés (es tu Semillero; tocá la ☆ de un cuadro para marcarlo o sacarlo)</div>
+
+            <div id="mercado-vista-sector">
+                <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
+                    <input id="mercado-q" type="text" placeholder="Buscar ticker o empresa" oninput="mercadoBusca=this.value;renderMercado(currentRadarData)" class="bg-surface border border-surface focus:border-accent focus:outline-none text-white px-2.5 py-1.5 rounded-sm text-[11px] normal-case w-44 placeholder-gray-600">
+                    <button id="mercado-o-mayor" onclick="mercadoSetOrden('mayor')" class="px-2.5 py-1 rounded-sm border border-surface">Sube más</button>
+                    <button id="mercado-o-menor" onclick="mercadoSetOrden('menor')" class="px-2.5 py-1 rounded-sm border border-surface">Baja más</button>
+                    <button id="mercado-o-az" onclick="mercadoSetOrden('az')" class="px-2.5 py-1 rounded-sm border border-surface">A-Z</button>
+                    <button id="mercado-rsi" onclick="mercadoToggleRsi()" class="px-2.5 py-1 rounded-sm border border-surface normal-case">RSI y β</button>
+                </div>
+                <div id="mercado-resumen" class="font-mono text-[11px] text-gray-300 mb-3"></div>
+                <div id="mercado-lista" class="space-y-3"><div class="text-gray-500 font-mono text-[11px]">Cargando...</div></div>
+            </div>
+            <div id="mercado-vista-ranking" class="hidden"><div id="mercado-ranking"></div></div>
+            <div id="mercado-vista-screener" class="hidden"><div id="mercado-screener"></div></div>
             <div id="mercado-pie" class="font-mono text-[9px] text-gray-600 mt-3"></div>
         </section>
     </div>
@@ -4500,36 +4518,82 @@
 
 
         // ============ SOLAPA MERCADO (20/10) ============
-        // Cuadros compactos por sector: ticker, precio y % contra el cierre previo (Var_dia_% del ranking).
+        // Vistas: "sector" (cuadros), "ranking" (sectores por día/semana/mes) y "screener" (Zona MA200, Pullback, mejores/peores).
         let mercadoOrden = 'mayor', mercadoSoloCedear = false, mercadoBusca = '', mercadoMarca = 'todos';
+        let mercadoVistaActual = 'sector', mercadoRsi = false, mercadoRankOrden = 'dia';
+        let mercadoAud = null, mercadoAudEstado = 'nuevo';   // mercadoAud: JSON de data/auditoria_screener.json
+        // MANTENER IGUAL en scripts/config.py (SCREENER_*): la pantalla y el registro usan la misma definición.
+        const SCREENER_ZONA_MA200_PCT = 1.0, SCREENER_PULLBACK_RSI_MIN = 30, SCREENER_PULLBACK_RSI_MAX = 40;
+        const MERCADO_AUD_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/auditoria_screener.json';
         function mercadoSetMarca(m) { mercadoMarca = m; renderMercado(currentRadarData); }
         function mercadoToggleInteres(t) { toggleSemillero(t); renderMercado(currentRadarData); }
         function mercadoSetOrden(o) { mercadoOrden = o; renderMercado(currentRadarData); }
         function mercadoToggleCedear() { mercadoSoloCedear = !mercadoSoloCedear; renderMercado(currentRadarData); }
+        function mercadoToggleRsi() { mercadoRsi = !mercadoRsi; renderMercado(currentRadarData); }
+        function mercadoRankOrdenar(o) { mercadoRankOrden = o; renderMercado(currentRadarData); }
+        function mercadoVista(v) { mercadoVistaActual = v; renderMercado(currentRadarData); window.scrollTo({ top: 0, behavior: 'instant' }); }
+        async function mercadoCargarAud() {
+            if (mercadoAudEstado !== 'nuevo') return;
+            mercadoAudEstado = 'cargando';
+            try {
+                const r = await fetch(`${MERCADO_AUD_URL}?t=${Date.now()}`, { cache: 'no-store' });
+                mercadoAud = r.ok ? await r.json() : null;
+            } catch (e) { mercadoAud = null; }
+            mercadoAudEstado = 'listo';
+            if (mercadoVistaActual === 'screener') renderMercado(currentRadarData);
+        }
+
+        const _mNum = (x) => (x === null || x === undefined || x === '' || !isFinite(Number(x))) ? null : Number(x);
+        const _mF2 = (x) => Number(x).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const _mPc = (x) => (x > 0 ? '+' : '') + _mF2(x) + '%';
+        const _mCls = (x) => x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400';
+        const _mBg = (v, tope) => {
+            if (v === null || v === 0) return 'transparent';
+            const a = Math.min(0.30, Math.abs(v) / tope * 0.30).toFixed(3);
+            return v > 0 ? `rgba(111,207,151,${a})` : `rgba(217,105,79,${a})`;
+        };
+        const _mProm = (arr) => { const v = arr.map(_mNum).filter(x => x !== null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+
         function renderMercado(data) {
             const lista = document.getElementById('mercado-lista');
             if (!lista) return;
             const marca = (id, on) => { const b = document.getElementById(id); if (b) { b.classList.toggle('text-accent', on); b.classList.toggle('border-accent', on); b.classList.toggle('text-gray-500', !on); } };
             marca('mercado-o-mayor', mercadoOrden === 'mayor'); marca('mercado-o-menor', mercadoOrden === 'menor');
-            marca('mercado-o-az', mercadoOrden === 'az'); marca('mercado-cedear', mercadoSoloCedear);
+            marca('mercado-o-az', mercadoOrden === 'az'); marca('mercado-cedear', mercadoSoloCedear); marca('mercado-rsi', mercadoRsi);
             marca('mercado-m-todos', mercadoMarca === 'todos'); marca('mercado-m-comprados', mercadoMarca === 'comprados'); marca('mercado-m-interes', mercadoMarca === 'interes');
+            for (const v of ['sector', 'ranking', 'screener']) {
+                marca('mercado-v-' + v, mercadoVistaActual === v);
+                document.getElementById('mercado-vista-' + v)?.classList.toggle('hidden', mercadoVistaActual !== v);
+            }
             let comprados = new Set(), interes = new Set();
             try { comprados = new Set((cargarCartera() || []).map(x => String(x?.ticker || '').toUpperCase())); } catch (e) {}
             try { interes = new Set(semilleroLeer()); } catch (e) {}
             const todos = (data?.ranking ?? []).filter(r => r && r.Ticker && r.Precio != null);
             if (!todos.length) { lista.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Sin datos en esta corrida.</div>'; return; }
-            const q = (mercadoBusca || '').trim().toLowerCase();
-            const items = todos.filter(r => {
+            // filtros comunes a las tres vistas: CEDEAR y marcas
+            const base = todos.filter(r => {
                 if (mercadoSoloCedear && ratioCedearDe(r.Ticker) == null) return false;
                 if (mercadoMarca === 'comprados' && !comprados.has(r.Ticker)) return false;
                 if (mercadoMarca === 'interes' && !interes.has(r.Ticker)) return false;
-                if (!q) return true;
-                return r.Ticker.toLowerCase().includes(q) || (nombreEmpresa(r.Ticker) || '').toLowerCase().includes(q);
+                return true;
             });
-            const num = (x) => (x === null || x === undefined || x === '' || !isFinite(Number(x))) ? null : Number(x);
-            const f2 = (x) => Number(x).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const pc = (x) => (x > 0 ? '+' : '') + f2(x) + '%';
-            const cls = (x) => x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400';
+            const ctx = { comprados, interes, todos, base };
+            let hora = '';
+            try { hora = new Date(data.generado_utc).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }); } catch (e) {}
+            const pie = document.getElementById('mercado-pie');
+            if (pie) pie.textContent = `Última corrida del radar${hora ? ' (' + hora + ' hs)' : ''}. Durante la rueda son valores parciales; el dato final queda al cierre. Informativo, no es una recomendación.`;
+            if (mercadoVistaActual === 'sector') renderMercadoSector(data, ctx);
+            else if (mercadoVistaActual === 'ranking') renderMercadoRanking(ctx);
+            else renderMercadoScreener(ctx);
+        }
+
+        // ---- Vista "Por sector" ----
+        function renderMercadoSector(data, ctx) {
+            const lista = document.getElementById('mercado-lista');
+            const { comprados, interes, todos, base } = ctx;
+            const q = (mercadoBusca || '').trim().toLowerCase();
+            const items = base.filter(r => !q || r.Ticker.toLowerCase().includes(q) || (nombreEmpresa(r.Ticker) || '').toLowerCase().includes(q));
+            const num = _mNum, f2 = _mF2, pc = _mPc, cls = _mCls;
             const grupos = {};
             for (const r of items) { const k = r.Sector === 'ETF' ? 'ETFs' : (r.Sector ?? 'Otros'); (grupos[k] = grupos[k] || []).push(r); }
             const info = Object.entries(grupos).map(([k, arr]) => {
@@ -4552,15 +4616,15 @@
             };
             const tile = (r) => {
                 const v = num(r['Var_dia_%']);
-                const a = v === null ? 0 : Math.min(0.30, Math.abs(v) / 6 * 0.30);
-                const bg = v === null || v === 0 ? 'transparent' : (v > 0 ? `rgba(111,207,151,${a.toFixed(3)})` : `rgba(217,105,79,${a.toFixed(3)})`);
                 const nom = nombreEmpresa(r.Ticker);
                 const comp = comprados.has(r.Ticker), inte = interes.has(r.Ticker);
                 const borde = comp ? 'border-l-2 border-l-blueAlert' : '';
-                return `<div onclick="irAAlertasDeTicker('${r.Ticker}')" class="cursor-pointer text-left rounded-sm px-2 py-1.5 border border-surface hover:border-accent transition-colors min-w-0 ${borde}" style="background:${bg}" title="${nom ? nom + ' - ' : ''}${r.Ticker}${comp ? ' (comprado)' : ''}${inte ? ' (de interés)' : ''}">
+                const rsi = num(r.RSI), beta = num(r.Beta);
+                const extra = mercadoRsi ? `<span class="text-[9px] text-gray-500">RSI ${rsi === null ? '—' : rsi.toFixed(0)} · β ${beta === null ? '—' : beta.toFixed(1).replace('.', ',')}</span>` : '<span></span>';
+                return `<div onclick="irAAlertasDeTicker('${r.Ticker}')" class="cursor-pointer text-left rounded-sm px-2 py-1.5 border border-surface hover:border-accent transition-colors min-w-0 ${borde}" style="background:${_mBg(v, 6)}" title="${nom ? nom + ' - ' : ''}${r.Ticker}${comp ? ' (comprado)' : ''}${inte ? ' (de interés)' : ''}">
                     <div class="flex justify-between items-baseline gap-1"><span class="text-white font-bold text-[12px] truncate">${r.Ticker}${comp ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''}</span><span class="font-bold text-[11px] ${cls(v)}">${v === null ? '—' : pc(v)}</span></div>
                     <div class="flex justify-between items-baseline gap-1 text-[10px] text-gray-400"><span class="truncate">${nom}</span><span class="shrink-0">${f2(r.Precio)}</span></div>
-                    <div class="flex justify-end -mb-0.5"><span onclick="event.stopPropagation();mercadoToggleInteres('${r.Ticker}')" class="text-accent text-[13px] leading-none px-1 py-0.5 -mr-1" title="${inte ? 'Sacar de El Semillero' : 'Marcar de interés (agregar a El Semillero)'}">${inte ? '★' : '☆'}</span></div>
+                    <div class="flex justify-between items-center -mb-0.5">${extra}<span onclick="event.stopPropagation();mercadoToggleInteres('${r.Ticker}')" class="text-accent text-[13px] leading-none px-1 py-0.5 -mr-1" title="${inte ? 'Sacar de El Semillero' : 'Marcar de interés (agregar a El Semillero)'}">${inte ? '★' : '☆'}</span></div>
                 </div>`;
             };
             const todosVals = items.map(r => num(r['Var_dia_%'])).filter(v => v !== null);
@@ -4580,10 +4644,105 @@
                     </summary>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 p-2 font-mono">${g.arr.slice().sort(ordenTicker).map(tile).join('')}</div>
                 </details>`).join('') : '<div class="text-gray-500 font-mono text-[11px]">Ningún ticker coincide con el filtro.</div>';
-            let hora = '';
-            try { hora = new Date(data.generado_utc).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }); } catch (e) {}
-            const pie = document.getElementById('mercado-pie');
-            if (pie) pie.textContent = `Última corrida del radar${hora ? ' (' + hora + ' hs)' : ''}. Variación contra el cierre previo; durante la rueda son valores parciales. Informativo, no es una recomendación.`;
+        }
+
+        // ---- Vista "Rankings" (sectores por día / semana / mes) ----
+        function renderMercadoRanking(ctx) {
+            const cont = document.getElementById('mercado-ranking');
+            const { base, todos } = ctx;
+            document.getElementById('mercado-count').textContent = `(${base.length}${base.length !== todos.length ? ' de ' + todos.length : ''})`;
+            const grupos = {};
+            for (const r of base) { const k = r.Sector === 'ETF' ? 'ETFs' : (r.Sector ?? 'Otros'); (grupos[k] = grupos[k] || []).push(r); }
+            let filas = Object.entries(grupos).map(([k, arr]) => ({
+                k, n: arr.length,
+                dia: _mProm(arr.map(r => r['Var_dia_%'])), sem: _mProm(arr.map(r => r['Ret_5d_%'])), mes: _mProm(arr.map(r => r['Ret_1m_%'])),
+            }));
+            if (!filas.length) { cont.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Ningún ticker coincide con el filtro.</div>'; return; }
+            const haySem = filas.some(f => f.sem !== null);
+            const campo = (mercadoRankOrden === 'sem' && !haySem) ? 'dia' : mercadoRankOrden;
+            filas.sort((a, b) => (b[campo] ?? -Infinity) - (a[campo] ?? -Infinity));
+            const celda = (v, tope) => `<td class="text-right px-1.5 py-1 font-bold ${_mCls(v)}" style="background:${_mBg(v, tope)}">${v === null ? '—' : _mPc(v)}</td>`;
+            const th = (id, txt) => `<th class="text-right px-1.5 pb-1 font-normal"><button onclick="mercadoRankOrdenar('${id}')" class="uppercase ${campo === id ? 'text-accent' : 'text-gray-500'}">${txt}${campo === id ? ' ▼' : ''}</button></th>`;
+            const tabla = `<table class="w-full font-mono text-[11px]"><thead><tr class="text-[9px] text-gray-500"><th class="text-left font-normal pb-1">#</th><th class="text-left font-normal pb-1">Sector</th>${th('dia', 'Día')}${th('sem', '1 sem')}${th('mes', '1 mes')}</tr></thead><tbody>` +
+                filas.map((f, i) => `<tr class="border-t border-gray-800"><td class="py-1 pr-1 text-gray-500">${i + 1}</td><td class="py-1 text-white">${f.k} <span class="text-gray-600 text-[9px]">(${f.n})</span></td>${celda(f.dia, 3)}${celda(f.sem, 6)}${celda(f.mes, 12)}</tr>`).join('') +
+                '</tbody></table>';
+            // divergencias (informativas): rebota hoy pero viene cayendo en el mes, o cae hoy pero viene subiendo
+            const sinETF = filas.filter(f => f.k !== 'ETFs' && f.n >= 3);
+            const reb = sinETF.filter(f => f.dia !== null && f.mes !== null && f.dia > 0 && f.mes < 0).sort((a, b) => b.dia - a.dia);
+            const caen = sinETF.filter(f => f.dia !== null && f.mes !== null && f.dia < 0 && f.mes > 0).sort((a, b) => a.dia - b.dia);
+            const lin = (t, arr, c) => arr.length ? `<div class="mt-1.5"><span class="${c} font-bold">${t}</span> ${arr.map(f => `${f.k} (${_mPc(f.dia)} hoy, ${_mPc(f.mes)} en el mes)`).join(' · ')}</div>` : '';
+            const diverg = lin('Suben hoy pero vienen cayendo en el mes:', reb, 'text-pos') + lin('Caen hoy pero vienen subiendo en el mes:', caen, 'text-neg');
+            cont.innerHTML = `<div class="bg-surface border border-surface rounded-sm p-3">
+                <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-2">Sectores: día, semana y mes</div>
+                ${tabla}
+                ${diverg ? `<div class="font-mono text-[10px] text-gray-400 mt-2 leading-relaxed">${diverg}</div>` : ''}
+                <div class="font-mono text-[9px] text-gray-600 mt-2 leading-relaxed">Promedio simple de los tickers de cada sector (ETFs aparte). Día: contra el cierre previo. 1 sem: 5 ruedas. 1 mes: 21 ruedas. Tocá el título de una columna para ordenar por ella.${haySem ? '' : ' El dato semanal aparece desde la primera corrida del radar con los scripts nuevos.'}</div>
+            </div>`;
+        }
+
+        // ---- Vista "Screener" ----
+        function renderMercadoScreener(ctx) {
+            const cont = document.getElementById('mercado-screener');
+            const { base, todos, comprados, interes } = ctx;
+            document.getElementById('mercado-count').textContent = `(${base.length}${base.length !== todos.length ? ' de ' + todos.length : ''})`;
+            const nombre = (t) => nombreEmpresa(t) || '';
+            const marcas = (t) => `${comprados.has(t) ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''}${interes.has(t) ? ' <span class="text-accent text-[10px]">★</span>' : ''}`;
+            const fila = (r, cols) => `<div onclick="irAAlertasDeTicker('${r.Ticker}')" class="flex items-center justify-between gap-2 py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent">
+                <span class="min-w-0 truncate"><span class="text-white font-bold">${r.Ticker}</span>${marcas(r.Ticker)} <span class="text-gray-500 text-[10px]">${nombre(r.Ticker)}</span></span>
+                <span class="shrink-0 flex gap-3 text-right text-[11px]">${cols}</span></div>`;
+            const col = (txt, w, c = '') => `<span class="${w} ${c}">${txt}</span>`;
+            const bloque = (titulo, color, sub, cuerpo, n) => `<details open class="bg-surface border border-surface rounded-sm mb-3">
+                <summary class="cursor-pointer select-none px-3 py-2 font-mono"><span class="text-[11px] uppercase tracking-widest font-bold ${color}">${titulo}</span> <span class="text-gray-500 text-[10px]">(${n})</span><div class="text-[10px] text-gray-500 normal-case">${sub}</div></summary>
+                <div class="px-3 pb-2">${cuerpo || '<div class="font-mono text-[11px] text-gray-600 py-1">Ninguno hoy.</div>'}</div></details>`;
+            const enc = `<div class="flex justify-end gap-3 font-mono text-[9px] uppercase text-gray-600 pb-1 border-b border-gray-800"><span class="w-16 text-right">Precio</span><span class="w-14 text-right">vs SMA200</span><span class="w-8 text-right">RSI</span><span class="w-14 text-right">Hoy</span></div>`;
+            const colsMA = (r) => col(_mF2(r.Precio), 'w-16 text-gray-300') + col(_mPc(r['Dist_SMA200_%']), 'w-14', _mCls(r['Dist_SMA200_%'])) + col(_mNum(r.RSI) === null ? '—' : _mNum(r.RSI).toFixed(0), 'w-8 text-gray-300') + col(_mNum(r['Var_dia_%']) === null ? '—' : _mPc(r['Var_dia_%']), 'w-14', _mCls(r['Var_dia_%']));
+            const conD200 = base.filter(r => _mNum(r['Dist_SMA200_%']) !== null);
+            const zona = conD200.filter(r => Math.abs(r['Dist_SMA200_%']) <= SCREENER_ZONA_MA200_PCT).sort((a, b) => Math.abs(a['Dist_SMA200_%']) - Math.abs(b['Dist_SMA200_%']));
+            const pull = conD200.filter(r => r['Dist_SMA200_%'] > 0 && _mNum(r.RSI) !== null && r.RSI >= SCREENER_PULLBACK_RSI_MIN && r.RSI <= SCREENER_PULLBACK_RSI_MAX).sort((a, b) => a.RSI - b.RSI);
+            // mejores / peores de la semana y del mes
+            const top = (campo, asc) => base.filter(r => _mNum(r[campo]) !== null).sort((a, b) => asc ? a[campo] - b[campo] : b[campo] - a[campo]).slice(0, 10);
+            const haySem = base.some(r => _mNum(r['Ret_5d_%']) !== null);
+            const miniCaja = (titulo, color, arr, campo) => `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color} mb-1">${titulo}</div>${arr.length ? arr.map(r => fila(r, col(_mPc(r[campo]), 'w-16', _mCls(r[campo])))).join('') : '<div class="font-mono text-[11px] text-gray-600">' + (campo === 'Ret_5d_%' ? 'Disponible desde la primera corrida del radar con los scripts nuevos.' : 'Sin datos.') + '</div>'}</div>`;
+            const expl = (txt) => `<details class="expl mb-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">${txt}</div></details>`;
+            const hZ = expl('Tickers cuyo precio está a ±1% de su media de 200 ruedas (SMA200), la referencia de tendencia de largo plazo. Estar cerca no dice si la va a respetar o a perder: solo marca que está en el lugar donde se define. Informativo, no es una señal.');
+            const hP = expl('Tickers que cotizan por encima de su media de 200 ruedas (tendencia de largo plazo alcista) pero cuyo RSI de 14 días bajó a entre 30 y 40, o sea que vienen de un retroceso fuerte. No significa que el retroceso terminó. Informativo, no es una señal.');
+            cont.innerHTML =
+                bloque('Zona MA200', 'text-accent', 'A ±1% de su media de 200 ruedas · ordenados por cercanía', hZ + (zona.length ? enc + zona.map(r => fila(r, colsMA(r))).join('') : ''), zona.length) +
+                bloque('Pullback con RSI', 'text-blueAlert', 'Sobre su SMA200 y RSI entre 30 y 40 · de menor a mayor RSI', hP + (pull.length ? enc + pull.map(r => fila(r, colsMA(r))).join('') : ''), pull.length) +
+                `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                    ${miniCaja('▲ Mejores de la semana (5 ruedas)', 'text-pos', top('Ret_5d_%', false), 'Ret_5d_%')}
+                    ${miniCaja('▼ Peores de la semana (5 ruedas)', 'text-neg', top('Ret_5d_%', true), 'Ret_5d_%')}
+                    ${miniCaja('▲ Mejores del mes (21 ruedas)', 'text-pos', top('Ret_1m_%', false), 'Ret_1m_%')}
+                    ${miniCaja('▼ Peores del mes (21 ruedas)', 'text-neg', top('Ret_1m_%', true), 'Ret_1m_%')}
+                </div>` + mercadoAudHtml();
+            mercadoCargarAud();
+        }
+
+        // ---- Medición del Screener (sale de data/auditoria_screener.json, que arma el radar) ----
+        function mercadoAudHtml() {
+            const explA = `<details class="expl mb-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">Cada rueda cerrada el radar guarda qué tickers estaban en Zona MA200 y en Pullback (<code class="text-accent">data/log_screener.jsonl</code>). Después mide cuánto rindieron a 5, 10 y 20 ruedas, y lo compara con el SPY y con el promedio de todo el universo en la misma ventana. Si una lista no le gana al universo, por sí sola no aporta nada. Con pocos días la muestra es chica y no concluye. Está separado de la Auditoría de siempre.</div></details>`;
+            const cab = `<div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Cómo les fue a estas listas</div>`;
+            if (mercadoAudEstado !== 'listo') return `<div class="bg-surface border border-surface rounded-sm p-3">${cab}${explA}<div class="font-mono text-[11px] text-gray-500">Cargando...</div></div>`;
+            if (!mercadoAud || !mercadoAud.listas || !mercadoAud.dias_registrados) {
+                return `<div class="bg-surface border border-surface rounded-sm p-3">${cab}${explA}<div class="font-mono text-[11px] text-gray-500">Todavía no hay registro: empieza a guardarse en la primera corrida de después del cierre con los scripts nuevos, y los resultados aparecen a medida que pasan las ruedas.</div></div>`;
+            }
+            const a = mercadoAud, f = (x, d = 2) => x === null || x === undefined ? '—' : (x > 0 ? '+' : '') + Number(x).toFixed(d).replace('.', ',');
+            const tabla = (clave, titulo) => {
+                const L = a.listas[clave]; if (!L) return '';
+                const filas = ['5', '10', '20'].map(h => {
+                    const d = L.horizontes?.[h];
+                    if (!d || !d.n) return `<tr class="border-t border-gray-800"><td class="py-1 text-gray-300 whitespace-nowrap">${h} ruedas</td><td colspan="5" class="text-gray-600 text-right">todavía sin datos</td></tr>`;
+                    return `<tr class="border-t border-gray-800"><td class="py-1 text-gray-300 whitespace-nowrap">${h} ruedas</td><td class="text-right text-gray-400">${d.n}</td><td class="text-right ${_mCls(d['ret_prom_%'])}">${f(d['ret_prom_%'])}%</td><td class="text-right ${_mCls(d.vs_spy_pp)}">${f(d.vs_spy_pp)}</td><td class="text-right ${_mCls(d.vs_universo_pp)}">${f(d.vs_universo_pp)}</td><td class="text-right text-gray-300">${d.pct_positivos}%</td></tr>`;
+                }).join('');
+                const maxDias = Math.max(0, ...['5', '10', '20'].map(h => L.horizontes?.[h]?.dias || 0));
+                const aviso = maxDias < 15 ? `<div class="text-[9px] text-accent mt-1">Muestra chica (${maxDias} días con resultado): todavía no concluye nada.</div>` : '';
+                return `<div class="mb-3"><div class="font-mono text-[11px] text-white font-bold">${titulo} <span class="text-gray-500 font-normal text-[10px]">${L.descripcion ?? ''}</span></div>
+                    <table class="w-full font-mono text-[10px] mt-1"><thead><tr class="text-[9px] text-gray-500"><th class="text-left font-normal">Plazo</th><th class="text-right font-normal">Casos</th><th class="text-right font-normal">Rend.</th><th class="text-right font-normal whitespace-nowrap">vs SPY</th><th class="text-right font-normal whitespace-nowrap">vs univ.</th><th class="text-right font-normal">Pos.</th></tr></thead><tbody>${filas}</tbody></table>${aviso}</div>`;
+            };
+            return `<div class="bg-surface border border-surface rounded-sm p-3">${cab}${explA}
+                <div class="font-mono text-[10px] text-gray-500 mb-2">Registro desde ${a.primer_registro ?? '—'} · ${a.dias_registrados} ruedas guardadas · actualizado ${String(a.actualizado ?? '').slice(0, 10)}</div>
+                ${tabla('zona_ma200', 'Zona MA200')}${tabla('pullback', 'Pullback con RSI')}
+                <div class="font-mono text-[9px] text-gray-600">Casos = ticker-días medidos. "vs SPY" y "vs univ." son la diferencia en puntos porcentuales (pp) entre el rendimiento promedio de la lista y el del SPY / el del universo entero en la misma ventana. "Pos." es el % de casos que terminó en positivo. Informativo, no es una recomendación.</div></div>`;
         }
 
         function switchTab(name) {
