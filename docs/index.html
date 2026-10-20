@@ -254,17 +254,12 @@
         <section>
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Cartelera del día</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
-                Subas y bajas más grandes del día (solo aparecen los movimientos fuertes, los mismos de "Movimientos del día"), activos sobrecomprados o sobrevendidos según el RSI (14 días) y quiénes operan con volumen inusual.
+                Todas las subas y bajas fuertes del día (las de más de ±5% contra el cierre previo, con su sector), activos sobrecomprados o sobrevendidos según el RSI (14 días) y quiénes operan con volumen inusual.
                 Sobrecomprado no significa "va a caer" ni sobrevendido "va a subir": solo marca que el movimiento reciente fue muy fuerte. Tocá un ticker para abrir su ficha.
             </div>
             <div id="cartelera-cont"></div>
         </section>
 
-        <!-- Movimientos del día -->
-        <section>
-            <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-4 border-b border-surface pb-1">Movimientos del día</h2>
-            <div id="movimientos-dia" class="bg-surface p-4 space-y-2 rounded-sm border border-surface"></div>
-        </section>
     </div>
 
     <!-- ===== SOLAPA: ALERTAS ===== -->
@@ -2521,7 +2516,6 @@
             renderCedearPanel(data);
             try { renderSectoresHoy(data); } catch (e) { console.warn('Sectores hoy:', e); }
             try { renderMercado(data); } catch (e) { console.warn('Mercado:', e); }
-            renderMovimientosDia(data);
             renderRegimen(data);
             renderExtremos52w(data);
             renderAmplitudHistorial(data);
@@ -4760,6 +4754,7 @@
         // ============ MOVIMIENTOS DEL DÍA (Inicio) ============
         function renderMovimientosDia(data) {
             const container = document.getElementById('movimientos-dia');
+            if (!container) return;   // el panel se quitó (20/10): lo cubre la Cartelera del día
             const movs = data?.movimientos_dia ?? [];
             if (movs.length === 0) {
                 container.innerHTML = '<div class="text-gray-500 font-mono text-xs p-2">Sin movimientos fuertes hoy.</div>';
@@ -6974,9 +6969,9 @@
             if (!cont) return;
             const r = data?.ranking ?? [];
             const movs = data?.movimientos_dia ?? [];
-            const filaMov = (m) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${m.Ticker}')"><span class="text-white font-bold">${logoInline(m.Ticker, 16)}${m.Ticker}</span><span class="${_col(m['Variacion_dia_%'])} font-bold">${_pct(m['Variacion_dia_%'], 2)}</span></div>`;
-            const sube = movs.filter(m => m['Variacion_dia_%'] > 0).sort((a, b) => b['Variacion_dia_%'] - a['Variacion_dia_%']).slice(0, 5);
-            const baja = movs.filter(m => m['Variacion_dia_%'] < 0).sort((a, b) => a['Variacion_dia_%'] - b['Variacion_dia_%']).slice(0, 5);
+            const filaMov = (m) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${m.Ticker}')"><span class="text-white font-bold">${logoInline(m.Ticker, 16)}${m.Ticker}${m.Sector ? ` <span class="text-[9px] text-gray-500 uppercase font-normal ml-1">${m.Sector}</span>` : ''}</span><span class="${_col(m['Variacion_dia_%'])} font-bold">${_pct(m['Variacion_dia_%'], 2)}</span></div>`;
+            const sube = movs.filter(m => m['Variacion_dia_%'] > 0).sort((a, b) => b['Variacion_dia_%'] - a['Variacion_dia_%']);
+            const baja = movs.filter(m => m['Variacion_dia_%'] < 0).sort((a, b) => a['Variacion_dia_%'] - b['Variacion_dia_%']);
             const filaRsi = (x) => `<div class="flex justify-between items-center py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent" onclick="abrirFicha('${x.Ticker}')"><span class="text-white font-bold">${logoInline(x.Ticker, 16)}${x.Ticker}</span><span class="text-gray-400">RSI ${x.RSI.toFixed(0)}</span></div>`;
             const conRsi = r.filter(x => _num(x.RSI) !== null);
             const sobrec = conRsi.filter(x => x.RSI >= 70).sort((a, b) => b.RSI - a.RSI).slice(0, 6);
@@ -6987,8 +6982,8 @@
             const caja = (tit, color, html, vacio) => `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color} mb-1">${tit}</div>${html || `<div class="font-mono text-[11px] text-gray-600">${vacio}</div>`}</div>`;
             cont.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    ${caja('▲ Mayores subas del día', 'text-pos', sube.map(filaMov).join(''), 'Ninguna suba fuerte hoy.')}
-                    ${caja('▼ Mayores bajas del día', 'text-neg', baja.map(filaMov).join(''), 'Ninguna baja fuerte hoy.')}
+                    ${caja(`▲ Mayores subas del día (${sube.length})`, 'text-pos', sube.map(filaMov).join(''), 'Ninguna suba fuerte hoy.')}
+                    ${caja(`▼ Mayores bajas del día (${baja.length})`, 'text-neg', baja.map(filaMov).join(''), 'Ninguna baja fuerte hoy.')}
                     ${caja('Sobrecomprados (RSI ≥ 70)', 'text-accent', sobrec.map(filaRsi).join(''), 'Ninguno hoy.')}
                     ${caja('Sobrevendidos (RSI ≤ 30)', 'text-blueAlert', sobrev.map(filaRsi).join(''), 'Ninguno hoy.')}
                 </div>
