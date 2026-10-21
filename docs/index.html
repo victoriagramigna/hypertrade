@@ -4603,7 +4603,9 @@
             if (!cont) return;
             const { comprados, interes } = ctx;
             let arr = (data?.historia_corta ?? []).filter(r => r && r.Ticker && r.Precio != null);
+            const qc = (mercadoBusca || '').trim().toLowerCase();
             arr = arr.filter(r => {
+                if (qc && !r.Ticker.toLowerCase().includes(qc) && !(nombreEmpresa(r.Ticker) || '').toLowerCase().includes(qc)) return false;
                 if (mercadoSoloCedear && ratioCedearDe(r.Ticker) == null) return false;
                 if (mercadoMarca === 'comprados' && !comprados.has(r.Ticker)) return false;
                 if (mercadoMarca === 'interes' && !interes.has(r.Ticker)) return false;
@@ -4619,13 +4621,13 @@
                 const falt = num(r.Ruedas_faltantes);
                 return `<div class="rounded-sm px-2.5 py-2 border border-surface ${comp ? 'border-l-2 border-l-blueAlert' : ''}">
                     <div class="flex justify-between items-baseline gap-2">
-                        <span onclick="irAAlertasDeTicker('${r.Ticker}')" class="cursor-pointer text-white font-bold text-[12px]">${r.Ticker}${comp ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''} <span class="text-gray-400 font-normal text-[10px]">${nom ?? ''}</span></span>
+                        <span onclick="window.open(tradingViewUrl('${r.Ticker}'), '_blank', 'noopener')" class="cursor-pointer text-white font-bold text-[12px]" title="Abrir en TradingView">${r.Ticker}${comp ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''} <span class="text-gray-400 font-normal text-[10px]">${nom ?? ''}</span></span>
                         <span class="shrink-0 text-gray-200 text-[12px]">${f2(r.Precio)} <span onclick="mercadoToggleInteres('${r.Ticker}')" class="text-accent text-[13px] px-1 cursor-pointer">${inte ? '★' : '☆'}</span></span>
                     </div>
                     <div class="grid grid-cols-5 gap-1 mt-1.5">
                         ${cel('Día', r['Var_dia_%'])}${cel('5 ruedas', r['Ret_5d_%'])}${cel('1 mes', r['Ret_1m_%'])}${cel('vs SMA20', r['Dist_SMA20_%'])}${cel('vs SMA50', r['Dist_SMA50_%'])}
                     </div>
-                    <div class="flex flex-col gap-0.5 text-[9px] text-gray-500 mt-1.5"><span>${r.Sector ?? ''} · RSI ${rsi === null ? '—' : rsi.toFixed(0)}</span><span>${r.Ruedas} de 200 ruedas${falt ? ' · faltan ' + falt : ''} · desde ${r.Desde ?? '—'}</span></div>
+                    <div class="flex flex-col gap-0.5 text-[9px] text-gray-500 mt-1.5"><span>${r.Sector ?? ''} · RSI ${rsi === null ? '—' : rsi.toFixed(0)}</span><span>${r.Ruedas} de 200 ruedas${falt ? ' · faltan ' + falt : ''} · desde ${r.Desde ?? '—'}</span><span>${tradingViewLinkHtml(r.Ticker, '📈 Ver gráfico en TradingView')}</span></div>
                 </div>`;
             };
             cont.innerHTML = `
@@ -5330,18 +5332,25 @@
                 const h = _norm([r?.Ticker, r?.Sector, r?.Subcategoria, TEMAS_EXTRA[r?.Ticker]].join(' '));
                 return palabras.every(w => h.includes(w));
             }).sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0));
+            // Tickers nuevos con historia corta (< 200 ruedas): no están en el ranking, pero se pueden buscar y abrir en TradingView
+            const hitsCorta = (data?.historia_corta ?? []).filter(r => {
+                const h = _norm([r?.Ticker, r?.Sector, TEMAS_EXTRA[r?.Ticker], NOMBRES_EMPRESA[r?.Ticker], 'historia corta nuevo'].join(' '));
+                return palabras.every(w => h.includes(w));
+            }).map(r => ({ ...r, _corta: true }));
+            hits.push(...hitsCorta);
             if (!hits.length) { out.innerHTML = '<span class="text-gray-500">Sin coincidencias en el universo.</span>'; return; }
             out.innerHTML = `<div class="text-gray-500 mb-2">${hits.length} ticker(s) · ordenados por Fuerza Relativa</div>` + hits.map(r => {
                 const rs = r?.RS_Score, rad = r?.Radar_Score, rsi = r?.RSI;
                 const px = typeof r?.Precio === 'number' ? r.Precio.toFixed(2) : '—';
                 return `<div class="flex flex-wrap items-center gap-x-4 py-1 border-b border-base/50">
-                    <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="irAAlertasDeTicker('${r.Ticker}')">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
+                    <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="${r._corta ? `window.open(tradingViewUrl('${r.Ticker}'), '_blank', 'noopener')` : `irAAlertasDeTicker('${r.Ticker}')`}">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
                     <span class="w-20 text-right text-gray-400">${px}</span>
                     <span class="w-20 text-right">${hoyPctHtml(r?.['Var_dia_%'], true)}</span>
                     <span class="text-gray-500">RS <span class="text-white">${rs != null ? rs.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RADAR <span class="text-accent">${rad != null ? rad.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RSI <span class="text-gray-300">${rsi != null ? rsi.toFixed(0) : '—'}</span></span>
                     <span class="text-[10px] uppercase text-gray-600 truncate">${sectorSubHtml(r)}</span>
+                    ${r._corta ? `<span class="text-[9px] text-gray-500 normal-case">historia corta (${r.Ruedas} ruedas) · ${tradingViewLinkHtml(r.Ticker, '📈 TradingView')}</span>` : ''}
                 </div>`;
             }).join('');
         }
