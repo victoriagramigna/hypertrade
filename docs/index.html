@@ -492,7 +492,7 @@
                     </summary>
                     <div class="mt-1.5 font-mono text-[11px] text-gray-500 leading-relaxed">
                         <span class="text-gray-300">Recién a Líderes:</span> tickers que en los últimos 10 días pasaron a estar en el cuadrante
-                        Líder o Mejorando -- una entrada reciente, no necesariamente consolidada todavía. La fila muestra la FR del día de la entrada; si el ticker ya cambió de cuadrante, aparece atenuada con una línea \"hoy: …\" que indica dónde está ahora. La marca <span class=\"text-gray-300\">≈ borde</span> avisa que el ticker está pegado a una línea del cuadrante (cambio de FR en 7 días entre −1 y +1, o FR a menos de 3 puntos de 50): su cuadrante de hoy no es firme y puede cruzar en la próxima corrida, en cualquier sentido. Solo informa; no cambia cuándo se registra un cruce.<br>
+                        Líder o Mejorando -- una entrada reciente, no necesariamente consolidada todavía. La fila muestra la FR del día de la entrada; si el ticker ya cambió de cuadrante, aparece atenuada con una línea \"hoy: …\" que indica dónde está ahora.<br>
                         <span class="text-gray-300">Aceleración inusual:</span> los tickers cuyo Fuerza Relativa subió más en la última semana, sea
                         cual sea el cuadrante en el que estén hoy.
                     </div>
@@ -722,6 +722,7 @@
         </section>
 
         <section>
+            <div id="cartera-resumen" class="mb-5"></div>
             <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
                 <input type="text" id="cartera-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Buscar por ticker (opcional)">
             </div>
@@ -920,6 +921,7 @@
             </div>
             <div id="mercado-vista-ranking" class="hidden"><div id="mercado-ranking"></div></div>
             <div id="mercado-vista-screener" class="hidden"><div id="mercado-screener"></div></div>
+            <div id="mercado-corta"></div>
             <div id="mercado-pie" class="font-mono text-[9px] text-gray-600 mt-3"></div>
         </section>
     </div>
@@ -3836,13 +3838,13 @@
                     <span style="color:${color}" class="font-bold">${seleccionado.Cuadrante}</span> ·
                     Fuerza Relativa: ${seleccionado.RS_Score} · Cambio 7d: ${signo}${seleccionado.Delta_RS_semana} ·
                     ${seleccionado.Sobre_SMA50 == null ? '' : (seleccionado.Sobre_SMA50 ? 'sobre su SMA50' : 'bajo su SMA50')}
-                </div>${rotBorde(seleccionado.RS_Score, seleccionado.Delta_RS_semana) ? `<div class="font-mono text-[10px] text-gray-400 mt-1">≈ ${rotBorde(seleccionado.RS_Score, seleccionado.Delta_RS_semana)}</div>` : ''}`;
+                </div>`;
             } else if (seleccionados.length > 1 && !modoETFs) {
                 info += `<div class="font-mono text-[11px] text-gray-300 mt-3 space-y-0.5">` + seleccionados.map(sel => {
                     if (!sel.Cuadrante) return `<div><span class="text-gray-400">${sel.Ticker}</span> · juntando historial</div>`;
                     const color = ROT_COLOR[sel.Cuadrante] ?? '#9ca3af';
                     const sg = (sel.Delta_RS_semana ?? 0) > 0 ? '+' : '';
-                    return `<div><span class="font-bold text-gray-200">${sel.Ticker}</span> · <span style="color:${color}" class="font-bold">${sel.Cuadrante}</span> · FR ${sel.RS_Score} · 7d ${sg}${sel.Delta_RS_semana}${rotBordeBadge(sel.RS_Score, sel.Delta_RS_semana)}</div>`;
+                    return `<div><span class="font-bold text-gray-200">${sel.Ticker}</span> · <span style="color:${color}" class="font-bold">${sel.Cuadrante}</span> · FR ${sel.RS_Score} · 7d ${sg}${sel.Delta_RS_semana}</div>`;
                 }).join('') + `</div>`;
             }
 
@@ -3878,23 +3880,6 @@
             try { renderLecturaRotacion(seleccionados.length ? seleccionados : puntos.filter(p => p.Es_ETF && p.Cuadrante)); } catch (e) { console.warn("Lectura rotación:", e); }
         }
 
-        // "En el borde": el cuadrante de hoy no es firme porque el ticker está pegado a una de las dos líneas
-        // (cambio de FR en 7d cerca de 0, o FR cerca de 50) y puede cruzarla en la próxima corrida.
-        // Solo informa: no cambia cuándo se registra un cruce ni la Auditoría.
-        const ROT_BORDE_DELTA = 1;   // |cambio de FR en 7 días| <= 1 punto
-        const ROT_BORDE_RS = 3;      // |FR - 50| <= 3 puntos
-        function rotBorde(rs, delta) {
-            if (rs == null || delta == null) return '';
-            const m = [];
-            if (Math.abs(delta) <= ROT_BORDE_DELTA) m.push('su cambio de FR en 7 días está casi en 0');
-            if (Math.abs(rs - 50) <= ROT_BORDE_RS) m.push('su FR está casi en 50');
-            return m.length ? 'En el borde: ' + m.join(' y ') + '; puede cruzar de cuadrante en la próxima corrida.' : '';
-        }
-        function rotBordeBadge(rs, delta) {
-            const t = rotBorde(rs, delta);
-            return t ? `<span class="text-[9px] border border-gray-600 text-gray-400 px-1 ml-1 rounded-sm whitespace-nowrap" title="${t}">≈ borde</span>` : '';
-        }
-
         function _filaRotacionTickerHtml(ev, { conEvolucion, hoyMap }) {
             const COLOR_TXT = { 'Líder': 'text-pos', 'Mejorando': 'text-accent', 'Debilitándose': 'text-blueAlert', 'Rezagado': 'text-neg' };
             const desde = ev.dias_desde === 0 ? 'hoy' : `hace ${ev.dias_desde}d`;
@@ -3903,12 +3888,10 @@
             // Si el ticker ya cambió de cuadrante desde entonces, se marca y se muestra dónde está hoy.
             const hoy = conEvolucion && hoyMap ? hoyMap.get(ev.ticker) : null;
             const salio = !!(hoy && hoy.Cuadrante && hoy.Cuadrante !== ev.cuadrante_nuevo);
-            const estadoHoy = hoy ?? (conEvolucion ? null : { RS_Score: ev.RS_Score, Delta_RS_semana: ev.Delta_RS_semana });
-            const badgeBorde = estadoHoy ? rotBordeBadge(estadoHoy.RS_Score, estadoHoy.Delta_RS_semana) : '';
             const lineaHoy = salio ? `<div class="w-full basis-full text-[10px] text-gray-500 mt-0.5">hoy: <span class="${COLOR_TXT[hoy.Cuadrante] ?? ''}">${hoy.Cuadrante}</span> · FR ${hoy.RS_Score}${hoy.Delta_RS_semana != null ? ' (' + (hoy.Delta_RS_semana > 0 ? '+' : '') + hoy.Delta_RS_semana + ' en 7d)' : ''}</div>` : '';
             return `
                 <div class="flex flex-wrap justify-between items-baseline font-mono text-[11px] border-b border-base pb-1 last:border-0 last:pb-0 ${salio ? 'opacity-60' : ''}">
-                    <span class="text-gray-200 cursor-pointer hover:text-accent" onclick="document.getElementById('rotacion-ticker-buscador').value='${ev.ticker || ev.Ticker}'; renderRotacionTicker(rotacionTickerUltimoData); document.getElementById('ticker-quadrant-chart').scrollIntoView({behavior:'smooth', block:'center'});">${ev.ticker || ev.Ticker}${badgeBorde}</span>
+                    <span class="text-gray-200 cursor-pointer hover:text-accent" onclick="document.getElementById('rotacion-ticker-buscador').value='${ev.ticker || ev.Ticker}'; renderRotacionTicker(rotacionTickerUltimoData); document.getElementById('ticker-quadrant-chart').scrollIntoView({behavior:'smooth', block:'center'});">${ev.ticker || ev.Ticker}</span>
                     <span class="text-gray-500">FR ${ev.rs_score ?? ev.RS_Score}</span>
                     ${conEvolucion ? `<span class="${COLOR_TXT[ev.cuadrante_nuevo] ?? ''}">${evolucion}</span><span class="text-gray-600">${desde}</span>` : `<span class="text-pos">+${ev.Delta_RS_semana}</span>`}
                     ${lineaHoy}
@@ -4611,6 +4594,49 @@
             if (mercadoVistaActual === 'sector') renderMercadoSector(data, ctx);
             else if (mercadoVistaActual === 'ranking') renderMercadoRanking(ctx);
             else renderMercadoScreener(ctx);
+            renderMercadoCorta(data, ctx);
+        }
+
+        // ---- Tickers con historia corta (cotizan hace poco; < 200 ruedas, no entran al radar) ----
+        function renderMercadoCorta(data, ctx) {
+            const cont = document.getElementById('mercado-corta');
+            if (!cont) return;
+            const { comprados, interes } = ctx;
+            let arr = (data?.historia_corta ?? []).filter(r => r && r.Ticker && r.Precio != null);
+            arr = arr.filter(r => {
+                if (mercadoSoloCedear && ratioCedearDe(r.Ticker) == null) return false;
+                if (mercadoMarca === 'comprados' && !comprados.has(r.Ticker)) return false;
+                if (mercadoMarca === 'interes' && !interes.has(r.Ticker)) return false;
+                return true;
+            });
+            if (!arr.length) { cont.innerHTML = ''; return; }
+            const num = _mNum, f2 = _mF2, pc = _mPc, cls = _mCls;
+            const cel = (etq, v) => { const n = num(v); return `<div class="text-center"><div class="text-[9px] text-gray-500">${etq}</div><div class="${n === null ? 'text-gray-600' : cls(n)} text-[11px] font-bold">${n === null ? '—' : pc(n)}</div></div>`; };
+            const fila = (r) => {
+                const nom = nombreEmpresa(r.Ticker);
+                const comp = comprados.has(r.Ticker), inte = interes.has(r.Ticker);
+                const rsi = num(r.RSI);
+                const falt = num(r.Ruedas_faltantes);
+                return `<div class="rounded-sm px-2.5 py-2 border border-surface ${comp ? 'border-l-2 border-l-blueAlert' : ''}">
+                    <div class="flex justify-between items-baseline gap-2">
+                        <span onclick="irAAlertasDeTicker('${r.Ticker}')" class="cursor-pointer text-white font-bold text-[12px]">${r.Ticker}${comp ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''} <span class="text-gray-400 font-normal text-[10px]">${nom ?? ''}</span></span>
+                        <span class="shrink-0 text-gray-200 text-[12px]">${f2(r.Precio)} <span onclick="mercadoToggleInteres('${r.Ticker}')" class="text-accent text-[13px] px-1 cursor-pointer">${inte ? '★' : '☆'}</span></span>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1 mt-1.5">
+                        ${cel('Día', r['Var_dia_%'])}${cel('5 ruedas', r['Ret_5d_%'])}${cel('1 mes', r['Ret_1m_%'])}${cel('vs SMA20', r['Dist_SMA20_%'])}${cel('vs SMA50', r['Dist_SMA50_%'])}
+                    </div>
+                    <div class="flex flex-col gap-0.5 text-[9px] text-gray-500 mt-1.5"><span>${r.Sector ?? ''} · RSI ${rsi === null ? '—' : rsi.toFixed(0)}</span><span>${r.Ruedas} de 200 ruedas${falt ? ' · faltan ' + falt : ''} · desde ${r.Desde ?? '—'}</span></div>
+                </div>`;
+            };
+            cont.innerHTML = `
+                <div class="mt-5 pt-3 border-t border-surface font-mono">
+                    <div class="text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Tickers nuevos · historia corta <span class="text-gray-500 normal-case font-normal">(${arr.length})</span></div>
+                    <details class="expl mb-2">
+                        <summary class="cursor-pointer text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto</summary>
+                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Son tickers que cotizan hace poco y todavía no tienen las 200 ruedas que necesita el radar (Fuerza Relativa, Radar Score, SMA200, Screener y alertas). Acá se muestra solo lo que se puede calcular con poca historia. Las medias de 20 y 50 ruedas aparecen cuando hay suficientes. Cuando junten 200 ruedas pasan solos al radar normal y salen de esta lista. Informativo.</div>
+                    </details>
+                    <div class="space-y-2">${arr.map(fila).join('')}</div>
+                </div>`;
         }
 
         // ---- Vista "Por sector" ----
@@ -6336,7 +6362,92 @@
                 </div>`;
         }
 
+        // ---- Resumen de un vistazo (21/10): cuadro de posiciones + contadores + estado crítico / en observación.
+        // Solo lee lo que ya existe (cartera, ranking del radar, balance real); no agrega cálculos ni cambia stops.
+        // Describe estados; no es una recomendación.
+        const RESUMEN_NEUTRAL_PCT = 1;        // entre -1% y +1% se cuenta como neutral
+        const RESUMEN_CERCA_STOP_PCT = 3;     // "en observación" si está a <= 3% del stop
+        const RESUMEN_RSI_ALTO = 75;
+        function renderResumenCartera() {
+            const cont = document.getElementById('cartera-resumen');
+            if (!cont) return;
+            const posiciones = cargarCartera();
+            if (!posiciones.length) { cont.innerHTML = ''; return; }
+            const ranking = currentRadarData?.ranking ?? [];
+            const f2 = (x) => Number(x).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const pc = (x) => (x > 0 ? '+' : '') + f2(x) + '%';
+            const cls = (x) => x > RESUMEN_NEUTRAL_PCT ? 'text-pos' : x < -RESUMEN_NEUTRAL_PCT ? 'text-neg' : 'text-gray-300';
+            const bg = (x) => x > RESUMEN_NEUTRAL_PCT ? 'rgba(111,207,151,0.14)' : x < -RESUMEN_NEUTRAL_PCT ? 'rgba(217,105,79,0.16)' : 'transparent';
+            const filas = [], criticos = [], observ = [];
+            let pos = 0, neu = 0, neg = 0, bajo50 = 0, bajo200 = 0, cercaStop = 0, sinPrecio = 0;
+            const ordenadas = posiciones.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
+            for (const p of ordenadas) {
+                const t = ranking.find(r => r?.Ticker?.toUpperCase() === String(p.ticker).toUpperCase());
+                const px = t?.Precio;
+                if (px == null || !(p.precio > 0)) { sinPrecio++; filas.push({ p, px: null }); continue; }
+                const usdPct = (px / p.precio - 1) * 100;
+                const br = calcularBalanceReal(p);
+                const pnl = br ? br.rendimientoArsPct : usdPct;          // en pesos reales si hay dato; si no, en dólares
+                const hoy = (typeof t['Var_dia_%'] === 'number' && isFinite(t['Var_dia_%'])) ? t['Var_dia_%'] : null;
+                if (pnl > RESUMEN_NEUTRAL_PCT) pos++; else if (pnl < -RESUMEN_NEUTRAL_PCT) neg++; else neu++;
+                filas.push({ p, px, pnl, enArs: !!br, hoy });
+                const etq = (txt) => `<div class="py-0.5"><span class="text-white font-bold">${_esc(p.ticker)}</span> <span class="text-gray-400">${txt}</span></div>`;
+                let enObs = false, enCrit = false;
+                const stop = p.stopActual ?? p.stopInicial;
+                if (stop != null) {
+                    const d = (px - stop) / stop * 100;
+                    if (d <= 0) { criticos.push(etq('tocó el stop (' + f2(stop) + ')')); enCrit = true; }
+                    else if (d <= RESUMEN_CERCA_STOP_PCT) { observ.push(etq('a ' + f2(d) + '% del stop (' + f2(stop) + ')')); cercaStop++; enObs = true; }
+                }
+                const d200 = t['Dist_SMA200_%'], d50 = t['Dist_SMA50_%'];
+                if (d200 != null && d200 < 0) { criticos.push(etq('bajo su SMA200 (' + pc(d200) + ')')); bajo200++; }
+                else if (d50 != null && d50 < -SMA50_TOLERANCIA_PCT) { observ.push(etq('perdió su SMA50 (' + pc(d50) + ')')); bajo50++; }
+                if (d200 != null && d200 < 0 && d50 != null && d50 < -SMA50_TOLERANCIA_PCT) bajo50++;
+                if (t.RSI != null && t.RSI >= RESUMEN_RSI_ALTO) observ.push(etq('RSI ' + Number(t.RSI).toFixed(0) + ' (alto)'));
+                if (usdPct >= CARTERA_GANANCIA_PARCIAL_PCT) observ.push(etq('pasó el objetivo parcial (+' + CARTERA_GANANCIA_PARCIAL_PCT + '% en US$)'));
+                if (t.Radar_Score != null && p.radarScoreCompra != null && (p.radarScoreCompra - t.Radar_Score) >= CARTERA_CAIDA_RADAR_SCORE) observ.push(etq('Radar Score bajó de ' + p.radarScoreCompra.toFixed(0) + ' a ' + t.Radar_Score.toFixed(0)));
+            }
+            const ddmm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
+            const filaHtml = (r) => {
+                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-2 text-white font-bold">${_esc(r.p.ticker)}</td><td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td><td colspan="4" class="text-gray-600 text-right">sin precio actual</td></tr>`;
+                return `<tr class="border-t border-base">
+                    <td class="py-1.5 pr-2 text-white font-bold">${_esc(r.p.ticker)}</td>
+                    <td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td>
+                    <td class="text-gray-300 pr-2 text-right">${f2(r.p.precio)}</td>
+                    <td class="text-gray-200 pr-2 text-right">${f2(r.px)}</td>
+                    <td class="${cls(r.pnl)} font-bold text-right px-1.5" style="background:${bg(r.pnl)}" title="${r.enArs ? 'En pesos reales (CEDEAR), como en tu bróker' : 'En dólares del subyacente (la compra no se cargó en pesos)'}">${pc(r.pnl)}${r.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
+                    <td class="${r.hoy == null ? 'text-gray-600' : cls(r.hoy)} text-right pl-2">${r.hoy == null ? '—' : pc(r.hoy)}</td>
+                </tr>`;
+            };
+            const n = posiciones.length;
+            const caja = (titulo, items, vacio) => `<div class="flex-1 min-w-0"><div class="bg-base text-center text-[10px] uppercase tracking-widest font-bold text-gray-300 py-1 border border-surface">${titulo}</div><div class="border border-t-0 border-surface p-2 text-[11px] min-h-[3rem]">${items.length ? items.join('') : `<span class="text-gray-600">${vacio}</span>`}</div></div>`;
+            const cont4 = (etq, v, c) => `<div class="text-center"><div class="text-[9px] uppercase text-gray-500">${etq}</div><div class="${c} text-lg font-bold">${v}</div></div>`;
+            cont.innerHTML = `
+                <div class="bg-surface p-3 rounded-sm border border-surface font-mono">
+                    <div class="text-accent text-[10px] uppercase tracking-widest font-bold mb-2">Resumen de un vistazo</div>
+                    <table class="w-full text-[11px]">
+                        <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right">PNL</th><th class="font-normal text-right">Hoy %</th></tr></thead>
+                        <tbody>${filas.map(filaHtml).join('')}</tbody>
+                    </table>
+                    <div class="grid grid-cols-4 gap-1 mt-3 pt-3 border-t border-base">
+                        ${cont4('Operaciones', n, 'text-gray-200')}${cont4('Positivas', pos, 'text-pos')}${cont4('Neutrales', neu, 'text-gray-300')}${cont4('Negativas', neg, 'text-neg')}
+                    </div>
+                    <div class="grid grid-cols-3 gap-1 mt-2 text-center">
+                        ${cont4('Bajo SMA50', bajo50, bajo50 ? 'text-accent' : 'text-gray-500')}${cont4('Bajo SMA200', bajo200, bajo200 ? 'text-neg' : 'text-gray-500')}${cont4('Cerca del stop', cercaStop, cercaStop ? 'text-accent' : 'text-gray-500')}
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        ${caja('Estado crítico', criticos, 'Sin posiciones en estado crítico')}${caja('En observación', observ, 'Nada en observación')}
+                    </div>
+                    <details class="expl mt-2">
+                        <summary class="cursor-pointer text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto</summary>
+                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Una fila por compra. <span class="text-gray-300">PPC</span> es tu precio de compra; <span class="text-gray-300">Hoy $</span>, el precio de hoy en dólares del subyacente. El <span class="text-gray-300">PNL</span> va en pesos reales (CEDEAR) cuando la compra se cargó en pesos; si no, en dólares y con la marca US$. Positiva/negativa: más de +1% / menos de −1%; el resto es neutral. <span class="text-gray-300">Estado crítico:</span> el precio tocó el stop o está bajo su SMA200. <span class="text-gray-300">En observación:</span> a ${RESUMEN_CERCA_STOP_PCT}% o menos del stop, perdió la SMA50, RSI desde ${RESUMEN_RSI_ALTO}, pasó el objetivo parcial o bajó el Radar Score. Describe el estado actual con datos del radar; no es una recomendación ni una orden.</div>
+                    </details>
+                    ${sinPrecio ? `<div class="text-[10px] text-gray-600 mt-2">${sinPrecio} posición(es) sin precio actual en esta corrida.</div>` : ''}
+                </div>`;
+        }
+
         function renderCartera() {
+            setTimeout(() => { try { renderResumenCartera(); } catch (e) { console.error('resumen cartera', e); } }, 0);
             const container = document.getElementById('cartera-container');
             const posiciones = cargarCartera();
 
