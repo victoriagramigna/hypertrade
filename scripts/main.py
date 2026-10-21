@@ -27,6 +27,7 @@ from datetime import datetime, timezone, timedelta
 from config import (TICKERS, BENCHMARK, SCORE_MINIMO_ALERTA, MODO, VIX_TICKER,
                      UMBRAL_MOVIMIENTO_DIARIO_PCT, UMBRAL_CORRIDA_DEGRADADA_PCT, RATIOS_CEDEAR)
 from datos import traer_datos
+from historia_corta import calcular as calcular_historia_corta
 from rs_score import calcular_rs_score
 from alertas import detectar_alertas
 from contexto import escanear_titulares, evaluar_contexto_macro, recomendacion_final
@@ -123,6 +124,8 @@ def main():
     fallidos_universo = [f for f in fallidos if f["ticker"] in TICKERS]
     pct_fallidos = round(len(fallidos_universo) / len(TICKERS) * 100, 1) if TICKERS else 0
     corrida_degradada = pct_fallidos >= UMBRAL_CORRIDA_DEGRADADA_PCT
+    # Tickers nuevos con <200 ruedas (ej. SPCX): solo se muestran en la solapa Mercado (ver historia_corta.py)
+    historia_corta = calcular_historia_corta(fallidos_universo, TICKERS)
     if corrida_degradada:
         log.warning(f"CORRIDA DEGRADADA: falló el {pct_fallidos}% del universo "
                     f"({len(fallidos_universo)}/{len(TICKERS)}) -- se guarda igual, "
@@ -432,6 +435,7 @@ def main():
         "proxima_corrida_estimada_utc": estimar_proxima_corrida(ahora),
         "tickers_ok": len(precios) - 2,
         "tickers_fallidos": fallidos,
+        "historia_corta": historia_corta,
         "pct_fallidos": pct_fallidos,
         "corrida_degradada": corrida_degradada,
         "tickers_desactualizados": desactualizados_universo,
