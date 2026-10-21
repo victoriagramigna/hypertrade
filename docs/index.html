@@ -492,7 +492,7 @@
                     </summary>
                     <div class="mt-1.5 font-mono text-[11px] text-gray-500 leading-relaxed">
                         <span class="text-gray-300">Recién a Líderes:</span> tickers que en los últimos 10 días pasaron a estar en el cuadrante
-                        Líder o Mejorando -- una entrada reciente, no necesariamente consolidada todavía.<br>
+                        Líder o Mejorando -- una entrada reciente, no necesariamente consolidada todavía. La fila muestra la FR del día de la entrada; si el ticker ya cambió de cuadrante, aparece atenuada con una línea \"hoy: …\" que indica dónde está ahora.<br>
                         <span class="text-gray-300">Aceleración inusual:</span> los tickers cuyo Fuerza Relativa subió más en la última semana, sea
                         cual sea el cuadrante en el que estén hoy.
                     </div>
@@ -3878,15 +3878,21 @@
             try { renderLecturaRotacion(seleccionados.length ? seleccionados : puntos.filter(p => p.Es_ETF && p.Cuadrante)); } catch (e) { console.warn("Lectura rotación:", e); }
         }
 
-        function _filaRotacionTickerHtml(ev, { conEvolucion }) {
+        function _filaRotacionTickerHtml(ev, { conEvolucion, hoyMap }) {
             const COLOR_TXT = { 'Líder': 'text-pos', 'Mejorando': 'text-accent', 'Debilitándose': 'text-blueAlert', 'Rezagado': 'text-neg' };
             const desde = ev.dias_desde === 0 ? 'hoy' : `hace ${ev.dias_desde}d`;
             const evolucion = conEvolucion ? `${ev.cuadrante_anterior ?? '—'} → ${ev.cuadrante_nuevo}` : '';
+            // Estado de HOY: la lista es un historial de entradas, no el estado actual.
+            // Si el ticker ya cambió de cuadrante desde entonces, se marca y se muestra dónde está hoy.
+            const hoy = conEvolucion && hoyMap ? hoyMap.get(ev.ticker) : null;
+            const salio = !!(hoy && hoy.Cuadrante && hoy.Cuadrante !== ev.cuadrante_nuevo);
+            const lineaHoy = salio ? `<div class="w-full basis-full text-[10px] text-gray-500 mt-0.5">hoy: <span class="${COLOR_TXT[hoy.Cuadrante] ?? ''}">${hoy.Cuadrante}</span> · FR ${hoy.RS_Score}${hoy.Delta_RS_semana != null ? ' (' + (hoy.Delta_RS_semana > 0 ? '+' : '') + hoy.Delta_RS_semana + ' en 7d)' : ''}</div>` : '';
             return `
-                <div class="flex justify-between items-baseline font-mono text-[11px] border-b border-base pb-1 last:border-0 last:pb-0">
+                <div class="flex flex-wrap justify-between items-baseline font-mono text-[11px] border-b border-base pb-1 last:border-0 last:pb-0 ${salio ? 'opacity-60' : ''}">
                     <span class="text-gray-200 cursor-pointer hover:text-accent" onclick="document.getElementById('rotacion-ticker-buscador').value='${ev.ticker || ev.Ticker}'; renderRotacionTicker(rotacionTickerUltimoData); document.getElementById('ticker-quadrant-chart').scrollIntoView({behavior:'smooth', block:'center'});">${ev.ticker || ev.Ticker}</span>
                     <span class="text-gray-500">FR ${ev.rs_score ?? ev.RS_Score}</span>
                     ${conEvolucion ? `<span class="${COLOR_TXT[ev.cuadrante_nuevo] ?? ''}">${evolucion}</span><span class="text-gray-600">${desde}</span>` : `<span class="text-pos">+${ev.Delta_RS_semana}</span>`}
+                    ${lineaHoy}
                 </div>`;
         }
 
@@ -3908,12 +3914,13 @@
             }
             const acciones = recien.filter(e => !e.es_etf);
             const etfs = recien.filter(e => e.es_etf);
+            const hoyMap = new Map((rt.puntos ?? []).map(p => [p.Ticker, p]));
             if (recien.length === 0) {
                 contLideres.innerHTML = totalRecien === 0 ? '<div class="text-gray-500 font-mono text-[11px]">Sin entradas nuevas en los últimos 10 días.</div>' : '<div class="text-gray-500 font-mono text-[11px]">Ninguna coincide con la búsqueda (hay ' + totalRecien + ' en la lista completa).</div>';
             } else {
                 contLideres.innerHTML = (palabrasR.length ? `<div class="font-mono text-[10px] text-gray-500">${recien.length} de ${totalRecien}</div>` : '') + `
-                    ${acciones.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mb-1">Acciones</div>${acciones.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
-                    ${etfs.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mt-3 mb-1">ETFs</div>${etfs.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true })).join('')}` : ''}
+                    ${acciones.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mb-1">Acciones</div>${acciones.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true, hoyMap })).join('')}` : ''}
+                    ${etfs.length ? `<div class="font-mono text-[9px] uppercase text-gray-600 mt-3 mb-1">ETFs</div>${etfs.map(e => _filaRotacionTickerHtml(e, { conEvolucion: true, hoyMap })).join('')}` : ''}
                 `;
             }
 
