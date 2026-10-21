@@ -81,7 +81,7 @@
         .tab-btn.active { color: #E0A458; }
         .tab-btn .tab-dot { display: none; }
         .tab-btn.active .tab-dot { display: inline-block; }
-        body { padding-bottom: 120px; } /* deja lugar de sobra para la barra fija de abajo */
+        body { padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)) !important; } /* lugar de sobra para la barra fija de abajo; !important porque la clase p-4 del <body> (Tailwind) lo pisaba y dejaba solo 16px, tapando el final de cada solapa */
         .tab-content { padding-bottom: 24px; } /* margen extra al final de cada pestaña */
 
         /* Badges chicos de señales nuevas (Radar Score v2) */
