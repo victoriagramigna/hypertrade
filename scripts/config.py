@@ -700,6 +700,11 @@ RATIOS_CEDEAR = {
     # --- Brasil (6/10): ITUB 1:1 según PDF oficial de BYMA 3/2/2026. ABEV queda sin
     # ratio: el PDF lo muestra "1:3" (formato fraccionario, igual que SAN) -- a confirmar.
     "ITUB": 1,
+    # 22/10: formato inverso "1:N" de BYMA (1 CEDEAR = N ADRs), confirmado con precios del broker
+    # (CEDEAR ARS = ADR USD x CCL / ratio, con ratio fraccionario): ABEV 1:3, GGB 1:4, SBS 1:2, SAN 1:4, ARCO 1:2.
+    "ABEV": 1/3, "GGB": 1/4, "SBS": 1/2, "SAN": 1/4, "ARCO": 1/2,
+    # NVO 7:1 (ADR 39,44 x CCL / 9.250 = 6,98); KEEL 1:5 inverso (1 CEDEAR = 5 ADRs: 2,23 x CCL x 5 = 18.262 vs 18.400 en el broker)
+    "NVO": 7, "KEEL": 1/5,
     # --- Tanda 6/10 (ratios del PDF oficial de BYMA 3/2/2026). Sin ratio, por formato
     # fraccionario sin confirmar: ABEV (1:3), GGB (1:4), SBS (1:2), EBR (1:4), ARCO (1:2) ---
     "BSBR": 1, "ERJ": 1, "SUZ": 1, "STNE": 3, "XP": 4, "FMX": 6, "AMX": 1, "KGC": 1, "GFI": 1, "BNY": 2, "TRV": 6, "XPEV": 4, "ILF": 6, "GDX": 10, "COPX": 14, "FXI": 5, "IEMG": 12, "ACWI": 26, "EWJ": 14,
