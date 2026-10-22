@@ -226,7 +226,7 @@ TICKERS = {
     "SYY": "Consumo",       # Sysco
     "SCHW": "Fintech",      # Charles Schwab
     "SAN": "Bancos",        # Banco Santander -- ratio sin confirmar (ver RATIOS_CEDEAR)
-    "MMC": "Fintech",       # Marsh & McLennan -- seguros/consultoría de riesgo
+    "MRSH": "Fintech",       # Marsh & McLennan -- seguros/consultoría de riesgo
     "FISV": "Fintech",      # Fiserv
     "NEE": "Energía",       # NextEra Energy
     "DAL": "Transporte",    # Delta Air Lines
@@ -267,7 +267,7 @@ TICKERS = {
     "AMX": "Telecomunicaciones",# América Móvil (México)
     "KGC": "Materiales",      # Kinross Gold
     "GFI": "Materiales",      # Gold Fields
-    "BK": "Bancos",           # BNY Mellon
+    "BNY": "Bancos",           # BNY Mellon
     "TRV": "Fintech",         # Travelers (BYMA lo llama TRVV)
     "XPEV": "Automotriz",     # XPeng, autos eléctricos (China)
     "ILF": "ETF",             # iShares Latin America 40
@@ -346,7 +346,7 @@ SUBCATEGORIAS = {
     "FMX": "Consumo Básico",
     "KGC": "Minería/Metales",
     "GFI": "Minería/Metales",
-    "BK": "Banca EE.UU.",
+    "BNY": "Banca EE.UU.",
     "TRV": "Seguros",
     "XPEV": "Eléctricos/Lujo",
 
@@ -433,7 +433,7 @@ SUBCATEGORIAS = {
     "MA": "Pagos", "V": "Pagos", "PYPL": "Pagos", "XYZ": "Pagos", "AXP": "Pagos", "FISV": "Pagos",
     "NU": "Banca digital/Neobancos", "PAGS": "Banca digital/Neobancos",
     "COIN": "Cripto/Bróker", "HOOD": "Cripto/Bróker", "IBKR": "Cripto/Bróker", "MSTR": "Cripto/Bróker",
-    "AEG": "Seguros", "AIG": "Seguros", "MMC": "Seguros",
+    "AEG": "Seguros", "AIG": "Seguros", "MRSH": "Seguros",
     "BX": "Gestión de activos/Datos financieros", "EFX": "Gestión de activos/Datos financieros",
     "SPGI": "Gestión de activos/Datos financieros", "UPST": "Gestión de activos/Datos financieros",
 
@@ -449,6 +449,108 @@ SUBCATEGORIAS = {
     "GE": "Aviación/Defensa", "HWM": "Aviación/Defensa",
     "RKLB": "Espacio (nuevo)", "SPCE": "Espacio (nuevo)", "SPCX": "Espacio (nuevo)",
 }
+
+# 22/10: reorganización de temas (Mercado → Rankings → Tema). Esta tabla pisa a la anterior para los tickers listados.
+SUBCATEGORIAS.update({
+    "UNP": "Transporte",
+    "DAL": "Transporte",
+    "FDX": "Transporte",
+    "UAL": "Transporte",
+    "ASR": "Transporte",
+    "AAL": "Transporte",
+    "AMX": "Telecomunicaciones",
+    "VZ": "Telecomunicaciones",
+    "T": "Telecomunicaciones",
+    "TV": "Telecomunicaciones",
+    "TMUS": "Telecomunicaciones",
+    "BG": "Agro y fertilizantes",
+    "AGRO": "Agro y fertilizantes",
+    "MOS": "Agro y fertilizantes",
+    "BIOX": "Agro y fertilizantes",
+    "WELL": "Real Estate",
+    "O": "Real Estate",
+    "PLD": "Real Estate",
+    "BRK-B": "Seguros y holdings",
+    "TRV": "Seguros y holdings",
+    "AIG": "Seguros y holdings",
+    "AEG": "Seguros y holdings",
+    "SATL": "Espacio, drones y cuántica",
+    "RGTI": "Espacio, drones y cuántica",
+    "ASTS": "Espacio, drones y cuántica",
+    "SPCE": "Espacio, drones y cuántica",
+    "RKLB": "Espacio, drones y cuántica",
+    "ONDS": "Espacio, drones y cuántica",
+    "SPCX": "Espacio, drones y cuántica",
+    "MSFT": "Big Tech",
+    "AAPL": "Big Tech",
+    "META": "Big Tech",
+    "GOOGL": "Big Tech",
+    "DELL": "Hardware",
+    "BB": "Hardware",
+    "HPQ": "Hardware",
+    "SONY": "Hardware",
+    "IBM": "Hardware",
+    "GRMN": "Hardware",
+    "MSI": "Hardware",
+    "CLS": "Hardware",
+    "GLW": "Hardware",
+    "CRWD": "Ciberseguridad",
+    "PANW": "Ciberseguridad",
+    "PLTR": "IA y datos",
+    "AI": "IA y datos",
+    "SNOW": "IA y datos",
+    "ACN": "Consultoras de IT",
+    "GLOB": "Consultoras de IT",
+    "INFY": "Consultoras de IT",
+    "AMZN": "E-commerce",
+    "MELI": "E-commerce",
+    "EBAY": "E-commerce",
+    "ETSY": "E-commerce",
+    "PDD": "E-commerce",
+    "JMIA": "E-commerce",
+    "BABA": "E-commerce",
+    "JD": "E-commerce",
+    "SE": "E-commerce",
+    "ABNB": "Viajes y ocio",
+    "BKNG": "Viajes y ocio",
+    "CCL": "Viajes y ocio",
+    "LVS": "Viajes y ocio",
+    "TRIP": "Viajes y ocio",
+    "TCOM": "Viajes y ocio",
+    "UBER": "Viajes y ocio",
+    "CAR": "Viajes y ocio",
+    "ANF": "Retail y marcas",
+    "URBN": "Retail y marcas",
+    "TGT": "Retail y marcas",
+    "ROST": "Retail y marcas",
+    "TJX": "Retail y marcas",
+    "HD": "Retail y marcas",
+    "NKE": "Retail y marcas",
+    "DECK": "Retail y marcas",
+    "SBUX": "Retail y marcas",
+    "MCD": "Retail y marcas",
+    "ARCO": "Retail y marcas",
+    "NFLX": "Internet/Medios",
+})
+
+# 22/10: tema Argentina (ADRs y CEDEARs de empresas argentinas o con base en Argentina), como en la planilla de Gusti.
+SUBCATEGORIAS.update({
+    "YPF": "Argentina",
+    "GGAL": "Argentina",
+    "BMA": "Argentina",
+    "BBAR": "Argentina",
+    "SUPV": "Argentina",
+    "PAM": "Argentina",
+    "TGS": "Argentina",
+    "EDN": "Argentina",
+    "VIST": "Argentina",
+    "AGRO": "Argentina",
+    "ARCO": "Argentina",
+    "BIOX": "Argentina",
+    "MELI": "Argentina",
+    "GLOB": "Argentina",
+    "TX": "Argentina",
+})
 
 BENCHMARK = "SPY"
 
@@ -587,7 +689,7 @@ RATIOS_CEDEAR = {
     # una fracción real o un error de formato de la fuente) -- entra al
     # universo técnico igual, pero sin ratio hasta confirmar.
     "CSCO": 5, "ASML": 146, "ANET": 29, "CLS": 20, "SWKS": 21, "NTES": 14,
-    "ANF": 1, "TCOM": 2, "SYY": 8, "SCHW": 13, "MMC": 16, "FISV": 11,
+    "ANF": 1, "TCOM": 2, "SYY": 8, "SCHW": 13, "MRSH": 16, "FISV": 11,
     "NEE": 19, "DAL": 8, "FDX": 10, "DD": 5, "STLA": 5, "FCX": 3, "BG": 5,
     "HIMS": 4, "IVV": 692, "VEA": 10, "EFA": 18, "IBIT": 10, "SLV": 6,
     "USO": 15, "XLY": 43, "XLP": 16, "XLB": 18, "XLC": 19, "XLRE": 9,
@@ -600,12 +702,13 @@ RATIOS_CEDEAR = {
     "ITUB": 1,
     # --- Tanda 6/10 (ratios del PDF oficial de BYMA 3/2/2026). Sin ratio, por formato
     # fraccionario sin confirmar: ABEV (1:3), GGB (1:4), SBS (1:2), EBR (1:4), ARCO (1:2) ---
-    "BSBR": 1, "ERJ": 1, "SUZ": 1, "STNE": 3, "XP": 4, "FMX": 6, "AMX": 1, "KGC": 1, "GFI": 1, "BK": 2, "TRV": 6, "XPEV": 4, "ILF": 6, "GDX": 10, "COPX": 14, "FXI": 5, "IEMG": 12, "ACWI": 26, "EWJ": 14,
+    "BSBR": 1, "ERJ": 1, "SUZ": 1, "STNE": 3, "XP": 4, "FMX": 6, "AMX": 1, "KGC": 1, "GFI": 1, "BNY": 2, "TRV": 6, "XPEV": 4, "ILF": 6, "GDX": 10, "COPX": 14, "FXI": 5, "IEMG": 12, "ACWI": 26, "EWJ": 14,
     # --- Ratios de ADR (no CEDEAR) para acciones argentinas que cotizan
     # directo en NYSE -- misma lógica de brecha, referencia distinta al
     # dólar CCL en vez del panel de CEDEARs de BYMA.
-    "YPF": 1, "GGAL": 10, "BMA": 10, "BBAR": 3, "PAM": 25,
-    # SUPV, EDN, TGS: ratio de ADR sin confirmar todavía
+    "YPF": 10, "GGAL": 10, "BMA": 10, "BBAR": 3, "PAM": 25,
+    # 21/10: ratios confirmados con precios del broker (ADR x CCL / acción local): TGS 5, SUPV 5, EDN 20
+    "TGS": 5, "SUPV": 5, "EDN": 20,
 }
 
 # --- Casos donde el ticker real (yfinance/NYSE) difiere del código que usa
@@ -636,6 +739,7 @@ UMBRAL_MOVIMIENTO_DIARIO_PCT = 5   # +/- 5% en un solo día entra al panel
 SCREENER_ZONA_MA200_PCT = 1.0      # "Zona MA200": ticker a +/- 1% de su SMA200
 SCREENER_PULLBACK_RSI_MIN = 30     # "Pullback": sobre su SMA200 y con RSI (14) entre 30 y 40
 SCREENER_PULLBACK_RSI_MAX = 40
+SCREENER_REBOTE_RACHA_MIN = 3      # "Rebote técnico": al menos 3 cierres seguidos a la baja y el último día en verde
 
 # --- Ventana de vigencia de una alerta en el dashboard (ver bug de acumulación infinita) ---
 VENTANA_ALERTA_HORAS = 48   # una alerta deja de mostrarse en "Alertas Activas" pasadas estas horas

@@ -1,9 +1,11 @@
 """
-Screener (solapa Mercado) -- dos listas informativas y su medicion posterior.
+Screener (solapa Mercado) -- tres listas informativas y su medicion posterior.
 
 Listas (misma definicion que docs/index.html, constantes SCREENER_* de config.py):
   * zona_ma200 : tickers a +/- SCREENER_ZONA_MA200_PCT % de su SMA200 (testeando la tendencia de largo plazo).
   * pullback   : tickers SOBRE su SMA200 con RSI (14) entre SCREENER_PULLBACK_RSI_MIN y _MAX (retroceso dentro de una tendencia alcista).
+  * rebote     : (desde el 21/10) tickers con al menos SCREENER_REBOTE_RACHA_MIN cierres seguidos a la baja y el ultimo dia en verde,
+                 ordenados por la suba del dia. Las lineas del log anteriores al 21/10 no tienen esta lista (no se reconstruye nada).
 
 Registro propio, append-only: data/log_screener.jsonl -- UNA linea por rueda cerrada:
     {"fecha": "2026-10-20", "spy": 672.1, "zona_ma200": [{"t": "AEM", "p": 123.4, "d200": -0.04, "rsi": 51.2}, ...], "pullback": [...]}
@@ -19,9 +21,9 @@ import json, logging, os, sys
 from datetime import datetime, timezone
 
 try:
-    from config import SCREENER_ZONA_MA200_PCT, SCREENER_PULLBACK_RSI_MIN, SCREENER_PULLBACK_RSI_MAX
+    from config import SCREENER_ZONA_MA200_PCT, SCREENER_PULLBACK_RSI_MIN, SCREENER_PULLBACK_RSI_MAX, SCREENER_REBOTE_RACHA_MIN
 except Exception:  # ejecucion suelta
-    SCREENER_ZONA_MA200_PCT, SCREENER_PULLBACK_RSI_MIN, SCREENER_PULLBACK_RSI_MAX = 1.0, 30, 40
+    SCREENER_ZONA_MA200_PCT, SCREENER_PULLBACK_RSI_MIN, SCREENER_PULLBACK_RSI_MAX, SCREENER_REBOTE_RACHA_MIN = 1.0, 30, 40, 3
 
 log = logging.getLogger("radar.screener")
 RUTA_LOG = "data/log_screener.jsonl"
@@ -29,10 +31,11 @@ RUTA_CIERRES = "data/cierres_diarios.jsonl"
 RUTA_AUD = "data/auditoria_screener.json"
 HORA_CIERRE_UTC = (21, 10)
 HORIZONTES = (5, 10, 20)
-LISTAS = ("zona_ma200", "pullback")
+LISTAS = ("zona_ma200", "pullback", "rebote")
 DESCRIPCION = {
     "zona_ma200": f"A +/-{SCREENER_ZONA_MA200_PCT:g}% de su SMA200",
     "pullback": f"Sobre su SMA200 con RSI entre {SCREENER_PULLBACK_RSI_MIN} y {SCREENER_PULLBACK_RSI_MAX}",
+    "rebote": f"{SCREENER_REBOTE_RACHA_MIN}+ cierres seguidos a la baja y hoy en verde",
 }
 
 
@@ -46,7 +49,7 @@ def _num(x):
 
 def listas(ranking):
     """ranking: lista de dicts (filas de ultimo.json -> ranking). Devuelve {lista: [filas chicas]}."""
-    zona, pull = [], []
+    zona, pull, reb = [], [], []
     for r in ranking:
         t, p = r.get("Ticker"), _num(r.get("Precio"))
         d200, rsi = _num(r.get("Dist_SMA200_%")), _num(r.get("RSI"))
@@ -57,9 +60,13 @@ def listas(ranking):
             zona.append(fila)
         if d200 > 0 and rsi is not None and SCREENER_PULLBACK_RSI_MIN <= rsi <= SCREENER_PULLBACK_RSI_MAX:
             pull.append(fila)
+        racha, dia = _num(r.get("Racha_bajista")), _num(r.get("Var_dia_%"))
+        if racha is not None and dia is not None and racha >= SCREENER_REBOTE_RACHA_MIN and dia > 0:
+            reb.append({**fila, "racha": int(racha), "dia": round(dia, 2)})
     zona.sort(key=lambda f: abs(f["d200"]))
     pull.sort(key=lambda f: f["rsi"])
-    return {"zona_ma200": zona, "pullback": pull}
+    reb.sort(key=lambda f: -f["dia"])
+    return {"zona_ma200": zona, "pullback": pull, "rebote": reb}
 
 
 def _leer_jsonl(ruta):
@@ -101,7 +108,7 @@ def registrar(df_rs, precios, benchmark, ahora=None, degradada=False):
         linea = {"fecha": fecha, "spy": round(float(spy.iloc[-1]), 2), **l}
         with open(RUTA_LOG, "a", encoding="utf-8") as f:
             f.write(json.dumps(linea, ensure_ascii=False, separators=(",", ":")) + "\n")
-        log.info(f"Screener {fecha}: zona_ma200={len(l['zona_ma200'])}, pullback={len(l['pullback'])} -> {RUTA_LOG}")
+        log.info(f"Screener {fecha}: zona_ma200={len(l['zona_ma200'])}, pullback={len(l['pullback'])}, rebote={len(l['rebote'])} -> {RUTA_LOG}")
         medir(ahora)
         return fecha
     except Exception as e:
