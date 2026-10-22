@@ -2479,6 +2479,8 @@
             XLB: ['Materiales', 'Linde, Sherwin-Williams, Freeport'], XLU: ['Servicios públicos', 'NextEra, Southern Co., Duke'],
             XLRE: ['Inmobiliario', 'Prologis, American Tower, Welltower'],
         };
+        let sectoresHoyOrden = 'dia';
+        function sectoresHoyOrdenar(o) { sectoresHoyOrden = o; renderSectoresHoy(currentRadarData); }
         function renderSectoresHoy(data) {
             const cont = document.getElementById('sectores-hoy-cont');
             if (!cont) return;
@@ -2499,12 +2501,15 @@
             const suben = filas.filter(x => x.dia > 0).length, mejor = filas[0], peor = filas[filas.length - 1];
             let hora = '';
             try { hora = new Date(data.generado_utc).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }); } catch (e) {}
-            const filaHtml = (x) => `<tr class="border-t border-gray-800"><td class="py-1 text-left"><span class="text-white font-bold">${x.t}</span> <span class="text-gray-500">(${x.nombre})</span></td><td class="text-right font-bold ${cl(x.dia)}">${pc(x.dia)}</td><td class="text-right ${cl(x.vs)}">${pp(x.vs)}</td></tr>`;
             const tieneExtra = filas.some(x => x.d5 != null || x.m1 != null);
+            const campoSH = (typeof sectoresHoyOrden !== 'undefined' && (tieneExtra || sectoresHoyOrden === 'dia' || sectoresHoyOrden === 'vs')) ? sectoresHoyOrden : 'dia';
+            const val = (x) => campoSH === 'dia' ? x.dia : campoSH === 'vs' ? x.vs : campoSH === 'd5' ? x.d5 : x.m1;
+            const ord = [...filas].sort((a, b) => (val(b) ?? -Infinity) - (val(a) ?? -Infinity));
+            const thSH = (id, txt) => `<th class="text-right font-normal px-1"><button onclick="sectoresHoyOrdenar('${id}')" class="uppercase ${campoSH === id ? 'text-accent' : 'text-gray-500'}">${txt}${campoSH === id ? ' ▼' : ''}</button></th>`;
+            const filaHtml = (x) => `<tr class="border-t border-gray-800"><td class="py-1 text-left"><span class="text-white font-bold">${x.t}</span><div class="text-[9px] text-gray-500 leading-tight">${x.nombre}</div></td><td class="text-right px-1 font-bold ${cl(x.dia)}">${pc(x.dia)}</td><td class="text-right px-1 ${cl(x.vs)}">${pp(x.vs)}</td>${tieneExtra ? `<td class="text-right px-1 ${cl(x.d5)}">${pc(x.d5, 1)}</td><td class="text-right px-1 ${cl(x.m1)}">${pc(x.m1, 1)}</td>` : ''}</tr>`;
             cont.innerHTML = `<div class="text-gray-300 mb-2"><span class="text-white font-bold">${suben} de ${filas.length}</span> sectores suben hoy. Mejor: <span class="${cl(mejor.dia)}">${mejor.nombre} (${pc(mejor.dia)})</span>. Peor: <span class="${cl(peor.dia)}">${peor.nombre} (${pc(peor.dia)})</span>.${spyDia != null ? ` SPY: <span class="${cl(spyDia)}">${pc(spyDia)}</span>.` : ''}</div>
-                <table class="w-full text-[11px]"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">ETF (sector)</th><th class="text-right font-normal">Hoy</th><th class="text-right font-normal">vs SPY</th></tr></thead><tbody>${filas.map(filaHtml).join('')}</tbody></table>
-                ${tieneExtra ? `<details class="mt-2"><summary class="cursor-pointer select-none text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">Ver 5 días y 1 mes</summary>
-                    <table class="w-full text-[11px] mt-1"><thead><tr class="text-[9px] uppercase text-gray-500"><th class="text-left font-normal">ETF (sector)</th><th class="text-right font-normal">5 ruedas</th><th class="text-right font-normal">1 mes</th></tr></thead><tbody>${[...filas].sort((a, b) => (b.d5 ?? -99) - (a.d5 ?? -99)).map(x => `<tr class="border-t border-gray-800"><td class="py-1 text-left"><span class="text-white font-bold">${x.t}</span> <span class="text-gray-500">(${x.nombre})</span></td><td class="text-right ${cl(x.d5)}">${pc(x.d5, 1)}</td><td class="text-right ${cl(x.m1)}">${pc(x.m1, 1)}</td></tr>`).join('')}</tbody></table></details>` : ''}
+                <table class="w-full text-[11px]"><thead><tr class="text-[9px] text-gray-500"><th class="text-left font-normal">ETF (sector)</th>${thSH('dia', 'Hoy')}${thSH('vs', 'vs SPY')}${tieneExtra ? thSH('d5', '5 ruedas') + thSH('m1', '1 mes') : ''}</tr></thead><tbody>${ord.map(filaHtml).join('')}</tbody></table>
+                <details class="expl mt-2"><summary class="cursor-pointer select-none text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="text-[10px] text-gray-500 leading-relaxed mt-2">Los 11 ETF sectoriales del S&amp;P 500 (los SPDR). «Hoy» es la variación del día; «vs SPY» es cuántos puntos por encima o por debajo del índice general; 5 ruedas es la última semana y 1 mes son 21 ruedas. Tocá el título de una columna para ordenar por ella.</div></details>
                 <details class="mt-2"><summary class="cursor-pointer select-none text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">¿Qué empresas tiene cada uno?</summary>
                     <ul class="mt-1 space-y-0.5 text-gray-400">${Object.entries(SECTORES_HOY_INFO).map(([t, [n, ej]]) => `<li><span class="text-white font-bold">${t}</span> (${n}): ${ej}…</li>`).join('')}</ul>
                     <div class="text-[9px] text-gray-600 mt-1">Ejemplos de las empresas más grandes de cada ETF; la lista exacta y los pesos cambian con el tiempo.</div></details>
