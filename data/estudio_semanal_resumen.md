@@ -20,12 +20,12 @@ Base (promedio del grupo): exceso +0.41% a 4 semanas, n=98929.
 ### Distancia a la SMA14
 | Tramo | n | semanas | exceso 4s | vs base | t vs base (NW) | mitad 1 vs base | mitad 2 vs base | consistente |
 |---|---|---|---|---|---|---|---|---|
-| <-10% | 10110 | 316 | +1.71% | +1.30 | 1.46 | 1.02 | 1.55 | si |
-| -10 a -5% | 11518 | 317 | +0.39% | -0.02 | -0.46 | 0.28 | -0.32 | no |
+| <-10% | 10111 | 316 | +1.71% | +1.30 | 1.46 | 1.02 | 1.55 | si |
+| -10 a -5% | 11517 | 317 | +0.39% | -0.02 | -0.46 | 0.28 | -0.32 | no |
 | -5 a -2% | 11039 | 317 | +0.15% | -0.26 | -1.77 | -0.03 | -0.49 | si |
-| -2 a 0% | 8971 | 317 | +0.12% | -0.29 | -1.85 | -0.14 | -0.45 | si |
-| 0 a 5% | 23296 | 317 | +0.00% | -0.41 | -3.19 | -0.24 | -0.56 | si |
-| 5 a 10% | 16873 | 317 | +0.20% | -0.21 | -2.34 | -0.23 | -0.2 | si |
+| -2 a 0% | 8972 | 317 | +0.12% | -0.29 | -1.85 | -0.14 | -0.44 | si |
+| 0 a 5% | 23293 | 317 | +0.00% | -0.41 | -3.19 | -0.24 | -0.57 | si |
+| 5 a 10% | 16875 | 317 | +0.20% | -0.21 | -2.35 | -0.23 | -0.2 | si |
 | >10% | 17122 | 317 | +0.76% | +0.35 | -0.55 | -0.16 | 0.76 | no |
 
 ### Distancia a la EMA200
@@ -57,9 +57,9 @@ Base (promedio del grupo): exceso +0.22% a 4 semanas, n=73666.
 | <-10% | 3769 | 297 | +1.43% | +1.21 | 1.2 | 0.2 | 2.07 | si |
 | -10 a -5% | 6591 | 317 | +0.17% | -0.05 | -0.61 | 0.01 | -0.09 | no |
 | -5 a -2% | 7814 | 316 | -0.13% | -0.35 | -2.31 | -0.11 | -0.55 | si |
-| -2 a 0% | 6912 | 317 | -0.05% | -0.27 | -1.5 | -0.01 | -0.5 | si |
-| 0 a 5% | 19683 | 317 | -0.14% | -0.36 | -2.94 | -0.13 | -0.56 | si |
-| 5 a 10% | 14609 | 317 | +0.13% | -0.09 | -1.64 | -0.06 | -0.12 | si |
+| -2 a 0% | 6913 | 317 | -0.04% | -0.26 | -1.49 | -0.01 | -0.5 | si |
+| 0 a 5% | 19681 | 317 | -0.14% | -0.36 | -2.94 | -0.13 | -0.56 | si |
+| 5 a 10% | 14610 | 317 | +0.13% | -0.09 | -1.65 | -0.06 | -0.12 | si |
 | >10% | 14288 | 315 | +0.82% | +0.60 | 0.18 | 0.28 | 0.83 | si |
 
 ### Distancia a la EMA200
@@ -76,5 +76,49 @@ Base (promedio del grupo): exceso +0.22% a 4 semanas, n=73666.
 Se probaron 42 cruces a la vez: con |t| >= 2 se espera que unos 2 pasen solo por azar, por eso se exige |t| >= 3.
 
 - RSI 40-50 | SMA14 -5 a -2%: exceso -0.46% (vs base -0.68), t=-3.09, n=4814
+
+## Parte 2: amplitud del mercado y retorno del SPY a 4 semanas
+317 semanas; el SPY promedio +1.23% a 4 semanas. Quintil 5 = la mayor proporcion. Los retornos a 4 semanas se solapan: el t se calcula con semanas no solapadas (rango entre 4 desfasajes). Con datos de puro azar este calculo da |t| cercano a 2 de vez en cuando (hay 4 metricas x 4 desfasajes), asi que solo cuenta como candidato un t >= 3 en los 4 desfasajes y con el mismo signo.
+
+### % del universo con RSI semanal < 30
+| Quintil | semanas | rango | SPY a 4s | positivos |
+|---|---|---|---|---|
+| 1 | 64 | 0.0 a 0.3% | +1.50% | 73.4% |
+| 2 | 63 | 0.3 a 0.6% | +0.76% | 68.3% |
+| 3 | 63 | 0.6 a 1.0% | +1.39% | 74.6% |
+| 4 | 63 | 1.0 a 1.9% | +0.89% | 61.9% |
+| 5 | 64 | 1.9 a 13.7% | +1.61% | 60.9% |
+t del quintil 5 contra el resto: -0.08 a 0.52
+
+### % del universo con RSI semanal < 40
+| Quintil | semanas | rango | SPY a 4s | positivos |
+|---|---|---|---|---|
+| 1 | 64 | 0.3 a 4.5% | +1.26% | 71.9% |
+| 2 | 63 | 4.5 a 7.6% | +1.48% | 76.2% |
+| 3 | 63 | 7.6 a 10.9% | +1.25% | 71.4% |
+| 4 | 63 | 11.0 a 16.2% | +0.09% | 54.0% |
+| 5 | 64 | 16.4 a 61.8% | +2.05% | 65.6% |
+t del quintil 5 contra el resto: 0.08 a 0.96
+
+### % del universo a mas de 10% bajo su SMA14 semanal
+| Quintil | semanas | rango | SPY a 4s | positivos |
+|---|---|---|---|---|
+| 1 | 64 | 0.0 a 3.1% | +1.25% | 70.3% |
+| 2 | 63 | 3.1 a 6.2% | +0.91% | 69.8% |
+| 3 | 63 | 6.2 a 9.0% | +1.12% | 68.3% |
+| 4 | 63 | 9.0 a 16.1% | +0.44% | 63.5% |
+| 5 | 64 | 16.2 a 63.8% | +2.41% | 67.2% |
+t del quintil 5 contra el resto: 0.74 a 1.66
+
+### % del universo sobre su EMA200 semanal
+| Quintil | semanas | rango | SPY a 4s | positivos |
+|---|---|---|---|---|
+| 1 | 64 | 35.0 a 67.7% | +2.40% | 70.3% |
+| 2 | 63 | 67.7 a 75.3% | +0.76% | 65.1% |
+| 3 | 63 | 75.3 a 78.1% | +1.79% | 77.8% |
+| 4 | 63 | 78.1 a 80.5% | +0.37% | 63.5% |
+| 5 | 64 | 80.6 a 92.1% | +0.82% | 62.5% |
+t del quintil 5 contra el resto: -1.06 a -0.12
+
 
 Lectura: un tramo es solo un CANDIDATO a umbral si se separa de la base, tiene |t| alto y es consistente en las dos mitades. Con datos de puro azar este mismo filtro deja pasar un falso positivo cada varias corridas, asi que un candidato se confirma midiendolo hacia adelante en vivo (log_semanal) antes de usarlo. Si ninguno aparece, la conclusion honesta es que ese corte no tiene sustento.
