@@ -1,0 +1,31 @@
+name: Estudio semanal (umbrales)
+
+# Aparte, de solo lectura: no toca el radar, las listas ni la Auditoria. Se corre SOLO a mano:
+# pestaña Actions -> "Estudio semanal (umbrales)" -> Run workflow. Tarda unos minutos (baja 10 años semanales).
+# Escribe data/estudio_semanal.json y data/estudio_semanal_resumen.md.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  estudio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Estudio
+        run: python scripts/estudio_semanal.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/estudio_semanal.json data/estudio_semanal_resumen.md
+          git diff --staged --quiet || git commit -m "Estudio semanal [skip ci]"
+          git pull --rebase
+          git push
