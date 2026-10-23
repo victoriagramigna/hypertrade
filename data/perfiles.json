@@ -1,0 +1,361 @@
+{
+ "generado_utc": "2026-10-23T12:56:06.825287+00:00",
+ "objetivo": "rendir mas que el SPY a 20 ruedas",
+ "casos": 126,
+ "grupos_con_muestra_chica": {
+  "Líder apoyando en soporte": 6,
+  "Rompió piso (SMA200)": 8,
+  "Sacudón, sin definición clara": 16,
+  "Perdió EMA200 tras rebote - stop sugerido": 1
+ },
+ "reglas": {
+  "min_grupo": 25,
+  "auc_min": 0.15,
+  "p_max": 0.0038
+ },
+ "grupos": [
+  {
+   "grupo": "TODAS",
+   "n": 126,
+   "ganan": 61,
+   "pierden": 65,
+   "mediana_vs_spy20": -0.2,
+   "dias_distintos": 5,
+   "datos": [
+    {
+     "dato": "apoyo_avwap",
+     "auc": 0.726,
+     "p": 0.045,
+     "mediana_ganan": 1.0,
+     "mediana_pierden": 0.0,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "dist_max52w_pct",
+     "auc": 0.708,
+     "p": 0.076,
+     "mediana_ganan": -10.3,
+     "mediana_pierden": -29.65,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "radar_score",
+     "auc": 0.695,
+     "p": 0.0007,
+     "mediana_ganan": 53.6,
+     "mediana_pierden": 45.0,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.703,
+     "auc_mitad2": 0.666,
+     "consistente": true,
+     "candidato": true
+    },
+    {
+     "dato": "cruce_avwap_52w",
+     "auc": 0.679,
+     "p": 0.041,
+     "mediana_ganan": 0.0,
+     "mediana_pierden": 0.0,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rsi",
+     "auc": 0.338,
+     "p": 0.003,
+     "mediana_ganan": 47.8,
+     "mediana_pierden": 56.4,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.27,
+     "auc_mitad2": 0.435,
+     "consistente": true,
+     "candidato": true
+    },
+    {
+     "dato": "atr_contraction",
+     "auc": 0.417,
+     "p": 0.1936,
+     "mediana_ganan": 0.0,
+     "mediana_pierden": 0.0,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vcp_valido",
+     "auc": 0.574,
+     "p": 0.1993,
+     "mediana_ganan": 1.0,
+     "mediana_pierden": 1.0,
+     "n_ganan": 52,
+     "n_pierden": 40,
+     "auc_mitad1": 0.706,
+     "auc_mitad2": 0.485,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vol_rel",
+     "auc": 0.439,
+     "p": 0.2346,
+     "mediana_ganan": 0.29,
+     "mediana_pierden": 0.44,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.578,
+     "auc_mitad2": 0.334,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rs_score",
+     "auc": 0.447,
+     "p": 0.3192,
+     "mediana_ganan": 60.5,
+     "mediana_pierden": 71.1,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.395,
+     "auc_mitad2": 0.566,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "pendiente_ok",
+     "auc": 0.548,
+     "p": 0.7134,
+     "mediana_ganan": 0.0,
+     "mediana_pierden": 0.0,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "var_spy_dia_pct",
+     "auc": 0.491,
+     "p": 0.9457,
+     "mediana_ganan": -0.28,
+     "mediana_pierden": -0.31,
+     "n_ganan": 14,
+     "n_pierden": 12,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    }
+   ],
+   "candidatos": [
+    {
+     "dato": "radar_score",
+     "auc": 0.695,
+     "p": 0.0007,
+     "mediana_ganan": 53.6,
+     "mediana_pierden": 45.0,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.703,
+     "auc_mitad2": 0.666,
+     "consistente": true,
+     "candidato": true
+    },
+    {
+     "dato": "rsi",
+     "auc": 0.338,
+     "p": 0.003,
+     "mediana_ganan": 47.8,
+     "mediana_pierden": 56.4,
+     "n_ganan": 61,
+     "n_pierden": 65,
+     "auc_mitad1": 0.27,
+     "auc_mitad2": 0.435,
+     "consistente": true,
+     "candidato": true
+    }
+   ]
+  },
+  {
+   "grupo": "Recién cruzó, sin confirmar",
+   "n": 42,
+   "ganan": 20,
+   "pierden": 22,
+   "mediana_vs_spy20": -0.3,
+   "dias_distintos": 5,
+   "datos": [
+    {
+     "dato": "radar_score",
+     "auc": 0.732,
+     "p": 0.0097,
+     "mediana_ganan": 53.6,
+     "mediana_pierden": 42.0,
+     "n_ganan": 20,
+     "n_pierden": 22,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rs_score",
+     "auc": 0.611,
+     "p": 0.2193,
+     "mediana_ganan": 52.8,
+     "mediana_pierden": 47.75,
+     "n_ganan": 20,
+     "n_pierden": 22,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vcp_valido",
+     "auc": 0.55,
+     "p": 0.5422,
+     "mediana_ganan": 1.0,
+     "mediana_pierden": 0.5,
+     "n_ganan": 20,
+     "n_pierden": 22,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rsi",
+     "auc": 0.47,
+     "p": 0.7601,
+     "mediana_ganan": 47.3,
+     "mediana_pierden": 52.25,
+     "n_ganan": 20,
+     "n_pierden": 22,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vol_rel",
+     "auc": 0.489,
+     "p": 0.9094,
+     "mediana_ganan": 0.27,
+     "mediana_pierden": 0.34,
+     "n_ganan": 20,
+     "n_pierden": 22,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    }
+   ],
+   "candidatos": []
+  },
+  {
+   "grupo": "Gap alcista con macrotendencia",
+   "n": 28,
+   "ganan": 6,
+   "pierden": 22,
+   "mediana_vs_spy20": -11.59,
+   "dias_distintos": 5,
+   "datos": [],
+   "candidatos": []
+  },
+  {
+   "grupo": "Confirmado",
+   "n": 25,
+   "ganan": 15,
+   "pierden": 10,
+   "mediana_vs_spy20": 2.16,
+   "dias_distintos": 4,
+   "datos": [
+    {
+     "dato": "radar_score",
+     "auc": 0.81,
+     "p": 0.0063,
+     "mediana_ganan": 54.1,
+     "mediana_pierden": 42.5,
+     "n_ganan": 15,
+     "n_pierden": 10,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vol_rel",
+     "auc": 0.32,
+     "p": 0.135,
+     "mediana_ganan": 0.13,
+     "mediana_pierden": 0.63,
+     "n_ganan": 15,
+     "n_pierden": 10,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rs_score",
+     "auc": 0.637,
+     "p": 0.2702,
+     "mediana_ganan": 61.3,
+     "mediana_pierden": 37.2,
+     "n_ganan": 15,
+     "n_pierden": 10,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "rsi",
+     "auc": 0.53,
+     "p": 0.8194,
+     "mediana_ganan": 53.8,
+     "mediana_pierden": 52.2,
+     "n_ganan": 15,
+     "n_pierden": 10,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    },
+    {
+     "dato": "vcp_valido",
+     "auc": 0.517,
+     "p": 1.0,
+     "mediana_ganan": 1.0,
+     "mediana_pierden": 1.0,
+     "n_ganan": 15,
+     "n_pierden": 10,
+     "auc_mitad1": null,
+     "auc_mitad2": null,
+     "consistente": false,
+     "candidato": false
+    }
+   ],
+   "candidatos": []
+  }
+ ]
+}
