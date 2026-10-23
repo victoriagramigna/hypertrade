@@ -42,10 +42,11 @@ PERCENTIL_SQUEEZE = 20   # ancho de hoy entre el 20% más chico de la ventana = 
 # eso no tiene demora de confirmación ni bitácora propia (ver charla con
 # Victoria sobre Beta/Golden-Cross/Squeeze): no hace una predicción que
 # después haya que auditar, solo describe volatilidad relativa histórica.
-# Ventana de ~6 meses de rendimientos diarios (mismo horizonte que Ret_6m_%)
-# -- suficiente para que no lo mueva un solo día raro, sin ser tan largo
-# que mezcle un régimen de volatilidad viejo con el actual.
-VENTANA_BETA = 126
+# 22/10: ventana de ~3 meses (63 ruedas) de rendimientos diarios, elegida para operar
+# dia a dia: refleja como se mueve el activo AHORA contra el mercado. Antes eran 126
+# ruedas (~6 meses); el de 3 meses es mas sensible (mas extremo, mas cambiante), el de
+# 1 año de TradingView mas suave. Mismo benchmark (SPY) y mismos retornos diarios.
+VENTANA_BETA = 63
 
 
 def _racha_bajista(close):
