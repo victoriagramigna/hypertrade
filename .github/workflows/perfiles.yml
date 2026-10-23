@@ -1,0 +1,33 @@
+name: Perfil de alertas ganadoras
+
+# Aparte, no toca el radar ni la Auditoria. Solo lee data/log_alertas.jsonl y data/auditoria_resultados.jsonl.
+# Corre sola los sabados (despues de las listas semanales) y tambien a mano:
+# pestaña Actions -> "Perfil de alertas ganadoras" -> Run workflow.
+# Escribe data/perfiles.json, data/perfiles_resumen.md y agrega una linea a data/log_perfiles.jsonl (append-only).
+on:
+  schedule:
+    - cron: '30 13 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  perfiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Calcular perfiles
+        run: python scripts/perfiles.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/perfiles.json data/perfiles_resumen.md data/log_perfiles.jsonl
+          git diff --staged --quiet || git commit -m "Perfil de alertas ganadoras [skip ci]"
+          git pull --rebase
+          git push
