@@ -1,0 +1,33 @@
+name: Listas semanales (5 años)
+
+# Aparte, no toca el radar ni la Auditoria. Corre sola los sabados (la semana ya cerro) y tambien a mano:
+# pestaña Actions -> "Listas semanales (5 años)" -> Run workflow.
+# Escribe data/semanal.json, data/log_semanal.jsonl (append-only) y data/semanal_eval.json.
+on:
+  schedule:
+    - cron: '30 12 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  semanal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Calcular listas semanales
+        run: python scripts/semanal.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/semanal.json data/log_semanal.jsonl data/semanal_eval.json
+          git diff --staged --quiet || git commit -m "Listas semanales [skip ci]"
+          git pull --rebase
+          git push
