@@ -898,6 +898,7 @@
                 <button id="mercado-v-sector" onclick="mercadoVista('sector')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Por sector</button>
                 <button id="mercado-v-ranking" onclick="mercadoVista('ranking')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Rankings</button>
                 <button id="mercado-v-screener" onclick="mercadoVista('screener')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Screener</button>
+                <button id="mercado-v-monitor" onclick="mercadoVista('monitor')" class="flex-1 px-2 py-1.5 rounded-sm border border-surface">Monitor</button>
             </div>
             <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-[10px] uppercase">
                 <span class="text-gray-500">Tipo:</span>
@@ -925,6 +926,7 @@
             </div>
             <div id="mercado-vista-ranking" class="hidden"><div id="mercado-ranking"></div></div>
             <div id="mercado-vista-screener" class="hidden"><div id="mercado-screener"></div></div>
+            <div id="mercado-vista-monitor" class="hidden"><div id="mercado-monitor"></div></div>
             <div id="mercado-corta"></div>
             <div id="mercado-pie" class="font-mono text-[9px] text-gray-600 mt-3"></div>
         </section>
@@ -4590,7 +4592,7 @@
             marca('mercado-o-az', mercadoOrden === 'az'); marca('mercado-rsi', mercadoRsi);
             marca('mercado-t-todos', mercadoTipo === 'todos'); marca('mercado-t-cedear', mercadoTipo === 'cedear'); marca('mercado-t-adr', mercadoTipo === 'adr'); marca('mercado-t-etfs', mercadoTipo === 'etfs');
             marca('mercado-m-todos', mercadoMarca === 'todos'); marca('mercado-m-comprados', mercadoMarca === 'comprados'); marca('mercado-m-interes', mercadoMarca === 'interes');
-            for (const v of ['sector', 'ranking', 'screener']) {
+            for (const v of ['sector', 'ranking', 'screener', 'monitor']) {
                 marca('mercado-v-' + v, mercadoVistaActual === v);
                 document.getElementById('mercado-vista-' + v)?.classList.toggle('hidden', mercadoVistaActual !== v);
             }
@@ -4613,8 +4615,35 @@
             if (pie) pie.textContent = `Última corrida del radar${hora ? ' (' + hora + ' hs)' : ''}. Durante la rueda son valores parciales; el dato final queda al cierre. Informativo, no es una recomendación.`;
             if (mercadoVistaActual === 'sector') renderMercadoSector(data, ctx);
             else if (mercadoVistaActual === 'ranking') renderMercadoRanking(ctx);
+            else if (mercadoVistaActual === 'monitor') renderMercadoMonitor(ctx);
             else renderMercadoScreener(ctx);
             renderMercadoCorta(data, ctx);
+        }
+
+        // ---- Monitor por tema (vista compacta: una caja por tema con ticker, % del día, precio USD, RSI y beta) ----
+        function renderMercadoMonitor(ctx) {
+            const cont = document.getElementById('mercado-monitor');
+            if (!cont) return;
+            const { base, todos, comprados, interes } = ctx;
+            document.getElementById('mercado-count').textContent = `(${base.length}${base.length !== todos.length ? ' de ' + todos.length : ''})`;
+            const q = (mercadoBusca || '').trim().toLowerCase();
+            const arr = base.filter(r => !q || r.Ticker.toLowerCase().includes(q) || (nombreEmpresa(r.Ticker) || '').toLowerCase().includes(q));
+            if (!arr.length) { cont.innerHTML = '<div class="text-gray-500 font-mono text-[11px]">Ningún ticker coincide con el filtro.</div>'; return; }
+            const grupos = {};
+            for (const r of arr) { const k = r.Subcategoria ?? (r.Sector === 'ETF' ? 'ETFs' : 'Sin tema'); (grupos[k] = grupos[k] || []).push(r); }
+            const cajas = Object.entries(grupos).map(([k, rs]) => {
+                rs.sort((a, b) => (_mNum(b['Var_dia_%']) ?? -Infinity) - (_mNum(a['Var_dia_%']) ?? -Infinity));
+                return { k, rs, prom: _mProm(rs.map(r => r['Var_dia_%'])) };
+            }).sort((a, b) => (b.prom ?? -Infinity) - (a.prom ?? -Infinity));
+            const rsiCls = (v) => v === null ? 'text-gray-600' : v >= 70 ? 'text-neg' : v <= 30 ? 'text-pos' : 'text-gray-300';
+            const marc = (t) => `${comprados.has(t) ? '<span class="text-blueAlert">●</span>' : ''}${interes.has(t) ? '<span class="text-accent">★</span>' : ''}`;
+            const fila = (r) => {
+                const d = _mNum(r['Var_dia_%']), rsi = _mNum(r.RSI), beta = _mNum(r.Beta), px = _mNum(r.Precio);
+                return `<tr class="border-t border-gray-800 cursor-pointer hover:text-accent" onclick="abrirFicha('${r.Ticker}')"><td class="py-0.5 pr-1 text-white font-bold truncate">${r.Ticker}${marc(r.Ticker)}</td><td class="text-right px-1 py-0.5 font-bold ${_mCls(d)}" style="background:${_mBg(d, 5)}">${d === null ? '—' : _mPc(d)}</td><td class="text-right px-1 py-0.5 text-gray-300">${px === null ? '—' : _mF2(px)}</td><td class="text-right px-1 py-0.5 ${rsiCls(rsi)}">${rsi === null ? '—' : Math.round(rsi)}</td><td class="text-right pl-1 py-0.5 text-gray-400">${beta === null ? '—' : _mF2(beta)}</td></tr>`;
+            };
+            const caja = (c) => `<div class="bg-surface border border-surface rounded-sm p-2"><div class="flex justify-between items-baseline mb-1"><span class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent truncate">${c.k}</span><span class="font-mono text-[10px] font-bold ${_mCls(c.prom)}">${c.prom === null ? '' : _mPc(c.prom)}</span></div><table class="w-full font-mono text-[10px]" style="table-layout:fixed"><colgroup><col><col style="width:54px"><col style="width:58px"><col style="width:28px"><col style="width:36px"></colgroup><thead><tr class="text-gray-500"><th class="text-left font-normal">Ticker</th><th class="text-right font-normal">% Día</th><th class="text-right font-normal">Precio</th><th class="text-right font-normal">RSI</th><th class="text-right font-normal">Beta</th></tr></thead><tbody>${c.rs.map(fila).join('')}</tbody></table></div>`;
+            cont.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${cajas.map(caja).join('')}</div>
+                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-1">Una caja por tema, ordenadas por el promedio del día (la de arriba a la derecha de cada título). Dentro de cada caja, los activos van de mayor a menor variación del día. Precio en dólares (el del activo en EE. UU.); RSI en rojo desde 70 y en verde hasta 30; beta contra el mercado. ● ya lo compraste, ★ lo tenés de interés. Tocá un ticker para abrir su ficha. Datos de la última corrida del radar; es información, no una recomendación.</div></details>`;
         }
 
         // ---- Tickers con historia corta (cotizan hace poco; < 200 ruedas, no entran al radar) ----
