@@ -4643,7 +4643,7 @@
             };
             const caja = (c) => `<div class="bg-surface border border-surface rounded-sm p-2"><div class="flex justify-between items-baseline mb-1"><span class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent truncate">${c.k}</span><span class="font-mono text-[10px] font-bold ${_mCls(c.prom)}">${c.prom === null ? '' : _mPc(c.prom)}</span></div><table class="w-full font-mono text-[10px]" style="table-layout:fixed"><colgroup><col><col style="width:54px"><col style="width:58px"><col style="width:28px"><col style="width:36px"></colgroup><thead><tr class="text-gray-500"><th class="text-left font-normal">Ticker</th><th class="text-right font-normal">% Día</th><th class="text-right font-normal">Precio</th><th class="text-right font-normal">RSI</th><th class="text-right font-normal">Beta</th></tr></thead><tbody>${c.rs.map(fila).join('')}</tbody></table></div>`;
             cont.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">${cajas.map(caja).join('')}</div>
-                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-1">Una caja por tema, ordenadas por el promedio del día (la de arriba a la derecha de cada título). Dentro de cada caja, los activos van de mayor a menor variación del día. Precio en dólares (el del activo en EE. UU.); RSI en rojo desde 70 y en verde hasta 30; beta contra el mercado. ● ya lo compraste, ★ lo tenés de interés. Tocá un ticker para abrir su ficha. Datos de la última corrida del radar; es información, no una recomendación.</div></details>`;
+                <details class="expl mt-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-1">Una caja por tema, ordenadas por el promedio del día (la de arriba a la derecha de cada título). Dentro de cada caja, los activos van de mayor a menor variación del día. Precio en dólares (el del activo en EE. UU.); RSI en rojo desde 70 y en verde hasta 30; beta de 3 meses contra el SPY (más sensible a lo reciente que el de 1 año de TradingView, por eso puede diferir). ● ya lo compraste, ★ lo tenés de interés. Tocá un ticker para abrir su ficha. Datos de la última corrida del radar; es información, no una recomendación.</div></details>`;
         }
 
         // ---- Tickers con historia corta (cotizan hace poco; < 200 ruedas, no entran al radar) ----
@@ -4868,11 +4868,55 @@
                     ${listaCaja('Sube en el día y en el mes', 'text-pos', consis2, colsConsis(['Var_dia_%', 'Ret_1m_%']), 'Ninguno hoy.')}
                     ${listaCaja('Sube en día, semana y mes', 'text-pos', consis3, colsConsis(['Var_dia_%', 'Ret_5d_%', 'Ret_1m_%']), haySem ? 'Ninguno hoy.' : sinSem)}
                     ${listaCaja('Beta más alta', 'text-gray-300', topPor('Beta', false), vBeta)}
-                </div>` + mercadoAudHtml();
+                </div>` + semanalHtml(ctx) + mercadoAudHtml();
             mercadoCargarAud();
+            semanalCargar();
         }
 
         // ---- Medición del Screener (sale de data/auditoria_screener.json, que arma el radar) ----
+        // ---- Listas semanales (velas semanales reales, 5 años: data/semanal.json y semanal_eval.json) ----
+        const SEMANAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/semanal.json';
+        const SEMANAL_EVAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/semanal_eval.json';
+        let semanalDatos = null, semanalEval = null, semanalEstado = 'pendiente'; // pendiente | cargando | ok | vacio
+        async function semanalCargar() {
+            if (semanalEstado !== 'pendiente') return;
+            semanalEstado = 'cargando';
+            try {
+                const [r1, r2] = await Promise.all([fetch(`${SEMANAL_URL}?t=${Date.now()}`, { cache: 'no-store' }), fetch(`${SEMANAL_EVAL_URL}?t=${Date.now()}`, { cache: 'no-store' })]);
+                if (r1.ok) { semanalDatos = await r1.json(); if (r2.ok) semanalEval = await r2.json(); semanalEstado = 'ok'; }
+                else semanalEstado = 'vacio';
+            } catch (e) { semanalEstado = 'vacio'; }
+            if (mercadoVistaActual === 'screener') renderMercado(currentRadarData);
+        }
+        const SEMANAL_LISTAS = [
+            ['ema200_apoyo', 'Cerca de la EMA200 semanal', 'text-accent', 'A menos del 3% de su EMA200 semanal, que viene subiendo · de más cerca a más lejos'],
+            ['retroceso_en_tendencia', 'Retroceso en tendencia', 'text-blueAlert', 'Sobre su EMA200 semanal pero bajo su SMA14, con RSI semanal bajo 50 · de menor a mayor RSI'],
+            ['sobrevendido', 'RSI semanal sobrevendido', 'text-pos', 'RSI semanal en 30 o menos · de menor a mayor'],
+            ['estirado', 'RSI semanal estirado', 'text-neg', 'RSI semanal en 70 o más · de mayor a menor'],
+        ];
+        function semanalHtml(ctx) {
+            const titulo = '<div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mt-4 mb-1">Listas semanales</div>';
+            if (semanalEstado === 'pendiente' || semanalEstado === 'cargando') return titulo + '<div class="font-mono text-[11px] text-gray-600 mb-3">Cargando…</div>';
+            if (semanalEstado !== 'ok' || !semanalDatos?.tickers) return titulo + '<div class="font-mono text-[11px] text-gray-600 mb-3">Todavía no hay datos semanales. Se generan solos los sábados; también podés correr a mano “Listas semanales (5 años)” en la pestaña Actions de GitHub.</div>';
+            const D = semanalDatos, base = new Set(ctx.base.map(r => r.Ticker));
+            const f1 = (x) => x == null ? '—' : _mF2(x);
+            const col = (txt, w, c) => `<span class="${w} text-right ${c || 'text-gray-300'}">${txt}</span>`;
+            const marcas = (t) => `${ctx.comprados.has(t) ? ' <span class="text-blueAlert text-[10px]">●</span>' : ''}${ctx.interes.has(t) ? ' <span class="text-accent text-[10px]">★</span>' : ''}`;
+            const evalLinea = (clave) => {
+                const e = semanalEval; if (!e) return '';
+                const tx = (b) => { const o = b?.['4s']; const o1 = b?.['1s']; if (!o?.n && !o1?.n) return 'sin datos'; const p = (x) => x?.n ? `${_mPc(x['media_%'])} (exceso ${_mPc(x['exceso_vs_spy_%'])}, n=${x.n})` : 'sin datos'; return `1 sem: ${p(o1)} · 4 sem: ${p(o)}`; };
+                return `<div class="font-mono text-[10px] text-gray-500 mt-2">Medido en vivo: ${tx(e.vivo?.[clave])}<br>Reglas aplicadas al pasado (referencia): ${tx(e.reconstruido?.[clave])}</div>`;
+            };
+            const cajas = SEMANAL_LISTAS.map(([clave, nombreL, color, sub]) => {
+                const todos = (D.listas?.[clave] ?? []);
+                const ts = todos.filter(t => base.has(t));
+                const filas = ts.map(t => { const x = D.tickers[t]; return `<div onclick="irAAlertasDeTicker('${t}')" class="flex items-center justify-between gap-2 py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent"><span class="min-w-0 truncate"><span class="text-white font-bold">${t}</span>${marcas(t)} <span class="text-gray-500 text-[10px]">${nombreEmpresa(t) || ''}</span></span><span class="shrink-0 flex items-center gap-2 text-[11px]">${col('RSI ' + (x.rsi == null ? '—' : Math.round(x.rsi)), 'w-14', x.rsi >= 70 ? 'text-neg' : x.rsi <= 30 ? 'text-pos' : 'text-gray-300')}${col(x.dist_ema200 == null ? '—' : _mPc(x.dist_ema200), 'w-16', 'text-gray-400')}</span></div>`; }).join('');
+                return `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color}">${nombreL} <span class="text-gray-500 font-normal">(${ts.length}${ts.length !== todos.length ? ' de ' + todos.length : ''})</span></div><div class="font-mono text-[10px] text-gray-500 mb-1">${sub}</div>${ts.length ? filas : '<div class="font-mono text-[11px] text-gray-600">Ninguno con este filtro.</div>'}${evalLinea(clave)}</div>`;
+            }).join('');
+            const expl = `<details class="expl mb-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-1">Lectura en velas semanales reales (5 años de historia, por eso la EMA200 semanal sí se puede calcular). Cada fila muestra el RSI semanal y la distancia del cierre a su EMA200 semanal. “Medido en vivo” cuenta solo las semanas que ya registramos y cómo le fue a cada lista después de 1 y 4 semanas, contra el SPY; con pocas semanas son pocos datos. “Reglas aplicadas al pasado” es una referencia con las mismas reglas sobre semanas viejas, pero con el universo de hoy (sesgo de supervivencia) y observaciones solapadas: no es una promesa. Se actualiza los sábados con la semana ya cerrada. Informativo, no es una recomendación.</div></details>`;
+            return titulo + `<div class="font-mono text-[10px] text-gray-500 mb-2">Semana cerrada el ${D.fecha_semana}</div>` + expl + `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">${cajas}</div>`;
+        }
+
         function mercadoAudHtml() {
             const explA = `<details class="expl mb-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-2">Cada rueda cerrada el radar guarda qué tickers estaban en Zona MA200 y en Pullback (<code class="text-accent">data/log_screener.jsonl</code>). Después mide cuánto rindieron a 5, 10 y 20 ruedas, y lo compara con el SPY y con el promedio de todo el universo en la misma ventana. Si una lista no le gana al universo, por sí sola no aporta nada. Con pocos días la muestra es chica y no concluye. Está separado de la Auditoría de siempre.</div></details>`;
             const cab = `<div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mb-1">Cómo les fue a estas listas</div>`;
@@ -5545,7 +5589,7 @@
             else if (beta >= 0.8) lectura = 'se mueve parecido al mercado';
             else if (beta >= 0) lectura = 'se mueve menos que el mercado (más defensivo)';
             else lectura = 'tiende a moverse al revés del mercado';
-            return `<span class="text-gray-400">Beta <span class="text-white font-bold">${beta.toFixed(2)}</span> (${lectura})</span>`;
+            return `<span class="text-gray-400">Beta 3M <span class="text-white font-bold">${beta.toFixed(2)}</span> (${lectura})</span>`;
         }
 
         // ============ GOLDEN CROSS / DEATH CROSS (ver golden_cross.py) ============
