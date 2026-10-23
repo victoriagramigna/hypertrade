@@ -1,264 +1,286 @@
 {
-  "generado_utc": "2026-10-16T23:35:20.581802+00:00",
+  "generado_utc": "2026-10-23T14:13:24.747271+00:00",
   "suficiente_data": true,
   "umbral_muestra_minima": 10,
-  "n_muestras_total_todos_horizontes": 4106,
+  "n_muestras_total_todos_horizontes": 6851,
   "horizontes": {
     "5": {
-      "n_muestras_total": 2772,
+      "n_muestras_total": 3664,
       "retorno_promedio_pct": {
-        "n_muestras": 2772,
+        "n_muestras": 3664,
         "suficiente_data": true,
-        "promedio_pct": -0.88,
-        "desvio_pct": 6.46
+        "promedio_pct": -0.64,
+        "desvio_pct": 6.14
       },
       "por_radar_score": {
         "70-100 (alto)": {
-          "n_muestras": 514,
+          "n_muestras": 672,
           "suficiente_data": true,
-          "promedio_pct": -1.43,
-          "desvio_pct": 7.08
+          "promedio_pct": -1.15,
+          "desvio_pct": 6.7
         },
         "45-69 (medio)": {
-          "n_muestras": 1708,
+          "n_muestras": 2300,
           "suficiente_data": true,
-          "promedio_pct": -0.67,
-          "desvio_pct": 5.94
+          "promedio_pct": -0.41,
+          "desvio_pct": 5.59
         },
         "0-44 (bajo)": {
-          "n_muestras": 550,
+          "n_muestras": 692,
           "suficiente_data": true,
-          "promedio_pct": -1.03,
-          "desvio_pct": 7.33
+          "promedio_pct": -0.91,
+          "desvio_pct": 7.19
         }
       },
       "por_señal_individual": {
         "apoyo_avwap": {
           "con_señal": {
-            "n_muestras": 1506,
+            "n_muestras": 2158,
             "suficiente_data": true,
-            "promedio_pct": -0.53,
-            "desvio_pct": 6.09
+            "promedio_pct": -0.33,
+            "desvio_pct": 5.71
           },
           "sin_señal": {
-            "n_muestras": 945,
+            "n_muestras": 1135,
             "suficiente_data": true,
-            "promedio_pct": -1.71,
-            "desvio_pct": 7.25
+            "promedio_pct": -1.4,
+            "desvio_pct": 7.11
           }
         },
         "cruce_avwap_52w": {
           "con_señal": {
-            "n_muestras": 758,
+            "n_muestras": 1127,
             "suficiente_data": true,
-            "promedio_pct": 0.63,
-            "desvio_pct": 4.7
+            "promedio_pct": 0.72,
+            "desvio_pct": 4.56
           },
           "sin_señal": {
-            "n_muestras": 1693,
+            "n_muestras": 2166,
             "suficiente_data": true,
-            "promedio_pct": -1.7,
-            "desvio_pct": 7.16
+            "promedio_pct": -1.44,
+            "desvio_pct": 6.85
+          }
+        },
+        "atr_contraction": {
+          "con_señal": {
+            "n_muestras": 314,
+            "suficiente_data": true,
+            "promedio_pct": -4.33,
+            "desvio_pct": 8.22
+          },
+          "sin_señal": {
+            "n_muestras": 2979,
+            "suficiente_data": true,
+            "promedio_pct": -0.31,
+            "desvio_pct": 5.87
+          }
+        },
+        "pendiente_ok": {
+          "con_señal": {
+            "n_muestras": 1851,
+            "suficiente_data": true,
+            "promedio_pct": -1.19,
+            "desvio_pct": 6.2
+          },
+          "sin_señal": {
+            "n_muestras": 1442,
+            "suficiente_data": true,
+            "promedio_pct": -0.07,
+            "desvio_pct": 6.25
+          }
+        }
+      },
+      "alpha_vs_spy": {
+        "n_muestras": 3664,
+        "suficiente_data": true,
+        "promedio_pct": -0.59,
+        "desvio_pct": 6.15
+      }
+    },
+    "10": {
+      "n_muestras_total": 2767,
+      "retorno_promedio_pct": {
+        "n_muestras": 2767,
+        "suficiente_data": true,
+        "promedio_pct": -2.63,
+        "desvio_pct": 11.38
+      },
+      "por_radar_score": {
+        "70-100 (alto)": {
+          "n_muestras": 513,
+          "suficiente_data": true,
+          "promedio_pct": -2.84,
+          "desvio_pct": 12.3
+        },
+        "45-69 (medio)": {
+          "n_muestras": 1704,
+          "suficiente_data": true,
+          "promedio_pct": -2.13,
+          "desvio_pct": 10.62
+        },
+        "0-44 (bajo)": {
+          "n_muestras": 550,
+          "suficiente_data": true,
+          "promedio_pct": -3.97,
+          "desvio_pct": 12.6
+        }
+      },
+      "por_señal_individual": {
+        "apoyo_avwap": {
+          "con_señal": {
+            "n_muestras": 1503,
+            "suficiente_data": true,
+            "promedio_pct": -1.62,
+            "desvio_pct": 10.96
+          },
+          "sin_señal": {
+            "n_muestras": 943,
+            "suficiente_data": true,
+            "promedio_pct": -4.99,
+            "desvio_pct": 12.47
+          }
+        },
+        "cruce_avwap_52w": {
+          "con_señal": {
+            "n_muestras": 757,
+            "suficiente_data": true,
+            "promedio_pct": 0.55,
+            "desvio_pct": 9.56
+          },
+          "sin_señal": {
+            "n_muestras": 1689,
+            "suficiente_data": true,
+            "promedio_pct": -4.47,
+            "desvio_pct": 12.2
           }
         },
         "atr_contraction": {
           "con_señal": {
             "n_muestras": 286,
             "suficiente_data": true,
-            "promedio_pct": -4.77,
-            "desvio_pct": 8.16
+            "promedio_pct": -10.89,
+            "desvio_pct": 15.15
           },
           "sin_señal": {
-            "n_muestras": 2165,
+            "n_muestras": 2160,
             "suficiente_data": true,
-            "promedio_pct": -0.48,
-            "desvio_pct": 6.18
+            "promedio_pct": -1.87,
+            "desvio_pct": 10.7
           }
         },
         "pendiente_ok": {
           "con_señal": {
-            "n_muestras": 1364,
+            "n_muestras": 1363,
             "suficiente_data": true,
-            "promedio_pct": -1.3,
-            "desvio_pct": 6.49
+            "promedio_pct": -3.17,
+            "desvio_pct": 11.59
           },
           "sin_señal": {
-            "n_muestras": 1087,
+            "n_muestras": 1083,
             "suficiente_data": true,
-            "promedio_pct": -0.58,
-            "desvio_pct": 6.69
+            "promedio_pct": -2.6,
+            "desvio_pct": 11.78
           }
         }
       },
       "alpha_vs_spy": {
-        "n_muestras": 2772,
+        "n_muestras": 2767,
         "suficiente_data": true,
-        "promedio_pct": -1.05,
-        "desvio_pct": 6.44
-      }
-    },
-    "10": {
-      "n_muestras_total": 1320,
-      "retorno_promedio_pct": {
-        "n_muestras": 1320,
-        "suficiente_data": true,
-        "promedio_pct": -2.08,
-        "desvio_pct": 10.34
-      },
-      "por_radar_score": {
-        "70-100 (alto)": {
-          "n_muestras": 188,
-          "suficiente_data": true,
-          "promedio_pct": -0.71,
-          "desvio_pct": 8.93
-        },
-        "45-69 (medio)": {
-          "n_muestras": 820,
-          "suficiente_data": true,
-          "promedio_pct": -1.7,
-          "desvio_pct": 10.03
-        },
-        "0-44 (bajo)": {
-          "n_muestras": 312,
-          "suficiente_data": true,
-          "promedio_pct": -3.9,
-          "desvio_pct": 11.67
-        }
-      },
-      "por_señal_individual": {
-        "apoyo_avwap": {
-          "con_señal": {
-            "n_muestras": 656,
-            "suficiente_data": true,
-            "promedio_pct": -2.2,
-            "desvio_pct": 9.8
-          },
-          "sin_señal": {
-            "n_muestras": 485,
-            "suficiente_data": true,
-            "promedio_pct": -2.75,
-            "desvio_pct": 11.5
-          }
-        },
-        "cruce_avwap_52w": {
-          "con_señal": {
-            "n_muestras": 198,
-            "suficiente_data": true,
-            "promedio_pct": -0.11,
-            "desvio_pct": 9.87
-          },
-          "sin_señal": {
-            "n_muestras": 943,
-            "suficiente_data": true,
-            "promedio_pct": -2.93,
-            "desvio_pct": 10.63
-          }
-        },
-        "atr_contraction": {
-          "con_señal": {
-            "n_muestras": 146,
-            "suficiente_data": true,
-            "promedio_pct": -6.82,
-            "desvio_pct": 11.72
-          },
-          "sin_señal": {
-            "n_muestras": 995,
-            "suficiente_data": true,
-            "promedio_pct": -1.79,
-            "desvio_pct": 10.22
-          }
-        },
-        "pendiente_ok": {
-          "con_señal": {
-            "n_muestras": 451,
-            "suficiente_data": true,
-            "promedio_pct": -2.76,
-            "desvio_pct": 8.37
-          },
-          "sin_señal": {
-            "n_muestras": 690,
-            "suficiente_data": true,
-            "promedio_pct": -2.22,
-            "desvio_pct": 11.77
-          }
-        }
-      },
-      "alpha_vs_spy": {
-        "n_muestras": 1320,
-        "suficiente_data": true,
-        "promedio_pct": -3.02,
-        "desvio_pct": 10.41
+        "promedio_pct": -2.29,
+        "desvio_pct": 11.38
       }
     },
     "20": {
-      "n_muestras_total": 14,
+      "n_muestras_total": 420,
       "retorno_promedio_pct": {
-        "n_muestras": 14,
+        "n_muestras": 420,
         "suficiente_data": true,
-        "promedio_pct": -1.99,
-        "desvio_pct": 16.93
+        "promedio_pct": -5.35,
+        "desvio_pct": 15.21
       },
       "por_radar_score": {
         "70-100 (alto)": {
-          "n_muestras": 5,
-          "suficiente_data": false
+          "n_muestras": 58,
+          "suficiente_data": true,
+          "promedio_pct": -1.42,
+          "desvio_pct": 10.89
         },
         "45-69 (medio)": {
-          "n_muestras": 7,
-          "suficiente_data": false
+          "n_muestras": 260,
+          "suficiente_data": true,
+          "promedio_pct": -3.99,
+          "desvio_pct": 14.84
         },
         "0-44 (bajo)": {
-          "n_muestras": 2,
-          "suficiente_data": false
+          "n_muestras": 102,
+          "suficiente_data": true,
+          "promedio_pct": -11.05,
+          "desvio_pct": 16.77
         }
       },
       "por_señal_individual": {
         "apoyo_avwap": {
           "con_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 144,
+            "suficiente_data": true,
+            "promedio_pct": -1.88,
+            "desvio_pct": 12.89
           },
           "sin_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 99,
+            "suficiente_data": true,
+            "promedio_pct": -9.64,
+            "desvio_pct": 17.6
           }
         },
         "cruce_avwap_52w": {
           "con_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 40,
+            "suficiente_data": true,
+            "promedio_pct": -1.27,
+            "desvio_pct": 15.88
           },
           "sin_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 203,
+            "suficiente_data": true,
+            "promedio_pct": -5.79,
+            "desvio_pct": 15.27
           }
         },
         "atr_contraction": {
           "con_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 19,
+            "suficiente_data": true,
+            "promedio_pct": -10.21,
+            "desvio_pct": 22.14
           },
           "sin_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 224,
+            "suficiente_data": true,
+            "promedio_pct": -4.61,
+            "desvio_pct": 14.71
           }
         },
         "pendiente_ok": {
           "con_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 92,
+            "suficiente_data": true,
+            "promedio_pct": -6.63,
+            "desvio_pct": 16.36
           },
           "sin_señal": {
-            "n_muestras": 0,
-            "suficiente_data": false
+            "n_muestras": 151,
+            "suficiente_data": true,
+            "promedio_pct": -4.08,
+            "desvio_pct": 14.81
           }
         }
       },
       "alpha_vs_spy": {
-        "n_muestras": 14,
+        "n_muestras": 420,
         "suficiente_data": true,
-        "promedio_pct": -3.43,
-        "desvio_pct": 16.93
+        "promedio_pct": -4.78,
+        "desvio_pct": 15.22
       }
     }
   }
