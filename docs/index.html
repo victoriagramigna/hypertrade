@@ -4893,7 +4893,16 @@
             ['retroceso_en_tendencia', 'Retroceso en tendencia', 'text-blueAlert', 'Sobre su EMA200 semanal pero bajo su SMA14, con RSI semanal bajo 50 · de menor a mayor RSI'],
             ['sobrevendido', 'RSI semanal sobrevendido', 'text-pos', 'RSI semanal en 30 o menos · de menor a mayor'],
             ['estirado', 'RSI semanal estirado', 'text-neg', 'RSI semanal en 70 o más · de mayor a menor'],
+            ['muy_bajo_sma14', 'Muy por debajo de su SMA14 semanal', 'text-accent', 'Cierre más de 10% bajo su SMA14 semanal · de más a menos lejos · candidata en medición'],
         ];
+        // Qué dijo el estudio de 10 años (23/10, data/estudio_semanal_resumen.md): comparación dentro de cada semana, a 4 semanas, contra el resto del universo.
+        const SEMANAL_EVIDENCIA = {
+            ema200_apoyo: 'Estudio 10 años: no se distingue del resto (+0,3 pts, no significativo).',
+            retroceso_en_tendencia: 'Estudio 10 años: SIN RESPALDO. La zona RSI 40–50 y 2–5% bajo la SMA14 rindió peor que el resto (−0,7 pts, 4.814 casos).',
+            sobrevendido: 'Estudio 10 años: dentro de cada semana no se distingue del resto.',
+            estirado: 'Estudio 10 años: no se distingue del resto (+0,4 pts, no significativo).',
+            muy_bajo_sma14: 'Estudio 10 años: única tendencia positiva (+1,3 pts, en las dos mitades) pero no concluyente. Candidata: se mide en vivo desde la próxima semana.',
+        };
         function semanalHtml(ctx) {
             const titulo = '<div class="font-mono text-[10px] uppercase tracking-widest font-bold text-accent mt-4 mb-1">Listas semanales</div>';
             if (semanalEstado === 'pendiente' || semanalEstado === 'cargando') return titulo + '<div class="font-mono text-[11px] text-gray-600 mb-3">Cargando…</div>';
@@ -4911,7 +4920,7 @@
                 const todos = (D.listas?.[clave] ?? []);
                 const ts = todos.filter(t => base.has(t));
                 const filas = ts.map(t => { const x = D.tickers[t]; return `<div onclick="irAAlertasDeTicker('${t}')" class="flex items-center justify-between gap-2 py-1 border-b border-gray-800 last:border-0 font-mono text-xs cursor-pointer hover:text-accent"><span class="min-w-0 truncate"><span class="text-white font-bold">${t}</span>${marcas(t)} <span class="text-gray-500 text-[10px]">${nombreEmpresa(t) || ''}</span></span><span class="shrink-0 flex items-center gap-2 text-[11px]">${col('RSI ' + (x.rsi == null ? '—' : Math.round(x.rsi)), 'w-14', x.rsi >= 70 ? 'text-neg' : x.rsi <= 30 ? 'text-pos' : 'text-gray-300')}${col(x.dist_ema200 == null ? '—' : _mPc(x.dist_ema200), 'w-16', 'text-gray-400')}</span></div>`; }).join('');
-                return `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color}">${nombreL} <span class="text-gray-500 font-normal">(${ts.length}${ts.length !== todos.length ? ' de ' + todos.length : ''})</span></div><div class="font-mono text-[10px] text-gray-500 mb-1">${sub}</div>${ts.length ? filas : '<div class="font-mono text-[11px] text-gray-600">Ninguno con este filtro.</div>'}${evalLinea(clave)}</div>`;
+                return `<div class="bg-surface border border-surface rounded-sm p-3"><div class="font-mono text-[10px] uppercase tracking-widest font-bold ${color}">${nombreL} <span class="text-gray-500 font-normal">(${ts.length}${ts.length !== todos.length ? ' de ' + todos.length : ''})</span></div><div class="font-mono text-[10px] text-gray-500 mb-1">${sub}</div><div class="font-mono text-[10px] ${clave === 'retroceso_en_tendencia' ? 'text-neg' : 'text-gray-600'} mb-1">${SEMANAL_EVIDENCIA[clave] || ''}</div>${ts.length ? filas : '<div class="font-mono text-[11px] text-gray-600">Ninguno con este filtro.</div>'}${evalLinea(clave)}</div>`;
             }).join('');
             const expl = `<details class="expl mb-2"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary><div class="font-mono text-[10px] text-gray-500 leading-relaxed mt-1">Lectura en velas semanales reales (5 años de historia, por eso la EMA200 semanal sí se puede calcular). Cada fila muestra el RSI semanal y la distancia del cierre a su EMA200 semanal. “Medido en vivo” cuenta solo las semanas que ya registramos y cómo le fue a cada lista después de 1 y 4 semanas, contra el SPY; con pocas semanas son pocos datos. “Reglas aplicadas al pasado” es una referencia con las mismas reglas sobre semanas viejas, pero con el universo de hoy (sesgo de supervivencia) y observaciones solapadas: no es una promesa. Se actualiza los sábados con la semana ya cerrada. Informativo, no es una recomendación.</div></details>`;
             return titulo + `<div class="font-mono text-[10px] text-gray-500 mb-2">Semana cerrada el ${D.fecha_semana}</div>` + expl + `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">${cajas}</div>`;
