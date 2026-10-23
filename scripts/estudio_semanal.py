@@ -21,6 +21,10 @@ Metodo:
   * Consistencia: se parte el historial en dos mitades por fecha; un tramo "consistente" tiene el mismo
     signo de exceso en las dos.
   * Tramos con menos de MIN_OBS observaciones o menos de MIN_SEMANAS semanas se marcan "insuficiente".
+Parte 2 (amplitud): ¿cuando muchos activos estan sobrevendidos A LA VEZ, el SPY rinde distinto despues? Se calcula, semana
+a semana, el % del universo con RSI semanal < 30, < 40, a mas de 10% bajo su SMA14, y sobre su EMA200; se agrupa en quintiles
+y se mide el retorno del SPY a 4 semanas. Como los retornos a 4 semanas se solapan, el t-stat se calcula con semanas NO
+solapadas (4 desfasajes) y se informa el rango.
 Limites que el estudio NO resuelve: sesgo de supervivencia (solo estan los tickers que hoy estan en el
 universo), cambios de regimen, y que el pasado no garantiza nada. Informativo.
 
@@ -161,6 +165,59 @@ def tabla_2d(p, m1):
     return res
 
 
+AMPLITUD_METRICAS = {
+    "pct_rsi_bajo_30": "% del universo con RSI semanal < 30",
+    "pct_rsi_bajo_40": "% del universo con RSI semanal < 40",
+    "pct_muy_bajo_sma14": "% del universo a mas de 10% bajo su SMA14 semanal",
+    "pct_sobre_ema200": "% del universo sobre su EMA200 semanal",
+}
+MIN_TICKERS_SEMANA = 100
+
+
+def _welch_t(a: np.ndarray, b: np.ndarray):
+    if len(a) < 8 or len(b) < 8:
+        return None
+    va, vb = a.var(ddof=1) / len(a), b.var(ddof=1) / len(b)
+    if va + vb <= 0:
+        return None
+    return float((a.mean() - b.mean()) / np.sqrt(va + vb))
+
+
+def estudio_amplitud(p: pd.DataFrame, bench: pd.Series) -> dict:
+    g = p.groupby("fecha")
+    amp = pd.DataFrame({
+        "n": g.size(),
+        "pct_rsi_bajo_30": g["rsi"].apply(lambda x: (x < 30).mean() * 100),
+        "pct_rsi_bajo_40": g["rsi"].apply(lambda x: (x < 40).mean() * 100),
+        "pct_muy_bajo_sma14": g["dist_sma14"].apply(lambda x: (x <= -10).mean() * 100),
+        "pct_sobre_ema200": g["dist_ema200"].apply(lambda x: (x > 0).mean() * 100),
+    })
+    amp = amp[amp["n"] >= MIN_TICKERS_SEMANA]
+    amp["spy_4s"] = ((bench.shift(-H_PRINCIPAL) / bench - 1) * 100).reindex(amp.index)
+    amp = amp.dropna(subset=["spy_4s"])
+    out = {"semanas": int(len(amp)), "spy_4s_promedio_%": round(float(amp["spy_4s"].mean()), 2), "metricas": {}}
+    for m in AMPLITUD_METRICAS:
+        q = pd.qcut(amp[m].rank(method="first"), 5, labels=False)
+        quintiles = []
+        for k in range(5):
+            r = amp.loc[q == k, "spy_4s"]
+            quintiles.append({"quintil": k + 1, "semanas": int(len(r)),
+                              "rango_%": [round(float(amp.loc[q == k, m].min()), 1), round(float(amp.loc[q == k, m].max()), 1)],
+                              "spy_4s_%": round(float(r.mean()), 2), "positivos_%": round(float((r > 0).mean() * 100), 1)})
+        # t de "quintil 5 (mas sobrevendido/mas amplitud) contra el resto" con semanas no solapadas
+        ts = []
+        for off in range(H_PRINCIPAL):
+            sel = (np.arange(len(amp)) % H_PRINCIPAL) == off
+            top = amp.loc[sel & (q.values == 4), "spy_4s"].values
+            rest = amp.loc[sel & (q.values != 4), "spy_4s"].values
+            t = _welch_t(top, rest)
+            if t is not None:
+                ts.append(t)
+        out["metricas"][m] = {"quintiles": quintiles,
+                              "t_q5_vs_resto": None if not ts else {"min": round(min(ts), 2), "max": round(max(ts), 2)}}
+    return out
+
+
 def resumen_md(est: dict) -> str:
     L = [f"# Estudio semanal ({est['generado_utc'][:10]})", "",
          f"Panel: {est['observaciones']} observaciones, {est['tickers']} tickers, {est['semanas']} semanas "
@@ -182,6 +239,7 @@ def resumen_md(est: dict) -> str:
                              f"{v['t_4s']} | {v['mitad1_vs_base_%']} | {v['mitad2_vs_base_%']} | {'si' if v['consistente'] else 'no'} |")
             L.append("")
     s = est["grupos"]["sobre_ema200"].get("rsi_x_sma14", {})
+    am = est.get("amplitud")
     top = sorted([(k, v) for k, v in s.items() if v.get("estado") == "ok" and v.get("consistente") and abs(v.get("t_4s") or 0) >= T_MIN_CRUCES
                   and v["n"] >= MIN_OBS_CRUCES and v["semanas"] >= MIN_SEMANAS_CRUCES],
                  key=lambda kv: -abs(kv[1]["vs_base_4s_%"]))[:10]
@@ -190,6 +248,18 @@ def resumen_md(est: dict) -> str:
           f"Se probaron {ncel} cruces a la vez: con |t| >= 2 se espera que unos {max(1, round(ncel * 0.05))} pasen solo por azar, por eso se exige |t| >= {T_MIN_CRUCES:g}.", ""]
     L += [f"- {k}: exceso {v['exceso_4s_%']:+.2f}% (vs base {v['vs_base_4s_%']:+.2f}), t={v['t_4s']}, n={v['n']}" for k, v in top] or \
          ["- Ninguno: con este panel no hay un cruce que se distinga del ruido de forma consistente."]
+    if am:
+        L += ["", "## Parte 2: amplitud del mercado y retorno del SPY a 4 semanas",
+              f"{am['semanas']} semanas; el SPY promedio {am['spy_4s_promedio_%']:+.2f}% a 4 semanas. Quintil 5 = la mayor proporcion. "
+              "Los retornos a 4 semanas se solapan: el t se calcula con semanas no solapadas (rango entre 4 desfasajes). Con datos de puro azar este "
+              "calculo da |t| cercano a 2 de vez en cuando (hay 4 metricas x 4 desfasajes), asi que solo cuenta como candidato un t >= 3 en los "
+              "4 desfasajes y con el mismo signo.", ""]
+        for m, nombre in AMPLITUD_METRICAS.items():
+            d = am["metricas"][m]
+            L += [f"### {nombre}", "| Quintil | semanas | rango | SPY a 4s | positivos |", "|---|---|---|---|---|"]
+            L += [f"| {q['quintil']} | {q['semanas']} | {q['rango_%'][0]} a {q['rango_%'][1]}% | {q['spy_4s_%']:+.2f}% | {q['positivos_%']}% |" for q in d["quintiles"]]
+            t = d["t_q5_vs_resto"]
+            L += [f"t del quintil 5 contra el resto: {'sin datos' if t is None else str(t['min']) + ' a ' + str(t['max'])}", ""]
     L += ["", "Lectura: un tramo es solo un CANDIDATO a umbral si se separa de la base, tiene |t| alto y es consistente en las "
               "dos mitades. Con datos de puro azar este mismo filtro deja pasar un falso positivo cada varias corridas, asi que un "
               "candidato se confirma midiendolo hacia adelante en vivo (log_semanal) antes de usarlo. Si ninguno aparece, la "
@@ -229,7 +299,8 @@ def main():
                           "dist_ema200": tabla_1d(sub, "dist_ema200", EMA_BINS, mitad)}
         if nombre == "sobre_ema200":
             grupos[nombre]["rsi_x_sma14"] = tabla_2d(sub, mitad)
-    est = {"generado_utc": hoy.isoformat(timespec="seconds"), "observaciones": int(len(p)), "tickers": int(p["ticker"].nunique()),
+    amplitud = estudio_amplitud(p, cierres[BENCHMARK])
+    est = {"amplitud": amplitud, "generado_utc": hoy.isoformat(timespec="seconds"), "observaciones": int(len(p)), "tickers": int(p["ticker"].nunique()),
            "semanas": int(len(fechas)), "desde": str(pd.Timestamp(fechas[0]).date()), "hasta": str(pd.Timestamp(fechas[-1]).date()),
            "mitad": str(pd.Timestamp(mitad).date()), "grupos": grupos,
            "aviso": "Sesgo de supervivencia (universo de hoy), solapamiento de retornos y cambios de regimen: es evidencia "

@@ -19,6 +19,8 @@ Listas (condiciones de hoy, sin recomendacion: ordenan, no dicen que hacer):
   retroceso_en_tendencia cierra sobre su EMA200 pero bajo su SMA14, con RSI semanal bajo 50
   sobrevendido           RSI semanal <= RSI_SOBREVENDIDO
   estirado               RSI semanal >= RSI_ESTIRADO
+  muy_bajo_sma14         cierra mas de MUY_BAJO_SMA14_PCT% bajo su SMA14 semanal (CANDIDATA: salio del estudio de 10 años
+                         como la unica tendencia positiva, pero sin llegar a ser concluyente; se mide en vivo)
 
 Evaluacion: retorno a 1 y 4 semanas, y exceso contra SPY. "vivo" = solo semanas ya registradas en el
 log (sin sesgo). "reconstruido" = lo que habrian dicho las mismas reglas en el pasado con el universo
@@ -50,8 +52,9 @@ CERCA_EMA200_PCT = 3.0
 PENDIENTE_SEMANAS = 4
 RSI_SOBREVENDIDO = 30
 RSI_ESTIRADO = 70
+MUY_BAJO_SMA14_PCT = 10.0
 HORIZONTES = (1, 4)
-LISTAS = ("ema200_apoyo", "retroceso_en_tendencia", "sobrevendido", "estirado")
+LISTAS = ("ema200_apoyo", "retroceso_en_tendencia", "sobrevendido", "estirado", "muy_bajo_sma14")
 
 
 # ------------------------------------------------------------------ descarga
@@ -117,6 +120,8 @@ def listas_de(fila) -> list:
         out.append("sobrevendido")
     if pd.notna(rsi) and rsi >= RSI_ESTIRADO:
         out.append("estirado")
+    if pd.notna(ds) and ds <= -MUY_BAJO_SMA14_PCT:
+        out.append("muy_bajo_sma14")
     return out
 
 
@@ -243,7 +248,8 @@ def main():
         clave = {"ema200_apoyo": lambda t: abs(tickers_out[t]["dist_ema200"]),
                  "retroceso_en_tendencia": lambda t: tickers_out[t]["rsi"],
                  "sobrevendido": lambda t: tickers_out[t]["rsi"],
-                 "estirado": lambda t: -tickers_out[t]["rsi"]}[l]
+                 "estirado": lambda t: -tickers_out[t]["rsi"],
+                 "muy_bajo_sma14": lambda t: tickers_out[t]["dist_sma14"]}[l]
         listas_hoy[l].sort(key=clave)
 
     # --- log append-only (una linea por semana cerrada)
@@ -262,7 +268,7 @@ def main():
 
     salida = {"generado_utc": hoy.isoformat(timespec="seconds"), "fecha_semana": fecha, "benchmark": BENCHMARK,
               "umbrales": {"cerca_ema200_%": CERCA_EMA200_PCT, "rsi_sobrevendido": RSI_SOBREVENDIDO,
-                           "rsi_estirado": RSI_ESTIRADO, "min_semanas_ema200": MIN_SEMANAS_EMA200},
+                           "rsi_estirado": RSI_ESTIRADO, "muy_bajo_sma14_%": MUY_BAJO_SMA14_PCT, "min_semanas_ema200": MIN_SEMANAS_EMA200},
               "tickers": tickers_out, "listas": listas_hoy, "fallidos": fallidos}
     with open(RUTA_JSON, "w", encoding="utf-8") as f:
         json.dump(salida, f, ensure_ascii=False, separators=(",", ":"))
