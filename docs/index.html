@@ -567,14 +567,17 @@
                 <span class="text-gray-300">brasil</span>, <span class="text-gray-300">oro</span>, <span class="text-gray-300">software</span>)
                 y aparecen todos los tickers del universo que encajan, ordenados por Fuerza Relativa. Busca en el ticker, el sector, la subcategoría
                 y en algunas palabras clave de tema (los ETFs sectoriales aparecen con su tema: SMH con semiconductores, GDX con oro, etc.).
-                Si varias palabras, tienen que cumplirse todas. Es solo para ubicar tickers: no es una recomendación.
+                Los botones de arriba arman grupos temáticos (Biotecnología, Semiconductores, Mis tickers...) con los tickers del universo; se puede combinar un grupo con texto para afinar. Cada fila muestra hoy, 5 ruedas, 1 mes y 3 meses, y se puede ordenar por cualquiera. Si varias palabras, tienen que cumplirse todas. Es solo para ubicar tickers: no es una recomendación.
             </div>
+            <div id="buscador-grupos" class="flex gap-1.5 overflow-x-auto pb-2 mb-1 font-mono text-[10px] uppercase" style="scrollbar-width:none"></div>
             <div class="mb-3 flex flex-wrap items-center gap-2">
                 <input id="buscador-subclase" type="text" placeholder="Buscar sector / subcategoría / tema..."
                     class="w-full sm:w-72 bg-base border border-surface rounded-sm px-3 py-1.5 font-mono text-xs text-gray-200 focus:outline-none focus:border-accent"
                     oninput="renderBuscadorSubclase(buscadorSubclaseData)">
-                <div id="buscador-subclase-chips" class="flex flex-wrap gap-1.5"></div>
             </div>
+            <details class="mb-3"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">Más filtros: subcategorías (tocá para ver)</summary>
+                <div id="buscador-subclase-chips" class="flex flex-wrap gap-1.5 mt-2"></div>
+            </details>
             <div id="buscador-subclase-resultado" class="bg-surface p-3 rounded-sm border border-surface font-mono text-xs"></div>
         </section>
         <!-- Sectores y subsectores (9/10, inspirado en Warren Bife) -->
@@ -5705,6 +5708,55 @@
             EDN: 'argentina', LOMA: 'argentina', CEPU: 'argentina', TEN: 'argentina', AGRO: 'argentina', BIOX: 'argentina'
         };
         const _norm = x => String(x ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        // 26/10: botones de grupos temáticos para el buscador. Solo agrupan tickers que ya están en el universo
+        // (por subcategoría, sector, ticker puntual o palabra clave de tema). No cambia ninguna señal ni log.
+        // sub = subcategorías, sec = sectores, t = tickers puntuales, kw = palabras clave de TEMAS_EXTRA.
+        const GRUPOS_BUSCADOR = [
+            { id: 'cartera', n: '● Mis tickers', cartera: true },
+            { id: 'biotec', n: 'Biotecnología', sub: ['Biotecnología'], t: ['IBB'] },
+            { id: 'salud', n: 'Salud (todo)', sec: ['Salud'], t: ['IBB', 'XLV'] },
+            { id: 'semis', n: 'Semiconductores', sub: ['Semiconductores'], t: ['SMH'] },
+            { id: 'software', n: 'Software y ciberseguridad', sub: ['Software', 'Ciberseguridad'], t: ['CIBR'] },
+            { id: 'bigtech', n: 'Big Tech', sub: ['Big Tech'], t: ['XLK', 'QQQ'] },
+            { id: 'bancos', n: 'Bancos', sec: ['Bancos'], t: ['XLF'] },
+            { id: 'energia', n: 'Petróleo y gas', sub: ['Petróleo y Gas'], t: ['XLE', 'USO'] },
+            { id: 'metales', n: 'Minería y metales', sub: ['Minería/Metales'], t: ['GLD', 'SLV', 'GDX', 'COPX', 'XME'] },
+            { id: 'uranio', n: 'Uranio y renovables', sub: ['Renovables/Uranio'], t: ['URA', 'ICLN'] },
+            { id: 'cripto', n: 'Cripto', t: ['IBIT', 'ETHA', 'COIN', 'MSTR', 'BMNR', 'RIOT', 'HUT', 'IREN', 'KEEL'] },
+            { id: 'defensa', n: 'Aeroespacial y defensa', sec: ['Aeroespacial'], t: ['ITA'] },
+            { id: 'consumo', n: 'Consumo y retail', sub: ['Consumo Básico', 'Retail y marcas'], t: ['XLP', 'XLY'] },
+            { id: 'autos', n: 'Autos', sec: ['Automotriz'] },
+            { id: 'argentina', n: 'Argentina', sub: ['Argentina'], kw: ['argentina'] },
+            { id: 'brasil', n: 'Brasil y LatAm', kw: ['brasil', 'latam'] },
+            { id: 'asia', n: 'China y Asia', kw: ['asia', 'china'], t: ['BABA', 'JD', 'PDD', 'BIDU', 'TCOM', 'NIO', 'XPEV', 'NTES', 'SONY', 'TM', 'HMC', 'NMR', 'KB', 'INFY', 'HDB', 'IBN', 'SKHY', 'SE'] },
+            { id: 'etfs', n: 'ETFs', sec: ['ETF'] },
+        ];
+        let buscadorGrupo = null, buscadorOrden = 'rs';
+        function enGrupoBuscador(g, r) {
+            if (g.cartera) return enCartera(r?.Ticker);
+            if (g.t?.includes(r?.Ticker)) return true;
+            if (g.sub?.includes(r?.Subcategoria)) return true;
+            if (g.sec?.includes(r?.Sector)) return true;
+            if (g.kw) { const h = ' ' + _norm(TEMAS_EXTRA[r?.Ticker] ?? '') + ' '; return g.kw.some(w => h.includes(' ' + w + ' ')); }
+            return false;
+        }
+        function buscadorElegirGrupo(id) {
+            buscadorGrupo = (buscadorGrupo === id) ? null : id;
+            const inp = document.getElementById('buscador-subclase'); if (inp && buscadorGrupo) inp.value = '';
+            renderBuscadorSubclase(buscadorSubclaseData);
+        }
+        function buscadorOrdenar(o) { buscadorOrden = o; renderBuscadorSubclase(buscadorSubclaseData); }
+        function retChipHtml(v, rot) {
+            const n = (v === null || v === undefined || v === '') ? NaN : Number(v);
+            const num = isFinite(n) ? `<span class="${n > 0 ? 'text-pos' : (n < 0 ? 'text-neg' : 'text-gray-400')}">${n > 0 ? '+' : ''}${n.toFixed(1).replace('.', ',')}%</span>` : '<span class="text-gray-600">—</span>';
+            return `<span class="text-[10px] text-gray-500">${rot} ${num}</span>`;
+        }
+        function medianaBuscador(arr) {
+            const v = arr.filter(x => typeof x === 'number' && isFinite(x)).sort((a, b) => a - b);
+            if (!v.length) return null;
+            const m = Math.floor(v.length / 2);
+            return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+        }
         function renderBuscadorSubclase(data) {
             buscadorSubclaseData = data;
             const out = document.getElementById('buscador-subclase-resultado');
@@ -5715,29 +5767,48 @@
             // chips con las subcategorías existentes (para no tener que adivinar el nombre)
             if (chipsEl && !chipsEl.dataset.listo && ranking.length) {
                 const subs = [...new Set(ranking.map(r => r?.Subcategoria).filter(Boolean))].sort();
-                chipsEl.innerHTML = subs.map(sb => `<button class="px-2 py-0.5 border border-surface rounded-sm text-[10px] text-gray-400 hover:text-accent hover:border-accent" onclick="document.getElementById('buscador-subclase').value='${sb.replace(/'/g, "\\'")}'; renderBuscadorSubclase(buscadorSubclaseData)">${sb}</button>`).join('');
+                chipsEl.innerHTML = subs.map(sb => `<button class="px-2 py-0.5 border border-surface rounded-sm text-[10px] text-gray-400 hover:text-accent hover:border-accent" onclick="buscadorGrupo = null; document.getElementById('buscador-subclase').value='${sb.replace(/'/g, "\\'")}'; renderBuscadorSubclase(buscadorSubclaseData)">${sb}</button>`).join('');
                 chipsEl.dataset.listo = '1';
             }
+            const gEl = document.getElementById('buscador-grupos');
+            if (gEl) {
+                const gAct = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo);
+                gEl.innerHTML = GRUPOS_BUSCADOR.map(g => {
+                    const on = g.id === buscadorGrupo;
+                    return `<button onclick="buscadorElegirGrupo('${g.id}')" class="px-3 py-1.5 rounded-sm border whitespace-nowrap ${on ? 'bg-accent text-base font-bold border-accent' : 'border-surface text-gray-400 hover:text-accent'}">${g.n}</button>`;
+                }).join('');
+            }
+            const grupo = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo) ?? null;
             const palabras = _norm(inp?.value).split(/\s+/).filter(Boolean);
-            if (!palabras.length) { out.innerHTML = '<span class="text-gray-500">Escribí algo o tocá una subcategoría de arriba.</span>'; return; }
+            if (!palabras.length && !grupo) { out.innerHTML = '<span class="text-gray-500">Tocá un grupo de arriba, escribí algo o tocá una subcategoría.</span>'; return; }
+            const ordenKey = { rs: r => r?.RS_Score ?? -1e9, dia: r => r?.['Var_dia_%'] ?? -1e9, d5: r => r?.['Ret_5d_%'] ?? -1e9, m1: r => r?.['Ret_1m_%'] ?? -1e9, m3: r => r?.['Ret_3m_%'] ?? -1e9 }[buscadorOrden] ?? (r => r?.RS_Score ?? -1e9);
             const hits = ranking.filter(r => {
+                if (grupo && !enGrupoBuscador(grupo, r)) return false;
                 const h = _norm([r?.Ticker, r?.Sector, r?.Subcategoria, TEMAS_EXTRA[r?.Ticker]].join(' '));
                 return palabras.every(w => h.includes(w));
-            }).sort((a, b) => (b?.RS_Score ?? 0) - (a?.RS_Score ?? 0));
+            }).sort((a, b) => ordenKey(b) - ordenKey(a));
             // Tickers nuevos con historia corta (< 200 ruedas): no están en el ranking, pero se pueden buscar y abrir en TradingView
-            const hitsCorta = (data?.historia_corta ?? []).filter(r => {
+            const hitsCorta = grupo ? [] : (data?.historia_corta ?? []).filter(r => {
                 const h = _norm([r?.Ticker, r?.Sector, TEMAS_EXTRA[r?.Ticker], NOMBRES_EMPRESA[r?.Ticker], 'historia corta nuevo'].join(' '));
                 return palabras.every(w => h.includes(w));
             }).map(r => ({ ...r, _corta: true }));
             hits.push(...hitsCorta);
             if (!hits.length) { out.innerHTML = '<span class="text-gray-500">Sin coincidencias en el universo.</span>'; return; }
-            out.innerHTML = `<div class="text-gray-500 mb-2">${hits.length} ticker(s) · ordenados por Fuerza Relativa</div>` + hits.map(r => {
+            const _ord = (k, t) => `<button onclick="buscadorOrdenar('${k}')" class="px-2 py-0.5 rounded-sm border ${buscadorOrden === k ? 'border-accent text-accent font-bold' : 'border-surface text-gray-500 hover:text-accent'}">${t}</button>`;
+            const _med = (k) => { const m = medianaBuscador(hits.map(r => r?.[k])); return m == null ? '—' : `<span class="${m > 0 ? 'text-pos' : (m < 0 ? 'text-neg' : 'text-gray-400')}">${m > 0 ? '+' : ''}${m.toFixed(1).replace('.', ',')}%</span>`; };
+            const _suben = hits.filter(r => typeof r?.['Var_dia_%'] === 'number' && r['Var_dia_%'] > 0).length;
+            const _conDato = hits.filter(r => typeof r?.['Var_dia_%'] === 'number').length;
+            const resumen = hits.length > 1 && _conDato ? `<div class="text-[10px] text-gray-500 mb-2 leading-relaxed">Mediana del grupo: hoy ${_med('Var_dia_%')} · 5 ruedas ${_med('Ret_5d_%')} · 1 mes ${_med('Ret_1m_%')} · 3 meses ${_med('Ret_3m_%')} · hoy suben ${_suben} de ${_conDato}</div>` : '';
+            out.innerHTML = `<div class="text-gray-500 mb-1">${grupo ? '<span class="text-white">' + grupo.n.replace('● ', '') + '</span> · ' : ''}${hits.length} ticker(s)</div>`
+                + `<div class="flex flex-wrap items-center gap-1.5 mb-2 text-[10px] uppercase"><span class="text-gray-600">Ordenar:</span>${_ord('rs', 'Fuerza relativa')}${_ord('dia', 'Hoy')}${_ord('d5', '5 ruedas')}${_ord('m1', '1 mes')}${_ord('m3', '3 meses')}</div>`
+                + resumen + hits.map(r => {
                 const rs = r?.RS_Score, rad = r?.Radar_Score, rsi = r?.RSI;
                 const px = typeof r?.Precio === 'number' ? r.Precio.toFixed(2) : '—';
                 return `<div class="flex flex-wrap items-center gap-x-4 py-1 border-b border-base/50">
                     <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="${r._corta ? `window.open(tradingViewUrl('${r.Ticker}'), '_blank', 'noopener')` : `irAAlertasDeTicker('${r.Ticker}')`}">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
                     <span class="w-20 text-right text-gray-400">${px}</span>
                     <span class="w-20 text-right">${hoyPctHtml(r?.['Var_dia_%'], true)}</span>
+                    ${r._corta ? '' : `<span class="flex gap-3 w-full sm:w-auto">${retChipHtml(r?.['Ret_5d_%'], '5r')}${retChipHtml(r?.['Ret_1m_%'], '1m')}${retChipHtml(r?.['Ret_3m_%'], '3m')}</span>`}
                     <span class="text-gray-500">RS <span class="text-white">${rs != null ? rs.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RADAR <span class="text-accent">${rad != null ? rad.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RSI <span class="text-gray-300">${rsi != null ? rsi.toFixed(0) : '—'}</span></span>
