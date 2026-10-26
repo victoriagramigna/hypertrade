@@ -435,7 +435,8 @@ def correr(ahora=None, diarios_fn=None, premarket_fn=None, fechas_fn=None, histo
     _log_agregar(nuevos)
     log.info(f"{len(candidatos)} candidatos, {len(balances)} balances, {len(nuevos)} avisos nuevos en el registro")
 
-    if enviar and (candidatos or balances):
+    # 26/10: hay varias corridas por dia; se manda por Telegram solo si hay avisos NUEVOS (no repite lo ya avisado).
+    if enviar and nuevos and (candidatos or balances):
         from telegram_bot import enviar_mensaje
         enviar_mensaje(os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"), armar_mensaje(snap))
     return snap
