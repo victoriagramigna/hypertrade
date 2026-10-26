@@ -613,6 +613,7 @@
                     En cada tarjeta, los botones de arriba filtran por subcategoría.
                     Al lado de cada ticker aparece el logo y el nombre de la empresa (si el logo no carga, queda solo el nombre).
                 </div>
+                <div id="bot-sectores" class="sticky top-11 z-10 bg-base -mx-4 px-4 py-2 flex gap-2 overflow-x-auto font-mono text-[10px] uppercase mb-3" style="scrollbar-width:none"></div>
                 <div id="sectors-detail" class="space-y-6"></div>
             </section>
     </div>
@@ -638,6 +639,7 @@
         <div class="flex items-center gap-2">
             <input type="text" id="historial-filtro" class="bg-surface border border-surface focus-within:border-accent text-white px-3 py-2 rounded-sm font-mono text-sm uppercase placeholder-gray-600 flex-1" placeholder="Filtrar por ticker (opcional)">
         </div>
+        <div id="historial-recs" class="flex gap-2 overflow-x-auto font-mono text-[11px] uppercase" style="scrollbar-width:none"></div>
         <div id="historial-container" class="space-y-2"></div>
     </div>
 
@@ -3027,6 +3029,7 @@
                         </div>
                     `;
                 }).join('');
+                try { pintarBotoneraSectores(); } catch (e) { console.warn('botonera sectores', e); }
             }
         }
 
@@ -3048,6 +3051,9 @@
         const ROTACION_HISTORIAL_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/rs_sector_historial.jsonl';
         let rotacionHistorialCache = null;  // array [{fecha, rs_por_sector}], ordenado por fecha
         let rotacionUltimoData = null;      // último `data` recibido, para poder re-renderizar al togglear Play
+        // 26/10: los archivos .jsonl que arma Python pueden traer NaN (no es JSON válido para el navegador): JSON.parse fallaba y la línea se descartaba
+        // en silencio (en log_alertas.jsonl eran 3.354 de 4.359 eventos). Se lee el NaN como null; no se toca el archivo.
+        function parseLineaJson(l) { return JSON.parse(String(l).replace(/(:\s*)-?(NaN|Infinity)\b/g, '$1null')); }
         let rotacionAnimIndex = null;       // null = mostrar el recorrido completo (sin animar); número = semana que se está mostrando
         let rotacionAnimTimer = null;
 
@@ -3057,7 +3063,7 @@
                 if (!resp.ok) { rotacionHistorialCache = []; return; }
                 const texto = await resp.text();
                 rotacionHistorialCache = texto.split('\n').map(l => l.trim()).filter(Boolean)
-                    .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
+                    .map(l => { try { return parseLineaJson(l); } catch (e) { return null; } })
                     .filter(Boolean)
                     .sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''));
             } catch (e) {
@@ -3114,7 +3120,7 @@
                         if (!resp.ok) return [];
                         const texto = await resp.text();
                         return texto.split('\n').map(l => l.trim()).filter(Boolean)
-                            .map(l => { try { return JSON.parse(l); } catch (e) { return null; } })
+                            .map(l => { try { return parseLineaJson(l); } catch (e) { return null; } })
                             .filter(Boolean);
                     } catch (e) { return []; }
                 };
@@ -4090,7 +4096,7 @@
                 const porId = new Map();
                 txt.split('\n').forEach(l => {
                     l = l.trim(); if (!l) return;
-                    try { const j = JSON.parse(l); if (j && j.id) porId.set(j.id, { ...(porId.get(j.id) || {}), ...j }); } catch (e) { /* línea inválida: se ignora */ }
+                    try { const j = parseLineaJson(l); if (j && j.id) porId.set(j.id, { ...(porId.get(j.id) || {}), ...j }); } catch (e) { /* línea inválida: se ignora */ }
                 });
                 ideasExternas = [...porId.values()].filter(x => x.ticker && x.fuente);
             } catch (e) {
@@ -5266,6 +5272,35 @@
         // ============ HISTORIAL (bitácora de eventos) ============
         const LOG_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/log_alertas.jsonl';
         let historialData = null; // null = todavía no se pidió; [] = se pidió y vino vacío/404
+        // 26/10: la bitácora tiene miles de eventos; se filtra por período y por recomendación y se muestra de a 100 (nada se borra: "Todo" + "Ver más" llegan a todos).
+        const HIS_PERIODOS = [{ id: 'hoy', t: 'Hoy' }, { id: '7', t: '7 días' }, { id: '30', t: '30 días' }, { id: 'todo', t: 'Todo' }];
+        const HIS_RECS = [{ id: 'todas', t: 'Todas' }, { id: 'COMPRA', t: 'Compra' }, { id: 'VENTA', t: 'Venta' }, { id: 'MANTENER', t: 'Mantener' }];
+        const HIS_PAGINA = 100;
+        let hisPeriodo = '7', hisRec = 'todas', hisLimite = HIS_PAGINA;
+        try { hisPeriodo = localStorage.getItem('his_periodo_v1') || '7'; } catch (e) {}
+        const _bsas = (d) => d.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+        function historialFiltros(periodo, rec) {
+            if (periodo !== undefined) { hisPeriodo = periodo; try { localStorage.setItem('his_periodo_v1', periodo); } catch (e) {} }
+            if (rec !== undefined) hisRec = rec;
+            hisLimite = HIS_PAGINA;
+            if (historialData !== null) renderHistorial();
+            pintarHistorialBotones();
+        }
+        (function barraHistorial() {
+            const root = document.getElementById('tab-historial'); if (!root) return;
+            const bar = document.createElement('div');
+            bar.id = 'bot-historial';
+            bar.className = 'sticky top-0 z-20 bg-base -mx-4 px-4 md:-mx-8 md:px-8 h-11 flex items-center gap-2 overflow-x-auto font-mono text-[11px] uppercase';
+            bar.style.scrollbarWidth = 'none';
+            root.insertBefore(bar, root.firstElementChild);
+            pintarHistorialBotones();
+        })();
+        function historialMas() { hisLimite += HIS_PAGINA; renderHistorial(); }
+        function pintarHistorialBotones() {
+            const btn = (grupo, v, act) => `<button onclick="historialFiltros(${grupo === 'p' ? `'${v.id}'` : 'undefined'}${grupo === 'r' ? `,'${v.id}'` : ''})" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap ${act ? 'bg-accent text-base font-bold' : 'text-gray-400'}">${v.t}</button>`;
+            const bar = document.getElementById('bot-historial'); if (bar) bar.innerHTML = HIS_PERIODOS.map(v => btn('p', v, v.id === hisPeriodo)).join('');
+            const rb = document.getElementById('historial-recs'); if (rb) rb.innerHTML = HIS_RECS.map(v => btn('r', v, v.id === hisRec)).join('');
+        }
 
         async function fetchHistorialData() {
             const container = document.getElementById('historial-container');
@@ -5280,7 +5315,7 @@
                 }
                 const texto = await resp.text();
                 historialData = texto.split('\n').filter(l => l.trim()).map(l => {
-                    try { return JSON.parse(l); } catch (e) { return null; }
+                    try { return parseLineaJson(l); } catch (e) { return null; }
                 }).filter(e => e !== null);
                 renderHistorial();
             } catch (error) {
@@ -5294,16 +5329,23 @@
             const filtro = document.getElementById('historial-filtro').value.trim().toUpperCase();
             let eventos = [...(historialData ?? [])];
             if (filtro) eventos = eventos.filter(e => e?.ticker?.toUpperCase().includes(filtro));
+            if (hisRec !== 'todas') eventos = eventos.filter(e => (e?.recomendacion ?? '') === hisRec);
+            if (hisPeriodo !== 'todo') {
+                const hoyKey = _bsas(new Date());
+                const corte = hisPeriodo === 'hoy' ? null : Date.now() - Number(hisPeriodo) * 86400000;
+                eventos = eventos.filter(e => e.timestamp && (corte === null ? _bsas(new Date(e.timestamp)) === hoyKey : new Date(e.timestamp).getTime() >= corte));
+            }
             eventos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const totalEventos = eventos.length;
 
             if (eventos.length === 0) {
                 container.innerHTML = `<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">
-                    ${filtro ? 'Sin eventos para ese ticker.' : 'Todavía no hay eventos guardados -- la bitácora graba cada alerta NUEVA a partir de ahora, así que se va a ir llenando con el tiempo.'}
+                    ${(filtro || hisRec !== 'todas' || hisPeriodo !== 'todo') && (historialData ?? []).length ? 'Sin eventos con esos filtros (probá con "Todo").' : 'Todavía no hay eventos guardados -- la bitácora graba cada alerta NUEVA a partir de ahora, así que se va a ir llenando con el tiempo.'}
                 </div>`;
                 return;
             }
 
-            container.innerHTML = eventos.map(e => {
+            const tarjeta = (e) => {
                 const fecha = e.timestamp ? new Date(e.timestamp) : null;
                 const fechaStr = fecha ? `${fecha.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'})} · ${fecha.toLocaleTimeString('es-AR', {hour12:false,hour:'2-digit',minute:'2-digit'})}` : '—';
                 const rec = e.recomendacion ?? '—';
@@ -5322,7 +5364,22 @@
                             ${e.radar_score != null ? `<div class="text-[10px] text-gray-500 mt-1">Radar Score ${e.radar_score}</div>` : ''}
                         </div>
                     </div>`;
-            }).join('');
+            };
+            // Agrupado por día (hora argentina), con la cantidad de eventos de cada día.
+            let html = '', diaActual = null;
+            const mostrados = eventos.slice(0, hisLimite);
+            const porDia = {}; eventos.forEach(e => { const k = e.timestamp ? _bsas(new Date(e.timestamp)) : '—'; porDia[k] = (porDia[k] ?? 0) + 1; });
+            for (const e of mostrados) {
+                const k = e.timestamp ? _bsas(new Date(e.timestamp)) : '—';
+                if (k !== diaActual) {
+                    diaActual = k;
+                    const f = k !== '—' ? new Date(k + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : 'Sin fecha';
+                    html += `<div class="font-mono text-[11px] uppercase tracking-widest text-accent border-b border-surface pb-1 pt-3">${f} <span class="text-gray-500 normal-case">· ${porDia[k]} evento${porDia[k] > 1 ? 's' : ''}</span></div>`;
+                }
+                html += tarjeta(e);
+            }
+            html += `<div class="font-mono text-[11px] text-gray-500 text-center py-3">Mostrando ${mostrados.length} de ${totalEventos}${totalEventos > mostrados.length ? ` <button onclick="historialMas()" class="ml-2 px-3 py-1.5 rounded-sm border border-surface text-gray-300 hover:text-white uppercase">Ver ${Math.min(HIS_PAGINA, totalEventos - mostrados.length)} más</button>` : ''}</div>`;
+            container.innerHTML = html;
         }
 
         document.getElementById('historial-filtro').addEventListener('input', () => {
@@ -5537,6 +5594,27 @@
 
         // Id seguro para anclar y scrollear a la tarjeta de un sector en
         // "Universo Técnico" (nombres de sector pueden tener espacios/tildes).
+        // 26/10: botonera de sectores dentro de "Universo técnico": ver un sector a la vez o "Todos".
+        function sectorVista(slug) {
+            const cards = [...document.querySelectorAll('#sectors-detail > div[id^="sector-card-"]')];
+            if (!cards.length) return;
+            const sel = (slug === 'todos' || !cards.some(c => c.id === slug)) ? 'todos' : slug;
+            cards.forEach(c => { if (sel === 'todos' || c.id === sel) c.removeAttribute('data-bot-oculto'); else c.setAttribute('data-bot-oculto', '1'); });
+            document.querySelectorAll('#bot-sectores button').forEach(b => {
+                const on = b.dataset.slug === sel;
+                b.classList.toggle('bg-accent', on); b.classList.toggle('text-base', on); b.classList.toggle('font-bold', on); b.classList.toggle('text-gray-400', !on);
+                if (on) b.parentElement.scrollLeft = Math.max(0, b.offsetLeft - 24);
+            });
+            try { localStorage.setItem('bot_sector_v1', sel); } catch (e) {}
+        }
+        function pintarBotoneraSectores() {
+            const bar = document.getElementById('bot-sectores'); if (!bar) return;
+            const cards = [...document.querySelectorAll('#sectors-detail > div[id^="sector-card-"]')];
+            bar.innerHTML = [`<button data-slug="todos" onclick="sectorVista('todos')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">Todos</button>`]
+                .concat(cards.map(c => `<button data-slug="${c.id}" onclick="sectorVista('${c.id}')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">${c.querySelector('h3 span')?.firstChild?.textContent?.trim() ?? c.id}</button>`)).join('');
+            let ult = 'todos'; try { ult = localStorage.getItem('bot_sector_v1') || 'todos'; } catch (e) {}
+            sectorVista(ult);
+        }
         function sectorSlug(sector) {
             return 'sector-card-' + String(sector ?? '')
                 .normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -5552,6 +5630,7 @@
             if (!el) return;
             const _v = (() => { try { return localStorage.getItem('bot_universo_v1'); } catch (e) { return null; } })();
             if (typeof botoneraVista === 'function' && _v !== 'todo') botoneraVista('universo', 'tecnico');
+            sectorVista(sectorSlug(sector));
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             el.classList.add('ring-2', 'ring-accent');
             setTimeout(() => el.classList.remove('ring-2', 'ring-accent'), 1500);
