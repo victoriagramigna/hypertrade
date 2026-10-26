@@ -93,6 +93,19 @@
            todo) en vez de activar el botón (reportado 2/10). Esto lo
            evita para todos los botones de la página. */
         button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+        /* 26/10: tarjetas de alerta plegables (resumen de 3 renglones; al tocar se abre el detalle completo, igual que antes). */
+        details.alerta-card > summary { list-style: none; }
+        details.alerta-card > summary::-webkit-details-marker { display: none; }
+        details.alerta-card .alerta-flecha { display: inline-block; transition: transform .15s; }
+        details.alerta-card[open] .alerta-flecha { transform: rotate(180deg); }
+        /* 26/10: encabezado compacto: los badges van en UNA fila que se desliza hacia el costado */
+        #badges { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        #badges::-webkit-scrollbar { display: none; }
+        #badges > * { flex-shrink: 0; white-space: nowrap; }
+        /* 26/10: barra inferior de 5 botones + panel "Más" */
+        .mas-btn.active-mas { color: #E0A458; }
+        [data-bot-oculto] { display: none !important; }
     </style>
 </head>
 <body class="bg-base text-gray-300 font-sans p-4 md:p-8 min-h-screen relative">
@@ -107,10 +120,10 @@
     <div id="degraded-banner" class="hidden bg-neg/20 text-neg border border-neg p-4 mb-6 font-mono text-sm rounded-sm"></div>
 
     <!-- Encabezado persistente: título, T-0, badges -- visible en todas las solapas -->
-    <header class="mb-6 border-b border-surface pb-4">
-        <div>
+    <header id="app-header" class="mb-3 border-b border-surface pb-2">
+        <div class="flex items-center justify-between gap-2">
             <h1 class="text-3xl font-bold text-white tracking-tight uppercase" title="HyperTrade"><span style="position:absolute;left:-9999px">HyperTrade</span>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 100" role="img" aria-label="Logo HyperTrade" style="height:52px;width:auto;display:block">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 100" role="img" aria-label="Logo HyperTrade" style="height:36px;width:auto;display:block">
   <style>
     .ht-t{--d:7s}
     .ht-line{fill:none;stroke:#6FCF97;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
@@ -167,10 +180,11 @@
 </svg>
 
             </h1>
-            <div id="last-update" class="font-mono text-sm text-gray-500 mt-1 leading-relaxed">Sincronizando datos...</div>
-            <!-- Badges de estado -->
-            <div id="badges" class="flex flex-wrap gap-2 font-mono text-xs uppercase mt-3"></div>
+            <div id="hdr-actions" class="flex items-center gap-2 shrink-0"></div>
         </div>
+        <div id="last-update" class="font-mono text-[11px] text-gray-500 mt-1 leading-snug">Sincronizando datos...</div>
+        <!-- Badges de estado (una sola fila; se desliza hacia el costado) -->
+        <div id="badges" class="flex gap-2 font-mono text-[10px] uppercase mt-2 pb-1"></div>
     </header>
 
     <!-- ===== SOLAPA: INICIO ===== -->
@@ -201,6 +215,23 @@
         </div>
 
         <!-- Pulso del mercado: fila KPI + balances de la semana (9/10, inspirado en Warren Bife) -->
+        <!-- Antes de la apertura -- aparte del radar: premarket + balances. Ahora vive en Inicio (26/10). Lo arma scripts/preapertura.py (~10:10 hora argentina). -->
+        <section>
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">🌅 Antes de la apertura <span id="preap-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
+                Una lista para MIRAR antes de que abra Wall Street (se arma cerca de las 10:10, hora argentina), no una señal de compra.
+                <span class="text-white">Posibles gaps al abrir:</span> papeles que en el premarket ya suben 2% o más contra el cierre anterior y que cumplen la
+                macrotendencia de la alerta "Gap alcista" (cierre previo sobre su SMA200 y precio en máximos de las últimas 10 ruedas).
+                El premarket tiene poco volumen y muchas veces se revierte al abrir.
+                <span class="text-white">Balances de hoy y mañana:</span> el balance anuncia un movimiento fuerte, pero no si es para arriba o para abajo;
+                al lado se muestra cuántas veces ese papel se movió 3% o más en sus balances anteriores.
+                Cada aviso queda registrado y la solapa Auditoría mide cómo terminó contra la frecuencia normal de gaps.
+            </div>
+            <div id="preap-contenido" class="space-y-2"><div class="text-gray-500 font-mono text-xs">Cargando...</div></div>
+        </section>
+
         <section id="sectores-hoy-section">
             <h2 class="text-accent uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">Sectores hoy</h2>
             <details class="expl mb-3"><summary class="cursor-pointer select-none font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto (tocá para ver)</summary>
@@ -264,22 +295,6 @@
 
     <!-- ===== SOLAPA: ALERTAS ===== -->
     <div id="tab-alertas" class="tab-content hidden-tab">
-        <!-- Antes de la apertura -- aparte del radar: premarket + balances. Lo arma scripts/preapertura.py (~10:10 hora argentina). -->
-        <section class="mb-6">
-            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
-                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">🌅 Antes de la apertura <span id="preap-count" class="text-gray-500 normal-case"></span></h2>
-            </div>
-            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
-                Una lista para MIRAR antes de que abra Wall Street (se arma cerca de las 10:10, hora argentina), no una señal de compra.
-                <span class="text-white">Posibles gaps al abrir:</span> papeles que en el premarket ya suben 2% o más contra el cierre anterior y que cumplen la
-                macrotendencia de la alerta "Gap alcista" (cierre previo sobre su SMA200 y precio en máximos de las últimas 10 ruedas).
-                El premarket tiene poco volumen y muchas veces se revierte al abrir.
-                <span class="text-white">Balances de hoy y mañana:</span> el balance anuncia un movimiento fuerte, pero no si es para arriba o para abajo;
-                al lado se muestra cuántas veces ese papel se movió 3% o más en sus balances anteriores.
-                Cada aviso queda registrado y la solapa Auditoría mide cómo terminó contra la frecuencia normal de gaps.
-            </div>
-            <div id="preap-contenido" class="space-y-2"><div class="text-gray-500 font-mono text-xs">Cargando...</div></div>
-        </section>
 
         <!-- Confluencia Alcista -- filtro duro, aparte del resto: junta 3+ chips
              técnicos independientes en las últimas 48hs SIN mirar el Radar Score. -->
@@ -359,19 +374,22 @@
                      visibles arriba mientras se scrolea la lista de tarjetas, en vez
                      de desaparecer -- a pedido de Victoria (1/10), para no perder de
                      vista el buscador/orden en listas largas de alertas. -->
-                <div class="sticky top-0 z-10 bg-base -mx-4 px-4 md:-mx-8 md:px-8 pt-2 pb-1">
+                <div class="sticky top-11 z-10 bg-base -mx-4 px-4 md:-mx-8 md:px-8 pt-2 pb-1">
                     <div class="flex items-center bg-surface border border-surface focus-within:border-accent transition-colors rounded-sm overflow-hidden p-1 shadow-inner mb-4">
                         <input type="text" id="alertas-search" class="bg-transparent text-white w-full px-3 py-1.5 focus:outline-none uppercase font-mono text-sm placeholder-gray-600" placeholder="Filtrar por ticker (opcional)">
                     </div>
-                    <div class="flex justify-between items-end border-b border-surface pb-1 mb-4">
-                        <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest">Alertas Activas (0)</h2>
-                        <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm">
-                            <option value="nuevas">Más reciente</option>
-                            <option value="tipo">Por tipo (compras primero)</option>
-                            <option value="radar">Radar Score</option>
-                            <option value="fuerza_relativa">Fuerza Relativa</option>
-                        </select>
-                    </div>
+                    <div class="border-b border-surface pb-2 mb-3">
+                        <h2 id="alert-title" class="text-accent uppercase text-sm font-bold tracking-widest mb-2">Alertas Activas (0)</h2>
+                        <div class="flex items-center gap-2 font-mono text-[10px] uppercase text-gray-500">
+                            <select id="alertas-orden" class="bg-surface border border-gray-700 text-gray-300 font-mono text-[11px] px-2 py-1 rounded-sm min-w-0 flex-1">
+                                <option value="nuevas">Más reciente</option>
+                                <option value="tipo">Por tipo (compras primero)</option>
+                                <option value="radar">Radar Score</option>
+                                <option value="fuerza_relativa">Fuerza Relativa</option>
+                            </select>
+                            <button onclick="alertasAbrirTodas(true)" class="px-2 py-1.5 rounded-sm border border-surface hover:text-white whitespace-nowrap">Abrir todas</button>
+                            <button onclick="alertasAbrirTodas(false)" class="px-2 py-1.5 rounded-sm border border-surface hover:text-white whitespace-nowrap">Cerrar todas</button>
+                        </div>
                 </div>
                 <!-- 4. Contenedor de Alertas -->
                 <div id="alerts-container" class="grid grid-cols-1 gap-4"></div>
@@ -933,57 +951,58 @@
     </div>
 
     <!-- Barra de navegación inferior fija -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-10 z-40 text-gray-500">
-        
+    <!-- 26/10: la barra de abajo pasa de 10 a 5 botones (letra más grande); las demás solapas están en "Más" (no se quitó ninguna). -->
+    <div id="mas-sheet" class="hidden fixed left-0 right-0 z-40 bg-surface border-t border-gray-800 p-3 grid grid-cols-3 gap-2 text-gray-500" style="bottom: calc(60px + env(safe-area-inset-bottom, 0px))"><button class="tab-btn flex flex-col items-center gap-1 py-3 border border-gray-800 rounded-sm" data-tab="cedears" onclick="switchTab('cedears')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span class="text-[11px] tracking-tight font-mono uppercase">CEDEARs</span>
+        </button><button class="tab-btn flex flex-col items-center gap-1 py-3 border border-gray-800 rounded-sm" data-tab="historial" onclick="switchTab('historial')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
+            <span class="text-[11px] tracking-tight font-mono uppercase">Historial</span>
+        </button><button class="tab-btn flex flex-col items-center gap-1 py-3 border border-gray-800 rounded-sm" data-tab="auditoria" onclick="switchTab('auditoria')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
+            <span class="text-[11px] tracking-tight font-mono uppercase">Auditoría</span>
+        </button><button class="tab-btn flex flex-col items-center gap-1 py-3 border border-gray-800 rounded-sm" data-tab="cripto" onclick="switchTab('cripto')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.8 9a2 2 0 0 0-2-1.5h-1.6a1.9 1.9 0 0 0 0 3.8h1.6a1.9 1.9 0 0 1 0 3.7h-1.6a2 2 0 0 1-2-1.5M12 6v1.5M12 16.5V18"></path></svg>
+            <span class="text-[11px] tracking-tight font-mono uppercase">Cripto</span>
+        </button><button class="tab-btn flex flex-col items-center gap-1 py-3 border border-gray-800 rounded-sm" data-tab="ideas" onclick="switchTab('ideas')">
+            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"></path></svg>
+            <span class="text-[11px] tracking-tight font-mono uppercase">Ideas</span>
+        </button>
+    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 grid grid-cols-6 z-40 text-gray-500" style="padding-bottom: env(safe-area-inset-bottom, 0px)">
         <button class="tab-btn active flex flex-col items-center gap-1 py-2" data-tab="inicio" onclick="switchTab('inicio')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Inicio</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Inicio</span>
         </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="alertas" onclick="switchTab('alertas')">
+        <button class="tab-btn flex flex-col items-center gap-1 py-2" data-tab="alertas" onclick="switchTab('alertas')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Alertas</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Alertas</span>
         </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="universo" onclick="switchTab('universo')">
+        <button class="tab-btn flex flex-col items-center gap-1 py-2" data-tab="mercado" onclick="switchTab('mercado')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Universo</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Mercado</span>
         </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="mercado" onclick="switchTab('mercado')">
+        <button class="tab-btn flex flex-col items-center gap-1 py-2" data-tab="cartera" onclick="switchTab('cartera')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Mercado</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20v14H2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Cartera</span>
         </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cedears" onclick="switchTab('cedears')">
+        <button class="tab-btn flex flex-col items-center gap-1 py-2" data-tab="universo" onclick="switchTab('universo')">
             <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">CEDEARs</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Universo</span>
         </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="historial" onclick="switchTab('historial')">
-            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Historial</span>
-        </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cartera" onclick="switchTab('cartera')">
-            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20v14H2zM16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Cartera</span>
-        </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="auditoria" onclick="switchTab('auditoria')">
-            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Auditoría</span>
-        </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="cripto" onclick="switchTab('cripto')">
-            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.8 9a2 2 0 0 0-2-1.5h-1.6a1.9 1.9 0 0 0 0 3.8h1.6a1.9 1.9 0 0 1 0 3.7h-1.6a2 2 0 0 1-2-1.5M12 6v1.5M12 16.5V18"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Cripto</span>
-        </button>
-        <button class="tab-btn  flex flex-col items-center gap-1 py-2" data-tab="ideas" onclick="switchTab('ideas')">
-            <span class="tab-dot w-1 h-1 rounded-full bg-accent absolute -mt-3"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"></path></svg>
-            <span class="text-[7px] tracking-tighter font-mono uppercase">Ideas</span>
+        <button id="mas-btn" class="mas-btn flex flex-col items-center gap-1 py-2" onclick="toggleMas()" aria-expanded="false" aria-controls="mas-sheet">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="19" cy="12" r="1.5"></circle></svg>
+            <span class="text-[10px] tracking-tight font-mono uppercase">Más</span>
         </button>
     </nav>
 
@@ -1411,6 +1430,7 @@
             return resultado;
         }
 
+        function alertasAbrirTodas(v) { document.querySelectorAll('#alerts-container details.alerta-card').forEach(d => { d.open = v; }); }
         function filtrarAlertas() {
             const query = (document.getElementById('alertas-search')?.value ?? '').trim().toUpperCase();
             const todasFusionadas = fusionarPorTicker(currentAlertasCompletas);
@@ -1762,18 +1782,33 @@
                     ? `<div class="font-mono text-[11px] text-gray-400 mt-3 pt-3 border-t border-base leading-relaxed whitespace-pre-line">${narrativa}</div>`
                     : '';
 
-                return `
-                    <div class="${bgCustom} p-4 ${containerBorder} transition-colors rounded-r-sm">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <span class="inline-flex items-center gap-2 align-middle">${logoTicker(ticker, 24)}<span class="text-xl font-bold text-white">${titleIcon}${ticker}</span></span>
-                                <span class="text-xs font-mono text-gray-300 ml-2">${nombreEmpresa(ticker)}</span>
-                                <span class="text-xs font-mono text-gray-500 ml-2 uppercase">${sector}</span>
-                                ${alerta?.Subcategoria ? `<span class="text-[10px] font-mono text-gray-600 ml-1 uppercase">· ${alerta.Subcategoria}</span>` : ''}
-                            </div>
-                            <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm ${recColor}">${recomendacion}</span>
+                // 26/10: la tarjeta arranca plegada (ticker, señal, precio, Radar y avisos en 3 renglones); al tocarla se abre
+                // todo el detalle de siempre. Si se filtra hasta 3 alertas (o se llega desde una ficha), se abren solas.
+                const abierta = (query && alertas.length <= 3) ? ' open' : '';
+                const resumenAvisos = [
+                    cuidadosLista.length ? `<span class="text-accent">⚠ ${cuidadosLista.length} cuidado${cuidadosLista.length > 1 ? 's' : ''}</span>` : '',
+                    regimenAvisoHtml ? `<span class="${regAlerta < 40 ? 'text-neg' : 'text-accent'}">⚠ régimen ${regAlerta}</span>` : '',
+                    volumenBajoAvisoHtml ? '<span class="text-accent">⚠ vol. bajo</span>' : '',
+                ].filter(Boolean).join('');
+                const resumenHtml = `
+                    <summary class="cursor-pointer select-none p-3">
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="inline-flex items-center gap-2 min-w-0">${logoTicker(ticker, 22)}<span class="text-lg font-bold text-white">${titleIcon}${ticker}</span><span class="text-xs font-mono text-gray-400 truncate">${nombreEmpresa(ticker)}</span></span>
+                            <span class="font-mono text-xs px-2 py-1 font-bold rounded-sm shrink-0 ${recColor}">${recomendacion}</span>
                         </div>
-                        <div class="font-mono text-sm text-gray-300">${estado}</div>
+                        <div class="font-mono text-[12px] text-gray-300 mt-1">${estado}</div>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-gray-400 mt-1">
+                            ${precioRef != null ? `<span>$${precioRef} ${hoyPctHtml(varDia, true)}</span>` : ''}
+                            ${radarScore != null ? `<span>Radar <span class="text-white font-bold">${radarScore.toFixed(0)}</span></span>` : ''}
+                            ${resumenAvisos}
+                            <span class="ml-auto text-gray-500">ver detalle <span class="alerta-flecha">▾</span></span>
+                        </div>
+                    </summary>`;
+                return `
+                    <details class="alerta-card ${bgCustom} ${containerBorder} transition-colors rounded-r-sm"${abierta}>
+                        ${resumenHtml}
+                        <div class="px-4 pb-4">
+                        <div class="font-mono text-xs text-gray-500 uppercase mb-2">${sector}${alerta?.Subcategoria ? ` <span class="text-gray-600">· ${alerta.Subcategoria}</span>` : ''}</div>
                         ${cruceEma200Html(alerta)}
                         ${otrasSeñalesHtml}
                         ${chipsHtml}
@@ -1804,7 +1839,8 @@
                         ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
                         ${fechaEventoStr ? `<div class="font-mono text-[10px] text-gray-600 mt-2">${fechaEventoStr}</div>` : ''}
                         ${narrativaHtml}
-                    </div>
+                        </div>
+                    </details>
                 `;
             }).join('');
         }
@@ -4492,6 +4528,75 @@
         }
         renderAvisoFeriado();
 
+
+        // ---------- Botoneras por solapa (26/10) ----------
+        // Cada solapa larga tiene una fila de botones para elegir qué bloque ver. No cambia ni quita contenido: "Todo" muestra todo junto.
+        // Se oculta con un atributo propio (data-bot-oculto) para no pisar los "hidden" que ya usa cada bloque cuando no tiene datos.
+        const BOTONERAS = {
+            universo: { def: 'top30', vistas: [
+                { id: 'top30', t: 'Top 30', h: ['Top 30 Fuerza Relativa', 'Top 30 Radar Score'] },
+                { id: 'rotacion', t: 'Rotación sectorial', h: ['Rotación Sectorial (por Fuerza Relativa)', 'Cuadrante de Rotación Sectorial'] },
+                { id: 'cuad_tick', t: 'Cuadrante tickers', h: ['Cuadrante de Rotación por Ticker'] },
+                { id: 'cuad_etf', t: 'Cuadrante ETFs', h: ['Cuadrante de ETFs contra el SPY'] },
+                { id: 'sectores', t: 'Sectores y buscador', h: ['Buscador por sector, subcategoría o tema', 'Sectores contra el SPY', 'Sectores y subsectores'] },
+                { id: 'tecnico', t: 'Universo técnico', h: ['Universo Técnico'] },
+            ] },
+            alertas: { def: 'activas', vistas: [
+                { id: 'activas', t: 'Alertas activas', h: ['Alertas Activas'] },
+                { id: 'confluencia', t: 'Confluencia', h: ['Confluencia Alcista'] },
+                { id: 'vcp', t: 'Bases VCP y MACD', h: ['Bases VCP y MACD semanal'] },
+                { id: 'semillero', t: 'Semillero', h: ['El Semillero'] },
+                { id: 'zonas', t: 'Zonas de interés', h: ['Zonas de interés'] },
+            ] },
+            auditoria: { def: 'operaciones', siempre: ['Auditoría'], vistas: [
+                { id: 'operaciones', t: 'Mis operaciones', h: ['Mis operaciones'] },
+                { id: 'senales', t: 'Resultados por señal', h: ['Resultados por señal', 'Según el régimen de mercado', 'Según los puntos de cuidado', 'Según la tendencia semanal', 'Evolución mes a mes'] },
+                { id: 'estudios', t: 'Estudios', h: ['Rotación sectorial: ¿anticipa algo?', 'Antes de la apertura: ¿anticipa algo?', 'Top 30: ¿los que entran', 'Cuadrante de ETFs: ¿sirve', 'Medias de 200'] },
+                { id: 'top30sem', t: 'Top 30 por semana', h: ['Top 30 de cada semana', 'Top 30 Radar Score de cada semana'] },
+                { id: 'simulacion', t: 'Simulación y casos', h: ['Simulación hacia atrás', 'Caso por caso'] },
+            ] },
+            cartera: { def: 'posiciones', vistas: [
+                { id: 'posiciones', t: 'Posiciones', h: ['Posiciones'] },
+                { id: 'compra', t: 'Anotar una compra', h: ['Anotar una compra'] },
+                { id: 'avisos', t: 'Avisos por mail', h: ['Avisos por mail'] },
+            ] },
+        };
+        function botoneraVista(tab, id) {
+            const cfg = BOTONERAS[tab], root = document.getElementById('tab-' + tab); if (!cfg || !root) return;
+            const todo = id === 'todo';
+            const v = cfg.vistas.find(x => x.id === id) ?? cfg.vistas.find(x => x.id === cfg.def);
+            root.querySelectorAll('section').forEach(sec => {
+                const tit = (sec.querySelector('h2')?.textContent ?? '').trim();
+                const ok = todo || (cfg.siempre ?? []).includes(tit) || v.h.some(x => tit.includes(x));
+                if (ok) sec.removeAttribute('data-bot-oculto'); else sec.setAttribute('data-bot-oculto', '1');
+            });
+            const sel = todo ? 'todo' : v.id;
+            document.querySelectorAll(`#bot-${tab} button`).forEach(b => {
+                const on = b.dataset.vista === sel;
+                b.classList.toggle('bg-accent', on); b.classList.toggle('text-base', on); b.classList.toggle('font-bold', on);
+                b.classList.toggle('text-gray-400', !on);
+                if (on) b.parentElement.scrollLeft = Math.max(0, b.offsetLeft - 24);
+            });
+            try { localStorage.setItem('bot_' + tab + '_v1', sel); } catch (e) {}
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+        }
+        function universoVista(id) { botoneraVista('universo', id); }
+        (function iniciarBotoneras() {
+            for (const [tab, cfg] of Object.entries(BOTONERAS)) {
+                const root = document.getElementById('tab-' + tab); if (!root) continue;
+                const bar = document.createElement('div');
+                bar.id = 'bot-' + tab;
+                bar.className = 'sticky top-0 z-20 bg-base -mx-4 px-4 md:-mx-8 md:px-8 h-11 flex items-center gap-2 overflow-x-auto font-mono text-[11px] uppercase';
+                bar.style.scrollbarWidth = 'none';
+                const todos = [...cfg.vistas, { id: 'todo', t: 'Todo' }];
+                bar.innerHTML = todos.map(v => `<button data-vista="${v.id}" onclick="botoneraVista('${tab}','${v.id}')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">${v.t}</button>`).join('');
+                const primero = tab === 'universo' ? root.querySelector(':scope > .grid') : root.firstElementChild;
+                root.insertBefore(bar, primero);
+                let ult = cfg.def; try { ult = localStorage.getItem('bot_' + tab + '_v1') || cfg.def; } catch (e) {}
+                botoneraVista(tab, ult);
+            }
+        })();
+
         // ---------- Explicaciones plegables (10/10) ----------
         // Cada texto largo de explicación (arriba de cada cuadro) queda oculto detrás de un botón "ⓘ Qué es esto".
         // El texto es el mismo, solo se pliega. Con la barra de arriba se muestran u ocultan todas a la vez (queda guardado en el dispositivo).
@@ -4522,17 +4627,18 @@
                 el.classList.add('mt-2');
                 d.appendChild(el);
             }
-            const barra = document.createElement('div');
-            barra.id = 'expl-barra';
-            barra.className = 'mb-4 flex items-center gap-2 font-mono text-[10px] uppercase text-gray-500';
-            barra.innerHTML = `<span>ⓘ Explicaciones:</span>
-                <button id="expl-mostrar" class="px-2.5 py-1 rounded-sm border border-surface hover:text-white">Mostrar todas</button>
-                <button id="expl-ocultar" class="px-2.5 py-1 rounded-sm border border-surface hover:text-white">Ocultar todas</button>`;
-            const header = document.querySelector('header');
-            if (header) header.insertAdjacentElement('afterend', barra);
             const poner = (v) => { document.querySelectorAll('details.expl').forEach(d => { d.open = v; });  };
-            document.getElementById('expl-mostrar').onclick = () => poner(true);
-            document.getElementById('expl-ocultar').onclick = () => poner(false);
+            const acciones = document.body;
+            {
+                const btn = document.createElement('button');
+                btn.id = 'expl-toggle';
+                btn.className = 'fixed right-2 z-30 px-2.5 py-1.5 rounded-sm border border-gray-700 bg-surface text-gray-400 hover:text-white font-mono text-[10px] uppercase';
+                btn.style.bottom = 'calc(68px + env(safe-area-inset-bottom, 0px))';
+                const pintar = () => { btn.textContent = visibles ? 'ⓘ Ocultar explicaciones' : 'ⓘ Ver explicaciones'; };
+                pintar();
+                btn.onclick = () => { visibles = !visibles; poner(visibles); pintar(); };
+                acciones.appendChild(btn);
+            }
         }
         try { plegarExplicaciones(); } catch (e) { console.warn('Explicaciones plegables:', e); }
 
@@ -4952,15 +5058,30 @@
                 <div class="font-mono text-[9px] text-gray-600">Casos = ticker-días medidos. "vs SPY" y "vs univ." son la diferencia en puntos porcentuales (pp) entre el rendimiento promedio de la lista y el del SPY / el del universo entero en la misma ventana. "Pos." es el % de casos que terminó en positivo. Informativo, no es una recomendación.</div></div>`;
         }
 
+        const MAS_TABS = ['cedears', 'historial', 'auditoria', 'cripto', 'ideas'];
+        function cerrarMas() {
+            document.getElementById('mas-sheet')?.classList.add('hidden');
+            document.getElementById('mas-btn')?.setAttribute('aria-expanded', 'false');
+        }
+        function toggleMas() {
+            const sh = document.getElementById('mas-sheet'); if (!sh) return;
+            const abrir = sh.classList.contains('hidden');
+            sh.classList.toggle('hidden', !abrir);
+            document.getElementById('mas-btn')?.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+        }
+        document.addEventListener('click', (e) => { if (!e.target.closest('#mas-sheet, #mas-btn')) cerrarMas(); });
         function switchTab(name) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden-tab'));
             document.getElementById(`tab-${name}`).classList.remove('hidden-tab');
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
+            document.getElementById('mas-btn')?.classList.toggle('active-mas', MAS_TABS.includes(name));
+            cerrarMas();
+            document.getElementById('app-header')?.classList.toggle('hidden', name !== 'inicio'); // 26/10: encabezado solo en Inicio
             if (name === 'historial' && historialData === null) fetchHistorialData();
             if (name === 'auditoria') { fetchAuditoria(); fetchAuditoriaRotacion(); fetchAuditoriaPreapertura(); fetchAuditoriaTop30Retorno(); fetchAuditoriaRSE(); fetchAuditoriaM200(); }
-            if (name === 'alertas') fetchPreapertura();
+            if (name === 'alertas' || name === 'inicio') fetchPreapertura();
             if (name === 'mercado') { try { renderMercado(currentRadarData); } catch (e) { console.warn('Mercado:', e); } }
             if (name === 'universo' && !rseData) fetchRSE();
             if (name === 'cripto' && cryptoData === null) fetchCryptoData();
@@ -5429,6 +5550,8 @@
         function irASectorDetalle(sector) {
             const el = document.getElementById(sectorSlug(sector));
             if (!el) return;
+            const _v = (() => { try { return localStorage.getItem('bot_universo_v1'); } catch (e) { return null; } })();
+            if (typeof botoneraVista === 'function' && _v !== 'todo') botoneraVista('universo', 'tecnico');
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             el.classList.add('ring-2', 'ring-accent');
             setTimeout(() => el.classList.remove('ring-2', 'ring-accent'), 1500);
