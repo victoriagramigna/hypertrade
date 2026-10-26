@@ -85,11 +85,14 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str, max_precio=Non
     if precio_actual is not None and p["precio"] > 0:
         ganancia_pct = (precio_actual / p["precio"] - 1) * 100
 
+    # 26/10: un stop FIJADO A MANO en el dashboard ("stop fijado por vos" / "stop de <idea>") no se mueve solo, igual que en la app.
+    stop_manual = str(p.get("origenStop") or "").startswith(("stop fijado por vos", "stop de "))
+
     # Trailing: el stop solo puede subir -- mismas reglas que el dashboard
     # (SMA50 -2% en cada corrida si protege más, equilibrio desde +20%)
-    if sma50 is not None:
+    if sma50 is not None and not stop_manual:
         p["stopActual"] = max(p["stopActual"], sma50 * 0.98)
-    if ganancia_pct is not None and ganancia_pct >= GANANCIA_PARCIAL_PCT:
+    if ganancia_pct is not None and ganancia_pct >= GANANCIA_PARCIAL_PCT and not stop_manual:
         p["stopActual"] = max(p["stopActual"], p["precio"])
 
     # Protección de ganancia: se mide contra el MÁXIMO desde la compra,
@@ -98,7 +101,7 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str, max_precio=Non
         max_precio = max(max_precio, precio_actual)
     if max_precio is not None and p["precio"] > 0:
         ganancia_max = (max_precio / p["precio"] - 1) * 100
-        if ganancia_max >= ASEGURA_DESDE_PCT:
+        if ganancia_max >= ASEGURA_DESDE_PCT and not stop_manual:
             piso = p["precio"] * (1 + ganancia_max / 100 * ASEGURA_FRACCION)
             p["stopActual"] = max(p["stopActual"], piso)
 
