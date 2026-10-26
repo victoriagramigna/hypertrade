@@ -1371,10 +1371,10 @@
         // Orden de las alertas: "nuevas" (por defecto) = la señal que empezó
         // más recientemente arriba; "tipo" = compras/líder primero, después
         // ventas, después el resto -- y dentro de cada grupo, las más nuevas
-        // primero. Se recuerda la última elección en este navegador.
+        // primero. No se recuerda entre visitas: arranca siempre en el orden por defecto.
         function ordenarAlertas(lista) {
             let modo = 'nuevas';
-            try { modo = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
+            modo = document.getElementById('alertas-orden')?.value || 'nuevas'; // ya no se recuerda entre visitas
             const tiempo = (a) => {
                 const t = a?.fecha_evento ? new Date(a.fecha_evento).getTime() : 0;
                 return isNaN(t) ? 0 : t;
@@ -3024,7 +3024,7 @@
                             ${gruposOrdenados.length ? `
                             <div class="mb-2">
                                 <div class="flex flex-wrap gap-1.5" data-botones-sub="${sectorSlug(sector)}">
-                                    <button class="btn-sub px-2 py-1 border rounded-sm font-mono text-[10px] uppercase tracking-wide bg-accent text-[#0B0E14] border-accent" data-grupo="-1" onclick="filtrarSubcategoria('${sectorSlug(sector)}', -1)">Todas <span class="opacity-70">${cantidadEnSector}</span></button>
+                                    <button class="btn-sub px-2 py-1 border rounded-sm font-mono text-[10px] uppercase tracking-wide bg-accent/15 text-accent font-bold border-accent" data-grupo="-1" onclick="filtrarSubcategoria('${sectorSlug(sector)}', -1)">Todas <span class="opacity-70">${cantidadEnSector}</span></button>
                                     ${gruposOrdenados.map(([nombre, g], i) => `<button class="btn-sub px-2 py-1 border border-surface rounded-sm font-mono text-[10px] uppercase tracking-wide text-gray-400 hover:text-accent hover:border-accent" data-grupo="${i}" onclick="filtrarSubcategoria('${sectorSlug(sector)}', ${i})">${nombre.replace(/^\(sin subcategoría\)$/, 'Otros')} <span class="opacity-60">${g.length}</span></button>`).join('')}
                                 </div>
                                 <div class="font-mono text-[9px] text-gray-600 mt-1">Tocá una subcategoría para ver solo esos tickers; "Todas" vuelve a mostrar el sector completo.</div>
@@ -3830,7 +3830,7 @@
                 const btn = document.getElementById(id);
                 if (!btn) continue;
                 btn.className = (val === filtro)
-                    ? 'px-2.5 py-1.5 bg-accent text-base font-bold' + (id !== 'rtf-todos' ? ' border-l border-surface' : '')
+                    ? 'px-2.5 py-1.5 bg-accent/15 text-accent font-bold' + (id !== 'rtf-todos' ? ' border-l border-surface' : '')
                     : 'px-2.5 py-1.5 text-gray-400 hover:text-gray-200' + (id !== 'rtf-todos' ? ' border-l border-surface' : '');
             }
 
@@ -4573,6 +4573,13 @@
                 { id: 'avisos', t: 'Avisos por mail', h: ['Avisos por mail'] },
             ] },
         };
+        // 26/10: estilo único para el botón elegido de las botoneras/filtros: borde y texto naranja con un fondo apenas teñido
+        // (antes era un bloque naranja sólido y grande). Quita también el hover pegado del celular.
+        function chipSel(b, on) {
+            b.classList.toggle('bg-accent/15', on); b.classList.toggle('text-accent', on); b.classList.toggle('border-accent', on); b.classList.toggle('font-bold', on);
+            b.classList.toggle('text-gray-400', !on); b.classList.toggle('border-surface', !on);
+        }
+        const _botSel = {};
         function botoneraVista(tab, id) {
             const cfg = BOTONERAS[tab], root = document.getElementById('tab-' + tab); if (!cfg || !root) return;
             const todo = id === 'todo';
@@ -4585,11 +4592,10 @@
             const sel = todo ? 'todo' : v.id;
             document.querySelectorAll(`#bot-${tab} button`).forEach(b => {
                 const on = b.dataset.vista === sel;
-                b.classList.toggle('bg-accent', on); b.classList.toggle('text-base', on); b.classList.toggle('font-bold', on);
-                b.classList.toggle('text-gray-400', !on);
+                chipSel(b, on);
                 if (on) b.parentElement.scrollLeft = Math.max(0, b.offsetLeft - 24);
             });
-            try { localStorage.setItem('bot_' + tab + '_v1', sel); } catch (e) {}
+            _botSel[tab] = sel;
             setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
         }
         function universoVista(id) { botoneraVista('universo', id); }
@@ -4604,8 +4610,7 @@
                 bar.innerHTML = todos.map(v => `<button data-vista="${v.id}" onclick="botoneraVista('${tab}','${v.id}')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">${v.t}</button>`).join('');
                 const primero = tab === 'universo' ? root.querySelector(':scope > .grid') : root.firstElementChild;
                 root.insertBefore(bar, primero);
-                let ult = cfg.def; try { ult = localStorage.getItem('bot_' + tab + '_v1') || cfg.def; } catch (e) {}
-                botoneraVista(tab, ult);
+                botoneraVista(tab, cfg.def); // siempre arranca en la vista por defecto (no se recuerda lo último que tocaste)
             }
         })();
 
@@ -5317,10 +5322,9 @@
         const HIS_RECS = [{ id: 'todas', t: 'Todas' }, { id: 'COMPRA', t: 'Compra' }, { id: 'VENTA', t: 'Venta' }, { id: 'MANTENER', t: 'Mantener' }];
         const HIS_PAGINA = 100;
         let hisPeriodo = '7', hisRec = 'todas', hisLimite = HIS_PAGINA;
-        try { hisPeriodo = localStorage.getItem('his_periodo_v1') || '7'; } catch (e) {}
         const _bsas = (d) => d.toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
         function historialFiltros(periodo, rec) {
-            if (periodo !== undefined) { hisPeriodo = periodo; try { localStorage.setItem('his_periodo_v1', periodo); } catch (e) {} }
+            if (periodo !== undefined) { hisPeriodo = periodo; }
             if (rec !== undefined) hisRec = rec;
             hisLimite = HIS_PAGINA;
             if (historialData !== null) renderHistorial();
@@ -5337,7 +5341,7 @@
         })();
         function historialMas() { hisLimite += HIS_PAGINA; renderHistorial(); }
         function pintarHistorialBotones() {
-            const btn = (grupo, v, act) => `<button onclick="historialFiltros(${grupo === 'p' ? `'${v.id}'` : 'undefined'}${grupo === 'r' ? `,'${v.id}'` : ''})" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap ${act ? 'bg-accent text-base font-bold' : 'text-gray-400'}">${v.t}</button>`;
+            const btn = (grupo, v, act) => `<button onclick="historialFiltros(${grupo === 'p' ? `'${v.id}'` : 'undefined'}${grupo === 'r' ? `,'${v.id}'` : ''})" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap ${act ? 'bg-accent/15 text-accent border-accent font-bold' : 'text-gray-400'}">${v.t}</button>`;
             const bar = document.getElementById('bot-historial'); if (bar) bar.innerHTML = HIS_PERIODOS.map(v => btn('p', v, v.id === hisPeriodo)).join('');
             const rb = document.getElementById('historial-recs'); if (rb) rb.innerHTML = HIS_RECS.map(v => btn('r', v, v.id === hisRec)).join('');
         }
@@ -5642,18 +5646,16 @@
             cards.forEach(c => { if (sel === 'todos' || c.id === sel) c.removeAttribute('data-bot-oculto'); else c.setAttribute('data-bot-oculto', '1'); });
             document.querySelectorAll('#bot-sectores button').forEach(b => {
                 const on = b.dataset.slug === sel;
-                b.classList.toggle('bg-accent', on); b.classList.toggle('text-base', on); b.classList.toggle('font-bold', on); b.classList.toggle('text-gray-400', !on);
+                chipSel(b, on);
                 if (on) b.parentElement.scrollLeft = Math.max(0, b.offsetLeft - 24);
             });
-            try { localStorage.setItem('bot_sector_v1', sel); } catch (e) {}
         }
         function pintarBotoneraSectores() {
             const bar = document.getElementById('bot-sectores'); if (!bar) return;
             const cards = [...document.querySelectorAll('#sectors-detail > div[id^="sector-card-"]')];
             bar.innerHTML = [`<button data-slug="todos" onclick="sectorVista('todos')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">Todos</button>`]
                 .concat(cards.map(c => `<button data-slug="${c.id}" onclick="sectorVista('${c.id}')" class="px-3 py-1.5 rounded-sm border border-surface whitespace-nowrap">${c.querySelector('h3 span')?.firstChild?.textContent?.trim() ?? c.id}</button>`)).join('');
-            let ult = 'todos'; try { ult = localStorage.getItem('bot_sector_v1') || 'todos'; } catch (e) {}
-            sectorVista(ult);
+            sectorVista('todos');
         }
         function sectorSlug(sector) {
             return 'sector-card-' + String(sector ?? '')
@@ -5668,7 +5670,7 @@
         function irASectorDetalle(sector) {
             const el = document.getElementById(sectorSlug(sector));
             if (!el) return;
-            const _v = (() => { try { return localStorage.getItem('bot_universo_v1'); } catch (e) { return null; } })();
+            const _v = _botSel.universo;
             if (typeof botoneraVista === 'function' && _v !== 'todo') botoneraVista('universo', 'tecnico');
             sectorVista(sectorSlug(sector));
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5775,7 +5777,7 @@
                 const gAct = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo);
                 gEl.innerHTML = GRUPOS_BUSCADOR.map(g => {
                     const on = g.id === buscadorGrupo;
-                    return `<button onclick="buscadorElegirGrupo('${g.id}')" class="px-3 py-1.5 rounded-sm border whitespace-nowrap ${on ? 'bg-accent text-[#0B0E14] font-bold border-accent' : 'border-surface text-gray-400 hover:text-accent'}">${g.n}</button>`;
+                    return `<button onclick="buscadorElegirGrupo('${g.id}')" class="px-3 py-1.5 rounded-sm border whitespace-nowrap ${on ? 'bg-accent/15 text-accent font-bold border-accent' : 'border-surface text-gray-400'}">${g.n}</button>`;
                 }).join('');
             }
             const grupo = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo) ?? null;
@@ -5827,15 +5829,7 @@
                 g.style.display = (idx === -1 || Number(g.dataset.grupo) === idx) ? '' : 'none';
             });
             card.querySelectorAll('.btn-sub').forEach(b => {
-                const activo = Number(b.dataset.grupo) === idx;
-                b.classList.toggle('bg-accent', activo);
-                b.classList.toggle('text-[#0B0E14]', activo);
-                b.classList.toggle('border-accent', activo);
-                b.classList.toggle('text-gray-400', !activo);
-                b.classList.toggle('border-surface', !activo);
-                // 26/10: sin esto, en el celular el "hover" queda pegado tras tocar y el texto (naranja) desaparece sobre el fondo naranja.
-                b.classList.toggle('hover:text-accent', !activo);
-                b.classList.toggle('hover:border-accent', !activo);
+                chipSel(b, Number(b.dataset.grupo) === idx);
                 b.blur();
             });
         }
@@ -6632,9 +6626,7 @@
         document.getElementById('cartera-search').addEventListener('input', renderCartera);
         (() => {
             const sel = document.getElementById('alertas-orden');
-            try { sel.value = localStorage.getItem('orden_alertas') || 'nuevas'; } catch (e) {}
             sel.addEventListener('change', () => {
-                try { localStorage.setItem('orden_alertas', sel.value); } catch (e) {}
                 filtrarAlertas();
             });
         })();
@@ -8052,7 +8044,7 @@
             const el = document.getElementById('rse-vista-botones');
             if (!el) return;
             const etfs = rseEtfs(), sel = rseSeleccion();
-            const on = 'bg-accent text-base border-accent font-bold', off = 'border-surface text-gray-400 hover:text-white';
+            const on = 'bg-accent/15 text-accent border-accent font-bold', off = 'border-surface text-gray-400 hover:text-white';
             const grupos = Object.entries(RSE_GRUPOS).map(([id, g]) => {
                 const n = g.t ? g.t.filter(t => etfs[t]).length : Object.keys(etfs).length;
                 if (!n) return '';
@@ -8135,7 +8127,7 @@
             if (!bt || !ex) return;
             const hayCorto = !!rseData?.corto?.etfs;
             if (!hayCorto) rseModo = 'largo';
-            const btn = (m, txt) => `<button onclick="rseCambiarModo('${m}')" class="px-3 py-1.5 rounded-sm border ${rseModo === m ? 'bg-accent text-base border-accent font-bold' : 'border-surface text-gray-400 hover:text-white'}">${txt}</button>`;
+            const btn = (m, txt) => `<button onclick="rseCambiarModo('${m}')" class="px-3 py-1.5 rounded-sm border ${rseModo === m ? 'bg-accent/15 text-accent border-accent font-bold' : 'border-surface text-gray-400 hover:text-white'}">${txt}</button>`;
             bt.innerHTML = (hayCorto ? btn('corto', 'Corto (reacciona rápido)') + btn('largo', 'Largo (más estable)') : '<span class="text-gray-500">Versión Largo (la versión Corto aparece tras la próxima corrida del workflow)</span>');
             const pr = rseParams();
             ex.innerHTML = `<span class="text-white">Eje horizontal (fuerza):</span> cuánto está hoy el ETF por encima o por debajo de su propio promedio de ${pr.semanas_promedio} semanas contra el SPY, en %. A la derecha del cero le va mejor que de costumbre al SPY.
