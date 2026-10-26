@@ -1,34 +1,34 @@
 {
-  "actualizado_utc": "2026-10-26T02:53:08.783839+00:00",
+  "actualizado_utc": "2026-10-26T09:36:58.018878+00:00",
   "criptomonedas": [
     {
       "ticker": "BTC-USD",
       "nombre": "Bitcoin",
-      "precio": 79381.87,
-      "sma50": 81800.72,
-      "sma200": 72900.84,
-      "rsi": 41.9,
-      "vol_rel": 0.79,
+      "precio": 80430.09,
+      "sma50": 81804.72,
+      "sma200": 72945.34,
+      "rsi": 36.0,
+      "vol_rel": 0.46,
       "max_52w": 114472.45,
-      "dist_max52w_pct": -29.42,
+      "dist_max52w_pct": -30.09,
       "tendencia_alcista": true,
       "precio_sobre_sma50": false,
       "sma50_subiendo": true,
       "dias_rsi_alto": 0,
       "cruce": null,
       "ruptura_20d": false,
-      "max_20d_previo": 86480.3,
+      "max_20d_previo": 85786.59,
       "cruce_sma50": null,
       "mov_normal_pct": 1.15,
-      "precio_cierre": 80790.84,
-      "vela_cerrada": "2026-10-24",
-      "mov_hoy_pct": -1.74,
-      "score": 50,
+      "precio_cierre": 80024.01,
+      "vela_cerrada": "2026-10-25",
+      "mov_hoy_pct": 0.51,
+      "score": 35,
       "score_version": "v2",
       "score_detalle": {
         "tendencia": 35,
         "volumen": 0,
-        "distancia_max52w": 15
+        "distancia_max52w": 0
       },
       "score_maximos": {
         "tendencia": 45,
@@ -36,32 +36,32 @@
         "distancia_max52w": 30
       },
       "cuidados": [
-        "Precio debajo de su SMA50 ($81,801): la tendencia de corto plazo no acompaña."
+        "Precio debajo de su SMA50 ($81,805): la tendencia de corto plazo no acompaña."
       ],
       "alertas": []
     },
     {
       "ticker": "ETH-USD",
       "nombre": "Ethereum",
-      "precio": 2295.76,
-      "sma50": 2546.42,
-      "sma200": 2156.62,
-      "rsi": 35.4,
-      "vol_rel": 0.78,
+      "precio": 2330.81,
+      "sma50": 2543.34,
+      "sma200": 2157.3,
+      "rsi": 29.5,
+      "vol_rel": 0.53,
       "max_52w": 4157.99,
-      "dist_max52w_pct": -43.34,
+      "dist_max52w_pct": -44.04,
       "tendencia_alcista": true,
       "precio_sobre_sma50": false,
       "sma50_subiendo": false,
       "dias_rsi_alto": 0,
       "cruce": null,
       "ruptura_20d": false,
-      "max_20d_previo": 2726.51,
+      "max_20d_previo": 2711.03,
       "cruce_sma50": null,
-      "mov_normal_pct": 1.58,
-      "precio_cierre": 2355.95,
-      "vela_cerrada": "2026-10-24",
-      "mov_hoy_pct": -2.55,
+      "mov_normal_pct": 1.61,
+      "precio_cierre": 2326.92,
+      "vela_cerrada": "2026-10-25",
+      "mov_hoy_pct": 0.17,
       "score": 25,
       "score_version": "v2",
       "score_detalle": {
@@ -75,10 +75,15 @@
         "distancia_max52w": 30
       },
       "cuidados": [
-        "Precio debajo de su SMA50 ($2,546): la tendencia de corto plazo no acompaña.",
+        "Precio debajo de su SMA50 ($2,543): la tendencia de corto plazo no acompaña.",
         "SMA50 con pendiente negativa: el mediano plazo todavía no gira."
       ],
-      "alertas": []
+      "alertas": [
+        {
+          "tipo": "RSI en sobreventa",
+          "narrativa": "Ethereum tiene RSI de 29.5, zona de sobreventa. No es señal de compra por sí sola: puede rebotar, pero la tendencia manda."
+        }
+      ]
     }
   ]
 }
