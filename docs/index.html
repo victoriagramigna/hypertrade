@@ -6846,14 +6846,15 @@
             }
             const ddmm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
             const filaHtml = (r) => {
-                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-2 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td><td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td><td colspan="4" class="text-gray-600 text-right">sin precio actual</td></tr>`;
+                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td><td class="text-gray-500 pr-1">${ddmm(r.p.fecha)}</td><td colspan="5" class="text-gray-600 text-right">sin precio actual</td></tr>`;
                 return `<tr class="border-t border-base">
-                    <td class="py-1.5 pr-2 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td>
-                    <td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td>
-                    <td class="text-gray-300 pr-2 text-right">${f2(r.p.precio)}</td>
-                    <td class="text-gray-200 pr-2 text-right">${f2(r.px)}</td>
-                    <td class="${cls(r.pnl)} font-bold text-right px-1.5" style="background:${bg(r.pnl)}" title="${r.enArs ? 'En pesos reales (CEDEAR), como en tu bróker' : 'En dólares del subyacente (la compra no se cargó en pesos)'}">${pc(r.pnl)}${r.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
-                    <td class="${r.hoy == null ? 'text-gray-600' : cls(r.hoy)} text-right pl-2">${r.hoy == null ? '—' : pc(r.hoy)}</td>
+                    <td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td>
+                    <td class="text-gray-500 pr-1">${ddmm(r.p.fecha)}</td>
+                    <td class="text-gray-300 pr-1 text-right">${f2(r.p.precio)}</td>
+                    <td class="text-gray-200 pr-1 text-right">${f2(r.px)}</td>
+                    ${(() => { const sl = r.p.stopActual; if (!(sl > 0)) return '<td class="text-gray-600 pr-1 text-right">—</td>'; const d = (r.px / sl - 1) * 100; const toc = r.px <= sl; return `<td class="${toc ? 'text-neg font-bold' : 'text-gray-400'} pr-1 text-right" title="Stop en dólares (${_esc(r.p.origenStop ?? '')}). El precio de hoy está ${d >= 0 ? d.toFixed(1) + '% por encima' : Math.abs(d).toFixed(1) + '% por debajo'} del stop.">${f2(sl)}</td>`; })()}
+                    <td class="${cls(r.pnl)} font-bold text-right px-1" style="background:${bg(r.pnl)}" title="${r.enArs ? 'En pesos reales (CEDEAR), como en tu bróker' : 'En dólares del subyacente (la compra no se cargó en pesos)'}">${pc(r.pnl)}${r.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
+                    <td class="${r.hoy == null ? 'text-gray-600' : cls(r.hoy)} text-right pl-1">${r.hoy == null ? '—' : pc(r.hoy)}</td>
                 </tr>`;
             };
             const n = posiciones.length;
@@ -6862,8 +6863,8 @@
             cont.innerHTML = `
                 <div class="bg-surface p-3 rounded-sm border border-surface font-mono">
                     <div class="text-accent text-[10px] uppercase tracking-widest font-bold mb-2">Resumen de un vistazo</div>
-                    <table class="w-full text-[11px]">
-                        <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right">PNL</th><th class="font-normal text-right">Hoy %</th></tr></thead>
+                    <table class="w-full text-[10px]">
+                        <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right pr-1">Stop $</th><th class="font-normal text-right">PNL</th><th class="font-normal text-right">Hoy %</th></tr></thead>
                         <tbody>${filas.map(filaHtml).join('')}</tbody>
                     </table>
                     <div class="grid grid-cols-4 gap-1 mt-3 pt-3 border-t border-base">
