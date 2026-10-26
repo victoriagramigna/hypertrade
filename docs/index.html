@@ -4652,6 +4652,40 @@
         try { plegarExplicaciones(); } catch (e) { console.warn('Explicaciones plegables:', e); }
 
 
+
+        // ---------- Marca de "ya comprado" en los textos de ticker (26/10) ----------
+        // Los logos ya llevan el punto azul (ver logoTicker). Para los lugares donde el ticker aparece solo como texto (tablas, chips,
+        // listas) se agrega el mismo punto al lado, buscando textos que sean EXACTAMENTE un ticker de Mi Cartera. No se marca en la
+        // solapa Cartera (ahí todos son tuyos) ni dentro de selectores o cuadros de texto. Los gráficos dibujados (cuadrantes) no se pueden marcar.
+        (function marcarCarteraEnTexto() {
+            let pend = new Set(), timer = null;
+            function marcar(root) {
+                const set = tickersCartera(); if (!set.size || !root || root.nodeType !== 1) return;
+                const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const lista = []; let n;
+                while ((n = w.nextNode())) {
+                    const t = n.textContent.trim().toUpperCase();
+                    if (t.length < 1 || t.length > 8 || !set.has(t)) continue;
+                    lista.push([n, t]);
+                }
+                for (const [n, t] of lista) {
+                    const el = n.parentElement; if (!el) continue;
+                    if (el.closest('select, option, textarea, input, script, style, #tab-cartera, [data-sin-marca]')) continue;
+                    if (el.querySelector(`[data-mk="${t}"]`)) continue;
+                    const pa = el.parentElement;
+                    if (pa && pa.querySelector(`[data-mk="${t}"]`)) continue;   // ya marcado por el logo o por la tabla
+                    el.insertAdjacentHTML('beforeend', marcaCarteraHtml(t));
+                }
+            }
+            const obs = new MutationObserver(muts => {
+                for (const m of muts) m.addedNodes.forEach(nd => { if (nd.nodeType === 1 && !(nd.classList && nd.classList.contains('mk-cartera'))) pend.add(nd); });
+                if (timer) return;
+                timer = setTimeout(() => { timer = null; const l = [...pend]; pend = new Set(); l.forEach(marcar); }, 120);
+            });
+            obs.observe(document.body, { childList: true, subtree: true });
+            setTimeout(() => marcar(document.body), 0);
+        })();
+
         // ============ SOLAPA MERCADO (20/10) ============
         // Vistas: "sector" (cuadros), "ranking" (sectores por día/semana/mes) y "screener" (Zona MA200, Pullback, mejores/peores).
         let mercadoOrden = 'mayor', mercadoTipo = 'todos', mercadoBusca = '', mercadoMarca = 'todos';
@@ -4751,7 +4785,7 @@
                 return { k, rs, prom: _mProm(rs.map(r => r['Var_dia_%'])) };
             }).sort((a, b) => (b.prom ?? -Infinity) - (a.prom ?? -Infinity));
             const rsiCls = (v) => v === null ? 'text-gray-600' : v >= 70 ? 'text-neg' : v <= 30 ? 'text-pos' : 'text-gray-300';
-            const marc = (t) => `${comprados.has(t) ? '<span class="text-blueAlert">●</span>' : ''}${interes.has(t) ? '<span class="text-accent">★</span>' : ''}`;
+            const marc = (t) => `${comprados.has(t) ? `<span class="mk-cartera text-blueAlert" data-mk="${t}">●</span>` : ''}${interes.has(t) ? '<span class="text-accent">★</span>' : ''}`;
             const fila = (r) => {
                 const d = _mNum(r['Var_dia_%']), rsi = _mNum(r.RSI), beta = _mNum(r.Beta), px = _mNum(r.Precio);
                 return `<tr class="border-t border-gray-800 cursor-pointer hover:text-accent" onclick="abrirFicha('${r.Ticker}')"><td class="py-0.5 pr-1 text-white font-bold truncate">${r.Ticker}${marc(r.Ticker)}</td><td class="text-right px-1 py-0.5 font-bold ${_mCls(d)}" style="background:${_mBg(d, 5)}">${d === null ? '—' : _mPc(d)}</td><td class="text-right px-1 py-0.5 text-gray-300">${px === null ? '—' : _mF2(px)}</td><td class="text-right px-1 py-0.5 ${rsiCls(rsi)}">${rsi === null ? '—' : Math.round(rsi)}</td><td class="text-right pl-1 py-0.5 text-gray-400">${beta === null ? '—' : _mF2(beta)}</td></tr>`;
@@ -5755,8 +5789,27 @@
         }
         function logoInline(t, px = 18) { return `<span style="display:inline-flex;vertical-align:middle;margin-right:6px">${logoTicker(t, px)}</span>`; }
         function nombreChico(t) { const n = nombreEmpresa(t); return n ? ` <span class="text-[10px] font-mono font-normal text-gray-400 normal-case tracking-normal">${n}</span>` : ''; }
+        // 26/10: marca de "ya lo compraste" (punto azul, el mismo de la solapa Mercado) en todo lugar donde aparece un ticker de Mi Cartera.
+        // Se lee del mismo lugar que Mi Cartera (localStorage 'mi_cartera'); se cachea por el texto guardado para no repetir el parseo.
+        let _carteraRaw = null, _carteraSet = new Set();
+        function tickersCartera() {
+            let raw = null;
+            try { raw = localStorage.getItem('mi_cartera'); } catch (e) {}
+            if (raw !== _carteraRaw) {
+                _carteraRaw = raw;
+                try { _carteraSet = new Set((JSON.parse(raw || '[]') || []).map(x => String(x?.ticker || '').toUpperCase()).filter(Boolean)); } catch (e) { _carteraSet = new Set(); }
+            }
+            return _carteraSet;
+        }
+        function enCartera(t) { return !!t && tickersCartera().has(String(t).toUpperCase()); }
+        function marcaCarteraHtml(t) {
+            return enCartera(t) ? `<span class="mk-cartera text-blueAlert" data-mk="${String(t).toUpperCase()}" title="Ya lo compraste (Mi Cartera)" style="margin:0 3px">●</span>` : '';
+        }
         function logoTicker(t, px = 18) {
-            return `<img src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(t)}.png" data-t="${t}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="logoFallback(this)" style="width:${px}px;height:${px}px;object-fit:contain;border-radius:3px;background:#fff;flex-shrink:0">`;
+            const img = `<img src="https://financialmodelingprep.com/image-stock/${encodeURIComponent(t)}.png" data-t="${t}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="logoFallback(this)" style="width:${px}px;height:${px}px;object-fit:contain;border-radius:3px;background:#fff;flex-shrink:0">`;
+            if (!enCartera(t)) return img;
+            const d = Math.max(7, Math.round(px * 0.42));
+            return `<span class="mk-cartera" data-mk="${String(t).toUpperCase()}" title="Ya lo compraste (Mi Cartera)" style="position:relative;display:inline-flex;flex-shrink:0">${img}<span style="position:absolute;right:-3px;top:-3px;width:${d}px;height:${d}px;border-radius:50%;background:#3b82f6;border:1.5px solid #0b0e14"></span></span>`;
         }
 
         // Sector + subcategoría chiquita al lado del ticker (a pedido de
@@ -6735,6 +6788,23 @@
         const RESUMEN_NEUTRAL_PCT = 1;        // entre -1% y +1% se cuenta como neutral
         const RESUMEN_CERCA_STOP_PCT = 3;     // "en observación" si está a <= 3% del stop
         const RESUMEN_RSI_ALTO = 75;
+        // 26/10: tocar el ticker en "Resumen de un vistazo" lleva a su tarjeta de más abajo.
+        function tickerLinkTarjeta(p, posiciones) {
+            const i = posiciones.indexOf(p);
+            return `<a href="#" onclick="irATarjetaCartera(${i}); return false;" class="underline decoration-dotted decoration-gray-600 underline-offset-2 hover:text-accent" title="Ir a la tarjeta de ${_esc(p.ticker)}">${_esc(p.ticker)}</a>`;
+        }
+        function irATarjetaCartera(i) {
+            let el = document.getElementById('pos-card-' + i);
+            if (!el) {   // la tarjeta puede estar filtrada por el buscador de Cartera: se limpia y se vuelve a dibujar
+                const q = document.getElementById('cartera-search');
+                if (q && q.value) { q.value = ''; try { renderCartera(); } catch (e) {} }
+                el = document.getElementById('pos-card-' + i);
+            }
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('ring-2', 'ring-accent');
+            setTimeout(() => el.classList.remove('ring-2', 'ring-accent'), 1600);
+        }
         function renderResumenCartera() {
             const cont = document.getElementById('cartera-resumen');
             if (!cont) return;
@@ -6776,9 +6846,9 @@
             }
             const ddmm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
             const filaHtml = (r) => {
-                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-2 text-white font-bold">${_esc(r.p.ticker)}</td><td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td><td colspan="4" class="text-gray-600 text-right">sin precio actual</td></tr>`;
+                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-2 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td><td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td><td colspan="4" class="text-gray-600 text-right">sin precio actual</td></tr>`;
                 return `<tr class="border-t border-base">
-                    <td class="py-1.5 pr-2 text-white font-bold">${_esc(r.p.ticker)}</td>
+                    <td class="py-1.5 pr-2 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td>
                     <td class="text-gray-500 pr-2">${ddmm(r.p.fecha)}</td>
                     <td class="text-gray-300 pr-2 text-right">${f2(r.p.precio)}</td>
                     <td class="text-gray-200 pr-2 text-right">${f2(r.px)}</td>
@@ -7168,7 +7238,7 @@
                 huboCoincidencias = true;
 
                 return `
-                    <div class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm">
+                    <div id="pos-card-${idx}" class="${cardBg} p-4 rounded-sm border ${cardBorder} font-mono text-sm transition-shadow scroll-mt-14">
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="font-bold text-white text-lg">${logoInline(p.ticker, 24)}${p.ticker}${nombreChico(p.ticker)}</span>
