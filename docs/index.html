@@ -3024,7 +3024,7 @@
                             ${gruposOrdenados.length ? `
                             <div class="mb-2">
                                 <div class="flex flex-wrap gap-1.5" data-botones-sub="${sectorSlug(sector)}">
-                                    <button class="btn-sub px-2 py-1 border rounded-sm font-mono text-[10px] uppercase tracking-wide bg-accent text-base border-accent" data-grupo="-1" onclick="filtrarSubcategoria('${sectorSlug(sector)}', -1)">Todas <span class="opacity-70">${cantidadEnSector}</span></button>
+                                    <button class="btn-sub px-2 py-1 border rounded-sm font-mono text-[10px] uppercase tracking-wide bg-accent text-[#0B0E14] border-accent" data-grupo="-1" onclick="filtrarSubcategoria('${sectorSlug(sector)}', -1)">Todas <span class="opacity-70">${cantidadEnSector}</span></button>
                                     ${gruposOrdenados.map(([nombre, g], i) => `<button class="btn-sub px-2 py-1 border border-surface rounded-sm font-mono text-[10px] uppercase tracking-wide text-gray-400 hover:text-accent hover:border-accent" data-grupo="${i}" onclick="filtrarSubcategoria('${sectorSlug(sector)}', ${i})">${nombre.replace(/^\(sin subcategoría\)$/, 'Otros')} <span class="opacity-60">${g.length}</span></button>`).join('')}
                                 </div>
                                 <div class="font-mono text-[9px] text-gray-600 mt-1">Tocá una subcategoría para ver solo esos tickers; "Todas" vuelve a mostrar el sector completo.</div>
@@ -5775,7 +5775,7 @@
                 const gAct = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo);
                 gEl.innerHTML = GRUPOS_BUSCADOR.map(g => {
                     const on = g.id === buscadorGrupo;
-                    return `<button onclick="buscadorElegirGrupo('${g.id}')" class="px-3 py-1.5 rounded-sm border whitespace-nowrap ${on ? 'bg-accent text-base font-bold border-accent' : 'border-surface text-gray-400 hover:text-accent'}">${g.n}</button>`;
+                    return `<button onclick="buscadorElegirGrupo('${g.id}')" class="px-3 py-1.5 rounded-sm border whitespace-nowrap ${on ? 'bg-accent text-[#0B0E14] font-bold border-accent' : 'border-surface text-gray-400 hover:text-accent'}">${g.n}</button>`;
                 }).join('');
             }
             const grupo = GRUPOS_BUSCADOR.find(g => g.id === buscadorGrupo) ?? null;
@@ -5829,10 +5829,14 @@
             card.querySelectorAll('.btn-sub').forEach(b => {
                 const activo = Number(b.dataset.grupo) === idx;
                 b.classList.toggle('bg-accent', activo);
-                b.classList.toggle('text-base', activo);
+                b.classList.toggle('text-[#0B0E14]', activo);
                 b.classList.toggle('border-accent', activo);
                 b.classList.toggle('text-gray-400', !activo);
                 b.classList.toggle('border-surface', !activo);
+                // 26/10: sin esto, en el celular el "hover" queda pegado tras tocar y el texto (naranja) desaparece sobre el fondo naranja.
+                b.classList.toggle('hover:text-accent', !activo);
+                b.classList.toggle('hover:border-accent', !activo);
+                b.blur();
             });
         }
 
