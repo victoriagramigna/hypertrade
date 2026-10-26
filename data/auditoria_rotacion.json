@@ -1,29 +1,29 @@
 {
- "generado_utc": "2026-10-23T23:51:06.018116+00:00",
+ "generado_utc": "2026-10-26T13:54:14.056352+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 15,
  "horizontes": [
   10,
   20
  ],
- "casos_total": 132,
+ "casos_total": 137,
  "resumen_cuadrantes": [
   {
    "cuadrante": "Líder",
    "direccion": "alcista",
-   "casos_total": 20,
+   "casos_total": 22,
    "horizontes": {
     "10": {
-     "n": 11,
-     "pendientes": 9,
+     "n": 12,
+     "pendientes": 10,
      "aciertos": 8,
-     "pct_aciertos": 73,
-     "vs_spy_prom": 2.14,
+     "pct_aciertos": 67,
+     "vs_spy_prom": 1.85,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 20,
+     "pendientes": 22,
      "confiable": false
     }
    }
@@ -31,19 +31,19 @@
   {
    "cuadrante": "Mejorando",
    "direccion": "alcista",
-   "casos_total": 46,
+   "casos_total": 47,
    "horizontes": {
     "10": {
-     "n": 21,
+     "n": 22,
      "pendientes": 25,
-     "aciertos": 12,
-     "pct_aciertos": 57,
-     "vs_spy_prom": -0.03,
+     "aciertos": 13,
+     "pct_aciertos": 59,
+     "vs_spy_prom": 0.12,
      "confiable": true
     },
     "20": {
      "n": 0,
-     "pendientes": 46,
+     "pendientes": 47,
      "confiable": false
     }
    }
@@ -51,11 +51,11 @@
   {
    "cuadrante": "Debilitándose",
    "direccion": "bajista",
-   "casos_total": 18,
+   "casos_total": 19,
    "horizontes": {
     "10": {
      "n": 6,
-     "pendientes": 12,
+     "pendientes": 13,
      "aciertos": 3,
      "pct_aciertos": 50,
      "vs_spy_prom": 2.28,
@@ -63,7 +63,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 18,
+     "pendientes": 19,
      "confiable": false
     }
    }
@@ -71,11 +71,11 @@
   {
    "cuadrante": "Rezagado",
    "direccion": "bajista",
-   "casos_total": 48,
+   "casos_total": 49,
    "horizontes": {
     "10": {
      "n": 24,
-     "pendientes": 24,
+     "pendientes": 25,
      "aciertos": 9,
      "pct_aciertos": 38,
      "vs_spy_prom": 0.07,
@@ -83,13 +83,73 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 48,
+     "pendientes": 49,
      "confiable": false
     }
    }
   }
  ],
  "detalle": [
+  {
+   "sector": "Aeroespacial",
+   "fecha": "2026-10-26",
+   "cuadrante_nuevo": "Mejorando",
+   "cuadrante_anterior": "Rezagado",
+   "direccion": "alcista",
+   "rs_sector": 31.9,
+   "delta_7d": 2.3,
+   "n_tickers_medidos": 7,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Diversificado",
+   "fecha": "2026-10-26",
+   "cuadrante_nuevo": "Líder",
+   "cuadrante_anterior": "Debilitándose",
+   "direccion": "alcista",
+   "rs_sector": 77.2,
+   "delta_7d": 0.2,
+   "n_tickers_medidos": 1,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Energía",
+   "fecha": "2026-10-26",
+   "cuadrante_nuevo": "Debilitándose",
+   "cuadrante_anterior": "Líder",
+   "direccion": "bajista",
+   "rs_sector": 52.4,
+   "delta_7d": -1.9,
+   "n_tickers_medidos": 33,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Fintech",
+   "fecha": "2026-10-26",
+   "cuadrante_nuevo": "Rezagado",
+   "cuadrante_anterior": "Líder",
+   "direccion": "bajista",
+   "rs_sector": 48.5,
+   "delta_7d": -1.5,
+   "n_tickers_medidos": 23,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Tecnología",
+   "fecha": "2026-10-26",
+   "cuadrante_nuevo": "Líder",
+   "cuadrante_anterior": "Debilitándose",
+   "direccion": "alcista",
+   "rs_sector": 59.8,
+   "delta_7d": 1.8,
+   "n_tickers_medidos": 76,
+   "r10": null,
+   "r20": null
+  },
   {
    "sector": "Aeroespacial",
    "fecha": "2026-10-23",
@@ -915,7 +975,9 @@
    "rs_sector": 30.5,
    "delta_7d": 1.6,
    "n_tickers_medidos": 3,
-   "r10": null,
+   "r10": 1.54,
+   "vs_spy10": 3.36,
+   "acierto10": true,
    "r20": null
   },
   {
@@ -927,7 +989,9 @@
    "rs_sector": 52.7,
    "delta_7d": 9.2,
    "n_tickers_medidos": 33,
-   "r10": null,
+   "r10": -3.21,
+   "vs_spy10": -1.39,
+   "acierto10": false,
    "r20": null
   },
   {
