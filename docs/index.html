@@ -6963,20 +6963,23 @@
                 // origen se PERSISTE junto con el valor -- si hoy ningún
                 // candidato supera el stop ya guardado, el label se queda
                 // con el de la última vez que sí subió (no vuelve a "-8%").
+                // 26/10: un stop FIJADO A MANO ("Fijar stop") no se toca solo: antes, al guardarlo más bajo que el automático, el trailing lo
+                // volvía a subir en el mismo instante (SNDK: 1.233,80 -> 1.554,05). Para volver al automático: "Fijar stop" y escribir "auto".
+                const stopManual = esStopManual(p.origenStop);
                 let stopSugerido = p.stopActual;
                 let origenStop = p.origenStop;
 
                 // Piso estructural: se revisa en cada corrida (no solo al
                 // llegar a +35%), así el stop puede subir apenas la SMA50
                 // suba lo suficiente como para proteger más que el -8%.
-                if (tickerData?.SMA50 != null) {
+                if (!stopManual && tickerData?.SMA50 != null) {
                     const candidatoSMA50 = tickerData.SMA50 * 0.98;
                     if (candidatoSMA50 > stopSugerido) {
                         stopSugerido = candidatoSMA50;
                         origenStop = 'SMA50 -- más ajustado que el -8%';
                     }
                 }
-                if (gananciaPct != null) {
+                if (!stopManual && gananciaPct != null) {
                     if (gananciaPct >= CARTERA_GANANCIA_PARCIAL_PCT && p.precio > stopSugerido) {
                         stopSugerido = p.precio; // mueve a punto de equilibrio
                         origenStop = 'equilibrio (+20% de ganancia)';
@@ -6989,7 +6992,7 @@
                 if (maxPrecio > 0 && p.precio > 0) {
                     if (maxPrecio !== p.maxPrecio) { p.maxPrecio = maxPrecio; huboCambios = true; }
                     const gananciaMax = (maxPrecio / p.precio - 1) * 100;
-                    if (gananciaMax >= CARTERA_ASEGURA_DESDE_PCT) {
+                    if (!stopManual && gananciaMax >= CARTERA_ASEGURA_DESDE_PCT) {
                         const piso = p.precio * (1 + gananciaMax / 100 * CARTERA_ASEGURA_FRACCION);
                         if (piso > stopSugerido) {
                             stopSugerido = piso;
@@ -7293,12 +7296,14 @@
                 return { valor: Number(marcada.invalidacion), fuente: marcada.fuente, id: marcada.id };
             } catch (e) { return null; }
         }
+        function esStopManual(o) { return /^(stop fijado por vos|stop de )/.test(String(o ?? '')); }
         function fijarStopManual(idx) {
             const pos = cargarCartera(); const p = pos[idx]; if (!p) return;
             const idea = stopDeIdeaPara(p);
             const sug = idea ? idea.valor : (p.stopActual ?? '');
-            const r = prompt(`Stop de ${p.ticker} en dólares (hoy: ${p.stopActual != null ? p.stopActual.toFixed(2) : '—'}).` + (idea ? `\nLa idea de ${idea.fuente} tiene su stop en ${idea.valor}.` : ''), String(sug));
+            const r = prompt(`Stop de ${p.ticker} en dólares (hoy: ${p.stopActual != null ? p.stopActual.toFixed(2) : '—'}).` + (idea ? `\nLa idea de ${idea.fuente} tiene su stop en ${idea.valor}.` : '') + `\nEscribí "auto" para volver al stop automático.`, String(sug));
             if (r == null) return;
+            if (String(r).trim().toLowerCase() === 'auto') { p.stopActual = p.stopInicial; p.origenStop = null; guardarCartera(pos); renderCartera(); return; }
             const v = parseFloat(String(r).replace(',', '.'));
             if (!(v > 0)) { alert('Número inválido.'); return; }
             p.stopActual = v;
