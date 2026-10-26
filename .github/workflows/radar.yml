@@ -8,7 +8,10 @@ on:
     # cierre (17:00 ARG = 20:00 UTC) -- 13-20 UTC cubre de sobra, con un
     # margen de 30 min antes/después que no molesta (repo público =
     # minutos de Actions ilimitados, no hay costo por las corridas extra)
-    - cron: '0,30 13-20 * * 1-5'
+    # 26/10: antes era '0,30 13-20'. GitHub salteaba o atrasaba mucho las corridas justo en :00 y :30 (los minutos más
+    # cargados) -- el 26/10 a las 10:39 ARG no había corrido ninguna. Se pasa a :07 y :37, y el rango sube a 21 UTC para cubrir
+    # también el fin del horario de verano de EE.UU. (desde el 1/11 la rueda es 14:30-21:00 UTC).
+    - cron: '7,37 13-21 * * 1-5'
 
   # Permite correrlo a mano desde la pestaña "Actions" de GitHub -- IMPORTANTE:
   # usar esto para probar el pipeline completo antes de confiar en el cron.
