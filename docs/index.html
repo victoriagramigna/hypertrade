@@ -320,8 +320,7 @@
             <div id="confluencia-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[20rem] sm:max-h-[40rem] overflow-y-auto pr-1 custom-scrollbar"></div>
         </section>
 
-        <!-- El Semillero: favoritos de Victoria (se guardan en este navegador). Informativo. -->
-                <section>
+                        <section>
             <h2 class="text-blueAlert uppercase text-sm font-bold tracking-widest mb-2 border-b border-surface pb-1">🧩 Bases VCP y MACD semanal</h2>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
                 Dos listas rápidas armadas con los datos del radar: las bases VCP y los MACD semanales cerca de cruzar. (La matriz de quién junta más condiciones a la vez ahora está unida a Confluencia Alcista, arriba.)
@@ -330,46 +329,34 @@
             <div id="matriz-cont"></div>
         </section>
 
-<section class="mb-6" id="semillero-section">
+<!-- Seguimiento de entradas (data/entradas_estado.json, lo arma scripts/entradas_seguimiento.py). Informativo, NO es señal de compra. -->
+        <section class="mb-6" id="entradas-section">
             <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
-                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">⭐ El Semillero <span id="semillero-count" class="text-gray-500 normal-case"></span></h2>
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">🎯 Seguimiento de entradas <span id="entradas-count" class="text-gray-500 normal-case"></span></h2>
             </div>
-            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
-                Tu lista de activos favoritos para seguir de cerca, mientras "crecen" hasta un buen lugar de entrada.
-                Se marcan con la <span class="text-accent">☆</span> de cualquier tarjeta de Zonas de interés o escribiendo el ticker acá abajo.
-                Cada uno muestra <span class="text-white">cuáles de las 5 condiciones cumple hoy (✓) y cuáles le faltan (✗)</span>, así ves qué le falta para entrar en zona de interés.
-                Tus favoritos y los niveles que ocultes <span class="text-white">se sincronizan entre tus dispositivos</span> a través de <code class="text-accent">data/semillero.json</code> en el repo, igual que Mi Cartera: hace falta tener el token de GitHub conectado en cada dispositivo (solapa Cartera, una sola vez). Sin token, la lista queda solo en ese navegador.
-                También muestra los <span class=\"text-white\">niveles automáticos</span> más cercanos (medias, AVWAP y bordes de zonas, que se recalculan solos) y, si los hay, los <span class=\"text-white\">niveles cargados a mano</span> (tus stops y tus propias referencias, con su fecha y un aviso si quedaron viejos). Los niveles de terceros ya no se muestran acá: están en la solapa <span class=\"text-white\">Ideas</span>. La lista es para mirar, no una señal de compra.
+            <div class="font-mono text-[11px] text-gray-500 mb-2 leading-relaxed">
+                Lista de activos que estamos vigilando como posible entrada, cada uno con su <span class="text-white">zona de demanda</span>, un nivel de <span class="text-pos">confirmación</span> (cierre diario por encima) y uno de <span class="text-neg">invalidación</span> (cierre diario por debajo). El radar los controla en cada corrida.
+                <details class="mt-1"><summary class="cursor-pointer text-gray-400">Cómo leerlo</summary>
+                    <div class="mt-1">
+                        <span class="text-white">Esperando</span>: entre la invalidación y la confirmación, fuera de la zona. <span class="text-accent">En zona</span>: el precio está dentro de la zona de demanda. <span class="text-pos">Sobre confirmación</span> y <span class="text-neg">Bajo invalidación</span> son cruces durante la rueda y pueden revertirse; recién valen con el <span class="text-white">cierre</span> (se cuentan los cierres seguidos). <span class="text-pos">🟢 Escenario de entrada</span>: se da cuando (A) el precio llegó a su piso (zona de demanda o, en PSX, la media de 50 ruedas) y la rueda <span class="text-white">cierra por encima del techo</span> de ese piso sin haber cerrado bajo la invalidación, o (B) la rueda cierra sobre el nivel de confirmación. Te avisa por Telegram: cuando llega al piso (durante la rueda) y cuando se cumple el escenario (al cierre). Cada cierre queda anotado en una bitácora propia, que no entra en la Auditoría.
+                        Avisa por Telegram solo al cierre y solo si cambió el estado. Tocá un activo para ver su ficha. La lista la actualizo yo a pedido.
+                    </div>
+                </details>
             </div>
-            <div class="flex items-center gap-2 mb-3">
-                <input type="text" id="semillero-input" class="bg-surface border border-gray-700 text-white font-mono text-sm px-3 py-1.5 rounded-sm uppercase w-40 focus:outline-none focus:border-accent" placeholder="Ticker">
-                <button id="semillero-add" class="bg-surface border border-accent text-accent font-mono text-xs px-3 py-1.5 rounded-sm">Agregar</button>
-                <button id="semillero-cargar" class="bg-surface border border-gray-600 text-gray-300 font-mono text-xs px-3 py-1.5 rounded-sm" title="Suma de una vez los activos que venimos siguiendo con niveles: HIMS, GOOGL, TSLA, NOW, PATH, SHOP, IBIT, UGP, AMZN, HPQ, TEM, CAT y MU. Los que ya estaban no se duplican.">Cargar mis 13 en seguimiento</button>
-                <span id="semillero-msg" class="font-mono text-[10px] text-gray-500"></span>
+            <div id="entradas-resumen"></div>
+            <div class="flex items-center gap-2 mb-2 font-mono text-[11px]" id="entradas-vistas">
+                <span class="text-gray-500">Ver como:</span>
+                <button type="button" id="entradas-v-tabla" onclick="entradasVista('tabla')" class="border border-accent text-accent px-2 py-0.5 rounded-sm">Tabla de un vistazo</button>
+                <button type="button" id="entradas-v-tarjetas" onclick="entradasVista('tarjetas')" class="border border-gray-700 text-gray-400 px-2 py-0.5 rounded-sm">Tarjetas</button>
             </div>
-            <div id="semillero-sync" class="font-mono text-[10px] text-gray-500 mb-2"></div>
-            <div id="semillero-limpieza" class="mb-3"></div>
-            <div id="semillero-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
+            <div id="entradas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <div id="entradas-candidatos"></div>
             <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
         </section>
 
-        <!-- Zonas de interés (zonas_smc.py): oferta/demanda + FVG. Informativo, NO es señal de compra. -->
-        <section class="mb-6" id="zonas-interes-section">
-            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
-                <h2 class="text-pos uppercase text-sm font-bold tracking-widest">📍 Zonas de interés <span id="zonas-count" class="text-gray-500 normal-case"></span></h2>
-            </div>
-            <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
-                Activos que hoy están en una <span class="text-white">zona de demanda</span> (un lugar donde el precio ya arrancó fuerte hacia arriba y
-                donde podrían volver compradores) <span class="text-white">y</span> cumplen 4 filtros más:
-                precio sobre sus medias de 50 y 200 ruedas, fuerza relativa (RS) de 70 o más, volumen bajo (menos de 1x su promedio) y RSI menor a 70. El RSI del radar usa promedio simple; entre paréntesis se muestra el RSI "TradingView" (suavizado de Wilder, el estándar) solo para que lo compares con tu pantalla: no cambia ningún aviso.
-                Es un <span class="text-white">mapa de lugares para mirar, no una señal de compra</span>: cada tarjeta dice dónde la idea deja de valer.
-                Se actualiza con velas cerradas; una zona que deja de cumplir pasa a <span class="text-gray-400">"Ya no está activa"</span> y se muestra 7 días con el motivo.
-                Guía completa: <a class="underline text-accent" href="https://claude.ai/artifact/Aia6RJvzhtuNAj6Kb3WUT6" target="_blank" rel="noopener">Cómo leer una zona de entrada</a>.
-            </div>
-            <div id="zonas-contexto" class="font-mono text-[11px] mb-3"></div>
-            <div id="zonas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[28rem] sm:max-h-[48rem] overflow-y-auto pr-1 custom-scrollbar"></div>
-            <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
-        </section>
+        
+
+        
 
         <!-- 3. Sección Alertas (Con Scroll y Contador) -->
             <section>
@@ -917,7 +904,7 @@
                     <br><span class="text-white">Por sector:</span> cada ticker con su <span class="text-white">precio</span> y cuánto varió <span class="text-white">contra el cierre de ayer</span>; cuanto más intenso el color, más fuerte el movimiento. Arriba de cada sector ves el promedio y cuántos suben y bajan. "RSI y β" suma esos dos datos a cada cuadro.
                     <br><span class="text-white">Rankings:</span> los sectores ordenados por su rendimiento promedio del día, de la semana (5 ruedas) y del mes (21 ruedas). Sirve para ver divergencias: un sector que cae en el mes pero hoy rebota, o al revés.
                     <br><span class="text-white">Screener:</span> listas para mirar, no señales. <span class="text-white">Zona MA200</span>: tickers a ±1% de su media de 200 ruedas. <span class="text-white">Pullback</span>: sobre su media de 200 ruedas pero con RSI entre 30 y 40 (retroceso dentro de una tendencia alcista). Y los mejores y peores de la semana y del mes. Cada rueda se guarda qué tickers estaban en las dos primeras listas y después se mide cómo les fue: ese resultado está al final de la vista.
-                    <br>"Solo con CEDEAR" muestra únicamente los que tienen CEDEAR. <span class="text-blueAlert">●</span> marca los que ya compraste (sale de tu solapa Cartera). <span class="text-accent">★</span> marca los de interés: es la lista de El Semillero; tocás la ☆ y queda marcado en todos lados. Tocá un ticker para ver su tarjeta de alertas. Es informativo, no una recomendación.
+                    <br>"Solo con CEDEAR" muestra únicamente los que tienen CEDEAR. <span class="text-blueAlert">●</span> marca los que ya compraste (sale de tu solapa Cartera). <span class="text-accent">★</span> marca los de interés: es tu lista de favoritos; tocás la ☆ y queda marcado en todos lados. Tocá un ticker para ver su tarjeta de alertas. Es informativo, no una recomendación.
                 </div>
             </details>
             <div class="flex gap-2 mb-3 font-mono text-[11px] uppercase">
@@ -2510,8 +2497,149 @@
             cont.innerHTML = activas.map(z => tarjeta(z, true)).join('') + inactivas.map(z => tarjeta(z, false)).join('');
         }
 
+        // ---- Seguimiento de entradas: data/entradas_estado.json (lo escribe el radar en cada corrida) ----
+        const ENTRADAS_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/entradas_estado.json';
+        let entradasEstado = null, _entradasVista = 'tabla', _entradasOrden = { col: 'riesgo', asc: true };
+        function entradasVista(v) { _entradasVista = v; renderEntradas(); }
+        function entradasOrdenar(col) { _entradasOrden = { col, asc: _entradasOrden.col === col ? !_entradasOrden.asc : true }; renderEntradas(); }
+        // Ruedas: días hábiles desde el alta hasta el último dato, contando ambos extremos (no descuenta feriados).
+        function ruedasDesde(f0, f1) {
+            if (!f0 || !f1) return null;
+            const a = new Date(f0 + 'T12:00:00Z'), b = new Date(f1 + 'T12:00:00Z');
+            if (isNaN(a) || isNaN(b) || b < a) return null;
+            let n = 0;
+            for (let d = new Date(a); d <= b; d.setUTCDate(d.getUTCDate() + 1)) { const w = d.getUTCDay(); if (w !== 0 && w !== 6) n++; }
+            return n;
+        }
+        async function cargarEntradas() {
+            try {
+                const r = await fetch(ENTRADAS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) { renderEntradas(); return; }
+                entradasEstado = await r.json();
+            } catch (e) { entradasEstado = null; }
+            renderEntradas();
+        }
+        function renderEntradas() {
+            const cont = document.getElementById('entradas-container');
+            if (!cont) return;
+            const _bt = document.getElementById('entradas-v-tabla'), _bk = document.getElementById('entradas-v-tarjetas');
+            if (_bt && _bk) {
+                _bt.className = 'px-2 py-0.5 rounded-sm border ' + (_entradasVista === 'tabla' ? 'border-accent text-accent' : 'border-gray-700 text-gray-400');
+                _bk.className = 'px-2 py-0.5 rounded-sm border ' + (_entradasVista === 'tarjetas' ? 'border-accent text-accent' : 'border-gray-700 text-gray-400');
+            }
+            const cnt = document.getElementById('entradas-count');
+            const items = Array.isArray(entradasEstado?.items) ? entradasEstado.items : [];
+            const enEsc = items.filter(i => i.escenario_entrada);
+            if (cnt) cnt.textContent = items.length ? `(${items.length})` : '';
+            const resEl = document.getElementById('entradas-resumen');
+            if (resEl) resEl.innerHTML = items.length ? (enEsc.length
+                ? `<div class="font-mono text-xs border border-pos rounded-sm p-2 mb-3 text-pos leading-relaxed"><span class="font-bold">🟢 Hoy en escenario de entrada (${enEsc.length}):</span> ${enEsc.map(i => `<span class="cursor-pointer underline text-white" onclick="abrirFicha('${i.ticker}')">${i.ticker}</span>`).join(', ')}. <span class="text-gray-400">El escenario se confirma con el cierre de la rueda; mirá el detalle de cada uno abajo.</span></div>`
+                : `<div class="font-mono text-[11px] text-gray-500 mb-3">Hoy ningún activo de la lista está en escenario de entrada.</div>`) : '';
+            if (!items.length) {
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay datos de seguimiento. Aparecen después de la próxima corrida del radar que incluya esta función.</div>';
+                return;
+            }
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+            const pct = (x) => (x == null || Number.isNaN(Number(x))) ? '—' : `${x > 0 ? '+' : ''}${Number(x).toFixed(1).replace('.', ',')}%`;
+            const esc = (x) => String(x ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            if (_entradasVista === 'tabla') {
+                const ordRiesgo = { 'Bajo': 0, 'Medio': 1, 'Alto': 2, 'Muy alto': 3 };
+                const colRiesgo = { 'Bajo': 'text-pos', 'Medio': 'text-gray-200', 'Alto': 'text-accent', 'Muy alto': 'text-neg' };
+                const filas = items.map(i => ({ i, ruedas: ruedasDesde(i.fecha_alta, i.fecha_dato) }));
+                const val = { ticker: x => x.i.ticker, ruedas: x => x.ruedas ?? -1, riesgo: x => (ordRiesgo[x.i.riesgo?.categoria] ?? 9) * 100 + (x.i.riesgo?.puntos ?? 0),
+                              ppc: x => x.i.precio_alta ?? 0, cierre: x => x.i.precio ?? 0, pnl: x => x.i.desde_alta_pct ?? -999, hoy: x => x.i.hoy_pct ?? -999,
+                              estado: x => (x.i.escenario_entrada ? 0 : 1) };
+                const g = val[_entradasOrden.col] ?? val.riesgo;
+                filas.sort((a, b) => { const A = g(a), B = g(b); const r = (A < B ? -1 : A > B ? 1 : 0); return _entradasOrden.asc ? r : -r; });
+                const th = (col, txt, cls = '') => `<th class="py-1 px-1 font-normal cursor-pointer select-none ${cls}" onclick="entradasOrdenar('${col}')">${txt}${_entradasOrden.col === col ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>`;
+                const pc = (x) => x == null ? '<span class="text-gray-600">—</span>' : `<span class="${x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400'}">${x > 0 ? '+' : ''}${Number(x).toFixed(2).replace('.', ',')}%</span>`;
+                cont.className = 'overflow-x-auto';
+                cont.innerHTML = `<table class="w-full font-mono text-[11px] border-collapse"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
+                    ${th('ticker', 'Ticker')}${th('ruedas', 'Ruedas', 'text-center')}${th('riesgo', 'Riesgo')}${th('ppc', 'PPC', 'text-right')}${th('cierre', 'Cierre', 'text-right')}${th('pnl', 'PNL', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('estado', 'Estado')}</tr></thead><tbody>
+                    ${filas.map(({ i, ruedas }) => `<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
+                        <td class="py-1 px-1 text-white font-bold">${esc(i.ticker)}</td>
+                        <td class="py-1 px-1 text-center text-gray-300">${ruedas ?? '—'}</td>
+                        <td class="py-1 px-1 ${colRiesgo[i.riesgo?.categoria] ?? 'text-gray-400'}">${esc(i.riesgo?.categoria ?? '—')}</td>
+                        <td class="py-1 px-1 text-right text-gray-300">${f(i.precio_alta)}</td>
+                        <td class="py-1 px-1 text-right text-white">${f(i.precio)}</td>
+                        <td class="py-1 px-1 text-right">${pc(i.desde_alta_pct)}</td>
+                        <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
+                        <td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos font-bold' : 'text-gray-400'}">${i.escenario_entrada ? '🟢 Escenario de entrada' : esc(i.estado_etiqueta ?? '')}</td></tr>`).join('')}
+                    </tbody></table>
+                    <div class="font-mono text-[10px] text-gray-600 mt-1">PPC = precio al sumarlo a la lista. Cierre = último precio del radar. PNL = variación del precio desde el alta (en dólares, sin el efecto del CCL). Ruedas = días hábiles desde el alta, contando el primero y el de hoy. Tocá un encabezado para ordenar y una fila para abrir la ficha.</div>`;
+                const cand = document.getElementById('entradas-candidatos'); if (cand) cand.innerHTML = '';
+                return;
+            }
+            cont.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+            const estilo = {
+                esperando: ['Esperando', 'text-gray-300 border-gray-600'],
+                en_zona: ['En zona', 'text-accent border-accent'],
+                sobre_confirmacion: ['Sobre confirmación', 'text-pos border-pos'],
+                bajo_invalidacion: ['Bajo invalidación', 'text-neg border-neg'],
+            };
+            cont.innerHTML = items.map(i => {
+                const [etq, cls] = estilo[i.estado] ?? [i.estado, 'text-gray-300 border-gray-600'];
+                const inv = i.invalidacion?.nivel, conf = i.confirmacion?.nivel;
+                // posición del precio entre invalidación y confirmación (0–100%)
+                let pos = null;
+                if (inv != null && conf != null && conf > inv && i.precio != null) pos = Math.max(0, Math.min(100, (i.precio - inv) / (conf - inv) * 100));
+                const barra = pos == null ? '' : `<div class="relative h-1.5 bg-base rounded-sm my-2" title="Posición del precio entre la invalidación (izquierda) y la confirmación (derecha)">
+                        <div class="absolute inset-y-0 left-0 bg-gray-700 rounded-sm" style="width:${pos.toFixed(0)}%"></div>
+                        <div class="absolute -top-0.5 h-2.5 w-0.5 bg-accent" style="left:${pos.toFixed(0)}%"></div>
+                    </div>`;
+                const cierres = i.cierres_sobre_confirmacion > 0 ? `<span class="text-pos">${i.cierres_sobre_confirmacion} cierre(s) seguido(s) sobre la confirmación</span>`
+                    : i.cierres_bajo_invalidacion > 0 ? `<span class="text-neg">${i.cierres_bajo_invalidacion} cierre(s) seguido(s) bajo la invalidación</span>`
+                    : '<span class="text-gray-500">sin cierres de confirmación ni de invalidación</span>';
+                const esc_ = i.escenario_entrada;
+                const escHtml = esc_ ? `<div class="mt-1.5 text-[10px] border border-pos rounded-sm p-1.5 text-pos leading-relaxed"><span class="font-bold">🟢 ESCENARIO DE ENTRADA (${esc_.tipo === 'rebote' ? 'rebote en el piso' : 'ruptura confirmada'}) desde el ${esc(String(esc_.fecha).slice(8, 10))}/${esc(String(esc_.fecha).slice(5, 7))}.</span> ${esc(esc_.detalle)} Se invalida con un cierre bajo ${f(esc_.inv ?? inv)}.</div>` : '';
+                const pisosTxt = (i.pisos ?? []).map(x => `${esc(x.nombre)} ${f(x.piso)}–${f(x.techo)}`).join(' · ');
+                const vigilar = (i.vigilar ?? []).map(v => `<li>${esc(v)}</li>`).join('');
+                const z = i.zona ? `${f(i.zona.piso)} a ${f(i.zona.techo)}${i.zona.tipo ? ' · ' + esc(i.zona.tipo) : ''}` : '—';
+                return `<div class="bg-surface border border-gray-800 rounded-sm p-3 font-mono">
+                    <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="abrirFicha('${esc(i.ticker)}')">
+                        <div class="flex items-center gap-2">${logoTicker(i.ticker)}<span class="text-white font-bold">${esc(i.ticker)}</span>
+                            <span class="text-white text-sm">${f(i.precio)}</span> ${hoyPctHtml(i.hoy_pct, true)}</div>
+                        <span class="text-[10px] border rounded-sm px-1.5 py-0.5 ${cls}">${etq}</span>
+                    </div>
+                    ${i.riesgo ? `<div class="text-[10px] mt-1 flex items-center gap-1.5"><span class="text-gray-500">Riesgo de la operación:</span><span class="border rounded-sm px-1.5 py-0.5 ${({'Bajo': 'text-pos border-pos', 'Medio': 'text-gray-200 border-gray-500', 'Alto': 'text-accent border-accent', 'Muy alto': 'text-neg border-neg'})[i.riesgo.categoria] ?? 'text-gray-300 border-gray-600'}">${esc(i.riesgo.categoria)}</span></div>` : ''}
+                    ${barra}
+                    <div class="flex justify-between text-[10px]">
+                        <span class="text-neg" title="${esc(i.invalidacion?.texto)}">Invalida &lt; ${f(inv)} <span class="text-gray-500">(${pct(i.dist_invalidacion_pct)})</span></span>
+                        <span class="text-pos text-right" title="${esc(i.confirmacion?.texto)}">Confirma &gt; ${f(conf)} <span class="text-gray-500">(${pct(i.dist_confirmacion_pct)})</span></span>
+                    </div>
+                    <div class="text-[10px] text-gray-400 mt-1.5 flex flex-wrap gap-x-3">
+                        <span>${ruedasDesde(i.fecha_alta, i.fecha_dato) ?? '—'} rueda(s) · Desde el alta (${esc(i.fecha_alta)}): <span class="${i.desde_alta_pct > 0 ? 'text-pos' : i.desde_alta_pct < 0 ? 'text-neg' : 'text-gray-400'}">${pct(i.desde_alta_pct)}</span></span>
+                        <span>FR ${f(i.fr, 0)}</span><span>RSI ${f(i.rsi, 0)}</span><span>Vol ${f(i.vol_rel)}x</span>
+                    </div>
+                    <div class="text-[10px] mt-1">${cierres}</div>
+                    ${escHtml}
+                    ${(i.salida_sugerida ?? []).length ? `<div class="text-[10px] mt-1.5 border border-accent rounded-sm p-1.5 text-accent leading-relaxed"><span class="font-bold">Revisar si sale de la lista:</span> ${i.salida_sugerida.map(esc).join(' ')}</div>` : ''}
+                    <details class="mt-1.5 text-[10px] text-gray-400">
+                        <summary class="cursor-pointer text-gray-500">Por qué está en la lista y qué vigilar</summary>
+                        <div class="mt-1 leading-relaxed">${esc(i.motivo)}</div>
+                        ${i.riesgo ? `<div class="mt-1"><span class="text-white">Riesgo ${esc(i.riesgo.categoria)} (${i.riesgo.puntos} puntos):</span><ul class="list-disc pl-4 mt-0.5 space-y-0.5">${(i.riesgo.detalle ?? []).map(d => `<li>${esc(d.factor)}: <span class="text-white">${esc(d.valor)}</span> · ${esc(d.lectura)} (+${d.puntos})</li>`).join('')}</ul><div class="text-gray-600 mt-0.5">Guía armada con datos del radar, sin validar con un backtest. Suma puntos: 0–2 bajo, 3–4 medio, 5–6 alto, 7 o más muy alto.</div></div>` : ''}
+                        <div class="mt-1">Zona de demanda: ${z}</div>
+                        <div class="mt-1">Pisos vigilados para el rebote: ${pisosTxt || '—'}. El escenario se da si la rueda cierra por encima del techo de un piso al que el precio llegó en los últimos 14 días.</div>
+                        <div class="mt-1"><span class="text-pos">Confirmación:</span> ${esc(i.confirmacion?.texto)}</div>
+                        <div class="mt-1"><span class="text-neg">Invalidación:</span> ${esc(i.invalidacion?.texto)}</div>
+                        ${vigilar ? `<ul class="list-disc pl-4 mt-1 space-y-0.5">${vigilar}</ul>` : ''}
+                    </details>
+                </div>`;
+            }).join('');
+            const candEl = document.getElementById('entradas-candidatos');
+            if (candEl) {
+                const cands = Array.isArray(entradasEstado?.candidatos) ? entradasEstado.candidatos : [];
+                candEl.innerHTML = cands.length ? `<details class="mt-3"><summary class="cursor-pointer font-mono text-[11px] text-gray-400">Candidatos para sumar a la lista (${cands.length})</summary>
+                    <div class="font-mono text-[10px] text-gray-500 my-1 leading-relaxed">Activos fuera de la lista que hoy cumplen: sobre la media de 50 y 200 ruedas, fuerza relativa de 70 o más, RSI entre 40 y 68, sin caída fuerte hoy, y además VCP, squeeze o toque de zona de demanda. Los revisa el radar en cada corrida y los reviso yo cada día. Son para mirar, no una recomendación.</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">${cands.map(c => `<div class="bg-surface border border-gray-800 rounded-sm px-2 py-1.5 font-mono text-[10px] cursor-pointer hover:border-accent" onclick="abrirFicha('${esc(c.ticker)}')">
+                        <div class="flex items-center justify-between"><span class="flex items-center gap-1.5">${logoTicker(c.ticker, 16)}<span class="text-white font-bold text-xs">${esc(c.ticker)}</span><span class="text-white">${f(c.precio)}</span> ${hoyPctHtml(c.hoy_pct, true)}</span><span class="text-gray-500">Radar ${f(c.radar_score, 0)}</span></div>
+                        <div class="text-gray-400 mt-0.5">FR ${f(c.fr, 0)} · RSI ${f(c.rsi, 0)} · 5r ${pct(c.ret_5d)} · ${(c.marcas ?? []).map(esc).join(', ')}</div></div>`).join('')}</div></details>` : '';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             cargarNivelesSeg();
+            cargarEntradas();
             semilleroTraer();
             const b = document.getElementById('semillero-add'), i = document.getElementById('semillero-input');
             if (b) b.addEventListener('click', agregarSemillero);
@@ -4561,8 +4689,7 @@
                 { id: 'activas', t: 'Alertas activas', h: ['Alertas Activas'] },
                 { id: 'confluencia', t: 'Confluencia', h: ['Confluencia Alcista'] },
                 { id: 'vcp', t: 'Bases VCP y MACD', h: ['Bases VCP y MACD semanal'] },
-                { id: 'semillero', t: 'Semillero', h: ['El Semillero'] },
-                { id: 'zonas', t: 'Zonas de interés', h: ['Zonas de interés'] },
+                { id: 'entradas', t: 'Watchlist', h: ['Seguimiento de entradas'] },
             ] },
             auditoria: { def: 'operaciones', siempre: ['Auditoría'], vistas: [
                 { id: 'operaciones', t: 'Mis operaciones', h: ['Mis operaciones'] },
