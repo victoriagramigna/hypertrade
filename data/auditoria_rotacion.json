@@ -1,21 +1,21 @@
 {
- "generado_utc": "2026-10-26T23:43:35.094920+00:00",
+ "generado_utc": "2026-10-27T15:19:14.714140+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 15,
  "horizontes": [
   10,
   20
  ],
- "casos_total": 140,
+ "casos_total": 145,
  "resumen_cuadrantes": [
   {
    "cuadrante": "Líder",
    "direccion": "alcista",
-   "casos_total": 22,
+   "casos_total": 24,
    "horizontes": {
     "10": {
      "n": 12,
-     "pendientes": 10,
+     "pendientes": 12,
      "aciertos": 8,
      "pct_aciertos": 67,
      "vs_spy_prom": 1.88,
@@ -23,7 +23,7 @@
     },
     "20": {
      "n": 0,
-     "pendientes": 22,
+     "pendientes": 24,
      "confiable": false
     }
    }
@@ -31,19 +31,19 @@
   {
    "cuadrante": "Mejorando",
    "direccion": "alcista",
-   "casos_total": 47,
+   "casos_total": 48,
    "horizontes": {
     "10": {
-     "n": 22,
-     "pendientes": 25,
+     "n": 24,
+     "pendientes": 24,
      "aciertos": 13,
-     "pct_aciertos": 59,
-     "vs_spy_prom": 0.11,
+     "pct_aciertos": 54,
+     "vs_spy_prom": -0.45,
      "confiable": true
     },
     "20": {
      "n": 0,
-     "pendientes": 47,
+     "pendientes": 48,
      "confiable": false
     }
    }
@@ -51,19 +51,19 @@
   {
    "cuadrante": "Debilitándose",
    "direccion": "bajista",
-   "casos_total": 20,
+   "casos_total": 21,
    "horizontes": {
     "10": {
-     "n": 6,
+     "n": 7,
      "pendientes": 14,
-     "aciertos": 3,
-     "pct_aciertos": 50,
-     "vs_spy_prom": 2.28,
+     "aciertos": 4,
+     "pct_aciertos": 57,
+     "vs_spy_prom": 1.38,
      "confiable": false
     },
     "20": {
      "n": 0,
-     "pendientes": 20,
+     "pendientes": 21,
      "confiable": false
     }
    }
@@ -71,25 +71,85 @@
   {
    "cuadrante": "Rezagado",
    "direccion": "bajista",
-   "casos_total": 51,
+   "casos_total": 52,
    "horizontes": {
     "10": {
-     "n": 24,
-     "pendientes": 27,
-     "aciertos": 9,
-     "pct_aciertos": 38,
-     "vs_spy_prom": 0.07,
+     "n": 26,
+     "pendientes": 26,
+     "aciertos": 11,
+     "pct_aciertos": 42,
+     "vs_spy_prom": -0.44,
      "confiable": true
     },
     "20": {
      "n": 0,
-     "pendientes": 51,
+     "pendientes": 52,
      "confiable": false
     }
    }
   }
  ],
  "detalle": [
+  {
+   "sector": "Diversificado",
+   "fecha": "2026-10-27",
+   "cuadrante_nuevo": "Debilitándose",
+   "cuadrante_anterior": "Líder",
+   "direccion": "bajista",
+   "rs_sector": 76.1,
+   "delta_7d": -0.1,
+   "n_tickers_medidos": 1,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "ETF",
+   "fecha": "2026-10-27",
+   "cuadrante_nuevo": "Líder",
+   "cuadrante_anterior": "Debilitándose",
+   "direccion": "alcista",
+   "rs_sector": 50.5,
+   "delta_7d": 1.3,
+   "n_tickers_medidos": 45,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Energía",
+   "fecha": "2026-10-27",
+   "cuadrante_nuevo": "Líder",
+   "cuadrante_anterior": "Debilitándose",
+   "direccion": "alcista",
+   "rs_sector": 52.3,
+   "delta_7d": 0.2,
+   "n_tickers_medidos": 33,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Materiales",
+   "fecha": "2026-10-27",
+   "cuadrante_nuevo": "Mejorando",
+   "cuadrante_anterior": "Rezagado",
+   "direccion": "alcista",
+   "rs_sector": 44.2,
+   "delta_7d": 3.9,
+   "n_tickers_medidos": 36,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "sector": "Real Estate",
+   "fecha": "2026-10-27",
+   "cuadrante_nuevo": "Rezagado",
+   "cuadrante_anterior": "Mejorando",
+   "direccion": "bajista",
+   "rs_sector": 37.2,
+   "delta_7d": -2.2,
+   "n_tickers_medidos": 3,
+   "r10": null,
+   "r20": null
+  },
   {
    "sector": "Aeroespacial",
    "fecha": "2026-10-26",
@@ -951,7 +1011,9 @@
    "rs_sector": 53.9,
    "delta_7d": -0.0,
    "n_tickers_medidos": 23,
-   "r10": null,
+   "r10": -5.08,
+   "vs_spy10": -4.0,
+   "acierto10": true,
    "r20": null
   },
   {
@@ -963,7 +1025,9 @@
    "rs_sector": 41.9,
    "delta_7d": 0.3,
    "n_tickers_medidos": 36,
-   "r10": null,
+   "r10": -2.76,
+   "vs_spy10": -1.68,
+   "acierto10": false,
    "r20": null
   },
   {
@@ -975,7 +1039,9 @@
    "rs_sector": 11.8,
    "delta_7d": 0.6,
    "n_tickers_medidos": 4,
-   "r10": null,
+   "r10": -12.49,
+   "vs_spy10": -11.41,
+   "acierto10": false,
    "r20": null
   },
   {
@@ -987,7 +1053,9 @@
    "rs_sector": 41.5,
    "delta_7d": -0.1,
    "n_tickers_medidos": 36,
-   "r10": null,
+   "r10": -2.76,
+   "vs_spy10": -1.68,
+   "acierto10": true,
    "r20": null
   },
   {
@@ -999,7 +1067,9 @@
    "rs_sector": 11.0,
    "delta_7d": -0.2,
    "n_tickers_medidos": 4,
-   "r10": null,
+   "r10": -12.49,
+   "vs_spy10": -11.41,
+   "acierto10": true,
    "r20": null
   },
   {
