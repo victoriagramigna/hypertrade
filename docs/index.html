@@ -1192,6 +1192,7 @@
                     <div class="text-right">
                         <div class="text-3xl font-mono text-white">$${tickerData.Precio?.toFixed(2) ?? '—'} <span class="ml-1 align-middle">${hoyPctHtml(tickerData['Var_dia_%'])}</span></div>
                         <div class="text-xs font-mono mt-1 ${distMaxColor}">${distMaxText}</div>
+                        <div class="font-mono mt-1 flex justify-end">${retsPrecioHtml(tickerData)}</div>
                     </div>
                 </div>
                 
@@ -1842,6 +1843,7 @@
                         </div>
                         ${glosarioHtml}
                         ${precioRef != null ? `<div class="font-mono text-[10px] text-gray-500 mt-2">PRECIO REF. (USD): <span class="text-white">$${precioRef}</span> ${hoyPctHtml(varDia, true)}</div>` : ''}
+                        ${(() => { const _r = retsPrecioHtml(rankRowDe(ticker)); return _r ? `<div class="font-mono text-[10px] mt-1">${_r}</div>` : ''; })()}
                         ${cedearHtml}
                         ${stopSugerido ? `<div class="font-mono text-xs text-accent mt-1">STOP SUGERIDO (aprox.): $${stopSugerido}${stopPctStr}</div>` : ''}
                         ${vsSpyStr ? `<div class="font-mono text-[10px] text-gray-500 mt-1">${vsSpyStr}</div>` : ''}
@@ -2744,6 +2746,7 @@
                                 <span title="Cuánto cambió la Fuerza Relativa en las últimas ~5 ruedas (1 semana)">Δ sem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
                                 <span title="Cuánto cambió la Fuerza Relativa en las últimas ~21 ruedas (1 mes)">Δ mes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
                             </div>
+                            <div class="flex items-center gap-3 pl-8 mt-0.5 font-mono text-[9px] text-gray-600">${retsPrecioHtml(ticker, 'Precio 5r', '1m', '3m')}</div>
                         </div>
                     `;
                 }).join('');
@@ -2978,6 +2981,7 @@
                                     <span>FR Δdía ${deltaRsHtml(ticker?.Delta_RS_dia)}</span>
                                     <span>Δsem ${deltaRsHtml(ticker?.Delta_RS_semana)}</span>
                                     <span>Δmes ${deltaRsHtml(ticker?.Delta_RS_mes)}</span>
+                                    ${retsPrecioHtml(ticker, 'Precio 5r', '1m', '3m')}
                                 </div>
                                 ${perfilFuerzaHtml}
                                 <div class="font-mono text-[9px] text-gray-500 mt-1">${betaLineaHtml}</div>
@@ -5753,6 +5757,12 @@
             const num = isFinite(n) ? `<span class="${n > 0 ? 'text-pos' : (n < 0 ? 'text-neg' : 'text-gray-400')}">${n > 0 ? '+' : ''}${n.toFixed(1).replace('.', ',')}%</span>` : '<span class="text-gray-600">—</span>';
             return `<span class="text-[10px] text-gray-500">${rot} ${num}</span>`;
         }
+        // 27/10: rendimiento de PRECIO (no de Fuerza Relativa) a 5 ruedas / 1 mes / 3 meses, para mostrar junto al "% hoy" en fichas y tarjetas.
+        function retsPrecioHtml(r, rot5 = '5 ruedas', rot1 = '1 mes', rot3 = '3 meses') {
+            if (!r) return '';
+            return `<span class="inline-flex flex-wrap gap-x-3" title="Variación del PRECIO en los últimos 5 días de rueda, 1 mes y 3 meses (no es la Fuerza Relativa)">${retChipHtml(r['Ret_5d_%'], rot5)}${retChipHtml(r['Ret_1m_%'], rot1)}${retChipHtml(r['Ret_3m_%'], rot3)}</span>`;
+        }
+        function rankRowDe(t) { return (currentRadarData?.ranking ?? []).find(x => x.Ticker === t) ?? null; }
         function medianaBuscador(arr) {
             const v = arr.filter(x => typeof x === 'number' && isFinite(x)).sort((a, b) => a - b);
             if (!v.length) return null;
