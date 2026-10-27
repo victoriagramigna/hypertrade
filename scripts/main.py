@@ -66,6 +66,7 @@ from zonas_smc import actualizar_zonas, guardar_zonas
 from auditoria_golden_cross import correr_auditoria_golden_cross
 from auditoria_squeeze import correr_auditoria_squeeze
 from niveles_seguimiento import procesar_niveles
+from entradas_seguimiento import procesar_entradas
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -621,6 +622,14 @@ def main():
         procesar_niveles(MODO, os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"))
     except Exception as e:
         log.warning(f"Niveles de seguimiento: falló esta pasada ({e}) -- se sigue con el resto de la corrida")
+
+    # 9b-septies. Seguimiento de la lista de "posible entrada" (ver entradas_seguimiento.py).
+    # ADITIVO: lee data/ultimo.json recién escrito, tiene su propio estado y bitácora
+    # (solo se agrega al final) y no toca ninguna señal ni la Auditoría.
+    try:
+        procesar_entradas(MODO, os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"))
+    except Exception as e:
+        log.warning(f"Entradas en seguimiento: falló esta pasada ({e}) -- se sigue con el resto de la corrida")
 
     # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
     # con Victoria, 30/9): se registra en la bitácora para que la
