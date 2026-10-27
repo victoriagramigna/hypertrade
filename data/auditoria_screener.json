@@ -1,15 +1,20 @@
 {
-  "actualizado": "2026-10-26T23:43:35Z",
-  "dias_registrados": 5,
+  "actualizado": "2026-10-27T22:54:26Z",
+  "dias_registrados": 6,
   "primer_registro": "2026-10-20",
-  "ultimo_registro": "2026-10-26",
+  "ultimo_registro": "2026-10-27",
   "listas": {
     "zona_ma200": {
       "descripcion": "A +/-1% de su SMA200",
       "horizontes": {
         "5": {
-          "n": 0,
-          "dias": 0
+          "n": 20,
+          "dias": 1,
+          "ret_prom_%": -0.39,
+          "vs_spy_pp": -0.47,
+          "vs_universo_pp": 0.77,
+          "pct_positivos": 50.0,
+          "pct_supera_spy": 50.0
         },
         "10": {
           "n": 0,
@@ -25,8 +30,13 @@
       "descripcion": "Sobre su SMA200 con RSI entre 30 y 40",
       "horizontes": {
         "5": {
-          "n": 0,
-          "dias": 0
+          "n": 25,
+          "dias": 1,
+          "ret_prom_%": 1.14,
+          "vs_spy_pp": 1.06,
+          "vs_universo_pp": 2.3,
+          "pct_positivos": 64.0,
+          "pct_supera_spy": 64.0
         },
         "10": {
           "n": 0,
