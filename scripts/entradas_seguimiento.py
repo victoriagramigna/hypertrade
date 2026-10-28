@@ -134,7 +134,7 @@ def _niveles_auto(r, z):
 
 def buscar_candidatos(filas, zonas, excluidos, ctx=None):
     """Activos del universo que cumplen la base (tendencia + fuerza + no sobrecomprado) y además tienen
-    VCP, squeeze o tocan una zona de demanda. Con ctx calcula niveles, riesgo y checklist, y marca los APTOS
+    VCP, squeeze o tocan una zona de demanda. Con ctx calcula niveles y checklist, y marca los APTOS
     (casi todo el checklist en ✔). Ordenados: aptos primero, luego por Radar Score. No son una recomendación."""
     out = []
     for t, r in filas.items():
@@ -159,7 +159,7 @@ def buscar_candidatos(filas, zonas, excluidos, ctx=None):
                 ries = calcular_riesgo(float(r["Precio"]), inv, conf, r, ctx["bw_p33"], ctx["bw_p67"])
                 ch = calcular_checklist(float(r["Precio"]), r, ries, ctx["balances"].get(t), ctx["hoy_ny"], ctx["balances_ok"])
                 fallas = [x["id"] for x in ch["items"] if x["ok"] is False]
-                c.update({"invalidacion": inv, "confirmacion": conf, "riesgo": ries["categoria"], "checklist": ch, "fallas": fallas,
+                c.update({"invalidacion": inv, "confirmacion": conf, "checklist": ch, "fallas": fallas,
                           "dist_invalidacion_pct": round((inv / float(r["Precio"]) - 1) * 100, 2) if inv else None,
                           "dist_confirmacion_pct": round((conf / float(r["Precio"]) - 1) * 100, 2) if conf else None,
                           "apto": bool(inv is not None and conf is not None and "resultados" not in fallas and len(fallas) <= CAND_APTO_MAX_FALLAS)})
@@ -190,7 +190,8 @@ def motivos_salida(item, fila, hoy_ny):
     return m
 
 
-# Categoría de riesgo de la operación (por activo de la lista). Es una guía ordenada con datos del radar, NO un dato validado
+# OJO: la categoría de riesgo (Bajo/Medio/Alto) YA NO SE MUESTRA ni se guarda (se quitó el 27/10), y la recompensa/riesgo tampoco es condición del checklist. calcular_riesgo queda sin uso visible.
+# (Antes:) Categoría de riesgo de la operación (por activo de la lista). Es una guía ordenada con datos del radar, NO un dato validado
 # con backtest: los cortes de distancia a la invalidación y de relación recompensa/riesgo son criterio mío; los de volatilidad
 # salen de los terciles del universo (BB_Bandwidth_%) para que se ajusten solos al mercado.
 RIESGO_DIST = (3.0, 6.0, 10.0)   # % hasta la invalidación: <=3 -> 0 pts, <=6 -> 1, <=10 -> 2, >10 -> 3
@@ -243,9 +244,8 @@ def _dias(desde, hasta):
 
 
 # Checklist de condiciones (se muestra por activo y en el aviso de entrada). Los cortes de FR, RSI y caída del día son los mismos que
-# usa el filtro de candidatos; el de resultados (5 días corridos) y el de recompensa/riesgo (1 a 1) son criterio mío, NO validados con backtest.
+# usa el filtro de candidatos; el de resultados (5 días corridos) es criterio mío, NO validado con backtest. (La recompensa/riesgo se quitó el 27/10: la confirmación valida la idea, no es un objetivo de ganancia.)
 CHK_RESULTADOS_DIAS = 5
-CHK_RR_MIN = 1.0
 
 
 def _proximo_balance(bal_t, hoy_ny):
@@ -289,9 +289,6 @@ def calcular_checklist(precio, fila, riesgo, bal_t, hoy_ny, balances_ok=True):
     vol = fila.get("Vol_rel")
     _add("volumen", "Volumen del día", None if vol is None else vol >= 1.0, "sin dato" if vol is None else f"{vol * 100:.0f}% del promedio",
          "pide el promedio o más (con la rueda abierta es parcial)")
-    rr = (riesgo or {}).get("rr")
-    _add("rr", "Recompensa/riesgo", None if rr is None else rr >= CHK_RR_MIN, "sin dato" if rr is None else f"{rr:.1f} a 1",
-         f"pide {CHK_RR_MIN:.0f} a 1 o más hasta la confirmación")
     pb = _proximo_balance(bal_t, hoy_ny) if balances_ok else None
     res = None
     if not balances_ok:
@@ -322,7 +319,7 @@ def _chk_corto(ch):
     if not ch:
         return ""
     nom = {"tendencia": "tendencia", "fr": "fuerza relativa", "rsi": "RSI", "caida": "sin caída fuerte", "volumen": "volumen",
-           "rr": "recompensa/riesgo", "resultados": "resultados"}
+           "resultados": "resultados"}
     return " ".join(f"{'✔' if x['ok'] else '✖' if x['ok'] is False else '·'} {nom.get(x['id'], x['nombre'])}" for x in ch["items"])
 
 
@@ -332,7 +329,7 @@ def _msg_aptos(nuevos, total_aptos):
         ch = c["checklist"]
         res = ch.get("resultados")
         res_txt = f"Resultados: {res['fecha'][8:10]}/{res['fecha'][5:7]} (en {res['dias']} días)." if res else "Resultados: sin fecha (ETF o sin dato)."
-        lin.append(f"\n<b>{c['ticker']}</b> {_num(c['precio'])} ({c['hoy_pct']:+.1f}% hoy) · Riesgo {c['riesgo']} · {' + '.join(c['marcas'])}\n"
+        lin.append(f"\n<b>{c['ticker']}</b> {_num(c['precio'])} ({c['hoy_pct']:+.1f}% hoy) · {' + '.join(c['marcas'])}\n"
                    f"   Se invalida con un cierre bajo {_num(c['invalidacion'])} ({c['dist_invalidacion_pct']:+.1f}%); confirma sobre {_num(c['confirmacion'])} ({c['dist_confirmacion_pct']:+.1f}%).\n"
                    f"   Condiciones ({ch['cumple']} de {ch['total']}): {_chk_corto(ch)}\n   {res_txt}")
     if len(nuevos) > APTOS_EN_AVISO:
@@ -350,7 +347,7 @@ def _msg_toque(t, nombre, piso, techo, inv, precio):
 def _msg_escenario(t, tipo, precio, nivel, inv, vol, detalle, riesgo=None, checklist=None):
     vol_txt = "" if vol is None else (f"Volumen del día: {vol * 100:.0f}% del promedio" + ("." if vol >= 1.0 else " (por debajo del promedio: sin respaldo de volumen)."))
     cab = "REBOTE en el piso" if tipo == "rebote" else "RUPTURA confirmada"
-    riesgo_txt = (f"Riesgo de la operación: {riesgo['categoria']} (" + "; ".join(f"{d['factor'].lower()} {d['valor']}" for d in riesgo['detalle']) + ").\n   ") if riesgo else ""
+    riesgo_txt = ""   # la categoría de riesgo se quitó de los avisos (pedido de Victoria 27/10)
     return (f"🟢 <b>ESCENARIO DE ENTRADA — {t}</b> ({cab})\n"
             f"   {detalle}\n"
             f"   Cerró en {_num(precio)}, por encima de {_num(nivel)}. {vol_txt}\n"
@@ -507,7 +504,6 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
             "cierres_sobre_confirmacion": cierres_conf, "cierres_bajo_invalidacion": cierres_inv,
             "min_cierre": min_c, "max_cierre": max_c, "cierres_bajo_sma50": cierres_sma,
             "toques": toques, "escenario_entrada": escenario,
-            "riesgo": _riesgo_i,
             "checklist": calcular_checklist(precio, r, _riesgo_i, balances.get(t), hoy_ny, balances_ok),
             "pisos": [{"nombre": n, "piso": a, "techo": b} for n, a, b in pisos],
             "salida_sugerida": motivos_salida({"cierres_bajo_invalidacion": cierres_inv, "cierres_bajo_sma50": cierres_sma,
