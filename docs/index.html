@@ -2658,6 +2658,7 @@
                         <span>${ruedasDesde(i.fecha_alta, i.fecha_dato) ?? '—'} rueda(s) · Desde el alta (${esc(i.fecha_alta)}): <span class="${i.desde_alta_pct > 0 ? 'text-pos' : i.desde_alta_pct < 0 ? 'text-neg' : 'text-gray-400'}">${pct(i.desde_alta_pct)}</span></span>
                         <span>FR ${f(i.fr, 0)}</span><span>RSI ${f(i.rsi, 0)}</span><span>Vol ${f(i.vol_rel)}x</span>
                     </div>
+                    ${(() => { const ev = i.espacio_libre; if (!ev) return ''; if (ev.espacio_pct == null) return '<div class="text-[10px] mt-1 text-gray-500" title="Sin zona de oferta ni máximo de 52 semanas por encima del precio: el espacio no se puede medir.">Espacio libre: sin resistencia conocida arriba</div>'; return `<div class="text-[10px] mt-1 ${ev.menor_que_riesgo ? 'text-accent' : 'text-gray-400'}" title="Distancia hasta la próxima resistencia conocida (zona de oferta o máximo de 52 semanas). Es una medición de niveles, no una proyección de precio ni una recomendación.">Espacio libre hasta ${esc(ev.tipo)} ${f(ev.nivel)}: ${pct(ev.espacio_pct)}${ev.relacion != null ? ` · ${f(ev.relacion)}x el riesgo` : ''}${ev.menor_que_riesgo ? ' · menos espacio que riesgo' : ''}</div>`; })()}
                     <div class="text-[10px] mt-1">${cierres}</div>
                     ${i.checklist ? `<div class="text-[10px] mt-1 text-gray-400">Condiciones: <span class="text-white">${i.checklist.cumple} de ${i.checklist.total}</span> · Resultados: ${resultadosHtml(i)}</div>` : ''}
                     ${escHtml}
