@@ -39,6 +39,7 @@ RUTA_CONFIG = "data/entradas_seguimiento.json"
 RUTA_ESTADO = "data/entradas_estado.json"
 RUTA_LOG = "data/log_entradas.jsonl"
 RUTA_ULTIMO = "data/ultimo.json"
+RUTA_BALANCES = "data/balances_cache.json"
 NY = ZoneInfo("America/New_York")
 MINUTOS_POST_CIERRE = 5
 DIAS_VALIDEZ_TOQUE = 14   # días corridos que vale un toque de piso para el escenario de rebote
@@ -106,15 +107,35 @@ CAND_FR_MIN = 70            # fuerza relativa mínima
 CAND_RSI = (40, 68)         # ni sobrevendido extremo ni sobrecomprado
 CAND_HOY_MIN = -3.0         # sin caída fuerte hoy
 CAND_MAX = 10               # cuántos candidatos se muestran (la lista en sí tiene tope de 30 activos)
+CAND_APTO_MAX_FALLAS = 1    # un activo es APTO si cumple casi todo el checklist: como mucho 1 condición en ✖, y nunca la de resultados cercanos
+APTOS_EN_AVISO = 5          # máximo de aptos detallados en un mismo mensaje de Telegram
 SAL_CIERRES_BAJO_SMA50 = 2  # cierres seguidos bajo la media de 50 ruedas
 SAL_FR_MIN = 50             # fuerza relativa por debajo de este valor
 SAL_DIAS_VENCIDA = 30       # días corridos sin confirmar desde el alta
 SAL_CIERRES_CONFIRMADA = 3  # cierres seguidos sobre la confirmación: el escenario se cumplió
 
 
-def buscar_candidatos(filas, zonas, excluidos):
+def _niveles_auto(r, z):
+    """Niveles automáticos para un activo que no está en la lista (mismo criterio fijo que usé para armarla):
+    invalidación = piso de la zona de demanda (si está por debajo del precio); confirmación = techo de la zona de oferta
+    más cercana por encima del precio o, si no hay, el máximo de 52 semanas."""
+    p = r.get("Precio")
+    zd, zo = (z or {}).get("Zona_Demanda"), (z or {}).get("Zona_Oferta")
+    inv = zd.get("piso") if zd else None
+    if inv is not None and (p is None or inv >= p):
+        inv = None
+    conf = None
+    if zo and p is not None and zo.get("techo") is not None and zo["techo"] > p:
+        conf = zo["techo"]
+    elif p is not None and r.get("Max_52w") and r["Max_52w"] > p:
+        conf = r["Max_52w"]
+    return inv, conf
+
+
+def buscar_candidatos(filas, zonas, excluidos, ctx=None):
     """Activos del universo que cumplen la base (tendencia + fuerza + no sobrecomprado) y además tienen
-    VCP, squeeze o tocan una zona de demanda. Ordenados por Radar Score. No son una recomendación."""
+    VCP, squeeze o tocan una zona de demanda. Con ctx calcula niveles, riesgo y checklist, y marca los APTOS
+    (casi todo el checklist en ✔). Ordenados: aptos primero, luego por Radar Score. No son una recomendación."""
     out = []
     for t, r in filas.items():
         if t in excluidos:
@@ -129,11 +150,24 @@ def buscar_candidatos(filas, zonas, excluidos):
         marcas = [m for m, ok in (("VCP", r.get("VCP_valido")), ("Squeeze", r.get("Squeeze_Comprimido")), ("Toca zona de demanda", toca)) if ok]
         if not marcas:
             continue
-        out.append({"ticker": t, "subcategoria": r.get("Subcategoria"), "precio": r.get("Precio"), "hoy_pct": r.get("Var_dia_%"),
-                    "ret_5d": r.get("Ret_5d_%"), "fr": r.get("RS_Score"), "rsi": r.get("RSI"), "radar_score": r.get("Radar_Score"),
-                    "dist_max52w": r.get("Dist_Max52w_%"), "vol_rel": r.get("Vol_rel"), "marcas": marcas})
-    out.sort(key=lambda c: (c["radar_score"] or 0, len(c["marcas"])), reverse=True)
-    return out[:CAND_MAX]
+        c = {"ticker": t, "subcategoria": r.get("Subcategoria"), "precio": r.get("Precio"), "hoy_pct": r.get("Var_dia_%"),
+             "ret_5d": r.get("Ret_5d_%"), "fr": r.get("RS_Score"), "rsi": r.get("RSI"), "radar_score": r.get("Radar_Score"),
+             "dist_max52w": r.get("Dist_Max52w_%"), "vol_rel": r.get("Vol_rel"), "marcas": marcas, "apto": False}
+        if ctx:
+            try:
+                inv, conf = _niveles_auto(r, zonas.get(t))
+                ries = calcular_riesgo(float(r["Precio"]), inv, conf, r, ctx["bw_p33"], ctx["bw_p67"])
+                ch = calcular_checklist(float(r["Precio"]), r, ries, ctx["balances"].get(t), ctx["hoy_ny"], ctx["balances_ok"])
+                fallas = [x["id"] for x in ch["items"] if x["ok"] is False]
+                c.update({"invalidacion": inv, "confirmacion": conf, "riesgo": ries["categoria"], "checklist": ch, "fallas": fallas,
+                          "dist_invalidacion_pct": round((inv / float(r["Precio"]) - 1) * 100, 2) if inv else None,
+                          "dist_confirmacion_pct": round((conf / float(r["Precio"]) - 1) * 100, 2) if conf else None,
+                          "apto": bool(inv is not None and conf is not None and "resultados" not in fallas and len(fallas) <= CAND_APTO_MAX_FALLAS)})
+            except Exception as e:
+                log.warning(f"Checklist de candidato {t} falló ({e})")
+        out.append(c)
+    out.sort(key=lambda c: (c["apto"], c["radar_score"] or 0, len(c["marcas"])), reverse=True)
+    return out
 
 
 def motivos_salida(item, fila, hoy_ny):
@@ -208,13 +242,112 @@ def _dias(desde, hasta):
         return 9999
 
 
+# Checklist de condiciones (se muestra por activo y en el aviso de entrada). Los cortes de FR, RSI y caída del día son los mismos que
+# usa el filtro de candidatos; el de resultados (5 días corridos) y el de recompensa/riesgo (1 a 1) son criterio mío, NO validados con backtest.
+CHK_RESULTADOS_DIAS = 5
+CHK_RR_MIN = 1.0
+
+
+def _proximo_balance(bal_t, hoy_ny):
+    """(fecha 'YYYY-MM-DD', días corridos hasta ella, 'antes de la apertura'/'después del cierre') o None."""
+    fut = sorted(f for f in ((bal_t or {}).get("fechas") or []) if str(f)[:10] >= hoy_ny)
+    if not fut:
+        return None
+    f0 = str(fut[0])
+    try:
+        h = int(f0[11:13])
+        momento = "antes de la apertura" if h < 12 else "después del cierre"
+    except Exception:
+        momento = None
+    return f0[:10], _dias(hoy_ny, f0[:10]), momento
+
+
+def calcular_checklist(precio, fila, riesgo, bal_t, hoy_ny, balances_ok=True):
+    """Lista de condiciones con ok True / False / None (sin dato). 'cumple' cuenta solo las que tienen dato."""
+    fila = fila or {}
+    it = []
+
+    def _add(id_, nombre, ok, valor, lectura):
+        it.append({"id": id_, "nombre": nombre, "ok": ok, "valor": valor, "lectura": lectura})
+
+    s50, d200 = fila.get("Sobre_SMA50"), fila.get("Dist_SMA200_%")
+    if s50 is None or d200 is None:
+        _add("tendencia", "Tendencia", None, "sin dato", "")
+    else:
+        ok = bool(s50) and d200 > 0
+        _add("tendencia", "Tendencia", ok, f"{'sobre' if s50 else 'bajo'} SMA50 y {d200:+.1f}% vs SMA200",
+             "precio sobre las medias de 50 y 200 ruedas" if ok else "no está sobre las dos medias")
+    fr = fila.get("RS_Score")
+    _add("fr", "Fuerza relativa", None if fr is None else fr >= CAND_FR_MIN, "sin dato" if fr is None else f"{fr:.0f}",
+         f"pide {CAND_FR_MIN} o más")
+    rsi = fila.get("RSI")
+    _add("rsi", "RSI", None if rsi is None else CAND_RSI[0] <= rsi <= CAND_RSI[1], "sin dato" if rsi is None else f"{rsi:.0f}",
+         f"pide entre {CAND_RSI[0]} y {CAND_RSI[1]}")
+    hoy = fila.get("Var_dia_%")
+    _add("caida", "Sin caída fuerte hoy", None if hoy is None else hoy > CAND_HOY_MIN, "sin dato" if hoy is None else f"{hoy:+.1f}%",
+         f"pide más de {CAND_HOY_MIN:.0f}%")
+    vol = fila.get("Vol_rel")
+    _add("volumen", "Volumen del día", None if vol is None else vol >= 1.0, "sin dato" if vol is None else f"{vol * 100:.0f}% del promedio",
+         "pide el promedio o más (con la rueda abierta es parcial)")
+    rr = (riesgo or {}).get("rr")
+    _add("rr", "Recompensa/riesgo", None if rr is None else rr >= CHK_RR_MIN, "sin dato" if rr is None else f"{rr:.1f} a 1",
+         f"pide {CHK_RR_MIN:.0f} a 1 o más hasta la confirmación")
+    pb = _proximo_balance(bal_t, hoy_ny) if balances_ok else None
+    res = None
+    if not balances_ok:
+        _add("resultados", "Resultados trimestrales", None, "sin dato", "no se pudo leer el calendario de balances")
+    elif pb is None:
+        _add("resultados", "Resultados trimestrales", None, "sin fecha", "ETF o sin fecha cargada: verificá aparte")
+    else:
+        fecha, dias, momento = pb
+        res = {"fecha": fecha, "dias": dias, "momento": momento}
+        cuando = "hoy" if dias == 0 else "mañana" if dias == 1 else f"en {dias} días"
+        _add("resultados", "Resultados trimestrales", dias > CHK_RESULTADOS_DIAS, f"{fecha[8:10]}/{fecha[5:7]} ({cuando})",
+             f"pide que falten más de {CHK_RESULTADOS_DIAS} días" + (f"; reporta {momento}" if momento else ""))
+    evaluables = [x for x in it if x["ok"] is not None]
+    return {"cumple": sum(1 for x in evaluables if x["ok"]), "total": len(evaluables), "items": it, "resultados": res}
+
+
+def _txt_checklist(ch):
+    if not ch:
+        return ""
+    lin = []
+    for x in ch["items"]:
+        marca = "✔" if x["ok"] else "✖" if x["ok"] is False else "·"
+        lin.append(f"{marca} {x['nombre']}: {x['valor']}")
+    return f"Condiciones ({ch['cumple']} de {ch['total']}):\n   " + "\n   ".join(lin) + "\n   "
+
+
+def _chk_corto(ch):
+    if not ch:
+        return ""
+    nom = {"tendencia": "tendencia", "fr": "fuerza relativa", "rsi": "RSI", "caida": "sin caída fuerte", "volumen": "volumen",
+           "rr": "recompensa/riesgo", "resultados": "resultados"}
+    return " ".join(f"{'✔' if x['ok'] else '✖' if x['ok'] is False else '·'} {nom.get(x['id'], x['nombre'])}" for x in ch["items"])
+
+
+def _msg_aptos(nuevos, total_aptos):
+    lin = [f"🔎 <b>Candidatos aptos para entrada: {len(nuevos)} nuevo(s)</b> (cumplen casi todas las condiciones al cierre de hoy)"]
+    for c in nuevos[:APTOS_EN_AVISO]:
+        ch = c["checklist"]
+        res = ch.get("resultados")
+        res_txt = f"Resultados: {res['fecha'][8:10]}/{res['fecha'][5:7]} (en {res['dias']} días)." if res else "Resultados: sin fecha (ETF o sin dato)."
+        lin.append(f"\n<b>{c['ticker']}</b> {_num(c['precio'])} ({c['hoy_pct']:+.1f}% hoy) · Riesgo {c['riesgo']} · {' + '.join(c['marcas'])}\n"
+                   f"   Se invalida con un cierre bajo {_num(c['invalidacion'])} ({c['dist_invalidacion_pct']:+.1f}%); confirma sobre {_num(c['confirmacion'])} ({c['dist_confirmacion_pct']:+.1f}%).\n"
+                   f"   Condiciones ({ch['cumple']} de {ch['total']}): {_chk_corto(ch)}\n   {res_txt}")
+    if len(nuevos) > APTOS_EN_AVISO:
+        lin.append(f"\n…y {len(nuevos) - APTOS_EN_AVISO} más: están en la app, sección Seguimiento de entradas.")
+    lin.append("\nSon candidatos según los datos del radar, no una recomendación. El escenario de entrada se da con el cierre (rebote en el piso o ruptura de la confirmación); verificá las noticias antes de decidir.")
+    return "\n".join(lin)
+
+
 def _msg_toque(t, nombre, piso, techo, inv, precio):
     return (f"👀 <b>{t}</b> llegó a su piso ({nombre}: {_num(piso)} a {_num(techo)}). Precio ahora: {_num(precio)}.\n"
             f"   Todavía NO es el escenario de entrada: se da si la rueda CIERRA por encima de {_num(techo)}.\n"
             f"   Si cierra por debajo de {_num(inv)}, la idea se invalida. (La rueda sigue abierta: puede revertirse.)")
 
 
-def _msg_escenario(t, tipo, precio, nivel, inv, vol, detalle, riesgo=None):
+def _msg_escenario(t, tipo, precio, nivel, inv, vol, detalle, riesgo=None, checklist=None):
     vol_txt = "" if vol is None else (f"Volumen del día: {vol * 100:.0f}% del promedio" + ("." if vol >= 1.0 else " (por debajo del promedio: sin respaldo de volumen)."))
     cab = "REBOTE en el piso" if tipo == "rebote" else "RUPTURA confirmada"
     riesgo_txt = (f"Riesgo de la operación: {riesgo['categoria']} (" + "; ".join(f"{d['factor'].lower()} {d['valor']}" for d in riesgo['detalle']) + ").\n   ") if riesgo else ""
@@ -223,7 +356,8 @@ def _msg_escenario(t, tipo, precio, nivel, inv, vol, detalle, riesgo=None):
             f"   Cerró en {_num(precio)}, por encima de {_num(nivel)}. {vol_txt}\n"
             f"   Se invalida con un cierre diario por debajo de {_num(inv)} ({(inv / precio - 1) * 100:+.1f}% desde el cierre).\n"
             f"   {riesgo_txt}"
-            f"Es un escenario según los datos del radar, no una recomendación: verificá noticias y fecha de resultados antes de decidir.")
+            f"{_txt_checklist(checklist)}"
+            f"Es un escenario según los datos del radar, no una recomendación: verificá las noticias antes de decidir.")
 
 
 def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, enviar=True):
@@ -240,6 +374,10 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
     hoy_ny = ny.strftime("%Y-%m-%d")
     post_cierre = ny.weekday() < 5 and ny >= ny.replace(hour=16, minute=MINUTOS_POST_CIERRE, second=0, microsecond=0)
     prev = _cargar(RUTA_ESTADO, {})
+    _bal = _cargar(RUTA_BALANCES, None)
+    balances_ok = isinstance(_bal, dict) and isinstance(_bal.get("por_ticker"), dict)
+    balances = _bal["por_ticker"] if balances_ok else {}
+    balances_actualizado = _bal.get("actualizado") if balances_ok else None
     prev_items = {i["ticker"]: i for i in prev.get("items", [])} if isinstance(prev, dict) else {}
     ts = ahora.isoformat()
     items, eventos, mensajes = [], [], []
@@ -339,7 +477,8 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
                 nuevo_esc.update({"fecha": hoy_ny, "precio": round(precio, 2), "vol_rel": vol})
                 if not (escenario and escenario.get("tipo") == nuevo_esc["tipo"]):
                     mensajes.append(_msg_escenario(t, nuevo_esc["tipo"], precio, nuevo_esc["nivel"], nuevo_esc.get("inv") or (inv if inv is not None else nuevo_esc["nivel"]), vol, nuevo_esc["detalle"],
-                                                 calcular_riesgo(precio, nuevo_esc.get("inv") or inv, conf, r, bw_p33, bw_p67)))
+                                                 calcular_riesgo(precio, nuevo_esc.get("inv") or inv, conf, r, bw_p33, bw_p67),
+                                                 calcular_checklist(precio, r, calcular_riesgo(precio, nuevo_esc.get("inv") or inv, conf, r, bw_p33, bw_p67), balances.get(t), hoy_ny, balances_ok)))
                     eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": t, "evento": "escenario_entrada", "tipo": nuevo_esc["tipo"],
                                     "precio": round(precio, 2), "nivel": nuevo_esc["nivel"], "vol_rel": vol})
                 escenario = nuevo_esc
@@ -352,6 +491,7 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
 
         # estado que se muestra: el vivo (con el precio de la última corrida). Los cierres se cuentan aparte.
         mostrado = estado_vivo
+        _riesgo_i = calcular_riesgo(precio, inv, conf, r, bw_p33, bw_p67)
         items.append({
             "ticker": t, "motivo": it.get("motivo"), "vigilar": it.get("vigilar", []), "nota": it.get("nota"),
             "confirmacion": {"nivel": conf, "texto": (it.get("confirmacion") or {}).get("texto")},
@@ -367,26 +507,42 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
             "cierres_sobre_confirmacion": cierres_conf, "cierres_bajo_invalidacion": cierres_inv,
             "min_cierre": min_c, "max_cierre": max_c, "cierres_bajo_sma50": cierres_sma,
             "toques": toques, "escenario_entrada": escenario,
-            "riesgo": calcular_riesgo(precio, inv, conf, r, bw_p33, bw_p67),
+            "riesgo": _riesgo_i,
+            "checklist": calcular_checklist(precio, r, _riesgo_i, balances.get(t), hoy_ny, balances_ok),
             "pisos": [{"nombre": n, "piso": a, "techo": b} for n, a, b in pisos],
             "salida_sugerida": motivos_salida({"cierres_bajo_invalidacion": cierres_inv, "cierres_bajo_sma50": cierres_sma,
                                                "cierres_sobre_confirmacion": cierres_conf, "fecha_alta": fecha_alta}, r, hoy_ny),
         })
 
-    candidatos = buscar_candidatos(filas, zonas, {i["ticker"] for i in lista})
+    _ctx = {"bw_p33": bw_p33, "bw_p67": bw_p67, "balances": balances, "balances_ok": balances_ok, "hoy_ny": hoy_ny}
+    todos_cand = buscar_candidatos(filas, zonas, {i["ticker"] for i in lista}, _ctx)
+    candidatos = todos_cand[:CAND_MAX]
     # bitácora de candidatos y salidas sugeridas: una vez por día, con el primer cierre (para medirlos después)
     log_dia = prev.get("log_candidatos_fecha") if isinstance(prev, dict) else None
     hay_cierre = post_cierre and any(f.get("Fecha_dato") == hoy_ny for f in list(filas.values())[:5])
     if hay_cierre and log_dia != hoy_ny:
         for c in candidatos:
             eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": c["ticker"], "evento": "candidato", "precio": c["precio"],
-                            "fr": c["fr"], "rsi": c["rsi"], "radar_score": c["radar_score"], "marcas": c["marcas"]})
+                            "fr": c["fr"], "rsi": c["rsi"], "radar_score": c["radar_score"], "marcas": c["marcas"],
+                            "apto": c.get("apto"), "fallas": c.get("fallas"), "invalidacion": c.get("invalidacion"), "confirmacion": c.get("confirmacion")})
         for i in items:
             if i.get("salida_sugerida"):
                 eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": i["ticker"], "evento": "salida_sugerida",
                                 "precio": i["precio"], "motivos": i["salida_sugerida"]})
+        # aviso de aptos: una vez por día, con el primer cierre, solo los que no estaban aptos en el cierre anterior
+        aptos_hoy = [c for c in todos_cand if c.get("apto")]
+        aptos_prev = set(prev.get("aptos_ultimo_cierre") or []) if isinstance(prev, dict) else set()
+        nuevos = [c for c in aptos_hoy if c["ticker"] not in aptos_prev]
+        if nuevos:
+            mensajes.append(_msg_aptos(nuevos, len(aptos_hoy)))
+            for c in nuevos:
+                eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": c["ticker"], "evento": "apto_nuevo", "precio": c["precio"],
+                                "cumple": c["checklist"]["cumple"], "total": c["checklist"]["total"], "fallas": c["fallas"]})
+        aptos_cierre = [c["ticker"] for c in aptos_hoy]
         log_dia = hoy_ny
-    salida = {"actualizado": ts, "items": items, "candidatos": candidatos, "log_candidatos_fecha": log_dia}
+    else:
+        aptos_cierre = list(prev.get("aptos_ultimo_cierre") or []) if isinstance(prev, dict) else []
+    salida = {"actualizado": ts, "items": items, "candidatos": candidatos, "log_candidatos_fecha": log_dia, "aptos_ultimo_cierre": aptos_cierre, "balances_actualizado": balances_actualizado}
     enviados = 0
     if modo == "produccion":
         if enviar:
