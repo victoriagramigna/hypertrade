@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-10-27T22:55:49.230758+00:00",
+  "actualizado": "2026-10-28T02:44:28.128828+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -32,7 +32,7 @@
       "dist_confirmacion_pct": 1.97,
       "dist_invalidacion_pct": -1.82,
       "rsi": 66.4,
-      "fr": 57.1,
+      "fr": 57.2,
       "vol_rel": 0.91,
       "beta": 0.62,
       "estado": "esperando",
@@ -70,6 +70,66 @@
           }
         ],
         "rr": 1.08
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +0.1% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": false,
+            "valor": "57",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+1.0%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "91% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "1.1 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "03/11 (en 7 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-03",
+          "dias": 7,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -112,7 +172,7 @@
       "dist_invalidacion_pct": -6.14,
       "rsi": 48.1,
       "fr": 95.4,
-      "vol_rel": 1.28,
+      "vol_rel": 1.29,
       "beta": -0.55,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -149,6 +209,66 @@
           }
         ],
         "rr": 0.59
+      },
+      "checklist": {
+        "cumple": 4,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +37.4% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "95",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "48",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": false,
+            "valor": "-7.0%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "129% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.6 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "28/10 (mañana)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-28",
+          "dias": 1,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -195,8 +315,8 @@
       "dist_confirmacion_pct": 2.31,
       "dist_invalidacion_pct": -2.92,
       "rsi": 59.6,
-      "fr": 80.4,
-      "vol_rel": 0.97,
+      "fr": 80.6,
+      "vol_rel": 0.98,
       "beta": 0.84,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -233,6 +353,62 @@
           }
         ],
         "rr": 0.79
+      },
+      "checklist": {
+        "cumple": 4,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +15.3% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "81",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "60",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+1.7%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "98% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
+          }
+        ],
+        "resultados": null
       },
       "pisos": [
         {
@@ -321,6 +497,66 @@
         ],
         "rr": 0.45
       },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +42.1% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "98",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "52",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+0.7%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "54% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.5 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "02/12 (en 36 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-12-02",
+          "dias": 36,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -362,7 +598,7 @@
       "dist_invalidacion_pct": -7.19,
       "rsi": 53.5,
       "fr": 97.1,
-      "vol_rel": 0.86,
+      "vol_rel": 0.89,
       "beta": 3.69,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -407,6 +643,66 @@
           }
         ],
         "rr": 1.0
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +29.6% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "97",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "54",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.1%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "89% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "1.0 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "02/11 (en 6 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-02",
+          "dias": 6,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -487,6 +783,66 @@
         ],
         "rr": 1.26
       },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +39.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "97",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "57",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-1.5%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "96% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "1.3 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "24/11 (en 28 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-24",
+          "dias": 28,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -527,7 +883,7 @@
       "dist_confirmacion_pct": 2.27,
       "dist_invalidacion_pct": -2.42,
       "rsi": 64.6,
-      "fr": 86.2,
+      "fr": 86.1,
       "vol_rel": 0.91,
       "beta": 0.16,
       "estado": "esperando",
@@ -565,6 +921,66 @@
           }
         ],
         "rr": 0.94
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +23.3% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "86",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "65",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.4%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "91% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "02/11 (en 6 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-02",
+          "dias": 6,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -645,6 +1061,66 @@
         ],
         "rr": 0.88
       },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +27.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "92",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "55",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+2.6%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "39% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "03/11 (en 7 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-03",
+          "dias": 7,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -685,8 +1161,8 @@
       "dist_confirmacion_pct": 18.34,
       "dist_invalidacion_pct": -2.91,
       "rsi": 39.9,
-      "fr": 78.4,
-      "vol_rel": 1.26,
+      "fr": 78.6,
+      "vol_rel": 1.27,
       "beta": -0.86,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -725,6 +1201,66 @@
           }
         ],
         "rr": 6.29
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +20.6% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "79",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": false,
+            "valor": "40",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.9%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "127% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "6.3 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "10/11 (en 14 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-10",
+          "dias": 14,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -766,8 +1302,8 @@
       "dist_confirmacion_pct": 1.33,
       "dist_invalidacion_pct": -2.45,
       "rsi": 64.3,
-      "fr": 79.5,
-      "vol_rel": 1.0,
+      "fr": 79.8,
+      "vol_rel": 1.02,
       "beta": -0.11,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -804,6 +1340,66 @@
           }
         ],
         "rr": 0.55
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +17.7% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "80",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "64",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+0.9%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "102% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.6 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "02/11 (en 6 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-02",
+          "dias": 6,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -890,6 +1486,66 @@
         ],
         "rr": 0.88
       },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +62.3% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "99",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "51",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+2.4%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "85% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "01/12 (en 35 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-12-01",
+          "dias": 35,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -930,7 +1586,7 @@
       "dist_confirmacion_pct": 12.66,
       "dist_invalidacion_pct": -3.29,
       "rsi": 55.7,
-      "fr": 85.3,
+      "fr": 85.5,
       "vol_rel": 0.97,
       "beta": 2.59,
       "estado": "en_zona",
@@ -976,6 +1632,66 @@
           }
         ],
         "rr": 3.85
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +11.1% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "86",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "56",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": false,
+            "valor": "-4.1%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "97% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "3.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "04/11 (en 8 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-04",
+          "dias": 8,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1055,6 +1771,66 @@
           }
         ],
         "rr": 0.86
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +50.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "98",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "49",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+2.9%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "90% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "19/11 (en 23 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-19",
+          "dias": 23,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1137,6 +1913,66 @@
         ],
         "rr": 2.55
       },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +87.9% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "100",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "67",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-1.8%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "73% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "2.5 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "05/11 (en 9 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-05",
+          "dias": 9,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -1178,7 +2014,7 @@
       "dist_invalidacion_pct": -1.39,
       "rsi": 58.1,
       "fr": 94.8,
-      "vol_rel": 1.5,
+      "vol_rel": 1.54,
       "beta": 0.2,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -1217,6 +2053,66 @@
           }
         ],
         "rr": 4.5
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +37.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "95",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "58",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": false,
+            "valor": "-3.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "154% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "4.5 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "19/11 (en 23 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-19",
+          "dias": 23,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -1258,7 +2154,7 @@
       "dist_confirmacion_pct": 8.36,
       "dist_invalidacion_pct": -18.31,
       "rsi": 62.0,
-      "fr": 70.0,
+      "fr": 70.2,
       "vol_rel": 1.07,
       "beta": 1.7,
       "estado": "esperando",
@@ -1296,6 +2192,66 @@
           }
         ],
         "rr": 0.46
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +3.0% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "70",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "62",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+3.3%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "107% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.5 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "18/12 (en 52 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-12-18",
+          "dias": 52,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -1338,7 +2294,7 @@
       "dist_invalidacion_pct": -14.45,
       "rsi": 65.5,
       "fr": 93.4,
-      "vol_rel": 1.01,
+      "vol_rel": 1.02,
       "beta": 0.64,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -1377,6 +2333,66 @@
           }
         ],
         "rr": 0.77
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +21.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "93",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-2.7%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "102% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "02/12 (en 36 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-12-02",
+          "dias": 36,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1418,7 +2434,7 @@
       "dist_confirmacion_pct": 8.04,
       "dist_invalidacion_pct": -2.86,
       "rsi": 51.5,
-      "fr": 83.0,
+      "fr": 83.2,
       "vol_rel": 0.97,
       "beta": -0.31,
       "estado": "en_zona",
@@ -1458,6 +2474,66 @@
           }
         ],
         "rr": 2.81
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +15.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "83",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "52",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+0.4%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "97% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "2.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "03/11 (en 7 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-03",
+          "dias": 7,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1538,6 +2614,66 @@
         ],
         "rr": 0.48
       },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +26.2% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "93",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "62",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+1.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "75% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.5 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "28/01 (en 93 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-01-28",
+          "dias": 93,
+          "momento": "antes de la apertura"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -1578,7 +2714,7 @@
       "dist_confirmacion_pct": 3.73,
       "dist_invalidacion_pct": -6.1,
       "rsi": 50.9,
-      "fr": 85.0,
+      "fr": 85.3,
       "vol_rel": 0.97,
       "beta": 2.18,
       "estado": "esperando",
@@ -1623,6 +2759,66 @@
         ],
         "rr": 0.61
       },
+      "checklist": {
+        "cumple": 4,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +21.9% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "85",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "51",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "97% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.6 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "28/10 (mañana)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-28",
+          "dias": 1,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -1664,7 +2860,7 @@
       "dist_invalidacion_pct": -4.98,
       "rsi": 67.2,
       "fr": 87.0,
-      "vol_rel": 0.85,
+      "vol_rel": 0.86,
       "beta": 0.18,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -1701,6 +2897,66 @@
           }
         ],
         "rr": 0.18
+      },
+      "checklist": {
+        "cumple": 4,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +15.3% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "87",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "67",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+0.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "86% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.2 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "29/10 (en 2 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-29",
+          "dias": 2,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1787,6 +3043,66 @@
         ],
         "rr": 1.02
       },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +148.0% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "100",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "54",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+4.6%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "87% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "1.0 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "06/11 (en 10 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-06",
+          "dias": 10,
+          "momento": "antes de la apertura"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -1827,7 +3143,7 @@
       "dist_confirmacion_pct": 5.63,
       "dist_invalidacion_pct": -7.35,
       "rsi": 58.1,
-      "fr": 80.7,
+      "fr": 80.9,
       "vol_rel": 1.24,
       "beta": 1.97,
       "estado": "esperando",
@@ -1865,6 +3181,66 @@
           }
         ],
         "rr": 0.77
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +9.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "81",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "58",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+2.5%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "124% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "04/11 (en 8 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-04",
+          "dias": 8,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -1906,8 +3282,8 @@
       "dist_confirmacion_pct": -0.63,
       "dist_invalidacion_pct": -9.64,
       "rsi": 57.2,
-      "fr": 76.9,
-      "vol_rel": 1.22,
+      "fr": 77.2,
+      "vol_rel": 1.23,
       "beta": 1.83,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
@@ -1945,6 +3321,66 @@
           }
         ],
         "rr": null
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +15.4% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "77",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "57",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+4.3%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "123% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": null,
+            "valor": "sin dato",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "24/11 (en 28 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-24",
+          "dias": 28,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -1986,7 +3422,7 @@
       "dist_confirmacion_pct": 3.02,
       "dist_invalidacion_pct": -1.29,
       "rsi": 40.9,
-      "fr": 72.0,
+      "fr": 72.3,
       "vol_rel": 0.71,
       "beta": 1.31,
       "estado": "en_zona",
@@ -2026,6 +3462,62 @@
           }
         ],
         "rr": 2.34
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +9.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "72",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "41",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+1.1%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "71% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "2.3 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
+          }
+        ],
+        "resultados": null
       },
       "pisos": [
         {
@@ -2067,7 +3559,7 @@
       "dist_confirmacion_pct": 2.48,
       "dist_invalidacion_pct": -1.86,
       "rsi": 61.9,
-      "fr": 73.5,
+      "fr": 73.7,
       "vol_rel": 0.74,
       "beta": 0.74,
       "estado": "esperando",
@@ -2105,6 +3597,66 @@
           }
         ],
         "rr": 1.33
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +12.7% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "74",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "62",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-1.5%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "74% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "1.3 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "04/02 (en 100 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-02-04",
+          "dias": 100,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -2146,7 +3698,7 @@
       "dist_confirmacion_pct": 21.19,
       "dist_invalidacion_pct": -4.4,
       "rsi": 65.1,
-      "fr": 84.4,
+      "fr": 84.7,
       "vol_rel": 0.88,
       "beta": -0.98,
       "estado": "en_zona",
@@ -2186,6 +3738,66 @@
           }
         ],
         "rr": 4.81
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +11.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "85",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "65",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-3.0%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "88% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "4.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "09/02 (en 105 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-02-09",
+          "dias": 105,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -2227,7 +3839,7 @@
       "dist_confirmacion_pct": 3.54,
       "dist_invalidacion_pct": -0.44,
       "rsi": 65.6,
-      "fr": 74.1,
+      "fr": 74.3,
       "vol_rel": 0.71,
       "beta": -1.13,
       "estado": "en_zona",
@@ -2267,6 +3879,66 @@
           }
         ],
         "rr": 8.13
+      },
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +9.8% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "74",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "71% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "8.1 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "29/10 (en 2 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-29",
+          "dias": 2,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -2308,7 +3980,7 @@
       "dist_confirmacion_pct": 12.36,
       "dist_invalidacion_pct": -0.08,
       "rsi": 66.2,
-      "fr": 70.9,
+      "fr": 71.1,
       "vol_rel": 0.9,
       "beta": -0.29,
       "estado": "en_zona",
@@ -2348,6 +4020,66 @@
           }
         ],
         "rr": 160.8
+      },
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +5.2% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "71",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.8%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "90% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "160.8 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "09/02 (en 105 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-02-09",
+          "dias": 105,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -2389,7 +4121,7 @@
       "dist_confirmacion_pct": 5.76,
       "dist_invalidacion_pct": -9.03,
       "rsi": 54.7,
-      "fr": 68.0,
+      "fr": 68.2,
       "vol_rel": 0.6,
       "beta": 2.06,
       "estado": "esperando",
@@ -2434,6 +4166,66 @@
         ],
         "rr": 0.64
       },
+      "checklist": {
+        "cumple": 4,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +6.0% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": false,
+            "valor": "68",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "55",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.7%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "60% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.6 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "24/11 (en 28 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-24",
+          "dias": 28,
+          "momento": "después del cierre"
+        }
+      },
       "pisos": [
         {
           "nombre": "zona de demanda",
@@ -2446,49 +4238,88 @@
   ],
   "candidatos": [
     {
-      "ticker": "JCI",
-      "subcategoria": "Industriales",
-      "precio": 155.88,
-      "hoy_pct": 5.68,
-      "ret_5d": 5.37,
-      "fr": 71.2,
-      "rsi": 49.9,
-      "radar_score": 65.9,
-      "dist_max52w": -2.8,
-      "vol_rel": 1.66,
-      "marcas": [
-        "Toca zona de demanda"
-      ]
-    },
-    {
-      "ticker": "CIBR",
-      "subcategoria": null,
-      "precio": 109.65,
-      "hoy_pct": 1.13,
-      "ret_5d": 9.21,
-      "fr": 95.7,
-      "rsi": 55.7,
-      "radar_score": 54.7,
-      "dist_max52w": -0.9,
-      "vol_rel": 0.61,
-      "marcas": [
-        "Toca zona de demanda"
-      ]
-    },
-    {
       "ticker": "CAH",
       "subcategoria": "Distribución/servicios de salud",
       "precio": 246.45,
       "hoy_pct": -2.02,
       "ret_5d": -4.31,
-      "fr": 83.3,
+      "fr": 83.5,
       "rsi": 65.5,
-      "radar_score": 53.5,
+      "radar_score": 53.8,
       "dist_max52w": -4.9,
-      "vol_rel": 0.93,
+      "vol_rel": 0.96,
       "marcas": [
         "Toca zona de demanda"
-      ]
+      ],
+      "apto": true,
+      "invalidacion": 241.18,
+      "confirmacion": 257.701,
+      "riesgo": "Bajo",
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +11.7% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "84",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-2.0%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "96% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "2.1 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "05/11 (en 9 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-11-05",
+          "dias": 9,
+          "momento": "antes de la apertura"
+        }
+      },
+      "fallas": [
+        "volumen"
+      ],
+      "dist_invalidacion_pct": -2.14,
+      "dist_confirmacion_pct": 4.57
     },
     {
       "ticker": "TSLA",
@@ -2503,7 +4334,242 @@
       "vol_rel": 1.2,
       "marcas": [
         "Toca zona de demanda"
-      ]
+      ],
+      "apto": true,
+      "invalidacion": 377.32,
+      "confirmacion": 436.3,
+      "riesgo": "Alto",
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +5.6% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "90",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "62",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+4.0%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "120% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "1.0 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "27/01 (en 92 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-01-27",
+          "dias": 92,
+          "momento": "después del cierre"
+        }
+      },
+      "fallas": [
+        "rr"
+      ],
+      "dist_invalidacion_pct": -7.4,
+      "dist_confirmacion_pct": 7.08
+    },
+    {
+      "ticker": "JCI",
+      "subcategoria": "Industriales",
+      "precio": 155.88,
+      "hoy_pct": 5.68,
+      "ret_5d": 5.37,
+      "fr": 71.4,
+      "rsi": 49.9,
+      "radar_score": 65.9,
+      "dist_max52w": -2.8,
+      "vol_rel": 1.66,
+      "marcas": [
+        "Toca zona de demanda"
+      ],
+      "apto": false,
+      "invalidacion": 144.98,
+      "confirmacion": 160.41,
+      "riesgo": "Alto",
+      "checklist": {
+        "cumple": 5,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +11.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "71",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "50",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+5.7%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "166% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.4 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "27/10 (hoy)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-27",
+          "dias": 0,
+          "momento": "antes de la apertura"
+        }
+      },
+      "fallas": [
+        "rr",
+        "resultados"
+      ],
+      "dist_invalidacion_pct": -6.99,
+      "dist_confirmacion_pct": 2.91
+    },
+    {
+      "ticker": "CIBR",
+      "subcategoria": null,
+      "precio": 109.65,
+      "hoy_pct": 1.13,
+      "ret_5d": 9.21,
+      "fr": 95.7,
+      "rsi": 55.7,
+      "radar_score": 54.8,
+      "dist_max52w": -0.9,
+      "vol_rel": 0.62,
+      "marcas": [
+        "Toca zona de demanda"
+      ],
+      "apto": false,
+      "invalidacion": 106.24,
+      "confirmacion": 110.68,
+      "riesgo": "Medio",
+      "checklist": {
+        "cumple": 4,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +32.7% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "96",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "56",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+1.1%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "62% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": false,
+            "valor": "0.3 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
+          }
+        ],
+        "resultados": null
+      },
+      "fallas": [
+        "volumen",
+        "rr"
+      ],
+      "dist_invalidacion_pct": -3.11,
+      "dist_confirmacion_pct": 0.94
     },
     {
       "ticker": "KO",
@@ -2511,15 +4577,86 @@
       "precio": 91.18,
       "hoy_pct": -1.64,
       "ret_5d": -2.47,
-      "fr": 72.3,
+      "fr": 72.5,
       "rsi": 66.5,
-      "radar_score": 49.0,
+      "radar_score": 49.1,
       "dist_max52w": -4.4,
       "vol_rel": 1.04,
       "marcas": [
         "Toca zona de demanda"
-      ]
+      ],
+      "apto": false,
+      "invalidacion": 90.56,
+      "confirmacion": 93.6,
+      "riesgo": "Bajo",
+      "checklist": {
+        "cumple": 6,
+        "total": 7,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +12.5% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "72",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "66",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-1.6%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "104% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "rr",
+            "nombre": "Recompensa/riesgo",
+            "ok": true,
+            "valor": "3.9 a 1",
+            "lectura": "pide 1 a 1 o más hasta la confirmación"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": false,
+            "valor": "27/10 (hoy)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2026-10-27",
+          "dias": 0,
+          "momento": "antes de la apertura"
+        }
+      },
+      "fallas": [
+        "resultados"
+      ],
+      "dist_invalidacion_pct": -0.68,
+      "dist_confirmacion_pct": 2.65
     }
   ],
-  "log_candidatos_fecha": "2026-10-27"
+  "log_candidatos_fecha": "2026-10-27",
+  "aptos_ultimo_cierre": [],
+  "balances_actualizado": "2026-10-27"
 }
