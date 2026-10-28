@@ -2519,6 +2519,50 @@
             } catch (e) { entradasEstado = null; }
             renderEntradas();
         }
+        // Distancias del precio a cada nivel (en %, con signo): zona = cuánto debería bajar para tocar el techo de la zona (0 si ya está adentro; negativo-grande si está bajo el piso)
+        function dZonaDe(i) {
+            const z = i.zona, p = i.precio;
+            if (!z || p == null || z.techo == null) return null;
+            if (p > z.techo) return (z.techo / p - 1) * 100;
+            return 0;
+        }
+        function dNivelDe(i, k) {
+            const n = i[k]?.nivel, p = i.precio;
+            if (n == null || p == null || !p) return null;
+            return (n / p - 1) * 100;
+        }
+        // Candidatos fuera de la lista (los busca el radar en todo el universo); los APTOS cumplen casi todo el checklist
+        function renderCandidatosEntradas() {
+            const candEl = document.getElementById('entradas-candidatos');
+            if (!candEl) return;
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+            const pct = (x) => (x == null || Number.isNaN(Number(x))) ? '—' : `${x > 0 ? '+' : ''}${Number(x).toFixed(1).replace('.', ',')}%`;
+            const esc = (x) => String(x ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            const cands = Array.isArray(entradasEstado?.candidatos) ? entradasEstado.candidatos : [];
+            const aptos = cands.filter(c => c.apto).length;
+            const colR = { 'Bajo': 'text-pos', 'Medio': 'text-gray-200', 'Alto': 'text-accent', 'Muy alto': 'text-neg' };
+            candEl.innerHTML = cands.length ? `<details class="mt-3" ${aptos ? 'open' : ''}><summary class="cursor-pointer font-mono text-[11px] ${aptos ? 'text-pos' : 'text-gray-400'}">🔎 Candidatos del universo para entrada (${cands.length}${aptos ? ` · ${aptos} apto${aptos > 1 ? 's' : ''}` : ''})</summary>
+                <div class="font-mono text-[10px] text-gray-500 my-1 leading-relaxed">Activos que no están en tu lista y hoy cumplen la base: sobre las medias de 50 y 200 ruedas, fuerza relativa de 70 o más, RSI entre 40 y 68, sin caída fuerte hoy, y además VCP, squeeze o toque de zona de demanda. <span class="text-pos">APTO</span> = cumple casi todo el checklist (como mucho una condición en ✖, nunca la de resultados cercanos) y tiene niveles de invalidación y confirmación. El radar te avisa por Telegram cuando aparece un apto nuevo, al cierre. Criterio mío, sin validar con backtest. Son para mirar, no una recomendación.</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">${cands.map(c => `<div class="bg-surface border ${c.apto ? 'border-pos' : 'border-gray-800'} rounded-sm px-2 py-1.5 font-mono text-[10px] hover:border-accent">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="abrirFicha('${esc(c.ticker)}')"><span class="flex items-center gap-1.5">${logoTicker(c.ticker, 16)}<span class="text-white font-bold text-xs">${esc(c.ticker)}</span><span class="text-white">${f(c.precio)}</span> ${hoyPctHtml(c.hoy_pct, true)}</span>${c.apto ? '<span class="text-pos border border-pos rounded-sm px-1">APTO</span>' : `<span class="text-gray-500">Radar ${f(c.radar_score, 0)}</span>`}</div>
+                    <div class="text-gray-400 mt-0.5">${(c.marcas ?? []).map(esc).join(', ')} · FR ${f(c.fr, 0)} · RSI ${f(c.rsi, 0)}${c.riesgo ? ` · Riesgo <span class="${colR[c.riesgo] ?? ''}">${esc(c.riesgo)}</span>` : ''}</div>
+                    ${c.checklist ? `<div class="text-gray-400 mt-0.5">Condiciones: <span class="text-white">${c.checklist.cumple} de ${c.checklist.total}</span> · Resultados: ${resultadosHtml(c)}</div>` : ''}
+                    ${c.invalidacion != null && c.confirmacion != null ? `<div class="text-gray-400 mt-0.5"><span class="text-neg">Invalida &lt; ${f(c.invalidacion)} (${pct(c.dist_invalidacion_pct)})</span> · <span class="text-pos">Confirma &gt; ${f(c.confirmacion)} (${pct(c.dist_confirmacion_pct)})</span></div>` : '<div class="text-gray-600 mt-0.5">Sin zona de demanda por debajo: sin niveles automáticos.</div>'}
+                    ${c.checklist ? `<details class="mt-0.5 text-gray-400"><summary class="cursor-pointer text-gray-500">Ver condiciones</summary>${checklistHtml(c.checklist)}</details>` : ''}</div>`).join('')}</div></details>` : '';
+        }
+
+        // Checklist de condiciones por activo (lo calcula el radar): ✔ cumple, ✖ no cumple, · sin dato
+        function checklistHtml(ch) {
+            if (!ch || !Array.isArray(ch.items)) return '';
+            const esc2 = (x) => String(x ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            return `<ul class="mt-0.5 space-y-0.5">${ch.items.map(x => `<li><span class="${x.ok === true ? 'text-pos' : x.ok === false ? 'text-neg' : 'text-gray-600'}">${x.ok === true ? '✔' : x.ok === false ? '✖' : '·'}</span> ${esc2(x.nombre)}: <span class="text-white">${esc2(x.valor)}</span> <span class="text-gray-600">· ${esc2(x.lectura)}</span></li>`).join('')}</ul>`;
+        }
+        function resultadosHtml(i) {
+            const r = i.checklist?.resultados;
+            if (!r) return '<span class="text-gray-600">—</span>';
+            const cuando = r.dias === 0 ? 'hoy' : r.dias === 1 ? 'mañana' : `${r.dias} d`;
+            return `<span class="${r.dias <= 5 ? 'text-accent font-bold' : 'text-gray-300'}" title="${r.momento ? 'Reporta ' + r.momento : ''}">${r.fecha.slice(8, 10)}/${r.fecha.slice(5, 7)} · ${cuando}</span>`;
+        }
         function renderEntradas() {
             const cont = document.getElementById('entradas-container');
             if (!cont) return;
@@ -2547,30 +2591,34 @@
                 const colRiesgo = { 'Bajo': 'text-pos', 'Medio': 'text-gray-200', 'Alto': 'text-accent', 'Muy alto': 'text-neg' };
                 const filas = items.map(i => ({ i, ruedas: ruedasDesde(i.fecha_alta, i.fecha_dato) }));
                 const val = { ticker: x => x.i.ticker, ruedas: x => x.ruedas ?? -1, riesgo: x => (ordRiesgo[x.i.riesgo?.categoria] ?? 9) * 100 + (x.i.riesgo?.puntos ?? 0),
-                              ppc: x => x.i.precio_alta ?? 0, cierre: x => x.i.precio ?? 0, pnl: x => x.i.desde_alta_pct ?? -999, hoy: x => x.i.hoy_pct ?? -999,
+                              cierre: x => x.i.precio ?? 0, hoy: x => x.i.hoy_pct ?? -999, cumple: x => x.i.checklist ? x.i.checklist.cumple : -1, result: x => x.i.checklist?.resultados?.dias ?? 9999, zona: x => dZonaDe(x.i) ?? 999, conf: x => dNivelDe(x.i, 'confirmacion') ?? 999, inv: x => -Math.abs(dNivelDe(x.i, 'invalidacion') ?? 999),
                               estado: x => (x.i.escenario_entrada ? 0 : 1) };
                 const g = val[_entradasOrden.col] ?? val.riesgo;
                 filas.sort((a, b) => { const A = g(a), B = g(b); const r = (A < B ? -1 : A > B ? 1 : 0); return _entradasOrden.asc ? r : -r; });
                 const th = (col, txt, cls = '') => `<th class="py-1 px-1 font-normal cursor-pointer select-none ${cls}" onclick="entradasOrdenar('${col}')">${txt}${_entradasOrden.col === col ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>`;
                 const pc = (x) => x == null ? '<span class="text-gray-600">—</span>' : `<span class="${x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400'}">${x > 0 ? '+' : ''}${Number(x).toFixed(2).replace('.', ',')}%</span>`;
-                cont.className = 'overflow-x-auto';
-                cont.innerHTML = `<table class="w-full font-mono text-[11px] border-collapse"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
-                    ${th('ticker', 'Ticker')}${th('ruedas', 'Ruedas', 'text-center')}${th('riesgo', 'Riesgo')}${th('ppc', 'PPC', 'text-right')}${th('cierre', 'Cierre', 'text-right')}${th('pnl', 'PNL', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('estado', 'Estado')}</tr></thead><tbody>
+                cont.className = 'overflow-x-auto ancho';
+                cont.style.overflowX = 'auto'; cont.style.webkitOverflowScrolling = 'touch';
+                cont.innerHTML = `<div class="font-mono text-[10px] text-gray-600 mb-1">↔ Deslizá la tabla hacia los costados para ver todas las columnas.</div><table class="w-full font-mono text-[11px] border-collapse whitespace-nowrap"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
+                    <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;background:#121722;z-index:6" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('riesgo', 'Riesgo')}${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}</tr></thead><tbody>
                     ${filas.map(({ i, ruedas }) => `<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
-                        <td class="py-1 px-1 text-white font-bold">${esc(i.ticker)}</td>
-                        <td class="py-1 px-1 text-center text-gray-300">${ruedas ?? '—'}</td>
+                        <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}</td>
                         <td class="py-1 px-1 ${colRiesgo[i.riesgo?.categoria] ?? 'text-gray-400'}">${esc(i.riesgo?.categoria ?? '—')}</td>
-                        <td class="py-1 px-1 text-right text-gray-300">${f(i.precio_alta)}</td>
                         <td class="py-1 px-1 text-right text-white">${f(i.precio)}</td>
-                        <td class="py-1 px-1 text-right">${pc(i.desde_alta_pct)}</td>
                         <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
-                        <td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos font-bold' : 'text-gray-400'}">${i.escenario_entrada ? '🟢 Escenario de entrada' : esc(i.estado_etiqueta ?? '')}</td></tr>`).join('')}
+                        <td class="py-1 px-1 text-right">${(() => { const d = dZonaDe(i); return d == null ? '<span class="text-gray-600">—</span>' : d === 0 ? '<span class="text-accent">en zona</span>' : `<span class="text-gray-300">${d.toFixed(1).replace('.', ',')}%</span>`; })()}</td>
+                        <td class="py-1 px-1 text-right">${(() => { const d = dNivelDe(i, 'confirmacion'); return d == null ? '<span class="text-gray-600">—</span>' : d <= 0 ? '<span class="text-pos">superada</span>' : `<span class="text-gray-300">+${d.toFixed(1).replace('.', ',')}%</span>`; })()}</td>
+                        <td class="py-1 px-1 text-right">${(() => { const d = dNivelDe(i, 'invalidacion'); return d == null ? '<span class="text-gray-600">—</span>' : d >= 0 ? '<span class="text-neg">perdida</span>' : `<span class="text-gray-300">${d.toFixed(1).replace('.', ',')}%</span>`; })()}</td>
+                        <td class="py-1 px-1 text-center ${i.checklist ? (i.checklist.cumple >= i.checklist.total - 1 ? 'text-pos' : i.checklist.cumple >= i.checklist.total - 3 ? 'text-gray-200' : 'text-neg') : 'text-gray-600'}">${i.checklist ? i.checklist.cumple + ' de ' + i.checklist.total : '—'}</td>
+                        <td class="py-1 px-1 text-right">${resultadosHtml(i)}</td>
+<td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos font-bold' : 'text-gray-400'}">${i.escenario_entrada ? '🟢 Escenario de entrada' : esc(i.estado_etiqueta ?? '')}</td></tr>`).join('')}
                     </tbody></table>
-                    <div class="font-mono text-[10px] text-gray-600 mt-1">PPC = precio al sumarlo a la lista. Cierre = último precio del radar. PNL = variación del precio desde el alta (en dólares, sin el efecto del CCL). Ruedas = días hábiles desde el alta, contando el primero y el de hoy. Tocá un encabezado para ordenar y una fila para abrir la ficha.</div>`;
-                const cand = document.getElementById('entradas-candidatos'); if (cand) cand.innerHTML = '';
+                    <div class="font-mono text-[10px] text-gray-600 mt-1">Cierre = último precio del radar. A la zona = cuánto tendría que bajar para tocar el borde superior de su zona de demanda ("en zona" si ya está adentro). A confirmar = cuánto tiene que subir para llegar al nivel que confirma la entrada. A invalidar = cuánto tendría que bajar para perder el nivel que invalida el escenario. Cumple = condiciones que cumple de las que tienen dato (tendencia, fuerza relativa, RSI, caída del día, volumen, recompensa/riesgo y resultados; el detalle está en la tarjeta). Resultados = próxima fecha de balance y días que faltan (resaltada si faltan 5 o menos). Tocá un encabezado para ordenar y una fila para abrir la ficha.</div>`;
+                renderCandidatosEntradas();
                 return;
             }
             cont.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+            cont.style.overflowX = ''; cont.style.webkitOverflowScrolling = '';
             const estilo = {
                 esperando: ['Esperando', 'text-gray-300 border-gray-600'],
                 en_zona: ['En zona', 'text-accent border-accent'],
@@ -2612,11 +2660,13 @@
                         <span>FR ${f(i.fr, 0)}</span><span>RSI ${f(i.rsi, 0)}</span><span>Vol ${f(i.vol_rel)}x</span>
                     </div>
                     <div class="text-[10px] mt-1">${cierres}</div>
+                    ${i.checklist ? `<div class="text-[10px] mt-1 text-gray-400">Condiciones: <span class="text-white">${i.checklist.cumple} de ${i.checklist.total}</span> · Resultados: ${resultadosHtml(i)}</div>` : ''}
                     ${escHtml}
                     ${(i.salida_sugerida ?? []).length ? `<div class="text-[10px] mt-1.5 border border-accent rounded-sm p-1.5 text-accent leading-relaxed"><span class="font-bold">Revisar si sale de la lista:</span> ${i.salida_sugerida.map(esc).join(' ')}</div>` : ''}
                     <details class="mt-1.5 text-[10px] text-gray-400">
                         <summary class="cursor-pointer text-gray-500">Por qué está en la lista y qué vigilar</summary>
                         <div class="mt-1 leading-relaxed">${esc(i.motivo)}</div>
+                        ${i.checklist ? `<div class="mt-1"><span class="text-white">Condiciones (${i.checklist.cumple} de ${i.checklist.total}):</span>${checklistHtml(i.checklist)}<div class="text-gray-600 mt-0.5">Fuerza relativa, RSI, tendencia y caída del día usan los mismos cortes que el filtro de candidatos; los de resultados (más de 5 días) y recompensa/riesgo (1 a 1 o más) son criterio mío, sin validar con backtest. El volumen con la rueda abierta es parcial.</div></div>` : ''}
                         ${i.riesgo ? `<div class="mt-1"><span class="text-white">Riesgo ${esc(i.riesgo.categoria)} (${i.riesgo.puntos} puntos):</span><ul class="list-disc pl-4 mt-0.5 space-y-0.5">${(i.riesgo.detalle ?? []).map(d => `<li>${esc(d.factor)}: <span class="text-white">${esc(d.valor)}</span> · ${esc(d.lectura)} (+${d.puntos})</li>`).join('')}</ul><div class="text-gray-600 mt-0.5">Guía armada con datos del radar, sin validar con un backtest. Suma puntos: 0–2 bajo, 3–4 medio, 5–6 alto, 7 o más muy alto.</div></div>` : ''}
                         <div class="mt-1">Zona de demanda: ${z}</div>
                         <div class="mt-1">Pisos vigilados para el rebote: ${pisosTxt || '—'}. El escenario se da si la rueda cierra por encima del techo de un piso al que el precio llegó en los últimos 14 días.</div>
@@ -2626,15 +2676,7 @@
                     </details>
                 </div>`;
             }).join('');
-            const candEl = document.getElementById('entradas-candidatos');
-            if (candEl) {
-                const cands = Array.isArray(entradasEstado?.candidatos) ? entradasEstado.candidatos : [];
-                candEl.innerHTML = cands.length ? `<details class="mt-3"><summary class="cursor-pointer font-mono text-[11px] text-gray-400">Candidatos para sumar a la lista (${cands.length})</summary>
-                    <div class="font-mono text-[10px] text-gray-500 my-1 leading-relaxed">Activos fuera de la lista que hoy cumplen: sobre la media de 50 y 200 ruedas, fuerza relativa de 70 o más, RSI entre 40 y 68, sin caída fuerte hoy, y además VCP, squeeze o toque de zona de demanda. Los revisa el radar en cada corrida y los reviso yo cada día. Son para mirar, no una recomendación.</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">${cands.map(c => `<div class="bg-surface border border-gray-800 rounded-sm px-2 py-1.5 font-mono text-[10px] cursor-pointer hover:border-accent" onclick="abrirFicha('${esc(c.ticker)}')">
-                        <div class="flex items-center justify-between"><span class="flex items-center gap-1.5">${logoTicker(c.ticker, 16)}<span class="text-white font-bold text-xs">${esc(c.ticker)}</span><span class="text-white">${f(c.precio)}</span> ${hoyPctHtml(c.hoy_pct, true)}</span><span class="text-gray-500">Radar ${f(c.radar_score, 0)}</span></div>
-                        <div class="text-gray-400 mt-0.5">FR ${f(c.fr, 0)} · RSI ${f(c.rsi, 0)} · 5r ${pct(c.ret_5d)} · ${(c.marcas ?? []).map(esc).join(', ')}</div></div>`).join('')}</div></details>` : '';
-            }
+            renderCandidatosEntradas();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
