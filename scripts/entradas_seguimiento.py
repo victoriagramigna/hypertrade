@@ -236,6 +236,34 @@ def calcular_riesgo(precio, inv, conf, fila, bw_p33, bw_p67):
     return {"categoria": cat, "puntos": pts, "detalle": det, "rr": round(rr, 2) if rr is not None else None}
 
 
+def calcular_espacio(precio, inv, fila, zona_fila):
+    """Espacio libre hasta la proxima resistencia conocida (informativo, NO es una proyeccion de precio).
+    Resistencia = piso de la zona de oferta activa mas cercana por encima del precio (o su techo si el precio esta
+    dentro de la zona) o el maximo de 52 semanas, lo que quede mas cerca. 'relacion' = espacio / distancia a la
+    invalidacion; menor_que_riesgo=True si se arriesga mas de lo que hay hasta esa resistencia."""
+    niveles = []
+    for a in (zona_fila or {}).get("Zonas_Activas") or []:
+        if "oferta" not in str(a.get("tipo", "")).lower():
+            continue
+        if a.get("piso") is not None and a["piso"] > precio:
+            niveles.append((float(a["piso"]), "piso de zona de oferta"))
+        elif a.get("techo") is not None and a["techo"] > precio:
+            niveles.append((float(a["techo"]), "techo de zona de oferta (el precio esta dentro)"))
+    mx = (fila or {}).get("Max_52w")
+    if mx is not None and mx > precio:
+        niveles.append((float(mx), "maximo de 52 semanas"))
+    riesgo = (precio - inv) / precio * 100 if (inv is not None and precio and precio > inv) else None
+    if not niveles:
+        return {"nivel": None, "tipo": None, "espacio_pct": None, "riesgo_pct": riesgo, "relacion": None, "menor_que_riesgo": None}
+    nivel, tipo = min(niveles)
+    esp = (nivel / precio - 1) * 100
+    rel = esp / riesgo if riesgo else None
+    return {"nivel": round(nivel, 2), "tipo": tipo, "espacio_pct": round(esp, 2),
+            "riesgo_pct": round(riesgo, 2) if riesgo is not None else None,
+            "relacion": round(rel, 2) if rel is not None else None,
+            "menor_que_riesgo": (rel < 1) if rel is not None else None}
+
+
 def _dias(desde, hasta):
     try:
         return (datetime.strptime(hasta, "%Y-%m-%d") - datetime.strptime(desde, "%Y-%m-%d")).days
@@ -504,6 +532,7 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
             "cierres_sobre_confirmacion": cierres_conf, "cierres_bajo_invalidacion": cierres_inv,
             "min_cierre": min_c, "max_cierre": max_c, "cierres_bajo_sma50": cierres_sma,
             "toques": toques, "escenario_entrada": escenario,
+            "espacio_libre": calcular_espacio(precio, inv, r, zonas.get(t)),
             "checklist": calcular_checklist(precio, r, _riesgo_i, balances.get(t), hoy_ny, balances_ok),
             "pisos": [{"nombre": n, "piso": a, "techo": b} for n, a, b in pisos],
             "salida_sugerida": motivos_salida({"cierres_bajo_invalidacion": cierres_inv, "cierres_bajo_sma50": cierres_sma,
