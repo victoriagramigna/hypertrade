@@ -228,6 +228,8 @@
                 <span class="text-white">Posibles gaps al abrir:</span> papeles que en el premarket ya suben 2% o más contra el cierre anterior y que cumplen la
                 macrotendencia de la alerta "Gap alcista" (cierre previo sobre su SMA200 y precio en máximos de las últimas 10 ruedas).
                 El premarket tiene poco volumen y muchas veces se revierte al abrir.
+                <span class="text-white">Caídas fuertes en premarket:</span> papeles del universo que ya caen 3% o más contra el cierre anterior (con o sin macrotendencia);
+                los de tu cartera o tu lista de entradas van primero. El corte del 3% es mío, todavía no lo validé con datos; la caída puede revertirse al abrir.
                 <span class="text-white">Balances de hoy y mañana:</span> el balance anuncia un movimiento fuerte, pero no si es para arriba o para abajo;
                 al lado se muestra cuántas veces ese papel se movió 3% o más en sus balances anteriores.
                 Cada aviso queda registrado y la solapa Auditoría mide cómo terminó contra la frecuencia normal de gaps.
@@ -1171,12 +1173,13 @@
                 <div class="${alerta ? '' : 'mt-2'} flex justify-between items-end mb-6">
                     <div>
                         <h2 class="text-4xl font-bold text-white uppercase tracking-tight">${logoInline(tickerData.Ticker, 36)}${tickerData.Ticker}</h2>
+                        ${tipoActivoHtml(tickerData.Ticker)}
                         <div class="text-sm font-mono text-gray-300">${nombreEmpresa(tickerData.Ticker)}</div>
                         <span class="text-sm font-mono text-accent uppercase tracking-widest">${tickerData.Sector ?? '—'}</span>
                         ${tickerData.Subcategoria ? `<span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest ml-2">· ${tickerData.Subcategoria}</span>` : ''}
-                        <div class="mt-1 font-mono text-xs">${tradingViewLinkHtml(tickerData.Ticker, '📈 Ver gráfico en TradingView ↗')}</div>
                     </div>
                     <div class="text-right">
+                        <div class="mb-1 flex justify-end">${verGraficoBtn(tickerData.Ticker)}</div>
                         <div class="text-3xl font-mono text-white">$${tickerData.Precio?.toFixed(2) ?? '—'} <span class="ml-1 align-middle">${hoyPctHtml(tickerData['Var_dia_%'])}</span></div>
                         <div class="text-xs font-mono mt-1 ${distMaxColor}">${distMaxText}</div>
                         <div class="font-mono mt-1 flex justify-end">${retsPrecioHtml(tickerData)}</div>
@@ -2544,7 +2547,7 @@
             candEl.innerHTML = cands.length ? `<details class="mt-3" ${aptos ? 'open' : ''}><summary class="cursor-pointer font-mono text-[11px] ${aptos ? 'text-pos' : 'text-gray-400'}">🔎 Candidatos del universo para entrada (${cands.length}${aptos ? ` · ${aptos} apto${aptos > 1 ? 's' : ''}` : ''})</summary>
                 <div class="font-mono text-[10px] text-gray-500 my-1 leading-relaxed">Activos que no están en tu lista y hoy cumplen la base: sobre las medias de 50 y 200 ruedas, fuerza relativa de 70 o más, RSI entre 40 y 68, sin caída fuerte hoy, y además VCP, squeeze o toque de zona de demanda. <span class="text-pos">APTO</span> = cumple casi todo el checklist (como mucho una condición en ✖, nunca la de resultados cercanos) y tiene niveles de invalidación y confirmación. El radar te avisa por Telegram cuando aparece un apto nuevo, al cierre. Criterio mío, sin validar con backtest. Son para mirar, no una recomendación.</div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">${cands.map(c => `<div class="bg-surface border ${c.apto ? 'border-pos' : 'border-gray-800'} rounded-sm px-2 py-1.5 font-mono text-[10px] hover:border-accent">
-                    <div class="flex items-center justify-between cursor-pointer" onclick="abrirFicha('${esc(c.ticker)}')"><span class="flex items-center gap-1.5">${logoTicker(c.ticker, 16)}<span class="text-white font-bold text-xs">${esc(c.ticker)}</span><span class="text-white">${f(c.precio)}</span> ${hoyPctHtml(c.hoy_pct, true)}</span>${c.apto ? '<span class="text-pos border border-pos rounded-sm px-1">APTO</span>' : `<span class="text-gray-500">Radar ${f(c.radar_score, 0)}</span>`}</div>
+                    <div class="flex items-center justify-between cursor-pointer" onclick="abrirFicha('${esc(c.ticker)}')"><span class="flex items-center gap-1.5">${logoTicker(c.ticker, 16)}<span class="text-white font-bold text-xs">${esc(c.ticker)}</span><span class="text-[8px] text-gray-500 uppercase">${tipoActivoTxt(c.ticker)}</span><span class="text-white">${f(c.precio)}</span> ${hoyPctHtml(c.hoy_pct, true)}</span>${c.apto ? '<span class="text-pos border border-pos rounded-sm px-1">APTO</span>' : `<span class="text-gray-500">Radar ${f(c.radar_score, 0)}</span>`}</div>
                     <div class="text-gray-400 mt-0.5">${(c.marcas ?? []).map(esc).join(', ')} · FR ${f(c.fr, 0)} · RSI ${f(c.rsi, 0)}</div>
                     ${c.checklist ? `<div class="text-gray-400 mt-0.5">Condiciones: <span class="text-white">${c.checklist.cumple} de ${c.checklist.total}</span> · Resultados: ${resultadosHtml(c)}</div>` : ''}
                     ${c.invalidacion != null && c.confirmacion != null ? `<div class="text-gray-400 mt-0.5"><span class="text-neg">Invalida &lt; ${f(c.invalidacion)} (${pct(c.dist_invalidacion_pct)})</span> · <span class="text-pos">Confirma &gt; ${f(c.confirmacion)} (${pct(c.dist_confirmacion_pct)})</span></div>` : '<div class="text-gray-600 mt-0.5">Sin zona de demanda por debajo: sin niveles automáticos.</div>'}
@@ -2598,9 +2601,9 @@
                 cont.className = 'overflow-x-auto ancho';
                 cont.style.overflowX = 'auto'; cont.style.webkitOverflowScrolling = 'touch';
                 cont.innerHTML = `<div class="font-mono text-[10px] text-gray-600 mb-1">↔ Deslizá la tabla hacia los costados para ver todas las columnas.</div><table class="w-full font-mono text-[11px] border-collapse whitespace-nowrap"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
-                    <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;background:#121722;z-index:6" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('fr', 'FR', 'text-right')}${th('rsi', 'RSI', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('espacio', 'Espacio libre', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}</tr></thead><tbody>
+                    <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;background:#121722;z-index:6" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('fr', 'FR', 'text-right')}${th('rsi', 'RSI', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('espacio', 'Espacio libre', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}<th class="py-1 px-1 font-normal text-right">Gráfico</th></tr></thead><tbody>
                     ${filas.map(({ i, ruedas }) => `<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
-                        <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}</td>
+                        <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}${tipoActivoHtml(i.ticker)}</td>
                         <td class="py-1 px-1 text-right text-white">${f(i.precio)}</td>
                         <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
                         <td class="py-1 px-1 text-right ${i.fr != null && i.fr >= 70 ? 'text-gray-200' : 'text-neg'}">${f(i.fr, 0)}</td>
@@ -2611,7 +2614,7 @@
                         <td class="py-1 px-1 text-right">${(() => { const e = i.espacio_libre; if (!e) return '<span class="text-gray-600">—</span>'; if (e.espacio_pct == null) return '<span class="text-gray-600" title="Sin zona de oferta ni máximo de 52 semanas por encima del precio">sin techo</span>'; return `<span class="${e.menor_que_riesgo ? 'text-accent' : 'text-gray-300'}" title="Hasta ${esc(e.tipo)} ${f(e.nivel)}${e.menor_que_riesgo ? ' · menos espacio que riesgo' : ''}">+${Number(e.espacio_pct).toFixed(1).replace('.', ',')}%${e.relacion != null ? ' · ' + Number(e.relacion).toFixed(1).replace('.', ',') + 'x' : ''}</span>`; })()}</td>
                         <td class="py-1 px-1 text-center ${i.checklist ? (i.checklist.cumple >= i.checklist.total - 1 ? 'text-pos' : i.checklist.cumple >= i.checklist.total - 3 ? 'text-gray-200' : 'text-neg') : 'text-gray-600'}">${i.checklist ? i.checklist.cumple + ' de ' + i.checklist.total : '—'}</td>
                         <td class="py-1 px-1 text-right">${resultadosHtml(i)}</td>
-<td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos font-bold' : 'text-gray-400'}">${i.escenario_entrada ? '🟢 Escenario de entrada' : esc(i.estado_etiqueta ?? '')}</td></tr>`).join('')}
+<td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos font-bold' : 'text-gray-400'}">${i.escenario_entrada ? '🟢 Escenario de entrada' : esc(i.estado_etiqueta ?? '')}</td><td class="py-1 px-1 text-right">${verGraficoBtn(i.ticker)}</td></tr>`).join('')}
                     </tbody></table>
                     <div class="font-mono text-[10px] text-gray-600 mt-1">Cierre = último precio del radar. FR = fuerza relativa (0 a 100, contra el resto del universo) y RSI; se marcan en rojo si quedan fuera de lo que pide el checklist (FR de 70 o más, RSI entre 40 y 68). A la zona = cuánto tendría que bajar para tocar el borde superior de su zona de demanda ("en zona" si ya está adentro, "bajo el piso" si cayó por debajo de ella). A confirmar = cuánto tiene que subir para llegar al nivel que confirma la entrada. A invalidar = cuánto tendría que bajar para perder el nivel que invalida el escenario. Espacio libre = cuánto falta para la próxima resistencia conocida (zona de oferta o máximo de 52 semanas) y, después del punto, cuántas veces es el riesgo hasta la invalidación; en color de acento si hay menos espacio que riesgo. Es una medición de niveles, no una proyección. Cumple = condiciones que cumple de las que tienen dato (tendencia, fuerza relativa, RSI, caída del día, volumen y resultados; el detalle está en la tarjeta). Resultados = próxima fecha de balance y días que faltan (resaltada si faltan 5 o menos). Tocá un encabezado para ordenar y una fila para abrir la ficha.</div>`;
                 renderCandidatosEntradas();
@@ -2645,9 +2648,9 @@
                 const z = i.zona ? `${f(i.zona.piso)} a ${f(i.zona.techo)}${i.zona.tipo ? ' · ' + esc(i.zona.tipo) : ''}` : '—';
                 return `<div class="bg-surface border border-gray-800 rounded-sm p-3 font-mono">
                     <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="abrirFicha('${esc(i.ticker)}')">
-                        <div class="flex items-center gap-2">${logoTicker(i.ticker)}<span class="text-white font-bold">${esc(i.ticker)}</span>
+                        <div class="flex items-center gap-2">${logoTicker(i.ticker)}<span><span class="text-white font-bold">${esc(i.ticker)}</span>${tipoActivoHtml(i.ticker)}</span>
                             <span class="text-white text-sm">${f(i.precio)}</span> ${hoyPctHtml(i.hoy_pct, true)}</div>
-                        <span class="text-[10px] border rounded-sm px-1.5 py-0.5 ${cls}">${etq}</span>
+                        <span class="flex flex-col items-end gap-1"><span class="text-[10px] border rounded-sm px-1.5 py-0.5 ${cls}">${etq}</span>${verGraficoBtn(i.ticker)}</span>
                     </div>
                     
                     ${barra}
@@ -3121,7 +3124,7 @@
                         return `
                             <div class="ticker-row py-2 border-b border-base/50 font-mono text-sm hover:bg-base/40 px-2 -mx-2 transition-colors">
                                 <div class="flex flex-wrap md:flex-nowrap items-center">
-                                    <div class="w-40 md:w-52 flex-shrink-0 flex items-center gap-2 cursor-pointer group" onclick="irAAlertasDeTicker('${tickerName}')">${logoTicker(tickerName, 20)}<div class="min-w-0"><div class="font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${tickerName}</div><div class="text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(tickerName)}</div></div></div>
+                                    <div class="w-40 md:w-52 flex-shrink-0 flex items-center gap-2 cursor-pointer group" onclick="irAAlertasDeTicker('${tickerName}')">${logoTicker(tickerName, 20)}<div class="min-w-0"><div class="font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${tickerName}</div>${tipoActivoHtml(tickerName)}<div class="text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(tickerName)}</div></div></div>
 
                                     <div class="w-28 flex-shrink-0 text-right mr-4 md:mr-6">
                                         <div class="text-gray-400">${displayPrecio}</div>
@@ -3158,7 +3161,7 @@
                                 <div class="font-mono text-[9px] text-gray-500 mt-1">${betaLineaHtml}</div>
                                 <div class="font-mono text-[9px] mt-0.5">${goldenCrossLineaHtml}</div>
                                 ${squeezeLineaHtml ? `<div class="font-mono text-[9px] mt-0.5">${squeezeLineaHtml}</div>` : ''}
-                                <div class="font-mono text-[9px] mt-0.5">${tradingViewLinkHtml(tickerName)}</div>
+                                <div class="font-mono text-[9px] mt-1 flex justify-end">${verGraficoBtn(tickerName)}</div>
                             </div>
                         `;
                     };
@@ -4539,9 +4542,9 @@
             const cont = document.getElementById('preap-contenido');
             const d = preapData;
             if (!cont || !d) return;
-            const cand = d.candidatos ?? [], bal = d.balances ?? [];
+            const cand = d.candidatos ?? [], bal = d.balances ?? [], cai = d.caidas ?? [];
             const cnt = document.getElementById('preap-count');
-            if (cnt) cnt.textContent = `(${cand.length} gaps posibles · ${bal.length} balances) · ${d.fecha_et ?? ''}`;
+            if (cnt) cnt.textContent = `(${cand.length} gaps posibles · ${cai.length} caídas · ${bal.length} balances) · ${d.fecha_et ?? ''}`;
             const hoy = d.fecha_et;
             let h = '';
             h += `<div class="font-mono text-[10px] uppercase tracking-widest text-gray-500">Posibles gaps al abrir</div>`;
@@ -4555,6 +4558,23 @@
                         <span class="text-white font-bold">${c.ticker}</span>
                         <span class="text-pos font-bold">${c.pm_pct > 0 ? '+' : ''}${c.pm_pct}% premarket</span>
                         <span class="text-gray-400">cierre previo ${c.cierre_previo} → ${c.pm_precio}</span>
+                        <span class="text-gray-500">${c.sector ?? ''}</span>
+                        <span class="text-gray-600">volumen premarket: ${c.pm_vol_rel_pct != null ? c.pm_vol_rel_pct + '% de un día normal' : 's/d'}</span>
+                    </div>`).join('');
+            }
+            // 29/10: caídas fuertes en premarket (pedido de Victoria). Lista informativa; las de tu cartera / lista van primero.
+            h += `<div class="font-mono text-[10px] uppercase tracking-widest text-gray-500 mt-4">Caídas fuertes en premarket <span class="normal-case text-gray-600">(${d.umbral_caida_pct ?? -3}% o más contra el cierre previo)</span></div>`;
+            if (!d.premarket_disponible) {
+                h += `<div class="text-gray-500 font-mono text-[11px] p-3 border border-dashed border-surface rounded-sm">Hoy no hay datos de premarket.</div>`;
+            } else if (cai.length === 0) {
+                h += `<div class="text-gray-500 font-mono text-[11px] p-3 border border-dashed border-surface rounded-sm">Ningún papel del universo cotiza hoy ${d.umbral_caida_pct ?? -3}% o menos en premarket.</div>`;
+            } else {
+                h += cai.map(c => `
+                    <div class="bg-surface border ${c.en_cartera ? 'border-neg' : 'border-surface'} rounded-sm p-3 font-mono text-[11px] flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span class="text-white font-bold">${c.ticker}</span>
+                        <span class="text-neg font-bold">${c.pm_pct}% premarket</span>
+                        <span class="text-gray-400">cierre previo ${c.cierre_previo} → ${c.pm_precio}</span>
+                        ${c.en_cartera ? '<span class="text-neg">📌 en tu cartera</span>' : (c.en_lista ? '<span class="text-accent">👀 en tu lista de entradas</span>' : '')}
                         <span class="text-gray-500">${c.sector ?? ''}</span>
                         <span class="text-gray-600">volumen premarket: ${c.pm_vol_rel_pct != null ? c.pm_vol_rel_pct + '% de un día normal' : 's/d'}</span>
                     </div>`).join('');
@@ -5007,7 +5027,7 @@
                     <div class="grid grid-cols-5 gap-1 mt-1.5">
                         ${cel('Día', r['Var_dia_%'])}${cel('5 ruedas', r['Ret_5d_%'])}${cel('1 mes', r['Ret_1m_%'])}${cel('vs SMA20', r['Dist_SMA20_%'])}${cel('vs SMA50', r['Dist_SMA50_%'])}
                     </div>
-                    <div class="flex flex-col gap-0.5 text-[9px] text-gray-500 mt-1.5"><span>${r.Sector ?? ''} · RSI ${rsi === null ? '—' : rsi.toFixed(0)}</span><span>${r.Ruedas} de 200 ruedas${falt ? ' · faltan ' + falt : ''} · desde ${r.Desde ?? '—'}</span><span>${tradingViewLinkHtml(r.Ticker, '📈 Ver gráfico en TradingView')}</span></div>
+                    <div class="flex flex-col gap-0.5 text-[9px] text-gray-500 mt-1.5"><span>${tipoActivoTxt(r.Ticker)} · ${r.Sector ?? ''} · RSI ${rsi === null ? '—' : rsi.toFixed(0)}</span><span>${r.Ruedas} de 200 ruedas${falt ? ' · faltan ' + falt : ''} · desde ${r.Desde ?? '—'}</span><span class="self-end">${verGraficoBtn(r.Ticker)}</span></div>
                 </div>`;
             };
             cont.innerHTML = `
@@ -5987,7 +6007,7 @@
                 const rs = r?.RS_Score, rad = r?.Radar_Score, rsi = r?.RSI;
                 const px = typeof r?.Precio === 'number' ? r.Precio.toFixed(2) : '—';
                 return `<div class="flex flex-wrap items-center gap-x-4 py-1 border-b border-base/50">
-                    <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="${r._corta ? `window.open(tradingViewUrl('${r.Ticker}'), '_blank', 'noopener')` : `irAAlertasDeTicker('${r.Ticker}')`}">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
+                    <span class="w-44 flex items-center gap-2 cursor-pointer group" onclick="${r._corta ? `window.open(tradingViewUrl('${r.Ticker}'), '_blank', 'noopener')` : `irAAlertasDeTicker('${r.Ticker}')`}">${logoTicker(r.Ticker, 18)}<span class="min-w-0"><span class="block font-bold text-white group-hover:text-accent group-hover:underline leading-tight">${r.Ticker}</span><span class="block text-[9px] text-gray-500 uppercase tracking-wider leading-tight">${tipoActivoTxt(r.Ticker)}</span><span class="block text-[9px] text-gray-500 truncate leading-tight">${nombreEmpresa(r.Ticker)}</span></span></span>
                     <span class="w-20 text-right text-gray-400">${px}</span>
                     <span class="w-20 text-right">${hoyPctHtml(r?.['Var_dia_%'], true)}</span>
                     ${r._corta ? '' : `<span class="flex gap-3 w-full sm:w-auto">${retChipHtml(r?.['Ret_5d_%'], '5r')}${retChipHtml(r?.['Ret_1m_%'], '1m')}${retChipHtml(r?.['Ret_3m_%'], '3m')}</span>`}
@@ -5995,7 +6015,8 @@
                     <span class="text-gray-500">RADAR <span class="text-accent">${rad != null ? rad.toFixed(0) : '—'}</span></span>
                     <span class="text-gray-500">RSI <span class="text-gray-300">${rsi != null ? rsi.toFixed(0) : '—'}</span></span>
                     <span class="text-[10px] uppercase text-gray-600 truncate">${sectorSubHtml(r)}</span>
-                    ${r._corta ? `<span class="text-[9px] text-gray-500 normal-case">historia corta (${r.Ruedas} ruedas) · ${tradingViewLinkHtml(r.Ticker, '📈 TradingView')}</span>` : ''}
+                    ${r._corta ? `<span class="text-[9px] text-gray-500 normal-case">historia corta (${r.Ruedas} ruedas)</span>` : ''}
+                    <span class="ml-auto">${verGraficoBtn(r.Ticker)}</span>
                 </div>`;
             }).join('');
         }
@@ -6089,6 +6110,18 @@
         }
         function tradingViewLinkHtml(ticker, texto = '📈 Ver gráfico') {
             return `<a href="${tradingViewUrl(ticker)}" target="_blank" rel="noopener" class="text-accent hover:underline" onclick="event.stopPropagation()">${texto}</a>`;
+        }
+
+        // Tipo de activo debajo del ticker + botón "Ver gráfico" a la derecha (pedido de Victoria, 29/10).
+        // Reusa tipoInstrumento(): ETF / ADR / CEDEAR (un ETF con ratio cargado figura también como CEDEAR).
+        function tipoActivoTxt(t) {
+            const row = (currentRadarData?.ranking ?? []).find(r => r?.Ticker === t);
+            const tipo = tipoInstrumento(t, row?.Sector);
+            return tipo === 'etfs' ? (ratioCedearDe(t) != null ? 'ETF · CEDEAR' : 'ETF') : (tipo === 'adr' ? 'ADR' : 'CEDEAR');
+        }
+        function tipoActivoHtml(t) { return `<div class="text-[9px] font-mono font-normal text-gray-500 uppercase tracking-wider leading-tight">${tipoActivoTxt(t)}</div>`; }
+        function verGraficoBtn(t) {
+            return `<a href="${tradingViewUrl(t)}" target="_blank" rel="noopener" class="shrink-0 whitespace-nowrap font-mono text-[10px] normal-case font-normal text-accent border border-accent/40 rounded-sm px-1.5 py-0.5 hover:bg-accent hover:text-base" title="Abre el gráfico completo de ${t} en TradingView" onclick="event.stopPropagation()">📈 Ver gráfico</a>`;
         }
 
         // ============ BETA vs. SPY (informativo, ver rs_score.py) ============
@@ -7493,10 +7526,11 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="font-bold text-white text-lg">${logoInline(p.ticker, 24)}${p.ticker}${nombreChico(p.ticker)}</span>
-                                <span class="ml-2 font-mono text-[10px]">${tradingViewLinkHtml(p.ticker)}</span>
+                                ${tipoActivoHtml(p.ticker)}
                                 ${encabezadoHtml}
                             </div>
                             <div class="flex flex-col items-end gap-2">
+                                ${verGraficoBtn(p.ticker)}
                                 <button type="button" onclick="abrirVenta(${idx})" class="border border-accent text-accent hover:bg-accent hover:text-base px-3 py-1 rounded-sm text-xs font-bold uppercase">Vender</button>
                                 <button type="button" onclick="fijarStopManual(${idx})" class="border border-gray-600 text-gray-400 hover:text-white px-3 py-1 rounded-sm text-[10px] uppercase" title="Poné vos el stop (ej. el de la idea que estás copiando). Después el sistema solo lo puede subir, nunca bajar.">Fijar stop</button>
                                 <button type="button" onclick="eliminarPosicion(${idx})" class="text-gray-600 hover:text-neg text-[10px]">borrar (error de carga)</button>
