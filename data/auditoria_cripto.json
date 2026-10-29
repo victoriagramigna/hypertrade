@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-29T14:54:24.376888+00:00",
+ "generado_utc": "2026-10-29T20:48:52.715327+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,8 +7,36 @@
   7,
   14
  ],
- "casos_total": 13,
+ "casos_total": 15,
  "resumen_señales": [
+  {
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "casos_total": 6,
+   "horizontes": {
+    "3": {
+     "n": 4,
+     "pendientes": 2,
+     "aciertos": 3,
+     "pct_aciertos": 75,
+     "confiable": false
+    },
+    "7": {
+     "n": 4,
+     "pendientes": 2,
+     "aciertos": 3,
+     "pct_aciertos": 75,
+     "confiable": false
+    },
+    "14": {
+     "n": 3,
+     "pendientes": 3,
+     "aciertos": 3,
+     "pct_aciertos": 100,
+     "confiable": false
+    }
+   }
+  },
   {
    "tipo": "RSI en sobreventa",
    "direccion": "alcista",
@@ -17,9 +45,9 @@
     "3": {
      "n": 5,
      "pendientes": 0,
-     "aciertos": 2,
-     "pct_aciertos": 40,
-     "ret_prom": -0.91,
+     "aciertos": 1,
+     "pct_aciertos": 20,
+     "ret_prom": -1.67,
      "confiable": false
     },
     "7": {
@@ -34,34 +62,6 @@
      "pendientes": 3,
      "aciertos": 0,
      "pct_aciertos": 0,
-     "confiable": false
-    }
-   }
-  },
-  {
-   "tipo": "Movimiento fuerte a la baja",
-   "direccion": "bajista",
-   "casos_total": 4,
-   "horizontes": {
-    "3": {
-     "n": 4,
-     "pendientes": 0,
-     "aciertos": 3,
-     "pct_aciertos": 75,
-     "confiable": false
-    },
-    "7": {
-     "n": 4,
-     "pendientes": 0,
-     "aciertos": 3,
-     "pct_aciertos": 75,
-     "confiable": false
-    },
-    "14": {
-     "n": 3,
-     "pendientes": 1,
-     "aciertos": 3,
-     "pct_aciertos": 100,
      "confiable": false
     }
    }
@@ -125,6 +125,32 @@
  ],
  "detalle": [
   {
+   "ticker": "BTC-USD",
+   "nombre": "Bitcoin",
+   "fecha": "2026-10-29",
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "precio_entrada": 78764.87,
+   "score": 58,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
+   "fecha": "2026-10-29",
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "precio_entrada": 2253.79,
+   "score": 29,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
    "ticker": "ETH-USD",
    "nombre": "Ethereum",
    "fecha": "2026-10-26",
@@ -133,8 +159,8 @@
    "precio_entrada": 2330.81,
    "score": 25,
    "dias_transcurridos": 3,
-   "r3": 0.47,
-   "acierto3": true,
+   "r3": -3.3,
+   "acierto3": false,
    "r7": null,
    "r14": null
   },
@@ -163,7 +189,7 @@
    "dias_transcurridos": 7,
    "r3": -2.03,
    "acierto3": true,
-   "r7": -0.85,
+   "r7": -3.57,
    "acierto7": true,
    "r14": null
   },

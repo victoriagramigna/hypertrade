@@ -1,10 +1,10 @@
 {
-  "actualizado_utc": "2026-10-29T14:54:24.376511+00:00",
+  "actualizado_utc": "2026-10-29T20:48:51.405286+00:00",
   "criptomonedas": [
     {
       "ticker": "BTC-USD",
       "nombre": "Bitcoin",
-      "precio": 80990.46,
+      "precio": 78764.87,
       "sma50": 81888.22,
       "sma200": 73066.73,
       "rsi": 48.5,
@@ -22,7 +22,7 @@
       "mov_normal_pct": 0.99,
       "precio_cierre": 81267.59,
       "vela_cerrada": "2026-10-28",
-      "mov_hoy_pct": -0.34,
+      "mov_hoy_pct": -3.08,
       "score": 58,
       "score_version": "v2",
       "score_detalle": {
@@ -38,12 +38,17 @@
       "cuidados": [
         "Precio debajo de su SMA50 ($81,888): la tendencia de corto plazo no acompaña."
       ],
-      "alertas": []
+      "alertas": [
+        {
+          "tipo": "Movimiento fuerte a la baja",
+          "narrativa": "Bitcoin cae 3.1% desde el cierre de ayer, 3.1 veces su movimiento diario normal (1.0%). Es un aviso para mirar, no una señal por sí sola."
+        }
+      ]
     },
     {
       "ticker": "ETH-USD",
       "nombre": "Ethereum",
-      "precio": 2341.67,
+      "precio": 2253.79,
       "sma50": 2534.05,
       "sma200": 2158.83,
       "rsi": 40.8,
@@ -61,7 +66,7 @@
       "mov_normal_pct": 1.25,
       "precio_cierre": 2357.62,
       "vela_cerrada": "2026-10-28",
-      "mov_hoy_pct": -0.68,
+      "mov_hoy_pct": -4.4,
       "score": 29,
       "score_version": "v2",
       "score_detalle": {
@@ -78,7 +83,12 @@
         "Precio debajo de su SMA50 ($2,534): la tendencia de corto plazo no acompaña.",
         "SMA50 con pendiente negativa: el mediano plazo todavía no gira."
       ],
-      "alertas": []
+      "alertas": [
+        {
+          "tipo": "Movimiento fuerte a la baja",
+          "narrativa": "Ethereum cae 4.4% desde el cierre de ayer, 3.5 veces su movimiento diario normal (1.2%). Es un aviso para mirar, no una señal por sí sola."
+        }
+      ]
     }
   ]
 }
