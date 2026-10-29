@@ -341,7 +341,7 @@
                 <details class="mt-1"><summary class="cursor-pointer text-gray-400">Cómo leerlo</summary>
                     <div class="mt-1">
                         <span class="text-white">Esperando</span>: entre la invalidación y la confirmación, fuera de la zona. <span class="text-accent">En zona</span>: el precio está dentro de la zona de demanda. <span class="text-pos">Sobre confirmación</span> y <span class="text-neg">Bajo invalidación</span> son cruces durante la rueda y pueden revertirse; recién valen con el <span class="text-white">cierre</span> (se cuentan los cierres seguidos). <span class="text-pos">🟢 Escenario de entrada</span>: se da cuando (A) el precio llegó a su piso (zona de demanda o, en PSX, la media de 50 ruedas) y la rueda <span class="text-white">cierra por encima del techo</span> de ese piso sin haber cerrado bajo la invalidación, o (B) la rueda cierra sobre el nivel de confirmación. Te avisa por Telegram: cuando llega al piso (durante la rueda) y cuando se cumple el escenario (al cierre). Cada cierre queda anotado en una bitácora propia, que no entra en la Auditoría.
-                        Avisa por Telegram solo al cierre y solo si cambió el estado. Tocá un activo para ver su ficha. La lista la actualizo yo a pedido.
+                        Avisa por Telegram solo al cierre y solo si cambió el estado. Tocá un activo para ver su ficha. La lista armada a mano la actualizo yo a pedido. Los que llevan la marca <span class="text-accent">AUTO</span> los suma y saca el radar solo: entran cuando están aptos al cierre (hasta 10) con niveles calculados automáticamente, y salen por los motivos de salida de abajo; cada cambio llega por Telegram.
                     </div>
                 </details>
             </div>
@@ -2603,7 +2603,7 @@
                 cont.innerHTML = `<div class="font-mono text-[10px] text-gray-600 mb-1">↔ Deslizá la tabla hacia los costados para ver todas las columnas.</div><table class="w-full font-mono text-[11px] border-collapse whitespace-nowrap"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
                     <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;background:#121722;z-index:6" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('fr', 'FR', 'text-right')}${th('rsi', 'RSI', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('espacio', 'Espacio libre', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}<th class="py-1 px-1 font-normal text-right">Gráfico</th></tr></thead><tbody>
                     ${filas.map(({ i, ruedas }) => `<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
-                        <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}${tipoActivoHtml(i.ticker)}</td>
+                        <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}${i.auto ? ' <span class="text-[8px] font-normal border border-accent text-accent rounded-sm px-1" title="Lo sumó el radar solo (apto al cierre). Niveles calculados automáticamente.">AUTO</span>' : ''}${tipoActivoHtml(i.ticker)}</td>
                         <td class="py-1 px-1 text-right text-white">${f(i.precio)}</td>
                         <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
                         <td class="py-1 px-1 text-right ${i.fr != null && i.fr >= 70 ? 'text-gray-200' : 'text-neg'}">${f(i.fr, 0)}</td>
@@ -2648,7 +2648,7 @@
                 const z = i.zona ? `${f(i.zona.piso)} a ${f(i.zona.techo)}${i.zona.tipo ? ' · ' + esc(i.zona.tipo) : ''}` : '—';
                 return `<div class="bg-surface border border-gray-800 rounded-sm p-3 font-mono">
                     <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="abrirFicha('${esc(i.ticker)}')">
-                        <div class="flex items-center gap-2">${logoTicker(i.ticker)}<span><span class="text-white font-bold">${esc(i.ticker)}</span>${tipoActivoHtml(i.ticker)}</span>
+                        <div class="flex items-center gap-2">${logoTicker(i.ticker)}<span><span class="text-white font-bold">${esc(i.ticker)}</span>${i.auto ? ' <span class="text-[8px] font-normal border border-accent text-accent rounded-sm px-1" title="Lo sumó el radar solo (apto al cierre). Niveles calculados automáticamente.">AUTO</span>' : ''}${tipoActivoHtml(i.ticker)}</span>
                             <span class="text-white text-sm">${f(i.precio)}</span> ${hoyPctHtml(i.hoy_pct, true)}</div>
                         <span class="flex flex-col items-end gap-1"><span class="text-[10px] border rounded-sm px-1.5 py-0.5 ${cls}">${etq}</span>${verGraficoBtn(i.ticker)}</span>
                     </div>
