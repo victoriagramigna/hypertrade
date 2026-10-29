@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-10-28T23:05:16.476931+00:00",
+ "generado_utc": "2026-10-29T13:01:37.878260+00:00",
  "mis_operaciones": {
   "total": {
    "n": 23,
@@ -437,17 +437,17 @@
   10,
   20
  ],
- "casos_total": 1039,
+ "casos_total": 1041,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 278,
+   "casos_total": 279,
    "horizontes": {
     "5": {
      "n": 243,
-     "pendientes": 35,
+     "pendientes": 36,
      "aciertos": 120,
      "pct_aciertos": 49,
      "tocaron_stop": 39,
@@ -457,7 +457,7 @@
     },
     "10": {
      "n": 193,
-     "pendientes": 85,
+     "pendientes": 86,
      "aciertos": 84,
      "pct_aciertos": 44,
      "tocaron_stop": 57,
@@ -467,7 +467,7 @@
     },
     "20": {
      "n": 57,
-     "pendientes": 221,
+     "pendientes": 222,
      "aciertos": 22,
      "pct_aciertos": 39,
      "tocaron_stop": 22,
@@ -517,11 +517,11 @@
   {
    "señal": "Confirmado",
    "direccion": "alcista",
-   "casos_total": 162,
+   "casos_total": 163,
    "horizontes": {
     "5": {
      "n": 144,
-     "pendientes": 18,
+     "pendientes": 19,
      "aciertos": 81,
      "pct_aciertos": 56,
      "tocaron_stop": 6,
@@ -531,7 +531,7 @@
     },
     "10": {
      "n": 105,
-     "pendientes": 57,
+     "pendientes": 58,
      "aciertos": 56,
      "pct_aciertos": 53,
      "tocaron_stop": 17,
@@ -541,7 +541,7 @@
     },
     "20": {
      "n": 42,
-     "pendientes": 120,
+     "pendientes": 121,
      "aciertos": 23,
      "pct_aciertos": 55,
      "tocaron_stop": 15,
@@ -820,7 +820,7 @@
  "por_mes": [
   {
    "mes": "2026-10",
-   "casos": 778,
+   "casos": 780,
    "5": {
     "n": 653,
     "pct_aciertos": 55,
@@ -876,7 +876,7 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 695,
+   "casos": 697,
    "5": {
     "n": 660,
     "pct_aciertos": 51,
@@ -935,7 +935,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 275,
+   "casos": 276,
    "5": {
     "n": 238,
     "pct_aciertos": 52,
@@ -957,7 +957,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 583,
+   "casos": 584,
    "5": {
     "n": 506,
     "pct_aciertos": 54,
@@ -979,7 +979,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 287,
+   "casos": 288,
    "5": {
     "n": 246,
     "pct_aciertos": 65,
@@ -1110,7 +1110,7 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 352,
+   "casos": 353,
    "5": {
     "n": 309,
     "pct_aciertos": 54,
@@ -1132,7 +1132,7 @@
   },
   {
    "grupo": "🟡 Mixta (RSI y MACD semanal en desacuerdo)",
-   "casos": 279,
+   "casos": 280,
    "5": {
     "n": 224,
     "pct_aciertos": 53,
@@ -1176,6 +1176,40 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "ZM",
+   "fecha": "2026-10-29",
+   "señal": "Confirmado",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 100.26,
+   "radar_score": 43.6,
+   "regimen_score": 61,
+   "cuidados": [
+    "sma50_bajando"
+   ],
+   "tendencia_semanal": "mixta",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "ARKK",
+   "fecha": "2026-10-29",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 86.12,
+   "radar_score": 58.8,
+   "regimen_score": 61,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "TEM",
    "fecha": "2026-10-28",
@@ -7125,50 +7159,6 @@
    "r5": 3.63,
    "spy5": -1.01,
    "vs_spy5": 4.64,
-   "acierto5": true,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "MELI",
-   "fecha": "2026-10-15",
-   "señal": "Recién cruzó, sin confirmar",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 1867.69,
-   "radar_score": 43.8,
-   "regimen_score": 63,
-   "cuidados": [
-    "sma50_bajando"
-   ],
-   "tendencia_semanal": "favor",
-   "ruedas_transcurridas": 9,
-   "r5": -2.29,
-   "spy5": -1.01,
-   "vs_spy5": -1.28,
-   "acierto5": false,
-   "stop5": false,
-   "r10": null,
-   "r20": null
-  },
-  {
-   "ticker": "XYZ",
-   "fecha": "2026-10-15",
-   "señal": "Gap alcista con macrotendencia",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 78.25,
-   "radar_score": 48.4,
-   "regimen_score": 63,
-   "cuidados": [
-    "sma50_bajando"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 9,
-   "r5": 0.98,
-   "spy5": -1.01,
-   "vs_spy5": 1.99,
    "acierto5": true,
    "stop5": false,
    "r10": null,
