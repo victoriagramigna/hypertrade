@@ -112,7 +112,6 @@ CAND_APTO_MAX_FALLAS = 1    # un activo es APTO si cumple casi todo el checklist
 APTOS_EN_AVISO = 5          # máximo de aptos detallados en un mismo mensaje de Telegram
 SAL_CIERRES_BAJO_SMA50 = 2  # cierres seguidos bajo la media de 50 ruedas
 AUTO_EN_AVISO = 10          # 29/10: el seguimiento automatico NO tiene cupo (Victoria busca todas las oportunidades); esto solo limita cuantos se detallan en un mismo mensaje de Telegram
-AUTO_ENFRIAMIENTO_DIAS = 10  # despues de salir, no vuelve a entrar solo durante estos dias (evita entrar y salir seguido)
 SAL_FR_MIN = 50             # fuerza relativa por debajo de este valor
 SAL_DIAS_VENCIDA = 30       # días corridos sin confirmar desde el alta
 SAL_CIERRES_CONFIRMADA = 3  # cierres seguidos sobre la confirmación: el escenario se cumplió
@@ -589,7 +588,7 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
         aptos_prev = set(prev.get("aptos_ultimo_cierre") or []) if isinstance(prev, dict) else set()
         nuevos = [c for c in aptos_hoy if c["ticker"] not in aptos_prev]
         # 29/10: seguimiento automatico. SALEN los automaticos con motivo de salida (invalidada, perdio SMA50, FR baja, 30 dias,
-        # confirmo 3 cierres); ENTRAN los aptos (con niveles automaticos) hasta completar el cupo, sin repetir a los que salieron hace poco.
+        # confirmo 3 cierres); ENTRAN los aptos (con niveles automaticos) hasta completar el cupo, sin espera: si un activo que salio vuelve a estar apto, puede volver a entrar con niveles nuevos.
         quitados = []
         for i in items:
             if i.get("auto") and i.get("salida_sugerida"):
@@ -605,8 +604,6 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
         for c in aptos_hoy:
             t = c["ticker"]
             if t in {a["ticker"] for a in auto_lista}:
-                continue
-            if t in auto_salidas and _dias(auto_salidas[t], hoy_ny) < AUTO_ENFRIAMIENTO_DIAS:
                 continue
             zd = (zonas.get(t) or {}).get("Zona_Demanda") or {}
             ch = c["checklist"]
