@@ -39,6 +39,7 @@ RUTA_CONFIG = "data/entradas_seguimiento.json"
 RUTA_ESTADO = "data/entradas_estado.json"
 RUTA_LOG = "data/log_entradas.jsonl"
 RUTA_ULTIMO = "data/ultimo.json"
+RUTA_AUTO = "data/entradas_auto.json"   # 29/10: seguimiento AUTOMATICO (aptos que el radar suma solo); aparte de la lista de Victoria, que no se toca
 RUTA_BALANCES = "data/balances_cache.json"
 NY = ZoneInfo("America/New_York")
 MINUTOS_POST_CIERRE = 5
@@ -110,6 +111,8 @@ CAND_MAX = 10               # cuántos candidatos se muestran (la lista en sí t
 CAND_APTO_MAX_FALLAS = 1    # un activo es APTO si cumple casi todo el checklist: como mucho 1 condición en ✖, y nunca la de resultados cercanos
 APTOS_EN_AVISO = 5          # máximo de aptos detallados en un mismo mensaje de Telegram
 SAL_CIERRES_BAJO_SMA50 = 2  # cierres seguidos bajo la media de 50 ruedas
+AUTO_EN_AVISO = 10          # 29/10: el seguimiento automatico NO tiene cupo (Victoria busca todas las oportunidades); esto solo limita cuantos se detallan en un mismo mensaje de Telegram
+AUTO_ENFRIAMIENTO_DIAS = 10  # despues de salir, no vuelve a entrar solo durante estos dias (evita entrar y salir seguido)
 SAL_FR_MIN = 50             # fuerza relativa por debajo de este valor
 SAL_DIAS_VENCIDA = 30       # días corridos sin confirmar desde el alta
 SAL_CIERRES_CONFIRMADA = 3  # cierres seguidos sobre la confirmación: el escenario se cumplió
@@ -366,6 +369,24 @@ def _msg_aptos(nuevos, total_aptos):
     return "\n".join(lin)
 
 
+def _msg_auto(agregados, quitados):
+    lin = ["🤖 <b>Seguimiento automático de entradas</b>"]
+    if agregados:
+        lin.append(f"\n➕ <b>Entran ({len(agregados)})</b> — aptos al cierre de hoy:")
+        for c in agregados[:AUTO_EN_AVISO]:
+            ch = c["checklist"]
+            lin.append(f"• <b>{c['ticker']}</b> {_num(c['precio'])} · se invalida con un cierre bajo {_num(c['invalidacion'])} ({c['dist_invalidacion_pct']:+.1f}%), "
+                       f"confirma sobre {_num(c['confirmacion'])} ({c['dist_confirmacion_pct']:+.1f}%) · condiciones {ch['cumple']} de {ch['total']}")
+    if len(agregados) > AUTO_EN_AVISO:
+        lin.append(f"…y {len(agregados) - AUTO_EN_AVISO} más: están en la app, sección Seguimiento de entradas (marca AUTO).")
+    if quitados:
+        lin.append(f"\n➖ <b>Salen ({len(quitados)})</b>:")
+        for t, motivos in quitados:
+            lin.append(f"• <b>{t}</b>: " + " ".join(motivos))
+    lin.append("\nNiveles calculados por el radar (no definidos a mano). En la app figuran con la marca AUTO. Información y escenarios, no una recomendación.")
+    return "\n".join(lin)
+
+
 def _msg_toque(t, nombre, piso, techo, inv, precio):
     return (f"👀 <b>{t}</b> llegó a su piso ({nombre}: {_num(piso)} a {_num(techo)}). Precio ahora: {_num(precio)}.\n"
             f"   Todavía NO es el escenario de entrada: se da si la rueda CIERRA por encima de {_num(techo)}.\n"
@@ -390,6 +411,15 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
     ahora = ahora or datetime.now(timezone.utc)
     cfg = _cargar(RUTA_CONFIG, {"lista": []})
     lista = [i for i in cfg.get("lista", []) if i.get("ticker")]
+    # 29/10: seguimiento automatico: aptos que el radar sumo solo (archivo aparte; la lista de arriba no se modifica nunca)
+    auto_cfg = _cargar(RUTA_AUTO, {"lista": [], "salidas": {}})
+    if not isinstance(auto_cfg, dict):
+        auto_cfg = {"lista": [], "salidas": {}}
+    _manuales = {i["ticker"] for i in lista}
+    auto_lista = [dict(i, auto=True) for i in auto_cfg.get("lista", []) if i.get("ticker") and i["ticker"] not in _manuales]
+    auto_salidas = dict(auto_cfg.get("salidas") or {})
+    auto_cambio = False
+    lista = lista + auto_lista
     if not lista:
         return {"avisos": 0}
     ultimo = ultimo or _cargar(RUTA_ULTIMO, {})
@@ -518,7 +548,7 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
         mostrado = estado_vivo
         _riesgo_i = calcular_riesgo(precio, inv, conf, r, bw_p33, bw_p67)
         items.append({
-            "ticker": t, "motivo": it.get("motivo"), "vigilar": it.get("vigilar", []), "nota": it.get("nota"),
+            "ticker": t, "auto": bool(it.get("auto")), "motivo": it.get("motivo"), "vigilar": it.get("vigilar", []), "nota": it.get("nota"),
             "confirmacion": {"nivel": conf, "texto": (it.get("confirmacion") or {}).get("texto")},
             "invalidacion": {"nivel": inv, "texto": (it.get("invalidacion") or {}).get("texto")},
             "zona": it.get("zona"), "fecha_alta": fecha_alta, "precio_alta": precio_alta,
@@ -558,6 +588,44 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
         aptos_hoy = [c for c in todos_cand if c.get("apto")]
         aptos_prev = set(prev.get("aptos_ultimo_cierre") or []) if isinstance(prev, dict) else set()
         nuevos = [c for c in aptos_hoy if c["ticker"] not in aptos_prev]
+        # 29/10: seguimiento automatico. SALEN los automaticos con motivo de salida (invalidada, perdio SMA50, FR baja, 30 dias,
+        # confirmo 3 cierres); ENTRAN los aptos (con niveles automaticos) hasta completar el cupo, sin repetir a los que salieron hace poco.
+        quitados = []
+        for i in items:
+            if i.get("auto") and i.get("salida_sugerida"):
+                quitados.append((i["ticker"], i["salida_sugerida"]))
+        if quitados:
+            _q = {t for t, _ in quitados}
+            auto_lista = [a for a in auto_lista if a["ticker"] not in _q]
+            for t, mot in quitados:
+                auto_salidas[t] = hoy_ny
+                eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": t, "evento": "auto_sale", "motivos": mot})
+            auto_cambio = True
+        agregados = []
+        for c in aptos_hoy:
+            t = c["ticker"]
+            if t in {a["ticker"] for a in auto_lista}:
+                continue
+            if t in auto_salidas and _dias(auto_salidas[t], hoy_ny) < AUTO_ENFRIAMIENTO_DIAS:
+                continue
+            zd = (zonas.get(t) or {}).get("Zona_Demanda") or {}
+            ch = c["checklist"]
+            auto_lista.append({
+                "ticker": t, "fecha_alta": hoy_ny, "precio_alta": c["precio"],
+                "motivo": f"Agregado automáticamente al cierre del {hoy_ny}: apto ({ch['cumple']} de {ch['total']} condiciones) · {' + '.join(c['marcas'])}. Niveles calculados por el radar, no definidos a mano.",
+                "confirmacion": {"nivel": round(c["confirmacion"], 2), "texto": f"Cierre sobre {_num(c['confirmacion'])} (resistencia más cercana o máximo de 52 semanas)."},
+                "invalidacion": {"nivel": round(c["invalidacion"], 2), "texto": f"Cierre bajo {_num(c['invalidacion'])} (piso de la zona de demanda)."},
+                "zona": ({"piso": zd.get("piso"), "techo": zd.get("techo"), "tipo": "zona de demanda automática"} if zd.get("piso") is not None and zd.get("techo") is not None else None),
+                "vigilar": [],
+            })
+            agregados.append(c)
+            eventos.append({"ts": ts, "fecha": hoy_ny, "ticker": t, "evento": "auto_entra", "precio": c["precio"], "cumple": ch["cumple"],
+                            "total": ch["total"], "invalidacion": c["invalidacion"], "confirmacion": c["confirmacion"], "marcas": c["marcas"]})
+            auto_cambio = True
+        if agregados or quitados:
+            mensajes.append(_msg_auto(agregados, quitados))
+        _ag = {c["ticker"] for c in agregados}
+        nuevos = [c for c in nuevos if c["ticker"] not in _ag]
         if nuevos:
             mensajes.append(_msg_aptos(nuevos, len(aptos_hoy)))
             for c in nuevos:
@@ -580,6 +648,10 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
             with open(RUTA_LOG, "a", encoding="utf-8") as f:   # solo agregar, nunca reescribir
                 for e in eventos:
                     f.write(json.dumps(e, ensure_ascii=False) + "\n")
+        if auto_cambio:
+            with open(RUTA_AUTO, "w", encoding="utf-8") as f:
+                json.dump({"actualizado": ts, "lista": [{k: v for k, v in a.items() if k != "auto"} for a in auto_lista], "salidas": auto_salidas},
+                          f, ensure_ascii=False, indent=2)
         os.makedirs(os.path.dirname(RUTA_ESTADO), exist_ok=True)
         with open(RUTA_ESTADO, "w", encoding="utf-8") as f:
             json.dump(salida, f, ensure_ascii=False, indent=2)
