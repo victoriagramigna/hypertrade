@@ -27,6 +27,7 @@ log = logging.getLogger("preapertura")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 UMBRAL_PM_PCT = 2.0         # premarket: sube al menos 2% contra el cierre previo
+UMBRAL_CAIDA_PM_PCT = -3.0  # 29/10: premarket: cae al menos 3% contra el cierre previo (lista informativa; corte NO validado con datos todavia)
 UMBRAL_GAP_PCT = 3.0        # "gap real" = cierra al menos +3% contra el cierre previo (regla del radar)
 VENTANA_MAX = 10
 RUTA_LOG = "data/log_preapertura.jsonl"
@@ -69,6 +70,24 @@ def _log_agregar(eventos):
     with open(RUTA_LOG, "a", encoding="utf-8") as f:
         for e in eventos:
             f.write(json.dumps(e, ensure_ascii=False) + "\n")
+
+
+def _mis_tickers():
+    """Tickers de la cartera y de la lista de entradas, para marcar las caidas que le tocan a Victoria."""
+    cartera, lista = set(), set()
+    try:
+        for p in _json("data/mi_cartera.json", []) or []:
+            if p.get("ticker"):
+                cartera.add(str(p["ticker"]).upper())
+    except Exception:
+        pass
+    try:
+        for i in (_json("data/entradas_seguimiento.json", {}) or {}).get("lista", []) or []:
+            if i.get("ticker"):
+                lista.add(str(i["ticker"]).upper())
+    except Exception:
+        pass
+    return cartera, lista
 
 
 def cargar_universo():
@@ -349,6 +368,15 @@ def armar_mensaje(snap):
         L.append("\nHoy no hay datos de premarket (feriado o Yahoo sin datos).")
     else:
         L.append("\nNingún papel con macrotendencia cotiza hoy +2% o más en premarket.")
+    caidas = snap.get("caidas") or []
+    if caidas:
+        L.append(f"\n<b>Caídas fuertes en premarket</b> ({snap.get('umbral_caida_pct', UMBRAL_CAIDA_PM_PCT):+.0f}% o más contra el cierre previo):")
+        for c in caidas[:10]:
+            marca = " 📌 en tu cartera" if c.get("en_cartera") else (" 👀 en tu lista" if c.get("en_lista") else "")
+            vr = f", volumen {c['pm_vol_rel_pct']}% del diario" if c.get("pm_vol_rel_pct") is not None else ""
+            L.append(f"• {c['ticker']}  premarket {c['pm_pct']:+.1f}% (cierre previo {c['cierre_previo']}{vr}){marca}")
+        if len(caidas) > 10:
+            L.append(f"… y {len(caidas) - 10} más (en la app).")
     if snap["balances"]:
         L.append("\n<b>Balances de hoy y mañana</b> (anuncian movimiento, no dirección):")
         hoy = date.fromisoformat(snap["fecha_et"])
@@ -387,7 +415,8 @@ def correr(ahora=None, diarios_fn=None, premarket_fn=None, fechas_fn=None, histo
 
     # 2) premarket
     pms = (premarket_fn or bajar_premarket)(tickers)
-    candidatos, premarket_ok = [], False
+    candidatos, caidas, premarket_ok = [], [], False
+    en_cartera, en_lista = _mis_tickers()
     for t, df in pms.items():
         pm = premarket_de_hoy(df, hoy_et)
         if pm is None or t not in diarios:
@@ -396,7 +425,14 @@ def correr(ahora=None, diarios_fn=None, premarket_fn=None, fechas_fn=None, histo
         ev = evaluar_gap(diarios[t], pm[0], pm[1], hoy_et)
         if ev and ev["pm_pct"] >= UMBRAL_PM_PCT and ev["macro"]:
             candidatos.append({"ticker": t, "sector": universo.get(t), **ev})
+        # 29/10: caidas fuertes (no exige macrotendencia: una caida en la cartera importa aunque no haya gap alcista)
+        if ev and ev["pm_pct"] <= UMBRAL_CAIDA_PM_PCT:
+            caidas.append({"ticker": t, "sector": universo.get(t), "pm_pct": ev["pm_pct"], "pm_precio": ev["pm_precio"],
+                           "cierre_previo": ev["cierre_previo"], "pm_vol_rel_pct": ev["pm_vol_rel_pct"],
+                           "sobre_sma200": ev["sobre_sma200"],
+                           "en_cartera": t.upper() in en_cartera, "en_lista": t.upper() in en_lista})
     candidatos.sort(key=lambda x: -x["pm_pct"])
+    caidas.sort(key=lambda x: (not (x["en_cartera"] or x["en_lista"]), x["pm_pct"]))
 
     # 3) balances de hoy y mañana
     fechas = actualizar_cache_balances(tickers, fechas_fn or fechas_balance_yahoo, hoy_et)
@@ -414,7 +450,8 @@ def correr(ahora=None, diarios_fn=None, premarket_fn=None, fechas_fn=None, histo
     balances.sort(key=lambda x: (x["cuando"] != "hoy", x["ticker"]))
 
     snap = {"generado_utc": ahora.isoformat(), "fecha_et": hoy_et.isoformat(), "premarket_disponible": premarket_ok,
-            "umbral_premarket_pct": UMBRAL_PM_PCT, "candidatos": candidatos, "balances": balances}
+            "umbral_premarket_pct": UMBRAL_PM_PCT, "umbral_caida_pct": UMBRAL_CAIDA_PM_PCT,
+            "candidatos": candidatos, "caidas": caidas, "balances": balances}
     with open(RUTA_SNAP, "w", encoding="utf-8") as f:
         json.dump(snap, f, ensure_ascii=False, indent=1)
 
@@ -427,16 +464,23 @@ def correr(ahora=None, diarios_fn=None, premarket_fn=None, fechas_fn=None, histo
             nuevos.append({"evento": "aviso", "id": i, "fecha": hoy_et.isoformat(), "hora_utc": ahora.strftime("%H:%M"),
                            "tipo": "gap_candidato", "ticker": c["ticker"], "pm_pct": c["pm_pct"], "pm_precio": c["pm_precio"],
                            "cierre_previo": c["cierre_previo"], "pm_vol_rel_pct": c["pm_vol_rel_pct"]})
+    for c in caidas:
+        i = f"PRE-{c['ticker']}-{hoy_et.isoformat()}-caida_premarket"
+        if i not in existentes:
+            nuevos.append({"evento": "aviso", "id": i, "fecha": hoy_et.isoformat(), "hora_utc": ahora.strftime("%H:%M"),
+                           "tipo": "caida_premarket", "ticker": c["ticker"], "pm_pct": c["pm_pct"], "pm_precio": c["pm_precio"],
+                           "cierre_previo": c["cierre_previo"], "pm_vol_rel_pct": c["pm_vol_rel_pct"],
+                           "en_cartera": c["en_cartera"], "en_lista": c["en_lista"]})
     for b in balances:
         i = f"PRE-{b['ticker']}-{hoy_et.isoformat()}-balance"
         if i not in existentes:
             nuevos.append({"evento": "aviso", "id": i, "fecha": hoy_et.isoformat(), "hora_utc": ahora.strftime("%H:%M"),
                            "tipo": "balance", "ticker": b["ticker"], "balance": b["cuando"]})
     _log_agregar(nuevos)
-    log.info(f"{len(candidatos)} candidatos, {len(balances)} balances, {len(nuevos)} avisos nuevos en el registro")
+    log.info(f"{len(candidatos)} candidatos, {len(caidas)} caidas, {len(balances)} balances, {len(nuevos)} avisos nuevos en el registro")
 
     # 26/10: hay varias corridas por dia; se manda por Telegram solo si hay avisos NUEVOS (no repite lo ya avisado).
-    if enviar and nuevos and (candidatos or balances):
+    if enviar and nuevos and (candidatos or balances or caidas):
         from telegram_bot import enviar_mensaje
         enviar_mensaje(os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"), armar_mensaje(snap))
     return snap
