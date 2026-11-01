@@ -379,6 +379,27 @@
             <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
         </section>
 
+<!-- Bases VCP con contracciones reales (data/vcp_v4.json, lo arma scripts/vcp_base_v4.py). Informativo, NO es señal de compra. -->
+        <section class="mb-6" id="vcp4-section">
+            <div class="flex justify-between items-end border-b border-surface pb-1 mb-3">
+                <h2 class="text-accent uppercase text-sm font-bold tracking-widest">📐 Bases VCP reales <span id="vcp4-count" class="text-gray-500 normal-case"></span></h2>
+            </div>
+            <div class="font-mono text-[11px] text-gray-500 mb-2 leading-relaxed">
+                Bases con contracciones medidas de pico a valle con máximos y mínimos del día: <span class="text-white">2 a 4 contracciones seguidas, cada una menor que la anterior</span>, la primera de 10% o más y la última de 10% o menos, en tendencia (a menos de 15% del máximo de 52 semanas, sobre la media de 50 y FR de 50 o más).
+                <span class="text-white">Pivote</span> = último máximo de la base; <span class="text-white">stop</span> = mínimo de la última contracción. Se evalúa una vez por rueda, con el cierre. Sin avisos por Telegram.
+                <details class="mt-1"><summary class="cursor-pointer text-gray-400">Cómo leerlo y qué límites tiene</summary>
+                    <div class="mt-1">
+                        <span class="text-white">En formación</span>: la base está vigente y todavía no cerró sobre el pivote. <span class="text-pos">Ruptura</span>: primer cierre sobre el pivote; desde ese día pivote y stop quedan fijos y se sigue 20 ruedas o hasta que el mínimo del día toque el stop. <span class="text-white">Riesgo</span> = distancia del pivote al stop (verde hasta 8%, naranja de 8 a 10%, rojo más de 10%). <span class="text-white">Plantilla</span> = las 9 condiciones de tendencia de Minervini (con el FR del radar).
+                        Cada alta, ruptura, salida y el resultado a 5, 10 y 20 ruedas queda en una bitácora propia que no entra en la Auditoría.
+                        <span class="text-accent">Límites:</span> el estudio histórico propio (1 año, un solo régimen de mercado) no validó una ventaja: la forma quedó 1,5 puntos arriba de la ruptura sin forma contra SPY a 20 ruedas, pero con intervalos que incluyen el cero, dependiendo del largo del giro y concentrado en un trimestre. Los umbrales de la base son míos.
+                    </div>
+                </details>
+            </div>
+            <div id="vcp4-resumen"></div>
+            <div id="vcp4-container"></div>
+            <div class="font-mono text-[10px] text-gray-600 mt-2">Información y escenarios, no una recomendación. No es asesoramiento financiero.</div>
+        </section>
+
         
 
         
@@ -2785,10 +2806,72 @@
                 <div class="font-mono text-[10px] text-gray-600 mt-1">Al pivote = cuánto falta para cerrar sobre el pivote (entre paréntesis, el nivel). Al stop = distancia al mínimo del último retroceso. Retrocesos = caída máxima de cada uno de los tres últimos tramos de 20 ruedas, del más viejo al más nuevo. Vol último = volumen de la rueda sobre el promedio de las 50 anteriores. FR = fuerza relativa del radar (0 a 100). Datos al cierre del ${esc(vcpEstado.ultima_fecha)}.</div>`;
         }
 
+
+        // ---- Bases VCP con contracciones reales (data/vcp_v4.json) ----
+        const VCP4_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/vcp_v4.json';
+        let vcp4Estado = null;
+        async function cargarVcp4() {
+            try {
+                const r = await fetch(VCP4_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                if (r.ok) vcp4Estado = await r.json();
+            } catch (e) { vcp4Estado = null; }
+            renderVcp4();
+        }
+        function renderVcp4() {
+            const cont = document.getElementById('vcp4-container');
+            if (!cont) return;
+            const items = Array.isArray(vcp4Estado?.items) ? vcp4Estado.items : [];
+            const cnt = document.getElementById('vcp4-count');
+            if (cnt) cnt.textContent = items.length ? `(${items.length})` : '';
+            const esc = (x) => String(x ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            const resEl = document.getElementById('vcp4-resumen');
+            if (!items.length) {
+                if (resEl) resEl.innerHTML = '';
+                cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm">Hoy ningún activo tiene una base vigente con esta definición (es estricta), o todavía no corrió el radar después del cierre.</div>';
+                return;
+            }
+            const rcv = items.filter(i => i.estado === 'ruptura' && i.ruedas === 0);
+            if (resEl) resEl.innerHTML = rcv.length
+                ? `<div class="font-mono text-xs border border-pos rounded-sm p-2 mb-3 text-pos leading-relaxed"><span class="font-bold">📐 Rompieron el pivote en la última rueda (${rcv.length}):</span> ${rcv.map(i => `<span class="cursor-pointer underline text-white" onclick="abrirFicha('${esc(i.ticker)}')">${esc(i.ticker)}</span>`).join(', ')}. <span class="text-gray-400">Información, no una recomendación.</span></div>`
+                : `<div class="font-mono text-[11px] text-gray-500 mb-3">En la última rueda ninguna base rompió el pivote. Datos al cierre del ${esc(vcp4Estado.ultima_fecha)}.</div>`;
+            const f = (x, d = 2) => (x == null || Number.isNaN(Number(x))) ? '—' : Number(x).toFixed(d).replace('.', ',');
+            const pc = (x) => x == null ? '<span class="text-gray-600">—</span>' : `<span class="${x > 0 ? 'text-pos' : x < 0 ? 'text-neg' : 'text-gray-400'}">${x > 0 ? '+' : ''}${Number(x).toFixed(2).replace('.', ',')}%</span>`;
+            const riesgoHtml = (i) => {
+                const r = i.estado === 'ruptura' ? i.riesgo_ruptura_pct : i.riesgo_pivote_pct;
+                if (r == null) return '<span class="text-gray-600">—</span>';
+                return `<span class="${r <= 8 ? 'text-pos' : r <= 10 ? 'text-accent' : 'text-neg'}" title="Distancia de ${i.estado === 'ruptura' ? 'la entrada' : 'el pivote'} al stop">${f(r, 1)}%</span>`;
+            };
+            const filas = items.slice().sort((a, b) => (a.estado === b.estado ? Math.abs(a.dist_pivote_pct ?? 99) - Math.abs(b.dist_pivote_pct ?? 99) : (a.estado === 'ruptura' ? -1 : 1)));
+            const th = 'class="py-1 px-1 font-normal text-right" style="position:sticky;top:0;background:#121722;z-index:4;box-shadow:0 1px 0 #374151"';
+            cont.className = 'overflow-x-auto ancho';
+            cont.style.overflowX = 'auto'; cont.style.webkitOverflowScrolling = 'touch';
+            cont.innerHTML = `<div class="font-mono text-[10px] text-gray-600 mb-1">↔ Deslizá hacia los costados para ver todas las columnas.</div><table class="w-full font-mono text-[11px] border-collapse whitespace-nowrap"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
+                <th class="py-1 px-1 font-normal" style="position:sticky;left:0;top:0;background:#121722;z-index:7;box-shadow:0 1px 0 #374151">Ticker</th><th class="py-1 px-1 font-normal" style="position:sticky;top:0;background:#121722;z-index:4;box-shadow:0 1px 0 #374151">Estado</th><th ${th}>Cierre</th><th ${th}>Hoy</th><th ${th}>Contracciones %</th><th ${th}>Mínimos suben</th><th ${th}>Al pivote</th><th ${th}>Al stop</th><th ${th}>Riesgo</th><th ${th}>Plantilla 9/9</th><th ${th}>Vol último</th><th ${th}>FR</th><th ${th}>Ruedas</th><th ${th}>Desde ruptura</th><th ${th}>Gráfico</th></tr></thead><tbody>
+                ${filas.map(i => `<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
+                    <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}${tipoActivoHtml(i.ticker)}</td>
+                    <td class="py-1 px-1">${i.estado === 'ruptura' ? `<span class="text-pos font-bold">Ruptura</span> <span class="${i.con_volumen ? 'text-pos' : 'text-gray-400'}">${i.con_volumen ? 'con volumen' : 'sin volumen fuerte'}</span>${i.bajo_pivote ? ' <span class="text-accent">· bajo el pivote</span>' : ''}` : '<span class="text-gray-300">En formación</span>'}</td>
+                    <td class="py-1 px-1 text-right text-white">${f(i.cierre)}</td>
+                    <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
+                    <td class="py-1 px-1 text-right text-gray-300" title="${i.n_contr} contracciones, de la más vieja a la más nueva">${(i.profundidades ?? []).map(x => f(x, 1)).join(' → ')}</td>
+                    <td class="py-1 px-1 text-right ${i.minimos_suben ? 'text-pos' : 'text-gray-400'}">${i.minimos_suben ? 'sí' : 'no'}</td>
+                    <td class="py-1 px-1 text-right" title="Pivote ${f(i.pivote)}">${i.estado === 'ruptura' ? (i.dist_pivote_pct <= 0 ? `<span class="text-pos">superado (${f(i.pivote)})</span>` : `<span class="text-accent">bajo el pivote ${f(i.pivote)}</span>`) : `<span class="text-gray-300">+${f(i.dist_pivote_pct, 1)}% (${f(i.pivote)})</span>`}</td>
+                    <td class="py-1 px-1 text-right text-neg" title="Stop ${f(i.stop)}">${i.estado === 'ruptura' ? f(i.dist_stop_pct, 1) + '% (' + f(i.stop) + ')' : f(i.stop)}</td>
+                    <td class="py-1 px-1 text-right">${riesgoHtml(i)}</td>
+                    <td class="py-1 px-1 text-right ${i.plantilla ? 'text-pos' : 'text-gray-400'}">${i.plantilla == null ? '—' : (i.plantilla ? 'sí' : 'no')}</td>
+                    <td class="py-1 px-1 text-right ${i.vol_rel != null && i.vol_rel >= 1.5 ? 'text-pos' : 'text-gray-300'}">${i.vol_rel == null ? '—' : f(i.vol_rel, 1) + 'x'}</td>
+                    <td class="py-1 px-1 text-right text-gray-300">${f(i.rs, 0)}</td>
+                    <td class="py-1 px-1 text-right text-gray-300">${i.estado === 'ruptura' ? (i.ruedas ?? 0) + ' de 20' : '—'}</td>
+                    <td class="py-1 px-1 text-right">${i.estado === 'ruptura' ? pc(i.desde_ruptura_pct) : '<span class="text-gray-600">—</span>'}</td>
+                    <td class="py-1 px-1 text-right">${verGraficoBtn(i.ticker)}</td></tr>`).join('')}
+                </tbody></table>
+                <div class="font-mono text-[10px] text-gray-600 mt-1">Contracciones = profundidad de pico a valle de cada una, de la más vieja a la más nueva. Al pivote = cuánto falta para cerrar sobre el pivote (entre paréntesis, el nivel). Riesgo = pivote a stop (antes de romper) o entrada a stop (ya rota). Vol último = volumen de la rueda sobre el promedio de las 50 anteriores. FR = fuerza relativa del radar. Datos al cierre del ${esc(vcp4Estado.ultima_fecha)}.</div>`;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             cargarNivelesSeg();
             cargarEntradas();
             cargarVcp();
+            cargarVcp4();
             semilleroTraer();
             const b = document.getElementById('semillero-add'), i = document.getElementById('semillero-input');
             if (b) b.addEventListener('click', agregarSemillero);
@@ -4857,6 +4940,7 @@
                 { id: 'vcp', t: 'Bases VCP y MACD', h: ['Bases VCP y MACD semanal'] },
                 { id: 'entradas', t: 'Watchlist', h: ['Seguimiento de entradas'] },
                 { id: 'vcpwl', t: 'Watchlist VCP', h: ['Watchlist VCP'] },
+                { id: 'vcp4', t: 'Bases VCP reales', h: ['Bases VCP reales'] },
             ] },
             auditoria: { def: 'operaciones', siempre: ['Auditoría'], vistas: [
                 { id: 'operaciones', t: 'Mis operaciones', h: ['Mis operaciones'] },
