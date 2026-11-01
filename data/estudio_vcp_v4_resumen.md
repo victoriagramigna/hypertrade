@@ -20,18 +20,18 @@ Corte de mitades: 2026-04-21.
 
 | Definicion | Casos | Dias | Riesgo % | % toco stop | Retorno % | Exceso vs SPY % [IC95 por dias] | % ganadoras | R |
 |---|---|---|---|---|---|---|---|---|
-| V4A contracciones decrecientes · SU | 80 | 59 | 8.1 | 20.0 | 2.11 | 1.34 [-0.78, 3.2] | 62.5 | 0.29 |
-| V4A contracciones decrecientes · S10L | 80 | 59 | 7.5 | 21.2 | 2.11 | 1.35 [-0.78, 3.2] | 62.5 | 0.32 |
-| V4A contracciones decrecientes · F8 | 80 | 59 | 8.0 | 26.2 | 1.7 | 1.07 [-1.13, 3.01] | 58.8 | 0.21 |
-| V4B + minimos que no bajan · SU | 65 | 51 | 8.1 | 18.5 | 2.31 | 1.59 [-0.66, 3.77] | 63.1 | 0.31 |
-| V4B + minimos que no bajan · S10L | 65 | 51 | 7.5 | 20.0 | 2.32 | 1.61 [-0.65, 3.79] | 63.1 | 0.35 |
-| V4B + minimos que no bajan · F8 | 65 | 51 | 8.0 | 26.2 | 1.69 | 1.14 [-1.16, 3.39] | 58.5 | 0.21 |
-| V4A + plantilla · SU | 39 | 32 | 8.6 | 23.1 | 1.81 | 1.15 [-2.26, 4.26] | 56.4 | 0.25 |
-| V4A + plantilla · S10L | 39 | 32 | 7.8 | 25.6 | 1.77 | 1.13 [-2.33, 4.2] | 56.4 | 0.35 |
-| V4A + plantilla · F8 | 39 | 32 | 8.0 | 35.9 | 1.38 | 0.85 [-2.53, 3.98] | 51.3 | 0.17 |
-| V4B + plantilla · SU | 33 | 28 | 8.6 | 18.2 | 2.76 | 2.24 [-1.54, 5.68] | 63.6 | 0.38 |
-| V4B + plantilla · S10L | 33 | 28 | 7.9 | 18.2 | 2.82 | 2.29 [-1.49, 5.68] | 63.6 | 0.52 |
-| V4B + plantilla · F8 | 33 | 28 | 8.0 | 33.3 | 1.99 | 1.66 [-2.06, 5.03] | 57.6 | 0.25 |
+| V4A contracciones decrecientes · SU | 78 | 57 | 8.1 | 17.9 | 2.37 | 1.56 [-0.57, 3.65] | 64.1 | 0.32 |
+| V4A contracciones decrecientes · S10L | 78 | 57 | 7.5 | 20.5 | 2.33 | 1.54 [-0.59, 3.63] | 64.1 | 0.35 |
+| V4A contracciones decrecientes · F8 | 78 | 57 | 8.0 | 24.4 | 1.95 | 1.28 [-0.93, 3.3] | 60.3 | 0.24 |
+| V4B + minimos que no bajan · SU | 64 | 50 | 8.1 | 17.2 | 2.47 | 1.74 [-0.62, 3.95] | 64.1 | 0.33 |
+| V4B + minimos que no bajan · S10L | 64 | 50 | 7.5 | 18.8 | 2.48 | 1.76 [-0.65, 3.96] | 64.1 | 0.37 |
+| V4B + minimos que no bajan · F8 | 64 | 50 | 8.0 | 25.0 | 1.84 | 1.28 [-1.29, 3.58] | 59.4 | 0.23 |
+| V4A + plantilla · SU | 38 | 31 | 8.6 | 21.1 | 2.08 | 1.39 [-2.21, 4.64] | 57.9 | 0.28 |
+| V4A + plantilla · S10L | 38 | 31 | 7.8 | 23.7 | 2.03 | 1.37 [-2.2, 4.6] | 57.9 | 0.39 |
+| V4A + plantilla · F8 | 38 | 31 | 8.0 | 34.2 | 1.63 | 1.08 [-2.55, 4.43] | 52.6 | 0.2 |
+| V4B + plantilla · SU | 32 | 27 | 8.6 | 15.6 | 3.1 | 2.56 [-1.22, 5.8] | 65.6 | 0.42 |
+| V4B + plantilla · S10L | 32 | 27 | 7.9 | 15.6 | 3.17 | 2.61 [-1.21, 5.82] | 65.6 | 0.56 |
+| V4B + plantilla · F8 | 32 | 27 | 8.0 | 31.2 | 2.31 | 1.95 [-1.92, 5.3] | 59.4 | 0.29 |
 | BASE tendencia + ruptura, sin base VCP · S10L | 1172 | 215 | 11.0 | 27.6 | 1.36 | 0.36 [-0.39, 1.1] | 50.2 | 0.13 |
 | BASE tendencia + ruptura, sin base VCP · F8 | 1172 | 215 | 8.0 | 35.0 | 1.1 | 0.13 [-0.55, 0.84] | 47.2 | 0.14 |
 
@@ -39,49 +39,49 @@ Corte de mitades: 2026-04-21.
 
 | Definicion | primera (casos) | segunda (casos) |
 |---|---|---|
-| V4A contracciones decrecientes · S10L | 3.97 (32) | -0.4 (48) |
-| V4A contracciones decrecientes · SU | 3.81 (32) | -0.3 (48) |
-| V4B + minimos que no bajan · S10L | 4.7 (27) | -0.59 (38) |
-| V4B + minimos que no bajan · SU | 4.59 (27) | -0.54 (38) |
-| V4A + plantilla · S10L | 3.99 (18) | -1.33 (21) |
-| V4A + plantilla · SU | 3.89 (18) | -1.21 (21) |
-| V4B + plantilla · S10L | 5.18 (15) | -0.12 (18) |
-| V4B + plantilla · SU | 5.06 (15) | -0.12 (18) |
+| V4A contracciones decrecientes · S10L | 4.24 (31) | -0.23 (47) |
+| V4A contracciones decrecientes · SU | 4.14 (31) | -0.14 (47) |
+| V4B + minimos que no bajan · S10L | 4.7 (27) | -0.39 (37) |
+| V4B + minimos que no bajan · SU | 4.59 (27) | -0.33 (37) |
+| V4A + plantilla · S10L | 3.99 (18) | -0.99 (20) |
+| V4A + plantilla · SU | 3.89 (18) | -0.86 (20) |
+| V4B + plantilla · S10L | 5.18 (15) | 0.35 (17) |
+| V4B + plantilla · SU | 5.06 (15) | 0.35 (17) |
 | BASE tendencia + ruptura, sin base VCP · S10L | 1.66 (641) | -1.21 (531) |
 
 ## 4. Segun el regimen del mercado el dia de la ruptura (exceso vs SPY %)
 
 | Definicion | SPY sobre su media de 50 (casos) | SPY bajo su media de 50 (casos) |
 |---|---|---|
-| V4A contracciones decrecientes · S10L | 1.21 (76) | 3.92 (4) |
-| V4A contracciones decrecientes · SU | 1.21 (76) | 3.92 (4) |
-| V4B + minimos que no bajan · S10L | 1.45 (61) | 3.92 (4) |
-| V4B + minimos que no bajan · SU | 1.44 (61) | 3.92 (4) |
-| V4A + plantilla · S10L | 0.81 (35) | 3.92 (4) |
-| V4A + plantilla · SU | 0.83 (35) | 3.92 (4) |
-| V4B + plantilla · S10L | 2.06 (29) | 3.92 (4) |
-| V4B + plantilla · SU | 2.0 (29) | 3.92 (4) |
+| V4A contracciones decrecientes · S10L | 1.41 (74) | 3.92 (4) |
+| V4A contracciones decrecientes · SU | 1.43 (74) | 3.92 (4) |
+| V4B + minimos que no bajan · S10L | 1.61 (60) | 3.92 (4) |
+| V4B + minimos que no bajan · SU | 1.6 (60) | 3.92 (4) |
+| V4A + plantilla · S10L | 1.07 (34) | 3.92 (4) |
+| V4A + plantilla · SU | 1.09 (34) | 3.92 (4) |
+| V4B + plantilla · S10L | 2.43 (28) | 3.92 (4) |
+| V4B + plantilla · SU | 2.37 (28) | 3.92 (4) |
 | BASE tendencia + ruptura, sin base VCP · S10L | 0.57 (1005) | -0.89 (167) |
 
 ## 5. Por trimestre, stop S10L (exceso vs SPY %, casos)
 
 | Definicion | 2025-T4 | 2026-T1 | 2026-T2 | 2026-T3 | 2026-T4 |
 |---|---|---|---|---|---|
-| V4A contracciones decrecientes | 1.05 (15) | 8.1 (15) | -0.66 (31) | -0.47 (19) | - |
-| V4B + minimos que no bajan | 1.27 (13) | 10.06 (12) | -1.14 (21) | -0.47 (19) | - |
-| V4A + plantilla | 0.57 (8) | 8.98 (9) | -4.61 (14) | 2.89 (8) | - |
-| V4B + plantilla | 0.88 (6) | 10.74 (8) | -3.53 (11) | 2.89 (8) | - |
+| V4A contracciones decrecientes | 1.05 (15) | 8.99 (14) | -0.41 (30) | -0.47 (19) | - |
+| V4B + minimos que no bajan | 1.27 (13) | 10.06 (12) | -0.79 (20) | -0.47 (19) | - |
+| V4A + plantilla | 0.57 (8) | 8.98 (9) | -4.34 (13) | 2.89 (8) | - |
+| V4B + plantilla | 0.88 (6) | 10.74 (8) | -3.07 (10) | 2.89 (8) | - |
 | BASE tendencia + ruptura, sin base VCP | 2.22 (212) | 1.84 (316) | -0.68 (367) | -1.38 (275) | -1.53 (2) |
 
 ## 6. Volumen de la ruptura, stop S10L (exceso vs SPY %)
 
 | Definicion | Condicion | Casos | Retorno % | Exceso % | % ganadoras |
 |---|---|---|---|---|---|
-| V4A contracciones decrecientes · S10L | vol>=1.0x | 26 | 3.7 | 3.24 | 65.4 |
-| V4A contracciones decrecientes · S10L | vol>=1.5x | 10 | -2.37 | -2.0 | 40.0 |
-| V4A contracciones decrecientes · S10L | vol>=2.0x | 3 | -1.74 | -1.47 | 33.3 |
+| V4A contracciones decrecientes · S10L | vol>=1.0x | 25 | 4.02 | 3.54 | 68.0 |
+| V4A contracciones decrecientes · S10L | vol>=1.5x | 9 | -2.16 | -1.75 | 44.4 |
+| V4A contracciones decrecientes · S10L | vol>=2.0x | 2 | -0.53 | -0.04 | 50.0 |
 | V4A contracciones decrecientes · S10L | vol>=3.0x | 1 | 6.11 | 5.85 | 100.0 |
-| V4A contracciones decrecientes · S10L | vol>=1.5x y volumen previo seco | 6 | 3.73 | 3.33 | 50.0 |
+| V4A contracciones decrecientes · S10L | vol>=1.5x y volumen previo seco | 5 | 5.31 | 4.86 | 60.0 |
 | V4A + plantilla · S10L | vol>=1.0x | 12 | 5.03 | 4.77 | 66.7 |
 | V4A + plantilla · S10L | vol>=1.5x | 4 | -2.19 | -2.76 | 25.0 |
 | V4A + plantilla · S10L | vol>=2.0x | 1 | 6.11 | 5.85 | 100.0 |
@@ -98,27 +98,39 @@ Corte de mitades: 2026-04-21.
 | Grupo | Casos | Riesgo % | % toco stop | Retorno % | Exceso % | R |
 |---|---|---|---|---|---|---|
 | riesgo <=5% | 6 | 4.5 | 16.7 | 3.61 | 4.1 | 0.72 |
-| riesgo 5-8% | 31 | 6.6 | 22.6 | 2.36 | 1.61 | 0.33 |
-| riesgo 8-10% | 29 | 8.9 | 17.2 | 2.6 | 1.44 | 0.29 |
+| riesgo 5-8% | 30 | 6.6 | 20.0 | 2.7 | 1.87 | 0.38 |
+| riesgo 8-10% | 28 | 9.0 | 14.3 | 2.99 | 1.79 | 0.34 |
 | riesgo >10% | 14 | 11.3 | 21.4 | -0.11 | -0.64 | -0.01 |
-| 2 contracciones | 56 | 8.3 | 16.1 | 2.59 | 1.76 | 0.36 |
+| 2 contracciones | 55 | 8.3 | 14.5 | 2.79 | 1.94 | 0.38 |
 | 3 contracciones | 17 | 7.7 | 23.5 | 0.76 | -0.43 | 0.13 |
-| 4 contracciones | 7 | 7.6 | 42.9 | 1.51 | 2.34 | 0.09 |
+| 4 contracciones | 6 | 7.5 | 33.3 | 3.09 | 3.77 | 0.27 |
 
 ## 8. Sensibilidad al largo del giro (exceso vs SPY %, stop S10L, casos)
 
 | Definicion | K=3 | K=5 | K=8 |
 |---|---|---|---|
-| V4A contracciones decrecientes | -0.15 (82) | 1.35 (80) | 0.74 (70) |
-| V4B + minimos que no bajan | 0.21 (65) | 1.61 (65) | 0.13 (57) |
-| V4A + plantilla | -0.06 (56) | 1.13 (39) | -0.11 (28) |
-| V4B + plantilla | 0.27 (41) | 2.29 (33) | -1.25 (23) |
+| V4A contracciones decrecientes | 0.01 (81) | 1.54 (78) | 0.74 (70) |
+| V4B + minimos que no bajan | 0.36 (65) | 1.76 (64) | 0.13 (57) |
+| V4A + plantilla | 0.11 (56) | 1.37 (38) | -0.11 (28) |
+| V4B + plantilla | 0.5 (41) | 2.61 (32) | -1.25 (23) |
 | BASE tendencia + ruptura, sin base VCP | 0.42 (1175) | 0.36 (1172) | 0.39 (1177) |
 
-## 9. Bases VCP vigentes hoy, sin ruptura (0)
+## 9. Bases VCP vigentes hoy, sin ruptura (3)
 
 | Ticker | Contracciones | Profundidades % | Minimos suben | Cierre | Pivote | Stop | A pivote % | Riesgo desde pivote % | Tendencia | Plantilla 9/9 |
 |---|---|---|---|---|---|---|---|---|---|---|
+| ADI | 2 | 12.1 > 9.6 | si | 417.11 | 422.67 | 382.0 | 1.3 | 9.6 | si | no |
+| VRSN | 2 | 11.2 > 7.0 | si | 307.21 | 311.61 | 289.66 | 1.4 | 7.0 | si | si |
+| JPM | 2 | 10.2 > 4.1 | si | 337.04 | 344.4 | 330.4 | 2.2 | 4.1 | no | no |
+
+## 10. Diagnostico de hoy: cuantos activos pasan cada filtro
+
+- Activos evaluados: 346
+- Con al menos 4 giros confirmados: 346
+- Cuyo ultimo giro es un minimo: 164
+- Con base valida (contracciones decrecientes, ultima <=10%, primera >=10%, recencia): 7
+- ... y todavia sin romper pivote ni stop: 3
+- ... y ademas en tendencia: 3
 
 ## Como leerlo
 
