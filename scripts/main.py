@@ -68,6 +68,7 @@ from auditoria_squeeze import correr_auditoria_squeeze
 from niveles_seguimiento import procesar_niveles
 from entradas_seguimiento import procesar_entradas
 from vcp_watchlist import procesar_vcp
+from vcp_base_v4 import procesar_vcp_v4
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("radar.main")
@@ -640,6 +641,14 @@ def main():
                          os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID"))
         except Exception as e:
             log.warning(f"Watchlist VCP: falló esta pasada ({e}) -- se sigue con el resto de la corrida")
+
+    # 9b-septies-ter. Bases VCP con contracciones reales (ver vcp_base_v4.py). ADITIVO, sin Telegram:
+    # estado y bitácora propios, una pasada por rueda cerrada; no toca ninguna señal ni la Auditoría.
+    if not corrida_degradada:
+        try:
+            procesar_vcp_v4(precios, precios_ohlc, BENCHMARK, list(TICKERS), MODO)
+        except Exception as e:
+            log.warning(f"Bases VCP v4: falló esta pasada ({e}) -- se sigue con el resto de la corrida")
 
     # 9b-bis. Rebote en EMA200 -- EXPERIMENTAL, "solo medir" (ver charla
     # con Victoria, 30/9): se registra en la bitácora para que la
