@@ -1,0 +1,88 @@
+name: Radar de Mercado
+
+on:
+  # Corrida completa diaria, después del cierre de NYSE (21:15 UTC ≈ 18:15 ARG)
+  schedule:
+    - cron: '15 21 * * 1-5'
+    # Corridas cada 30 minutos, apertura NYSE (10:30 ARG = 13:30 UTC) a
+    # cierre (17:00 ARG = 20:00 UTC) -- 13-20 UTC cubre de sobra, con un
+    # margen de 30 min antes/después que no molesta (repo público =
+    # minutos de Actions ilimitados, no hay costo por las corridas extra)
+    # 26/10: antes era '0,30 13-20'. GitHub salteaba o atrasaba mucho las corridas justo en :00 y :30 (los minutos más
+    # cargados) -- el 26/10 a las 10:39 ARG no había corrido ninguna. Se pasa a :07 y :37, y el rango sube a 21 UTC para cubrir
+    # también el fin del horario de verano de EE.UU. (desde el 1/11 la rueda es 14:30-21:00 UTC).
+    - cron: '7,37 13-21 * * 1-5'
+
+  # Permite correrlo a mano desde la pestaña "Actions" de GitHub -- IMPORTANTE:
+  # usar esto para probar el pipeline completo antes de confiar en el cron.
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'Modo de ejecución'
+        required: true
+        default: 'test'
+        type: choice
+        options: [test, produccion]
+
+jobs:
+  correr-radar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Correr el radar
+        env:
+          # Los crons automáticos (schedule) corren en PRODUCCIÓN -- ya validamos
+          # el pipeline completo a mano, incluida la deduplicación de alertas.
+          # El disparo manual sigue permitiendo elegir "test" para seguir probando
+          # cambios sin mandar mensajes reales.
+          RADAR_MODO: ${{ github.event_name == 'schedule' && 'produccion' || (github.event.inputs.modo || 'test') }}
+          # Secrets -- se cargan desde GitHub Settings > Secrets, nunca hardcodeados
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/main.py
+
+      - name: Commitear el resultado actualizado
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/ultimo.json data/historial_alertas.json
+          # log_alertas.jsonl solo se crea cuando hay alertas NUEVAS que
+          # loguear (bitacora.py) -- puede no existir todavía en corridas
+          # sin novedades. Este workflow corre con "bash -e" (corta en el
+          # primer error), así que se usa un "if" explícito en vez de
+          # "[ -f ... ] && git add ..." -- esa forma con && también
+          # rompería el commit cuando el archivo no existe, porque el
+          # propio test devuelve código de salida 1.
+          if [ -f data/log_alertas.jsonl ]; then
+            git add data/log_alertas.jsonl
+          fi
+          # Auditoría -- mismos cuidados: pueden no existir en las primeras
+          # corridas. Sin estas líneas los resultados se calculaban pero se
+          # perdían al terminar la corrida (nunca se guardaban en el repo).
+          # top30_diario.jsonl, rs_score_historial.jsonl y amplitud_historial.jsonl
+          # faltaban en esta lista (bug encontrado 1/10): se calculaban bien en
+          # cada corrida pero nunca se guardaban en el repo, así que la corrida
+          # siguiente arrancaba de cero y "nuevos ingresos al Top 30" y "Δ RS
+          # día/semana/mes" nunca tenían un día anterior contra el cual comparar.
+          # 4/10: faltaban los archivos de Golden Cross y Squeeze. Se calculaban en
+          # cada corrida pero nunca se guardaban en el repo, así que el estado
+          # ("estaba en squeeze ayer", días en estado) arrancaba de cero cada vez
+          # y ninguna liberación/cruce podía detectarse ni auditarse.
+          for f in data/cartera_avisos.json data/auditoria.json data/auditoria_resultados.jsonl data/top30_semanal.json data/seguimiento_resultados.jsonl data/evaluacion_sistema.json data/chips_historial.json data/rs_sector_historial.jsonl data/rotacion_sectorial_estado.json data/log_rotacion_sectorial.jsonl data/auditoria_rotacion.json data/auditoria_rotacion_resultados.jsonl data/top30_diario.jsonl data/rs_score_historial.jsonl data/amplitud_historial.jsonl data/top30_radar_diario.jsonl data/top30_semanal_radar.json data/rotacion_ticker_estado.json data/log_rotacion_ticker.jsonl data/squeeze_estado.json data/log_squeeze.jsonl data/auditoria_squeeze.json data/auditoria_squeeze_resultados.jsonl data/golden_cross_estado.json data/log_golden_cross.jsonl data/auditoria_golden_cross.json data/auditoria_golden_cross_resultados.jsonl data/niveles_estado.json data/log_niveles.jsonl data/entradas_estado.json data/entradas_auto.json data/log_entradas.jsonl data/vcp_watchlist.json data/log_vcp.jsonl data/cierres_diarios.jsonl data/log_screener.jsonl data/auditoria_screener.json; do
+            if [ -f "$f" ]; then
+              git add "$f"
+            fi
+          done
+          git diff --staged --quiet || git commit -m "Actualización automática de datos [skip ci]"
+          git push
