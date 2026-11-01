@@ -1,0 +1,31 @@
+name: Estudio VCP v3
+
+# Aparte, no toca el radar ni la Watchlist VCP ni la Auditoria. Se corre SOLO a mano:
+# pestaña Actions -> "Estudio VCP v3" -> Run workflow.
+# Baja ~2 anios de cierre y volumen de Yahoo y escribe data/estudio_vcp_v3*.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  estudio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Estudio
+        run: python scripts/estudio_vcp_v3.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/estudio_vcp_v3.json data/estudio_vcp_v3_resumen.md
+          git diff --staged --quiet || git commit -m "Estudio VCP v3 [skip ci]"
+          git pull --rebase
+          git push
