@@ -53,6 +53,8 @@ VOL_RUPTURA = 1.5
 SEGUIMIENTO_RUEDAS = 20
 HORIZONTES = (5, 10, 20)
 MIN_RUEDAS = 200
+# Telegram apagado hasta tener datos reales de la bitacora (el estudio v4 no valido ventaja). La watchlist y la bitacora siguen igual.
+TELEGRAM_ACTIVO = False
 NY = ZoneInfo("America/New_York")
 MINUTOS_POST_CIERRE = 5
 
@@ -301,7 +303,7 @@ def _procesar(precios, volumenes, benchmark, tickers, modo, token, chat_id, ahor
                                altas_hoy=len(altas), rupturas_hoy=len(rupturas), salidas_hoy=len(salidas)))
     enviados = 0
     if modo == "produccion":
-        if enviar:
+        if enviar and TELEGRAM_ACTIVO:
             from telegram_bot import enviar_mensaje
             for m in mensajes:
                 if enviar_mensaje(token, chat_id, m + "\n   (Información y escenarios, no una recomendación.)"):
