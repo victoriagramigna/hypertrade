@@ -85,4 +85,15 @@ jobs:
             fi
           done
           git diff --staged --quiet || git commit -m "Actualización automática de datos [skip ci]"
-          git push
+          # 2/11: el push se rechazaba ("fetch first") cuando otra corrida (Antes de la apertura,
+          # Sync cartera) subia algo mientras corria el radar, y se perdian los datos de la corrida
+          # aunque los avisos de Telegram ya se hubieran mandado. Ahora se integra lo remoto y se
+          # reintenta. "-X theirs" en un rebase = gana lo de ESTA corrida si ambos tocaron el mismo archivo.
+          for intento in 1 2 3 4; do
+            git pull --rebase -X theirs && git push && exit 0
+            echo "Push rechazado (intento $intento): se reintenta"
+            git rebase --abort 2>/dev/null || true
+            sleep $((intento * 5))
+          done
+          echo "No se pudo subir el resultado despues de 4 intentos"
+          exit 1
