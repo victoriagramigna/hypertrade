@@ -1,0 +1,33 @@
+name: Estudio VCP v4 bases largas
+
+# Aparte, no toca el radar ni la Watchlist VCP ni "Bases VCP reales" ni la Auditoria. Se corre SOLO a mano:
+# pestaña Actions -> "Estudio VCP v4 bases largas" -> Run workflow.
+# Baja ~5 anios de apertura, maximo, minimo, cierre y volumen de Yahoo y escribe data/estudio_vcp_v4_largas*.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  estudio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Estudio
+        run: python scripts/estudio_vcp_v4_largas.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/estudio_vcp_v4_largas.json data/estudio_vcp_v4_largas_resumen.md
+          git diff --staged --quiet || git commit -m "Estudio VCP v4 bases largas [skip ci]"
+          for i in 1 2 3 4; do
+            git pull --rebase -X theirs && git push && break
+            sleep 5
+          done
