@@ -212,7 +212,7 @@ def _eventos(O, H, L, C, S, pl, spy, K, diag=None):
                                       volrel=float(vr[j]) if pd.notna(vr[j]) else None, seca=bool(sc[j]),
                                       spy_sobre50=bool(spy_sobre[j]), riesgo=riesgo, parado=parado, ret=ret,
                                       exceso=exc, R=ret / riesgo, n_contr=base["n"] if base else 0,
-                                      dias=k))
+                                      largo=int(j - base["inicio"]) if base else 0, dias=k))
         if diag is not None:
             # incluye el giro que se confirma en la ultima rueda (el bucle de arriba llega hasta n-2)
             zd = list(zz)
