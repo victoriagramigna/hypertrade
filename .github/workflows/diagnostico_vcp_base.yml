@@ -1,0 +1,38 @@
+name: Diagnostico base VCP
+
+# Aparte, no toca el radar ni ninguna lista. Se corre SOLO a mano:
+# pestaña Actions -> "Diagnostico base VCP" -> Run workflow (poner el ticker).
+# Escribe data/diagnostico_vcp_base.md
+on:
+  workflow_dispatch:
+    inputs:
+      ticker:
+        description: 'Ticker a diagnosticar (ej: DD)'
+        required: true
+        default: 'DD'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Diagnostico
+        run: python scripts/diagnostico_vcp_base.py "${{ github.event.inputs.ticker }}"
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/diagnostico_vcp_base.md
+          git diff --staged --quiet || git commit -m "Diagnostico base VCP ${{ github.event.inputs.ticker }} [skip ci]"
+          for i in 1 2 3 4; do
+            git pull --rebase -X theirs && git push && break
+            sleep 5
+          done
