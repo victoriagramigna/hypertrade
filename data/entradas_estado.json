@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-04T00:36:52.935112+00:00",
+  "actualizado": "2026-11-04T13:03:19.049357+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -64,7 +64,7 @@
       },
       "checklist": {
         "cumple": 4,
-        "total": 6,
+        "total": 5,
         "items": [
           {
             "id": "tendencia",
@@ -104,16 +104,12 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": false,
-            "valor": "03/11 (hoy)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
           }
         ],
-        "resultados": {
-          "fecha": "2026-11-03",
-          "dias": 0,
-          "momento": "antes de la apertura"
-        }
+        "resultados": null
       },
       "pisos": [
         {
@@ -221,13 +217,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 92 días)",
+            "valor": "03/02 (en 91 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 92,
+          "dias": 91,
           "momento": "antes de la apertura"
         }
       },
@@ -278,7 +274,7 @@
       "dist_invalidacion_pct": -4.4,
       "rsi": 65.7,
       "fr": 86.5,
-      "vol_rel": 0.93,
+      "vol_rel": 0.98,
       "beta": 0.98,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -335,7 +331,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "93% del promedio",
+            "valor": "98% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -390,7 +386,7 @@
       "dist_invalidacion_pct": 2.44,
       "rsi": 34.9,
       "fr": 96.8,
-      "vol_rel": 0.98,
+      "vol_rel": 1.0,
       "beta": 3.33,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
@@ -412,7 +408,7 @@
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
@@ -446,21 +442,21 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "98% del promedio",
+            "ok": true,
+            "valor": "100% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/12 (en 29 días)",
+            "valor": "02/12 (en 28 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-02",
-          "dias": 29,
+          "dias": 28,
           "momento": "después del cierre"
         }
       },
@@ -624,7 +620,7 @@
       "dist_invalidacion_pct": 11.32,
       "rsi": 40.4,
       "fr": 69.5,
-      "vol_rel": 0.86,
+      "vol_rel": 0.87,
       "beta": 1.19,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
@@ -681,20 +677,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "86% del promedio",
+            "valor": "87% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/11 (en 21 días)",
+            "valor": "24/11 (en 20 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 21,
+          "dias": 20,
           "momento": "después del cierre"
         }
       },
@@ -743,7 +739,7 @@
       "dist_invalidacion_pct": -4.67,
       "rsi": 69.5,
       "fr": 83.9,
-      "vol_rel": 1.54,
+      "vol_rel": 1.58,
       "beta": 0.2,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -800,7 +796,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "154% del promedio",
+            "valor": "158% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -855,7 +851,7 @@
       "dist_invalidacion_pct": -9.7,
       "rsi": 74.7,
       "fr": 93.7,
-      "vol_rel": 0.99,
+      "vol_rel": 1.0,
       "beta": 0.78,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -877,8 +873,8 @@
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 3,
-        "total": 6,
+        "cumple": 4,
+        "total": 5,
         "items": [
           {
             "id": "tendencia",
@@ -911,23 +907,19 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "99% del promedio",
+            "ok": true,
+            "valor": "100% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": false,
-            "valor": "03/11 (hoy)",
-            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
           }
         ],
-        "resultados": {
-          "fecha": "2026-11-03",
-          "dias": 0,
-          "momento": "después del cierre"
-        }
+        "resultados": null
       },
       "pisos": [
         {
@@ -1035,13 +1027,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/11 (en 7 días)",
+            "valor": "10/11 (en 6 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-10",
-          "dias": 7,
+          "dias": 6,
           "momento": "después del cierre"
         }
       },
@@ -1090,7 +1082,7 @@
       "dist_invalidacion_pct": 2.02,
       "rsi": 38.5,
       "fr": 69.2,
-      "vol_rel": 1.41,
+      "vol_rel": 1.43,
       "beta": 0.24,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
@@ -1147,7 +1139,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "141% del promedio",
+            "valor": "143% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1268,13 +1260,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "01/12 (en 28 días)",
+            "valor": "01/12 (en 27 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-01",
-          "dias": 28,
+          "dias": 27,
           "momento": "después del cierre"
         }
       },
@@ -1386,13 +1378,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "04/11 (mañana)",
+            "valor": "04/11 (hoy)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-04",
-          "dias": 1,
+          "dias": 0,
           "momento": "después del cierre"
         }
       },
@@ -1505,13 +1497,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "19/11 (en 16 días)",
+            "valor": "19/11 (en 15 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-19",
-          "dias": 16,
+          "dias": 15,
           "momento": "después del cierre"
         }
       },
@@ -1624,13 +1616,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "05/11 (en 2 días)",
+            "valor": "05/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-05",
-          "dias": 2,
+          "dias": 1,
           "momento": "después del cierre"
         }
       },
@@ -1743,13 +1735,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "19/11 (en 16 días)",
+            "valor": "19/11 (en 15 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-19",
-          "dias": 16,
+          "dias": 15,
           "momento": "antes de la apertura"
         }
       },
@@ -1861,13 +1853,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "18/12 (en 45 días)",
+            "valor": "18/12 (en 44 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-12-18",
-          "dias": 45,
+          "dias": 44,
           "momento": "antes de la apertura"
         }
       },
@@ -1913,7 +1905,7 @@
       "dist_invalidacion_pct": -7.26,
       "rsi": 38.2,
       "fr": 84.7,
-      "vol_rel": 0.93,
+      "vol_rel": 0.94,
       "beta": 1.0,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -1972,20 +1964,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "93% del promedio",
+            "valor": "94% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/12 (en 29 días)",
+            "valor": "02/12 (en 28 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-02",
-          "dias": 29,
+          "dias": 28,
           "momento": "después del cierre"
         }
       },
@@ -2056,7 +2048,7 @@
       },
       "checklist": {
         "cumple": 2,
-        "total": 6,
+        "total": 5,
         "items": [
           {
             "id": "tendencia",
@@ -2096,16 +2088,12 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": false,
-            "valor": "03/11 (hoy)",
-            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
           }
         ],
-        "resultados": {
-          "fecha": "2026-11-03",
-          "dias": 0,
-          "momento": "después del cierre"
-        }
+        "resultados": null
       },
       "pisos": [
         {
@@ -2216,13 +2204,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 86 días)",
+            "valor": "28/01 (en 85 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 86,
+          "dias": 85,
           "momento": "antes de la apertura"
         }
       },
@@ -2332,13 +2320,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 85 días)",
+            "valor": "27/01 (en 84 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 85,
+          "dias": 84,
           "momento": "después del cierre"
         }
       },
@@ -2448,13 +2436,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 98 días)",
+            "valor": "09/02 (en 97 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 98,
+          "dias": 97,
           "momento": "después del cierre"
         }
       },
@@ -2564,13 +2552,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "06/11 (en 3 días)",
+            "valor": "06/11 (en 2 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-06",
-          "dias": 3,
+          "dias": 2,
           "momento": "antes de la apertura"
         }
       },
@@ -2680,13 +2668,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "04/11 (mañana)",
+            "valor": "04/11 (hoy)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-04",
-          "dias": 1,
+          "dias": 0,
           "momento": "después del cierre"
         }
       },
@@ -2800,13 +2788,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/11 (en 21 días)",
+            "valor": "24/11 (en 20 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 21,
+          "dias": 20,
           "momento": "antes de la apertura"
         }
       },
@@ -2852,7 +2840,7 @@
       "dist_invalidacion_pct": 2.41,
       "rsi": 38.5,
       "fr": 58.5,
-      "vol_rel": 0.62,
+      "vol_rel": 0.63,
       "beta": 1.93,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
@@ -2909,7 +2897,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "62% del promedio",
+            "valor": "63% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2967,7 +2955,7 @@
       "dist_invalidacion_pct": -4.94,
       "rsi": 65.1,
       "fr": 80.1,
-      "vol_rel": 2.46,
+      "vol_rel": 2.5,
       "beta": 0.77,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
@@ -2988,9 +2976,9 @@
         "vol_rel": 2.46
       },
       "espacio_libre": {
-        "nivel": 317.37,
+        "nivel": 317.41,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 1.11,
+        "espacio_pct": 1.12,
         "riesgo_pct": 4.94,
         "relacion": 0.23,
         "menor_que_riesgo": true
@@ -3031,20 +3019,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "246% del promedio",
+            "valor": "250% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 93 días)",
+            "valor": "04/02 (en 92 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 93,
+          "dias": 92,
           "momento": "después del cierre"
         }
       },
@@ -3165,13 +3153,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 98 días)",
+            "valor": "09/02 (en 97 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 98,
+          "dias": 97,
           "momento": "antes de la apertura"
         }
       },
@@ -3281,13 +3269,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 86 días)",
+            "valor": "28/01 (en 85 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 86,
+          "dias": 85,
           "momento": "antes de la apertura"
         }
       },
@@ -3397,13 +3385,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "11/02 (en 100 días)",
+            "valor": "11/02 (en 99 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-11",
-          "dias": 100,
+          "dias": 99,
           "momento": "antes de la apertura"
         }
       },
@@ -3526,13 +3514,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "23/11 (en 20 días)",
+            "valor": "23/11 (en 19 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-23",
-          "dias": 20,
+          "dias": 19,
           "momento": "después del cierre"
         }
       },
@@ -3641,13 +3629,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "05/11 (en 2 días)",
+            "valor": "05/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-05",
-          "dias": 2,
+          "dias": 1,
           "momento": "antes de la apertura"
         }
       },
@@ -3755,13 +3743,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/11 (en 7 días)",
+            "valor": "10/11 (en 6 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-10",
-          "dias": 7,
+          "dias": 6,
           "momento": "antes de la apertura"
         }
       },
@@ -3803,7 +3791,7 @@
       "dist_invalidacion_pct": -4.51,
       "rsi": 66.7,
       "fr": 76.1,
-      "vol_rel": 1.4,
+      "vol_rel": 1.42,
       "beta": -0.03,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
@@ -3867,20 +3855,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "140% del promedio",
+            "valor": "142% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "17/11 (en 14 días)",
+            "valor": "17/11 (en 13 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-17",
-          "dias": 14,
+          "dias": 13,
           "momento": "antes de la apertura"
         }
       },
@@ -3988,13 +3976,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 91 días)",
+            "valor": "02/02 (en 90 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 91,
+          "dias": 90,
           "momento": "antes de la apertura"
         }
       },
@@ -4100,13 +4088,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "05/11 (en 2 días)",
+            "valor": "05/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-05",
-          "dias": 2,
+          "dias": 1,
           "momento": "antes de la apertura"
         }
       },
@@ -4212,13 +4200,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 98 días)",
+            "valor": "09/02 (en 97 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 98,
+          "dias": 97,
           "momento": "antes de la apertura"
         }
       },
@@ -4326,13 +4314,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "25/02 (en 114 días)",
+            "valor": "25/02 (en 113 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-25",
-          "dias": 114,
+          "dias": 113,
           "momento": "antes de la apertura"
         }
       },
@@ -4438,13 +4426,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 85 días)",
+            "valor": "27/01 (en 84 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 85,
+          "dias": 84,
           "momento": "después del cierre"
         }
       },
@@ -4550,13 +4538,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "17/11 (en 14 días)",
+            "valor": "17/11 (en 13 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-17",
-          "dias": 14,
+          "dias": 13,
           "momento": "antes de la apertura"
         }
       },
@@ -4673,13 +4661,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "25/02 (en 114 días)",
+            "valor": "25/02 (en 113 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-25",
-          "dias": 114,
+          "dias": 113,
           "momento": "antes de la apertura"
         }
       },
@@ -4785,13 +4773,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/11 (en 21 días)",
+            "valor": "24/11 (en 20 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 21,
+          "dias": 20,
           "momento": "antes de la apertura"
         }
       },
@@ -4833,7 +4821,7 @@
       "dist_invalidacion_pct": -1.63,
       "rsi": 48.8,
       "fr": 74.1,
-      "vol_rel": 1.03,
+      "vol_rel": 1.04,
       "beta": -0.05,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -4892,20 +4880,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "103% del promedio",
+            "valor": "104% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "18/11 (en 15 días)",
+            "valor": "18/11 (en 14 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-18",
-          "dias": 15,
+          "dias": 14,
           "momento": "antes de la apertura"
         }
       },
@@ -4947,7 +4935,7 @@
       "dist_invalidacion_pct": -1.99,
       "rsi": 53.5,
       "fr": 89.0,
-      "vol_rel": 0.69,
+      "vol_rel": 0.7,
       "beta": -0.7,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -5015,20 +5003,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "69% del promedio",
+            "valor": "70% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 93 días)",
+            "valor": "04/02 (en 92 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 93,
+          "dias": 92,
           "momento": "antes de la apertura"
         }
       },
@@ -5134,13 +5122,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "14/01 (en 72 días)",
+            "valor": "14/01 (en 71 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-14",
-          "dias": 72,
+          "dias": 71,
           "momento": "después del cierre"
         }
       },
@@ -5182,7 +5170,7 @@
       "dist_invalidacion_pct": -18.79,
       "rsi": 60.9,
       "fr": 81.3,
-      "vol_rel": 0.55,
+      "vol_rel": 0.56,
       "beta": 0.82,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -5239,20 +5227,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "56% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 91 días)",
+            "valor": "02/02 (en 90 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 91,
+          "dias": 90,
           "momento": "antes de la apertura"
         }
       },
@@ -5360,13 +5348,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 99 días)",
+            "valor": "10/02 (en 98 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 99,
+          "dias": 98,
           "momento": "después del cierre"
         }
       },
@@ -5472,13 +5460,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "25/01 (en 83 días)",
+            "valor": "25/01 (en 82 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-25",
-          "dias": 83,
+          "dias": 82,
           "momento": "después del cierre"
         }
       },
@@ -5520,7 +5508,7 @@
       "dist_invalidacion_pct": -10.35,
       "rsi": 55.5,
       "fr": 70.3,
-      "vol_rel": 0.66,
+      "vol_rel": 0.67,
       "beta": 0.13,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -5577,20 +5565,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "66% del promedio",
+            "valor": "67% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "12/01 (en 70 días)",
+            "valor": "12/01 (en 69 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-12",
-          "dias": 70,
+          "dias": 69,
           "momento": "antes de la apertura"
         }
       },
@@ -5696,13 +5684,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "20/01 (en 78 días)",
+            "valor": "20/01 (en 77 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-20",
-          "dias": 78,
+          "dias": 77,
           "momento": "antes de la apertura"
         }
       },
@@ -5766,7 +5754,7 @@
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
@@ -5807,14 +5795,14 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "09/11 (en 6 días)",
+            "ok": false,
+            "valor": "09/11 (en 5 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-09",
-          "dias": 6,
+          "dias": 5,
           "momento": "después del cierre"
         }
       },
@@ -6074,7 +6062,7 @@
       "dist_invalidacion_pct": -11.59,
       "rsi": 55.6,
       "fr": 91.1,
-      "vol_rel": 0.58,
+      "vol_rel": 0.6,
       "beta": 0.95,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -6131,20 +6119,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "58% del promedio",
+            "valor": "60% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 85 días)",
+            "valor": "27/01 (en 84 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 85,
+          "dias": 84,
           "momento": "antes de la apertura"
         }
       },
@@ -6186,7 +6174,7 @@
       "dist_invalidacion_pct": -12.57,
       "rsi": 60.7,
       "fr": 98.6,
-      "vol_rel": 0.98,
+      "vol_rel": 0.99,
       "beta": 3.13,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
@@ -6243,7 +6231,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "98% del promedio",
+            "valor": "99% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6360,13 +6348,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 86 días)",
+            "valor": "28/01 (en 85 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 86,
+          "dias": 85,
           "momento": "antes de la apertura"
         }
       },
@@ -6472,13 +6460,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 91 días)",
+            "valor": "02/02 (en 90 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 91,
+          "dias": 90,
           "momento": "antes de la apertura"
         }
       },
@@ -6584,13 +6572,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 85 días)",
+            "valor": "27/01 (en 84 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 85,
+          "dias": 84,
           "momento": "antes de la apertura"
         }
       },
@@ -6742,7 +6730,7 @@
       "dist_invalidacion_pct": -0.79,
       "rsi": 59.6,
       "fr": 72.3,
-      "vol_rel": 1.36,
+      "vol_rel": 1.37,
       "beta": -0.39,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -6801,7 +6789,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "136% del promedio",
+            "valor": "137% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6852,7 +6840,7 @@
       "dist_invalidacion_pct": -3.78,
       "rsi": 58.3,
       "fr": 72.9,
-      "vol_rel": 0.97,
+      "vol_rel": 0.98,
       "beta": -0.86,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
@@ -6911,20 +6899,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "97% del promedio",
+            "valor": "98% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 91 días)",
+            "valor": "02/02 (en 90 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 91,
+          "dias": 90,
           "momento": "después del cierre"
         }
       },
@@ -7140,13 +7128,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 85 días)",
+            "valor": "27/01 (en 84 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 85,
+          "dias": 84,
           "momento": "antes de la apertura"
         }
       },
@@ -7252,13 +7240,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 86 días)",
+            "valor": "28/01 (en 85 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 86,
+          "dias": 85,
           "momento": "antes de la apertura"
         }
       },
@@ -7364,13 +7352,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "21/01 (en 79 días)",
+            "valor": "21/01 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-21",
-          "dias": 79,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -7446,13 +7434,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/12 (en 30 días)",
+            "valor": "03/12 (en 29 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-03",
-          "dias": 30,
+          "dias": 29,
           "momento": "después del cierre"
         }
       },
@@ -7522,13 +7510,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "21/01 (en 79 días)",
+            "valor": "21/01 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-21",
-          "dias": 79,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -7596,13 +7584,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/02 (en 113 días)",
+            "valor": "24/02 (en 112 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-24",
-          "dias": 113,
+          "dias": 112,
           "momento": "después del cierre"
         }
       },
@@ -7626,12 +7614,12 @@
       "marcas": [
         "Toca zona de demanda"
       ],
-      "apto": false,
+      "apto": true,
       "invalidacion": 29.82,
-      "confirmacion": 31.05,
+      "confirmacion": 31.06,
       "checklist": {
         "cumple": 5,
-        "total": 6,
+        "total": 5,
         "items": [
           {
             "id": "tendencia",
@@ -7671,22 +7659,16 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": false,
-            "valor": "03/11 (hoy)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+            "ok": null,
+            "valor": "sin fecha",
+            "lectura": "ETF o sin fecha cargada: verificá aparte"
           }
         ],
-        "resultados": {
-          "fecha": "2026-11-03",
-          "dias": 0,
-          "momento": "antes de la apertura"
-        }
+        "resultados": null
       },
-      "fallas": [
-        "resultados"
-      ],
+      "fallas": [],
       "dist_invalidacion_pct": -0.6,
-      "dist_confirmacion_pct": 3.5
+      "dist_confirmacion_pct": 3.53
     },
     {
       "ticker": "COP",
@@ -7748,13 +7730,13 @@
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "05/11 (en 2 días)",
+            "valor": "05/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-05",
-          "dias": 2,
+          "dias": 1,
           "momento": "antes de la apertura"
         }
       },
