@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-04T00:20:28.892045+00:00",
+ "generado_utc": "2026-11-04T11:48:30.420488+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,8 +7,38 @@
   7,
   14
  ],
- "casos_total": 16,
+ "casos_total": 18,
  "resumen_señales": [
+  {
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "casos_total": 8,
+   "horizontes": {
+    "3": {
+     "n": 6,
+     "pendientes": 2,
+     "aciertos": 2,
+     "pct_aciertos": 33,
+     "ret_prom": -1.27,
+     "confiable": false
+    },
+    "7": {
+     "n": 5,
+     "pendientes": 3,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "ret_prom": -2.75,
+     "confiable": false
+    },
+    "14": {
+     "n": 4,
+     "pendientes": 4,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "confiable": false
+    }
+   }
+  },
   {
    "tipo": "Movimiento fuerte a la baja",
    "direccion": "bajista",
@@ -34,36 +64,6 @@
      "pendientes": 3,
      "aciertos": 3,
      "pct_aciertos": 100,
-     "confiable": false
-    }
-   }
-  },
-  {
-   "tipo": "RSI en sobreventa",
-   "direccion": "alcista",
-   "casos_total": 6,
-   "horizontes": {
-    "3": {
-     "n": 6,
-     "pendientes": 0,
-     "aciertos": 2,
-     "pct_aciertos": 33,
-     "ret_prom": -1.27,
-     "confiable": false
-    },
-    "7": {
-     "n": 5,
-     "pendientes": 1,
-     "aciertos": 0,
-     "pct_aciertos": 0,
-     "ret_prom": -2.75,
-     "confiable": false
-    },
-    "14": {
-     "n": 4,
-     "pendientes": 2,
-     "aciertos": 0,
-     "pct_aciertos": 0,
      "confiable": false
     }
    }
@@ -127,6 +127,32 @@
  ],
  "detalle": [
   {
+   "ticker": "BTC-USD",
+   "nombre": "Bitcoin",
+   "fecha": "2026-11-04",
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "precio_entrada": 78537.47,
+   "score": 53,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
+   "fecha": "2026-11-04",
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "precio_entrada": 2332.0,
+   "score": 25,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
    "ticker": "ETH-USD",
    "nombre": "Ethereum",
    "fecha": "2026-10-30",
@@ -134,7 +160,7 @@
    "direccion": "alcista",
    "precio_entrada": 2229.0,
    "score": 50,
-   "dias_transcurridos": 4,
+   "dias_transcurridos": 5,
    "r3": 0.89,
    "acierto3": true,
    "r7": null,
@@ -148,7 +174,7 @@
    "direccion": "bajista",
    "precio_entrada": 78764.87,
    "score": 58,
-   "dias_transcurridos": 5,
+   "dias_transcurridos": 6,
    "r3": -0.66,
    "acierto3": true,
    "r7": null,
@@ -162,7 +188,7 @@
    "direccion": "bajista",
    "precio_entrada": 2253.79,
    "score": 29,
-   "dias_transcurridos": 5,
+   "dias_transcurridos": 6,
    "r3": 0.85,
    "acierto3": false,
    "r7": null,
@@ -176,7 +202,7 @@
    "direccion": "alcista",
    "precio_entrada": 2330.81,
    "score": 25,
-   "dias_transcurridos": 8,
+   "dias_transcurridos": 9,
    "r3": -3.49,
    "acierto3": false,
    "r7": -3.51,
@@ -191,7 +217,7 @@
    "direccion": "bajista",
    "precio_entrada": 81647.57,
    "score": 67,
-   "dias_transcurridos": 11,
+   "dias_transcurridos": 12,
    "r3": -2.01,
    "acierto3": true,
    "r7": -5.45,
@@ -206,7 +232,7 @@
    "direccion": "bajista",
    "precio_entrada": 81684.44,
    "score": 72,
-   "dias_transcurridos": 12,
+   "dias_transcurridos": 13,
    "r3": -2.03,
    "acierto3": true,
    "r7": -4.79,
@@ -221,12 +247,12 @@
    "direccion": "alcista",
    "precio_entrada": 2402.68,
    "score": 25,
-   "dias_transcurridos": 14,
+   "dias_transcurridos": 15,
    "r3": -0.77,
    "acierto3": false,
    "r7": -2.29,
    "acierto7": false,
-   "r14": -5.77,
+   "r14": -5.41,
    "acierto14": false
   },
   {
@@ -237,7 +263,7 @@
    "direccion": "alcista",
    "precio_entrada": 2417.4,
    "score": 60,
-   "dias_transcurridos": 17,
+   "dias_transcurridos": 18,
    "r3": 1.21,
    "acierto3": true,
    "r7": -2.54,
@@ -253,7 +279,7 @@
    "direccion": "bajista",
    "precio_entrada": 2417.18,
    "score": 43,
-   "dias_transcurridos": 20,
+   "dias_transcurridos": 21,
    "r3": -0.72,
    "acierto3": true,
    "r7": 2.22,
@@ -269,7 +295,7 @@
    "direccion": "alcista",
    "precio_entrada": 2512.2,
    "score": 45,
-   "dias_transcurridos": 21,
+   "dias_transcurridos": 22,
    "r3": -3.68,
    "acierto3": false,
    "r7": -2.61,
@@ -285,7 +311,7 @@
    "direccion": "alcista",
    "precio_entrada": 2488.84,
    "score": 59,
-   "dias_transcurridos": 25,
+   "dias_transcurridos": 26,
    "r3": -1.79,
    "acierto3": false,
    "r7": -2.78,
@@ -301,7 +327,7 @@
    "direccion": "bajista",
    "precio_entrada": 2488.84,
    "score": 59,
-   "dias_transcurridos": 25,
+   "dias_transcurridos": 26,
    "r3": -1.79,
    "acierto3": true,
    "r7": -2.78,
@@ -317,7 +343,7 @@
    "direccion": "bajista",
    "precio_entrada": 82878.02,
    "score": 45,
-   "dias_transcurridos": 26,
+   "dias_transcurridos": 27,
    "r3": 0.97,
    "acierto3": false,
    "r7": -0.89,
@@ -333,7 +359,7 @@
    "direccion": "bajista",
    "precio_entrada": 2612.69,
    "score": 49,
-   "dias_transcurridos": 27,
+   "dias_transcurridos": 28,
    "r3": -4.16,
    "acierto3": true,
    "r7": -7.44,
@@ -349,7 +375,7 @@
    "direccion": "bajista",
    "precio_entrada": 83700.85,
    "score": 49,
-   "dias_transcurridos": 34,
+   "dias_transcurridos": 35,
    "r3": 1.27,
    "acierto3": false,
    "r7": -0.51,
@@ -365,7 +391,7 @@
    "direccion": "bajista",
    "precio_entrada": 2690.42,
    "score": 53,
-   "dias_transcurridos": 34,
+   "dias_transcurridos": 35,
    "r3": -0.12,
    "acierto3": true,
    "r7": -4.34,
