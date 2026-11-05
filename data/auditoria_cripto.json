@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-05T11:48:11.025489+00:00",
+ "generado_utc": "2026-11-05T19:24:36.037276+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,8 +7,38 @@
   7,
   14
  ],
- "casos_total": 20,
+ "casos_total": 22,
  "resumen_señales": [
+  {
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "casos_total": 8,
+   "horizontes": {
+    "3": {
+     "n": 6,
+     "pendientes": 2,
+     "aciertos": 4,
+     "pct_aciertos": 67,
+     "ret_prom": -0.96,
+     "confiable": false
+    },
+    "7": {
+     "n": 6,
+     "pendientes": 2,
+     "aciertos": 5,
+     "pct_aciertos": 83,
+     "ret_prom": -2.47,
+     "confiable": false
+    },
+    "14": {
+     "n": 4,
+     "pendientes": 4,
+     "aciertos": 4,
+     "pct_aciertos": 100,
+     "confiable": false
+    }
+   }
+  },
   {
    "tipo": "RSI en sobreventa",
    "direccion": "alcista",
@@ -35,36 +65,6 @@
      "pendientes": 4,
      "aciertos": 0,
      "pct_aciertos": 0,
-     "confiable": false
-    }
-   }
-  },
-  {
-   "tipo": "Movimiento fuerte a la baja",
-   "direccion": "bajista",
-   "casos_total": 6,
-   "horizontes": {
-    "3": {
-     "n": 6,
-     "pendientes": 0,
-     "aciertos": 4,
-     "pct_aciertos": 67,
-     "ret_prom": -0.96,
-     "confiable": false
-    },
-    "7": {
-     "n": 6,
-     "pendientes": 0,
-     "aciertos": 3,
-     "pct_aciertos": 50,
-     "ret_prom": -0.29,
-     "confiable": false
-    },
-    "14": {
-     "n": 4,
-     "pendientes": 2,
-     "aciertos": 4,
-     "pct_aciertos": 100,
      "confiable": false
     }
    }
@@ -178,6 +178,32 @@
   {
    "ticker": "BTC-USD",
    "nombre": "Bitcoin",
+   "fecha": "2026-11-05",
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "precio_entrada": 75925.6,
+   "score": 75,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "ETH-USD",
+   "nombre": "Ethereum",
+   "fecha": "2026-11-05",
+   "tipo": "Movimiento fuerte a la baja",
+   "direccion": "bajista",
+   "precio_entrada": 2246.17,
+   "score": 50,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
+   "ticker": "BTC-USD",
+   "nombre": "Bitcoin",
    "fecha": "2026-11-04",
    "tipo": "RSI en sobreventa",
    "direccion": "alcista",
@@ -226,8 +252,8 @@
    "dias_transcurridos": 7,
    "r3": -0.66,
    "acierto3": true,
-   "r7": 1.9,
-   "acierto7": false,
+   "r7": -3.6,
+   "acierto7": true,
    "r14": null
   },
   {
@@ -241,8 +267,8 @@
    "dias_transcurridos": 7,
    "r3": 0.85,
    "acierto3": false,
-   "r7": 7.23,
-   "acierto7": false,
+   "r7": -0.34,
+   "acierto7": true,
    "r14": null
   },
   {
@@ -288,7 +314,7 @@
    "acierto3": true,
    "r7": -4.79,
    "acierto7": true,
-   "r14": -1.74,
+   "r14": -7.05,
    "acierto14": true
   },
   {
