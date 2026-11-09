@@ -1,16 +1,38 @@
 {
- "actualizado": "2026-11-07T00:05:57.906192+00:00",
- "ultima_fecha": "2026-11-06",
+ "actualizado": "2026-11-09T22:59:02.466817+00:00",
+ "ultima_fecha": "2026-11-09",
  "items": [
   {
-   "ticker": "CL",
-   "cierre": 96.56,
-   "hoy_pct": -2.16,
-   "rs": 78.1,
-   "vol_rel": 1.07,
-   "dist_max52_pct": -2.2,
+   "ticker": "JPM",
+   "cierre": 342.08,
+   "hoy_pct": 2.27,
+   "rs": 61.3,
+   "vol_rel": 0.93,
+   "dist_max52_pct": -5.9,
    "plantilla": false,
-   "fecha_dato": "2026-11-06",
+   "fecha_dato": "2026-11-09",
+   "n_contr": 2,
+   "profundidades": [
+    10.2,
+    4.1
+   ],
+   "minimos_suben": true,
+   "pivote": 344.4,
+   "stop": 330.4,
+   "riesgo_pivote_pct": 4.1,
+   "estado": "formacion",
+   "fecha_alta": "2026-11-09",
+   "dist_pivote_pct": 0.7
+  },
+  {
+   "ticker": "CL",
+   "cierre": 97.94,
+   "hoy_pct": 1.43,
+   "rs": 76.3,
+   "vol_rel": 0.93,
+   "dist_max52_pct": -0.8,
+   "plantilla": true,
+   "fecha_dato": "2026-11-09",
    "n_contr": 2,
    "profundidades": [
     10.8,
@@ -20,19 +42,27 @@
    "pivote": 97.5,
    "stop": 90.47,
    "riesgo_pivote_pct": 7.2,
-   "estado": "formacion",
+   "estado": "ruptura",
    "fecha_alta": "2026-11-06",
-   "dist_pivote_pct": 1.0
+   "dist_pivote_pct": -0.4,
+   "fecha_ruptura": "2026-11-09",
+   "precio_ruptura": 97.94,
+   "spy_ruptura": 752.6900024414062,
+   "con_volumen": false,
+   "ruedas": 0,
+   "resultados": {},
+   "dist_stop_pct": -7.6,
+   "riesgo_ruptura_pct": 7.6
   },
   {
    "ticker": "VRSN",
-   "cierre": 308.67,
-   "hoy_pct": -1.09,
-   "rs": 70.9,
+   "cierre": 305.84,
+   "hoy_pct": -0.92,
+   "rs": 67.6,
    "vol_rel": 0.81,
-   "dist_max52_pct": -2.9,
-   "plantilla": true,
-   "fecha_dato": "2026-11-06",
+   "dist_max52_pct": -3.8,
+   "plantilla": false,
+   "fecha_dato": "2026-11-09",
    "n_contr": 2,
    "profundidades": [
     11.2,
@@ -44,23 +74,23 @@
    "riesgo_pivote_pct": 7.0,
    "estado": "ruptura",
    "fecha_alta": "2026-10-30",
-   "dist_pivote_pct": 1.0,
+   "dist_pivote_pct": 1.9,
    "fecha_ruptura": "2026-11-03",
    "precio_ruptura": 313.88,
    "spy_ruptura": 754.3499755859375,
    "con_volumen": true,
-   "ruedas": 3,
+   "ruedas": 4,
    "resultados": {},
-   "dist_stop_pct": -6.2,
+   "dist_stop_pct": -5.3,
    "riesgo_ruptura_pct": 7.7,
-   "desde_ruptura_pct": -1.66,
+   "desde_ruptura_pct": -2.56,
    "bajo_pivote": true
   }
  ],
  "resumen": {
   "formacion": 1,
-  "ruptura": 1,
+  "ruptura": 2,
   "altas_hoy": 1,
-  "rupturas_hoy": 0
+  "rupturas_hoy": 1
  }
 }
