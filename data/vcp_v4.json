@@ -1,16 +1,16 @@
 {
- "actualizado": "2026-11-09T22:59:02.466817+00:00",
- "ultima_fecha": "2026-11-09",
+ "actualizado": "2026-11-11T00:54:20.133511+00:00",
+ "ultima_fecha": "2026-11-10",
  "items": [
   {
    "ticker": "JPM",
-   "cierre": 342.08,
-   "hoy_pct": 2.27,
-   "rs": 61.3,
-   "vol_rel": 0.93,
+   "cierre": 342.07,
+   "hoy_pct": -0.0,
+   "rs": 64.7,
+   "vol_rel": 0.64,
    "dist_max52_pct": -5.9,
    "plantilla": false,
-   "fecha_dato": "2026-11-09",
+   "fecha_dato": "2026-11-10",
    "n_contr": 2,
    "profundidades": [
     10.2,
@@ -26,13 +26,13 @@
   },
   {
    "ticker": "CL",
-   "cierre": 97.94,
-   "hoy_pct": 1.43,
-   "rs": 76.3,
-   "vol_rel": 0.93,
-   "dist_max52_pct": -0.8,
+   "cierre": 98.09,
+   "hoy_pct": 0.15,
+   "rs": 76.0,
+   "vol_rel": 0.79,
+   "dist_max52_pct": -0.7,
    "plantilla": true,
-   "fecha_dato": "2026-11-09",
+   "fecha_dato": "2026-11-10",
    "n_contr": 2,
    "profundidades": [
     10.8,
@@ -44,25 +44,71 @@
    "riesgo_pivote_pct": 7.2,
    "estado": "ruptura",
    "fecha_alta": "2026-11-06",
-   "dist_pivote_pct": -0.4,
+   "dist_pivote_pct": -0.6,
    "fecha_ruptura": "2026-11-09",
    "precio_ruptura": 97.94,
    "spy_ruptura": 752.6900024414062,
    "con_volumen": false,
-   "ruedas": 0,
+   "ruedas": 1,
    "resultados": {},
-   "dist_stop_pct": -7.6,
-   "riesgo_ruptura_pct": 7.6
+   "dist_stop_pct": -7.8,
+   "riesgo_ruptura_pct": 7.6,
+   "desde_ruptura_pct": 0.15,
+   "bajo_pivote": false
+  },
+  {
+   "ticker": "GSK",
+   "cierre": 51.23,
+   "hoy_pct": -0.6,
+   "rs": 68.5,
+   "vol_rel": 0.57,
+   "dist_max52_pct": -14.0,
+   "plantilla": false,
+   "fecha_dato": "2026-11-10",
+   "n_contr": 2,
+   "profundidades": [
+    10.7,
+    7.9
+   ],
+   "minimos_suben": true,
+   "pivote": 51.44,
+   "stop": 47.36,
+   "riesgo_pivote_pct": 7.9,
+   "estado": "formacion",
+   "fecha_alta": "2026-11-10",
+   "dist_pivote_pct": 0.4
+  },
+  {
+   "ticker": "KMB",
+   "cierre": 110.76,
+   "hoy_pct": -1.05,
+   "rs": 78.6,
+   "vol_rel": 1.35,
+   "dist_max52_pct": -2.3,
+   "plantilla": false,
+   "fecha_dato": "2026-11-10",
+   "n_contr": 2,
+   "profundidades": [
+    15.6,
+    7.1
+   ],
+   "minimos_suben": true,
+   "pivote": 112.39,
+   "stop": 104.42,
+   "riesgo_pivote_pct": 7.1,
+   "estado": "formacion",
+   "fecha_alta": "2026-11-10",
+   "dist_pivote_pct": 1.5
   },
   {
    "ticker": "VRSN",
-   "cierre": 305.84,
-   "hoy_pct": -0.92,
-   "rs": 67.6,
-   "vol_rel": 0.81,
-   "dist_max52_pct": -3.8,
+   "cierre": 311.11,
+   "hoy_pct": 1.72,
+   "rs": 67.9,
+   "vol_rel": 0.97,
+   "dist_max52_pct": -2.2,
    "plantilla": false,
-   "fecha_dato": "2026-11-09",
+   "fecha_dato": "2026-11-10",
    "n_contr": 2,
    "profundidades": [
     11.2,
@@ -74,23 +120,29 @@
    "riesgo_pivote_pct": 7.0,
    "estado": "ruptura",
    "fecha_alta": "2026-10-30",
-   "dist_pivote_pct": 1.9,
+   "dist_pivote_pct": 0.2,
    "fecha_ruptura": "2026-11-03",
    "precio_ruptura": 313.88,
    "spy_ruptura": 754.3499755859375,
    "con_volumen": true,
-   "ruedas": 4,
-   "resultados": {},
-   "dist_stop_pct": -5.3,
+   "ruedas": 5,
+   "resultados": {
+    "5": {
+     "retorno_pct": -0.88,
+     "exceso_spy_pct": -0.29,
+     "fecha": "2026-11-10"
+    }
+   },
+   "dist_stop_pct": -6.9,
    "riesgo_ruptura_pct": 7.7,
-   "desde_ruptura_pct": -2.56,
+   "desde_ruptura_pct": -0.88,
    "bajo_pivote": true
   }
  ],
  "resumen": {
-  "formacion": 1,
+  "formacion": 3,
   "ruptura": 2,
-  "altas_hoy": 1,
-  "rupturas_hoy": 1
+  "altas_hoy": 2,
+  "rupturas_hoy": 0
  }
 }
