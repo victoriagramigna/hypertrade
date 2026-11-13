@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-13T13:04:27.540292+00:00",
+  "actualizado": "2026-11-13T13:34:02.385188+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -1011,8 +1011,8 @@
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 1,
-        "total": 5,
+        "cumple": 2,
+        "total": 6,
         "items": [
           {
             "id": "tendencia",
@@ -1052,12 +1052,16 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": null,
-            "valor": "sin fecha",
-            "lectura": "ETF o sin fecha cargada: verificá aparte"
+            "ok": true,
+            "valor": "04/03 (en 111 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
-        "resultados": null
+        "resultados": {
+          "fecha": "2027-03-04",
+          "dias": 111,
+          "momento": "después del cierre"
+        }
       },
       "pisos": [
         {
@@ -2568,8 +2572,8 @@
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 3,
-        "total": 5,
+        "cumple": 4,
+        "total": 6,
         "items": [
           {
             "id": "tendencia",
@@ -2609,12 +2613,16 @@
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
-            "ok": null,
-            "valor": "sin fecha",
-            "lectura": "ETF o sin fecha cargada: verificá aparte"
+            "ok": true,
+            "valor": "12/02 (en 91 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
-        "resultados": null
+        "resultados": {
+          "fecha": "2027-02-12",
+          "dias": 91,
+          "momento": "antes de la apertura"
+        }
       },
       "pisos": [
         {
@@ -10149,5 +10157,5 @@
     "ACN",
     "INFY"
   ],
-  "balances_actualizado": "2026-11-12"
+  "balances_actualizado": "2026-11-13"
 }
