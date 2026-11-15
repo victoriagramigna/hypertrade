@@ -1,16 +1,16 @@
 {
-  "actualizado_utc": "2026-11-15T04:30:18.126519+00:00",
+  "actualizado_utc": "2026-11-15T15:14:37.733593+00:00",
   "criptomonedas": [
     {
       "ticker": "BTC-USD",
       "nombre": "Bitcoin",
-      "precio": 64880.97,
-      "sma50": 80535.23,
-      "sma200": 73035.39,
-      "rsi": 27.9,
-      "vol_rel": 1.6,
+      "precio": 64645.25,
+      "sma50": 80137.09,
+      "sma200": 72974.27,
+      "rsi": 22.5,
+      "vol_rel": 1.55,
       "max_52w": 96929.33,
-      "dist_max52w_pct": -29.59,
+      "dist_max52w_pct": -33.84,
       "tendencia_alcista": true,
       "precio_sobre_sma50": false,
       "sma50_subiendo": false,
@@ -19,64 +19,15 @@
       "ruptura_20d": false,
       "max_20d_previo": 81267.59,
       "cruce_sma50": null,
-      "mov_normal_pct": 1.71,
-      "precio_cierre": 68249.27,
-      "vela_cerrada": "2026-11-13",
-      "mov_hoy_pct": -4.94,
-      "score": 65,
+      "mov_normal_pct": 1.96,
+      "precio_cierre": 64128.05,
+      "vela_cerrada": "2026-11-14",
+      "mov_hoy_pct": 0.81,
+      "score": 50,
       "score_version": "v2",
       "score_detalle": {
         "tendencia": 25,
         "volumen": 25,
-        "distancia_max52w": 15
-      },
-      "score_maximos": {
-        "tendencia": 45,
-        "volumen": 25,
-        "distancia_max52w": 30
-      },
-      "cuidados": [
-        "Precio debajo de su SMA50 ($80,535): la tendencia de corto plazo no acompaña.",
-        "SMA50 con pendiente negativa: el mediano plazo todavía no gira."
-      ],
-      "alertas": [
-        {
-          "tipo": "RSI en sobreventa",
-          "narrativa": "Bitcoin tiene RSI de 27.9, zona de sobreventa. No es señal de compra por sí sola: puede rebotar, pero la tendencia manda."
-        },
-        {
-          "tipo": "Movimiento fuerte a la baja",
-          "narrativa": "Bitcoin cae 4.9% desde el cierre de ayer, 2.9 veces su movimiento diario normal (1.7%). Es un aviso para mirar, no una señal por sí sola."
-        }
-      ]
-    },
-    {
-      "ticker": "ETH-USD",
-      "nombre": "Ethereum",
-      "precio": 1817.82,
-      "sma50": 2413.71,
-      "sma200": 2147.23,
-      "rsi": 29.4,
-      "vol_rel": 1.37,
-      "max_52w": 3354.72,
-      "dist_max52w_pct": -42.54,
-      "tendencia_alcista": true,
-      "precio_sobre_sma50": false,
-      "sma50_subiendo": false,
-      "dias_rsi_alto": 0,
-      "cruce": null,
-      "ruptura_20d": false,
-      "max_20d_previo": 2422.31,
-      "cruce_sma50": null,
-      "mov_normal_pct": 2.11,
-      "precio_cierre": 1927.59,
-      "vela_cerrada": "2026-11-13",
-      "mov_hoy_pct": -5.69,
-      "score": 45,
-      "score_version": "v2",
-      "score_detalle": {
-        "tendencia": 25,
-        "volumen": 20,
         "distancia_max52w": 0
       },
       "score_maximos": {
@@ -85,17 +36,58 @@
         "distancia_max52w": 30
       },
       "cuidados": [
-        "Precio debajo de su SMA50 ($2,414): la tendencia de corto plazo no acompaña.",
+        "Precio debajo de su SMA50 ($80,137): la tendencia de corto plazo no acompaña.",
         "SMA50 con pendiente negativa: el mediano plazo todavía no gira."
       ],
       "alertas": [
         {
           "tipo": "RSI en sobreventa",
-          "narrativa": "Ethereum tiene RSI de 29.4, zona de sobreventa. No es señal de compra por sí sola: puede rebotar, pero la tendencia manda."
-        },
+          "narrativa": "Bitcoin tiene RSI de 22.5, zona de sobreventa. No es señal de compra por sí sola: puede rebotar, pero la tendencia manda."
+        }
+      ]
+    },
+    {
+      "ticker": "ETH-USD",
+      "nombre": "Ethereum",
+      "precio": 1807.33,
+      "sma50": 2395.28,
+      "sma200": 2144.62,
+      "rsi": 23.3,
+      "vol_rel": 1.52,
+      "max_52w": 3354.72,
+      "dist_max52w_pct": -47.26,
+      "tendencia_alcista": true,
+      "precio_sobre_sma50": false,
+      "sma50_subiendo": false,
+      "dias_rsi_alto": 0,
+      "cruce": null,
+      "ruptura_20d": false,
+      "max_20d_previo": 2422.31,
+      "cruce_sma50": null,
+      "mov_normal_pct": 2.46,
+      "precio_cierre": 1769.12,
+      "vela_cerrada": "2026-11-14",
+      "mov_hoy_pct": 2.16,
+      "score": 50,
+      "score_version": "v2",
+      "score_detalle": {
+        "tendencia": 25,
+        "volumen": 25,
+        "distancia_max52w": 0
+      },
+      "score_maximos": {
+        "tendencia": 45,
+        "volumen": 25,
+        "distancia_max52w": 30
+      },
+      "cuidados": [
+        "Precio debajo de su SMA50 ($2,395): la tendencia de corto plazo no acompaña.",
+        "SMA50 con pendiente negativa: el mediano plazo todavía no gira."
+      ],
+      "alertas": [
         {
-          "tipo": "Movimiento fuerte a la baja",
-          "narrativa": "Ethereum cae 5.7% desde el cierre de ayer, 2.7 veces su movimiento diario normal (2.1%). Es un aviso para mirar, no una señal por sí sola."
+          "tipo": "RSI en sobreventa",
+          "narrativa": "Ethereum tiene RSI de 23.3, zona de sobreventa. No es señal de compra por sí sola: puede rebotar, pero la tendencia manda."
         }
       ]
     }
