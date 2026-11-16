@@ -1,0 +1,31 @@
+name: Estudio Elliott
+
+# Aparte, no toca el radar ni la app ni la Auditoria. Se corre SOLO a mano:
+# pestaña Actions -> "Estudio Elliott" -> Run workflow.
+# Baja ~2 anios de apertura, maximo, minimo, cierre y volumen de Yahoo y escribe data/estudio_elliott*.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  estudio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Estudio
+        run: python scripts/estudio_elliott.py
+      - name: Guardar
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "actions@github.com"
+          git add data/estudio_elliott.json data/estudio_elliott_resumen.md
+          git diff --staged --quiet || git commit -m "Estudio Elliott [skip ci]"
+          git pull --rebase
+          git push
