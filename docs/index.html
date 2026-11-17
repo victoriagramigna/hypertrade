@@ -6552,6 +6552,17 @@
             }));
         }
 
+        // CAMBIO (17/11): un navegador con la cartera VIEJA (ej: una tablet que se conecta por primera vez con el token) subia sus
+        // posiciones de inmediato y PISABA lo que otro dispositivo habia guardado en el repo. Ahora cada navegador recuerda "la ultima
+        // version del repo que vi" (huella en localStorage 'cartera_repo_visto'); si antes de subir el repo es distinto de lo que este
+        // navegador tiene y de lo que vio la ultima vez, pregunta en vez de pisar.
+        function _hashCartera(arr) {
+            const s = JSON.stringify(_posicionesParaExportar(arr));
+            let h = 5381;
+            for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+            return `${h}:${arr.length}`;
+        }
+
         // CAMBIO (4/10): error 409 al sincronizar. Causa: cada guardado dispara
         // una sincronización "fire-and-forget"; si dos salían casi juntas (ej:
         // agregar una compra y el recálculo del stop), la segunda usaba el sha
@@ -6585,6 +6596,37 @@
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH_CARTERA}`;
                 const headersLectura = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' };
+
+                // 0. Guardia (17/11): ¿el repo tiene otra cartera distinta de la de este navegador, que este navegador no vio?
+                const hLocal = _hashCartera(posiciones);
+                try {
+                    const g0 = await fetch(`${apiUrl}?t=${Date.now()}`, { headers: headersLectura, cache: 'no-store' });
+                    if (g0.ok) {
+                        const info0 = await g0.json();
+                        let repoArr = null;
+                        try { repoArr = JSON.parse(decodeURIComponent(escape(atob((info0.content || '').replace(/\n/g, ''))))); } catch (e) { repoArr = null; }
+                        if (Array.isArray(repoArr) && repoArr.length) {
+                            const hRepo = _hashCartera(repoArr);
+                            if (hRepo !== hLocal && hRepo !== localStorage.getItem('cartera_repo_visto')) {
+                                const lista = (a) => a.map(x => x.ticker).join(', ');
+                                const seguir = confirm(
+                                    `⚠ El repo tiene OTRA cartera, guardada desde otro dispositivo:\n\n` +
+                                    `REPO (${repoArr.length}): ${lista(repoArr)}\n` +
+                                    `ESTE NAVEGADOR (${posiciones.length}): ${lista(posiciones)}\n\n` +
+                                    `Aceptar = PISAR el repo con la de este navegador.\n` +
+                                    `Cancelar = no subir nada (después podés usar "Restaurar desde GitHub" para traer la del repo).`
+                                );
+                                if (!seguir) {
+                                    if (statusEl) {
+                                        statusEl.textContent = '⚠ No se subió: el repo tiene otra cartera. Usá "Restaurar desde GitHub" para traerla a este navegador.';
+                                        statusEl.classList.add('text-neg');
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                } catch (e) { /* si no se puede comparar, sigue como antes */ }
 
                 // 2. Armar el contenido nuevo, codificado en base64 (lo que pide la API)
                 const contenido = JSON.stringify(_posicionesParaExportar(posiciones), null, 2);
@@ -6624,6 +6666,7 @@
 
                 if (statusEl) {
                     if (putResp.ok) {
+                        localStorage.setItem('cartera_repo_visto', hLocal);
                         const ahora = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
                         statusEl.textContent = `Última sincronización: ${ahora}`;
                         statusEl.classList.remove('text-neg');
@@ -7664,6 +7707,7 @@
                 }
 
                 localStorage.setItem('mi_cartera', JSON.stringify(posiciones));
+                localStorage.setItem('cartera_repo_visto', _hashCartera(posiciones));   // 17/11: este navegador ya vio esta version del repo
                 renderCartera();
                 if (estadoEl) estadoEl.textContent = `✓ Se restauraron ${posiciones.length} posición(es), recién ahora.`;
             } catch (e) {
