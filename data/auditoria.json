@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-17T14:31:13.528318+00:00",
+ "generado_utc": "2026-11-17T15:01:33.504730+00:00",
  "mis_operaciones": {
   "total": {
    "n": 30,
@@ -560,37 +560,37 @@
   10,
   20
  ],
- "casos_total": 1314,
+ "casos_total": 1324,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 372,
+   "casos_total": 375,
    "horizontes": {
     "5": {
-     "n": 347,
-     "pendientes": 25,
+     "n": 348,
+     "pendientes": 27,
      "aciertos": 165,
-     "pct_aciertos": 48,
+     "pct_aciertos": 47,
      "tocaron_stop": 63,
-     "ret_prom": -1.55,
-     "vs_spy_prom": -1.39,
+     "ret_prom": -1.58,
+     "vs_spy_prom": -1.42,
      "confiable": true
     },
     "10": {
-     "n": 300,
-     "pendientes": 72,
+     "n": 301,
+     "pendientes": 74,
      "aciertos": 122,
      "pct_aciertos": 41,
-     "tocaron_stop": 100,
-     "ret_prom": -3.2,
-     "vs_spy_prom": -2.4,
+     "tocaron_stop": 101,
+     "ret_prom": -3.25,
+     "vs_spy_prom": -2.45,
      "confiable": true
     },
     "20": {
      "n": 235,
-     "pendientes": 137,
+     "pendientes": 140,
      "aciertos": 89,
      "pct_aciertos": 38,
      "tocaron_stop": 120,
@@ -603,36 +603,36 @@
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 312,
+   "casos_total": 313,
    "horizontes": {
     "5": {
-     "n": 304,
+     "n": 305,
      "pendientes": 8,
      "aciertos": 157,
-     "pct_aciertos": 52,
+     "pct_aciertos": 51,
      "tocaron_stop": 35,
      "ret_prom": -0.29,
      "vs_spy_prom": 0.28,
      "confiable": true
     },
     "10": {
-     "n": 269,
+     "n": 270,
      "pendientes": 43,
-     "aciertos": 130,
-     "pct_aciertos": 48,
+     "aciertos": 131,
+     "pct_aciertos": 49,
      "tocaron_stop": 54,
-     "ret_prom": -0.79,
-     "vs_spy_prom": -0.01,
+     "ret_prom": -0.78,
+     "vs_spy_prom": 0.0,
      "confiable": true
     },
     "20": {
-     "n": 210,
+     "n": 211,
      "pendientes": 102,
-     "aciertos": 114,
-     "pct_aciertos": 54,
+     "aciertos": 115,
+     "pct_aciertos": 55,
      "tocaron_stop": 75,
-     "ret_prom": -2.02,
-     "vs_spy_prom": -0.15,
+     "ret_prom": -1.98,
+     "vs_spy_prom": -0.1,
      "confiable": true
     }
    }
@@ -695,7 +695,7 @@
      "aciertos": 63,
      "pct_aciertos": 47,
      "tocaron_stop": 43,
-     "ret_prom": -2.2,
+     "ret_prom": -2.19,
      "vs_spy_prom": -1.34,
      "confiable": true
     },
@@ -769,8 +769,8 @@
      "aciertos": 33,
      "pct_aciertos": 48,
      "tocaron_stop": 18,
-     "ret_prom": -1.73,
-     "vs_spy_prom": -1.18,
+     "ret_prom": -1.77,
+     "vs_spy_prom": -1.21,
      "confiable": true
     },
     "20": {
@@ -788,37 +788,74 @@
   {
    "señal": "Líder apoyando en soporte",
    "direccion": "alcista",
-   "casos_total": 61,
+   "casos_total": 66,
    "horizontes": {
     "5": {
-     "n": 56,
-     "pendientes": 5,
+     "n": 57,
+     "pendientes": 9,
      "aciertos": 17,
      "pct_aciertos": 30,
      "tocaron_stop": 17,
-     "ret_prom": -2.89,
-     "vs_spy_prom": -2.83,
+     "ret_prom": -2.96,
+     "vs_spy_prom": -2.87,
      "confiable": true
     },
     "10": {
-     "n": 51,
-     "pendientes": 10,
+     "n": 52,
+     "pendientes": 14,
      "aciertos": 16,
      "pct_aciertos": 31,
-     "tocaron_stop": 26,
-     "ret_prom": -4.49,
-     "vs_spy_prom": -4.15,
+     "tocaron_stop": 28,
+     "ret_prom": -4.77,
+     "vs_spy_prom": -4.41,
      "confiable": true
     },
     "20": {
      "n": 43,
-     "pendientes": 18,
+     "pendientes": 23,
      "aciertos": 12,
      "pct_aciertos": 28,
      "tocaron_stop": 29,
      "ret_prom": -11.93,
      "vs_spy_prom": -10.52,
      "confiable": true
+    }
+   }
+  },
+  {
+   "señal": "Rebote en EMA200 (experimental, solo en medición)",
+   "direccion": "alcista",
+   "casos_total": 29,
+   "horizontes": {
+    "5": {
+     "n": 23,
+     "pendientes": 6,
+     "aciertos": 15,
+     "pct_aciertos": 65,
+     "tocaron_stop": 4,
+     "ret_prom": 0.4,
+     "vs_spy_prom": 0.64,
+     "confiable": false
+    },
+    "10": {
+     "n": 19,
+     "pendientes": 10,
+     "aciertos": 10,
+     "pct_aciertos": 53,
+     "tocaron_stop": 4,
+     "ret_prom": -0.27,
+     "vs_spy_prom": 1.21,
+     "confiable": false
+    },
+    "20": {
+     "n": 13,
+     "pendientes": 16,
+     "aciertos": 5,
+     "pct_aciertos": 38,
+     "tocaron_stop": 6,
+     "ret_prom": -7.68,
+     "vs_spy_prom": -4.82,
+     "confiable": false
     }
    }
   },
@@ -860,43 +897,6 @@
    }
   },
   {
-   "señal": "Rebote en EMA200 (experimental, solo en medición)",
-   "direccion": "alcista",
-   "casos_total": 28,
-   "horizontes": {
-    "5": {
-     "n": 23,
-     "pendientes": 5,
-     "aciertos": 15,
-     "pct_aciertos": 65,
-     "tocaron_stop": 4,
-     "ret_prom": 0.4,
-     "vs_spy_prom": 0.64,
-     "confiable": false
-    },
-    "10": {
-     "n": 19,
-     "pendientes": 9,
-     "aciertos": 10,
-     "pct_aciertos": 53,
-     "tocaron_stop": 4,
-     "ret_prom": -0.28,
-     "vs_spy_prom": 1.21,
-     "confiable": false
-    },
-    "20": {
-     "n": 13,
-     "pendientes": 15,
-     "aciertos": 5,
-     "pct_aciertos": 38,
-     "tocaron_stop": 6,
-     "ret_prom": -7.68,
-     "vs_spy_prom": -4.82,
-     "confiable": false
-    }
-   }
-  },
-  {
    "señal": "Perdió EMA200 tras rebote - stop sugerido",
    "direccion": "bajista",
    "casos_total": 17,
@@ -907,8 +907,8 @@
      "aciertos": 7,
      "pct_aciertos": 41,
      "tocaron_stop": 2,
-     "ret_prom": 0.26,
-     "vs_spy_prom": 0.4,
+     "ret_prom": 0.21,
+     "vs_spy_prom": 0.34,
      "confiable": false
     },
     "10": {
@@ -937,18 +937,18 @@
  "por_mes": [
   {
    "mes": "2026-11",
-   "casos": 220,
+   "casos": 227,
    "5": {
     "n": 172,
     "pct_aciertos": 44,
-    "ret_a_favor_prom": -1.37,
-    "vs_spy_prom": -1.59
+    "ret_a_favor_prom": -1.39,
+    "vs_spy_prom": -1.62
    },
    "10": {
     "n": 29,
     "pct_aciertos": 28,
-    "ret_a_favor_prom": -2.15,
-    "vs_spy_prom": -0.46
+    "ret_a_favor_prom": -2.25,
+    "vs_spy_prom": -0.55
    },
    "20": {
     "n": 0
@@ -956,24 +956,24 @@
   },
   {
    "mes": "2026-10",
-   "casos": 833,
+   "casos": 836,
    "5": {
-    "n": 833,
+    "n": 836,
     "pct_aciertos": 51,
-    "ret_a_favor_prom": -1.15,
-    "vs_spy_prom": -0.54
+    "ret_a_favor_prom": -1.16,
+    "vs_spy_prom": -0.55
    },
    "10": {
-    "n": 833,
+    "n": 836,
     "pct_aciertos": 45,
-    "ret_a_favor_prom": -2.48,
-    "vs_spy_prom": -1.41
+    "ret_a_favor_prom": -2.51,
+    "vs_spy_prom": -1.44
    },
    "20": {
-    "n": 618,
+    "n": 619,
     "pct_aciertos": 45,
-    "ret_a_favor_prom": -4.81,
-    "vs_spy_prom": -2.64
+    "ret_a_favor_prom": -4.79,
+    "vs_spy_prom": -2.62
    }
   },
   {
@@ -1015,40 +1015,40 @@
   },
   {
    "franja": "60-79 Aceptable",
-   "casos": 691,
+   "casos": 692,
    "5": {
-    "n": 691,
+    "n": 692,
     "pct_aciertos": 49,
     "ret_prom": -0.81,
     "vs_spy_prom": -0.73
    },
    "10": {
-    "n": 691,
+    "n": 692,
     "pct_aciertos": 46,
-    "ret_prom": -2.24,
-    "vs_spy_prom": -1.48
+    "ret_prom": -2.23,
+    "vs_spy_prom": -1.47
    },
    "20": {
-    "n": 630,
-    "pct_aciertos": 43,
-    "ret_prom": -5.65,
-    "vs_spy_prom": -3.6
+    "n": 631,
+    "pct_aciertos": 44,
+    "ret_prom": -5.63,
+    "vs_spy_prom": -3.57
    }
   },
   {
    "franja": "40-59 Cauteloso",
-   "casos": 361,
+   "casos": 363,
    "5": {
-    "n": 329,
+    "n": 331,
     "pct_aciertos": 47,
-    "ret_prom": -1.99,
-    "vs_spy_prom": -0.9
+    "ret_prom": -2.03,
+    "vs_spy_prom": -0.94
    },
    "10": {
-    "n": 224,
+    "n": 226,
     "pct_aciertos": 42,
-    "ret_prom": -3.08,
-    "vs_spy_prom": -1.83
+    "ret_prom": -3.23,
+    "vs_spy_prom": -1.97
    },
    "20": {
     "n": 69,
@@ -1059,7 +1059,7 @@
   },
   {
    "franja": "0-39 Desfavorable",
-   "casos": 38,
+   "casos": 44,
    "5": {
     "n": 28,
     "pct_aciertos": 54,
@@ -1077,18 +1077,18 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 351,
+   "casos": 358,
    "5": {
-    "n": 334,
+    "n": 336,
     "pct_aciertos": 49,
-    "ret_prom": -1.2,
-    "vs_spy_prom": -0.82
+    "ret_prom": -1.23,
+    "vs_spy_prom": -0.85
    },
    "10": {
-    "n": 295,
+    "n": 297,
     "pct_aciertos": 48,
-    "ret_prom": -2.09,
-    "vs_spy_prom": -1.11
+    "ret_prom": -2.21,
+    "vs_spy_prom": -1.21
    },
    "20": {
     "n": 231,
@@ -1099,68 +1099,68 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 767,
+   "casos": 770,
    "5": {
-    "n": 737,
+    "n": 738,
     "pct_aciertos": 49,
     "ret_prom": -1.1,
-    "vs_spy_prom": -0.81
+    "vs_spy_prom": -0.82
    },
    "10": {
-    "n": 639,
+    "n": 640,
     "pct_aciertos": 44,
     "ret_prom": -2.54,
-    "vs_spy_prom": -1.7
+    "vs_spy_prom": -1.69
    },
    "20": {
-    "n": 481,
+    "n": 482,
     "pct_aciertos": 48,
-    "ret_prom": -4.94,
-    "vs_spy_prom": -3.1
+    "ret_prom": -4.92,
+    "vs_spy_prom": -3.07
    }
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 414,
+   "casos": 415,
    "5": {
-    "n": 402,
+    "n": 403,
     "pct_aciertos": 54,
     "ret_prom": -0.65,
     "vs_spy_prom": -0.13
    },
    "10": {
-    "n": 333,
-    "pct_aciertos": 47,
-    "ret_prom": -1.68,
-    "vs_spy_prom": -0.75
+    "n": 334,
+    "pct_aciertos": 48,
+    "ret_prom": -1.67,
+    "vs_spy_prom": -0.74
    },
    "20": {
-    "n": 237,
+    "n": 238,
     "pct_aciertos": 55,
-    "ret_prom": -3.33,
-    "vs_spy_prom": -1.34
+    "ret_prom": -3.28,
+    "vs_spy_prom": -1.28
    }
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 201,
+   "casos": 202,
    "5": {
-    "n": 195,
-    "pct_aciertos": 48,
-    "ret_prom": -1.19,
-    "vs_spy_prom": -0.9
+    "n": 196,
+    "pct_aciertos": 47,
+    "ret_prom": -1.18,
+    "vs_spy_prom": -0.89
    },
    "10": {
-    "n": 158,
+    "n": 159,
     "pct_aciertos": 50,
-    "ret_prom": -1.74,
-    "vs_spy_prom": -1.05
+    "ret_prom": -1.71,
+    "vs_spy_prom": -1.02
    },
    "20": {
-    "n": 121,
+    "n": 122,
     "pct_aciertos": 55,
-    "ret_prom": -3.16,
-    "vs_spy_prom": -1.51
+    "ret_prom": -3.07,
+    "vs_spy_prom": -1.4
    }
   },
   {
@@ -1175,8 +1175,8 @@
    "10": {
     "n": 13,
     "pct_aciertos": 46,
-    "ret_prom": -1.2,
-    "vs_spy_prom": 0.03
+    "ret_prom": -1.23,
+    "vs_spy_prom": 0.0
    },
    "20": {
     "n": 5,
@@ -1187,12 +1187,12 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 342,
+   "casos": 344,
    "5": {
     "n": 321,
     "pct_aciertos": 49,
-    "ret_prom": -1.28,
-    "vs_spy_prom": -1.0
+    "ret_prom": -1.29,
+    "vs_spy_prom": -1.01
    },
    "10": {
     "n": 296,
@@ -1241,8 +1241,8 @@
    "10": {
     "n": 72,
     "pct_aciertos": 46,
-    "ret_prom": -3.25,
-    "vs_spy_prom": -1.7
+    "ret_prom": -3.24,
+    "vs_spy_prom": -1.69
    },
    "20": {
     "n": 50,
@@ -1255,18 +1255,18 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 469,
+   "casos": 477,
    "5": {
-    "n": 447,
+    "n": 449,
     "pct_aciertos": 50,
-    "ret_prom": -0.79,
-    "vs_spy_prom": -0.6
+    "ret_prom": -0.82,
+    "vs_spy_prom": -0.62
    },
    "10": {
-    "n": 384,
+    "n": 386,
     "pct_aciertos": 48,
-    "ret_prom": -1.65,
-    "vs_spy_prom": -0.71
+    "ret_prom": -1.74,
+    "vs_spy_prom": -0.79
    },
    "20": {
     "n": 299,
@@ -1299,24 +1299,24 @@
   },
   {
    "grupo": "🔴 En contra (RSI y MACD semanal bajistas)",
-   "casos": 248,
+   "casos": 249,
    "5": {
-    "n": 233,
+    "n": 234,
     "pct_aciertos": 55,
-    "ret_prom": -1.24,
-    "vs_spy_prom": -0.8
+    "ret_prom": -1.26,
+    "vs_spy_prom": -0.82
    },
    "10": {
-    "n": 192,
-    "pct_aciertos": 48,
-    "ret_prom": -3.3,
-    "vs_spy_prom": -2.57
+    "n": 193,
+    "pct_aciertos": 49,
+    "ret_prom": -3.27,
+    "vs_spy_prom": -2.53
    },
    "20": {
-    "n": 153,
+    "n": 154,
     "pct_aciertos": 46,
-    "ret_prom": -7.38,
-    "vs_spy_prom": -5.48
+    "ret_prom": -7.28,
+    "vs_spy_prom": -5.37
    }
   }
  ],
@@ -1399,6 +1399,122 @@
    "recomendacion": null,
    "precio_entrada": 66.66,
    "radar_score": 44.1,
+   "regimen_score": null,
+   "cuidados": [],
+   "tendencia_semanal": null,
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "DHR",
+   "fecha": "2026-11-17",
+   "señal": "Líder apoyando en soporte",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 226.52,
+   "radar_score": 49.5,
+   "regimen_score": 32,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "MRNA",
+   "fecha": "2026-11-17",
+   "señal": "Líder apoyando en soporte",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 207.02,
+   "radar_score": 49.6,
+   "regimen_score": 32,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "DOCU",
+   "fecha": "2026-11-17",
+   "señal": "Líder apoyando en soporte",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 74.92,
+   "radar_score": 50.4,
+   "regimen_score": 32,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "TMO",
+   "fecha": "2026-11-17",
+   "señal": "Líder apoyando en soporte",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 685.3,
+   "radar_score": 54.7,
+   "regimen_score": 32,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "DOCU",
+   "fecha": "2026-11-17",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 74.92,
+   "radar_score": 50.4,
+   "regimen_score": 32,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "AAPL",
+   "fecha": "2026-11-17",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "COMPRA",
+   "precio_entrada": 354.9,
+   "radar_score": 56.7,
+   "regimen_score": 32,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "ABT",
+   "fecha": "2026-11-17",
+   "señal": "Rebote en EMA200 (experimental, solo en medición)",
+   "direccion": "alcista",
+   "recomendacion": null,
+   "precio_entrada": 107.58,
+   "radar_score": 37.0,
    "regimen_score": null,
    "cuidados": [],
    "tendencia_semanal": null,
@@ -2171,9 +2287,9 @@
    "cuidados": [],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 6.75,
-   "spy5": -1.53,
-   "vs_spy5": 8.28,
+   "r5": 5.82,
+   "spy5": -1.54,
+   "vs_spy5": 7.36,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -2193,9 +2309,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -1.23,
-   "spy5": -1.53,
-   "vs_spy5": 0.3,
+   "r5": -5.56,
+   "spy5": -1.54,
+   "vs_spy5": -4.02,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2215,9 +2331,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -9.54,
-   "spy5": -1.53,
-   "vs_spy5": -8.01,
+   "r5": -9.61,
+   "spy5": -1.54,
+   "vs_spy5": -8.07,
    "acierto5": false,
    "stop5": true,
    "r10": null,
@@ -2237,9 +2353,9 @@
    ],
    "tendencia_semanal": "contra",
    "ruedas_transcurridas": 5,
-   "r5": -3.13,
-   "spy5": -1.53,
-   "vs_spy5": -1.6,
+   "r5": -3.59,
+   "spy5": -1.54,
+   "vs_spy5": -2.05,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2260,9 +2376,9 @@
    ],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 5,
-   "r5": -4.2,
-   "spy5": -1.53,
-   "vs_spy5": -2.67,
+   "r5": -3.94,
+   "spy5": -1.54,
+   "vs_spy5": -2.4,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -2284,9 +2400,9 @@
    ],
    "tendencia_semanal": "favor",
    "ruedas_transcurridas": 5,
-   "r5": 1.39,
-   "spy5": -1.53,
-   "vs_spy5": 2.92,
+   "r5": 1.33,
+   "spy5": -1.54,
+   "vs_spy5": 2.87,
    "acierto5": true,
    "stop5": false,
    "r10": null,
@@ -2304,9 +2420,9 @@
    "cuidados": [],
    "tendencia_semanal": "mixta",
    "ruedas_transcurridas": 5,
-   "r5": -5.73,
-   "spy5": -1.53,
-   "vs_spy5": -4.2,
+   "r5": -6.19,
+   "spy5": -1.54,
+   "vs_spy5": -4.65,
    "acierto5": false,
    "stop5": false,
    "r10": null,
@@ -5284,9 +5400,9 @@
    "vs_spy5": -0.87,
    "acierto5": true,
    "stop5": false,
-   "r10": -0.31,
-   "spy10": -2.11,
-   "vs_spy10": 1.8,
+   "r10": -2.61,
+   "spy10": -2.12,
+   "vs_spy10": -0.49,
    "acierto10": true,
    "stop10": false,
    "r20": null
@@ -5308,11 +5424,11 @@
    "vs_spy5": 5.18,
    "acierto5": true,
    "stop5": false,
-   "r10": -7.24,
-   "spy10": -2.11,
-   "vs_spy10": -5.13,
+   "r10": -10.78,
+   "spy10": -2.12,
+   "vs_spy10": -8.66,
    "acierto10": false,
-   "stop10": false,
+   "stop10": true,
    "r20": null
   },
   {
@@ -5335,9 +5451,9 @@
    "vs_spy5": 2.02,
    "acierto5": true,
    "stop5": false,
-   "r10": -2.32,
-   "spy10": -2.11,
-   "vs_spy10": -0.21,
+   "r10": -1.61,
+   "spy10": -2.12,
+   "vs_spy10": 0.51,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5362,9 +5478,9 @@
    "vs_spy5": 4.79,
    "acierto5": true,
    "stop5": false,
-   "r10": -4.38,
-   "spy10": -2.11,
-   "vs_spy10": -2.27,
+   "r10": -5.23,
+   "spy10": -2.12,
+   "vs_spy10": -3.11,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5389,9 +5505,9 @@
    "vs_spy5": 3.83,
    "acierto5": true,
    "stop5": false,
-   "r10": -3.38,
-   "spy10": -2.11,
-   "vs_spy10": -1.27,
+   "r10": -2.78,
+   "spy10": -2.12,
+   "vs_spy10": -0.66,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5416,9 +5532,9 @@
    "vs_spy5": 0.98,
    "acierto5": true,
    "stop5": false,
-   "r10": 0.64,
-   "spy10": -2.11,
-   "vs_spy10": 2.75,
+   "r10": 0.76,
+   "spy10": -2.12,
+   "vs_spy10": 2.88,
    "acierto10": true,
    "stop10": false,
    "r20": null
@@ -5444,8 +5560,8 @@
    "acierto5": false,
    "stop5": false,
    "r10": -4.46,
-   "spy10": -2.11,
-   "vs_spy10": -2.35,
+   "spy10": -2.12,
+   "vs_spy10": -2.34,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5467,9 +5583,9 @@
    "vs_spy5": 1.39,
    "acierto5": true,
    "stop5": false,
-   "r10": -1.65,
-   "spy10": -2.11,
-   "vs_spy10": 0.46,
+   "r10": -2.98,
+   "spy10": -2.12,
+   "vs_spy10": -0.86,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5493,9 +5609,9 @@
    "vs_spy5": 3.65,
    "acierto5": true,
    "stop5": false,
-   "r10": -0.41,
-   "spy10": -2.11,
-   "vs_spy10": 1.7,
+   "r10": -1.24,
+   "spy10": -2.12,
+   "vs_spy10": 0.88,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5520,9 +5636,9 @@
    "vs_spy5": 13.2,
    "acierto5": true,
    "stop5": false,
-   "r10": 9.24,
-   "spy10": -2.11,
-   "vs_spy10": 11.35,
+   "r10": 8.91,
+   "spy10": -2.12,
+   "vs_spy10": 11.03,
    "acierto10": true,
    "stop10": false,
    "r20": null
@@ -5544,9 +5660,9 @@
    "vs_spy5": -7.22,
    "acierto5": false,
    "stop5": true,
-   "r10": -4.39,
-   "spy10": -2.11,
-   "vs_spy10": -2.28,
+   "r10": -4.24,
+   "spy10": -2.12,
+   "vs_spy10": -2.12,
    "acierto10": false,
    "stop10": true,
    "r20": null
@@ -5568,9 +5684,9 @@
    "vs_spy5": 0.82,
    "acierto5": true,
    "stop5": false,
-   "r10": -2.93,
-   "spy10": -2.11,
-   "vs_spy10": -0.82,
+   "r10": -2.8,
+   "spy10": -2.12,
+   "vs_spy10": -0.68,
    "acierto10": false,
    "stop10": false,
    "r20": null
@@ -5592,9 +5708,9 @@
    "vs_spy5": -7.22,
    "acierto5": false,
    "stop5": true,
-   "r10": -4.39,
-   "spy10": -2.11,
-   "vs_spy10": -2.28,
+   "r10": -4.24,
+   "spy10": -2.12,
+   "vs_spy10": -2.12,
    "acierto10": false,
    "stop10": true,
    "r20": null
@@ -7887,184 +8003,6 @@
    "acierto10": true,
    "stop10": false,
    "r20": null
-  },
-  {
-   "ticker": "DAL",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 81.57,
-   "radar_score": 42.2,
-   "regimen_score": 56,
-   "cuidados": [
-    "sma50_bajando",
-    "techo_avwap"
-   ],
-   "tendencia_semanal": "contra",
-   "ruedas_transcurridas": 14,
-   "r5": 9.4,
-   "spy5": -0.71,
-   "vs_spy5": 10.11,
-   "acierto5": true,
-   "stop5": false,
-   "r10": 11.95,
-   "spy10": -1.62,
-   "vs_spy10": 13.57,
-   "acierto10": true,
-   "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "FDX",
-   "fecha": "2026-10-28",
-   "señal": "Sacudón, sin definición clara",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 305.79,
-   "radar_score": 41.4,
-   "regimen_score": 56,
-   "cuidados": [
-    "sma50_bajando",
-    "techo_avwap"
-   ],
-   "tendencia_semanal": "contra",
-   "ruedas_transcurridas": 14,
-   "r5": 7.72,
-   "spy5": -0.71,
-   "vs_spy5": 8.43,
-   "acierto5": true,
-   "stop5": false,
-   "r10": 5.51,
-   "spy10": -1.62,
-   "vs_spy10": 7.13,
-   "acierto10": true,
-   "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "SPY",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 771.44,
-   "radar_score": 52.2,
-   "regimen_score": 56,
-   "cuidados": [
-    "sma50_bajando"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -0.6,
-   "spy5": -0.71,
-   "vs_spy5": 0.11,
-   "acierto5": false,
-   "stop5": false,
-   "r10": -1.51,
-   "spy10": -1.62,
-   "vs_spy10": 0.11,
-   "acierto10": false,
-   "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "IVV",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 774.88,
-   "radar_score": 72.2,
-   "regimen_score": 56,
-   "cuidados": [
-    "sma50_bajando"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -0.61,
-   "spy5": -0.71,
-   "vs_spy5": 0.1,
-   "acierto5": false,
-   "stop5": false,
-   "r10": -1.52,
-   "spy10": -1.62,
-   "vs_spy10": 0.1,
-   "acierto10": false,
-   "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "IBIT",
-   "fecha": "2026-10-28",
-   "señal": "Sacudón, sin definición clara",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 45.63,
-   "radar_score": 38.3,
-   "regimen_score": 56,
-   "cuidados": [],
-   "tendencia_semanal": "favor",
-   "ruedas_transcurridas": 14,
-   "r5": -0.66,
-   "spy5": -0.71,
-   "vs_spy5": 0.05,
-   "acierto5": false,
-   "stop5": false,
-   "r10": -7.43,
-   "spy10": -1.62,
-   "vs_spy10": -5.81,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
-  },
-  {
-   "ticker": "AMD",
-   "fecha": "2026-10-28",
-   "señal": "Confluencia Alcista",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 569.97,
-   "radar_score": 69.0,
-   "regimen_score": 56,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -14.24,
-   "spy5": -0.71,
-   "vs_spy5": -13.53,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -2.99,
-   "spy10": -1.62,
-   "vs_spy10": -1.37,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
-  },
-  {
-   "ticker": "TSM",
-   "fecha": "2026-10-28",
-   "señal": "Confluencia Alcista",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 438.89,
-   "radar_score": 53.1,
-   "regimen_score": 56,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -9.83,
-   "spy5": -0.71,
-   "vs_spy5": -9.12,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -5.82,
-   "spy10": -1.62,
-   "vs_spy10": -4.2,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
   }
  ],
  "top30_semanal": [
@@ -8084,7 +8022,7 @@
    "verdes5": 19,
    "medidos5": 30,
    "spy5": -1.69,
-   "univ5": -4.12,
+   "univ5": -4.1,
    "top10": null,
    "top20": null
   },
@@ -8096,7 +8034,7 @@
    "verdes5": 10,
    "medidos5": 30,
    "spy5": 0.08,
-   "univ5": 1.53,
+   "univ5": 1.51,
    "top10": -5.73,
    "verdes10": 5,
    "medidos10": 30,
@@ -8112,12 +8050,12 @@
    "verdes5": 6,
    "medidos5": 30,
    "spy5": -1.73,
-   "univ5": -1.53,
+   "univ5": -1.57,
    "top10": -9.43,
    "verdes10": 6,
    "medidos10": 30,
    "spy10": -1.66,
-   "univ10": 0.03,
+   "univ10": -0.03,
    "top20": null
   },
   {
@@ -8238,7 +8176,7 @@
    "verdes5": 17,
    "medidos5": 30,
    "spy5": -1.69,
-   "univ5": -4.12,
+   "univ5": -4.1,
    "top10": null,
    "top20": null
   },
@@ -8250,7 +8188,7 @@
    "verdes5": 10,
    "medidos5": 29,
    "spy5": 0.08,
-   "univ5": 1.53,
+   "univ5": 1.51,
    "top10": -3.17,
    "verdes10": 10,
    "medidos10": 29,
@@ -8266,12 +8204,12 @@
    "verdes5": 14,
    "medidos5": 29,
    "spy5": -1.73,
-   "univ5": -1.53,
+   "univ5": -1.57,
    "top10": -4.33,
    "verdes10": 10,
    "medidos10": 29,
    "spy10": -1.66,
-   "univ10": 0.03,
+   "univ10": -0.03,
    "top20": null
   },
   {
@@ -8363,15 +8301,15 @@
    "5": {
     "semanas": 25,
     "top_prom": -1.24,
-    "univ_prom": -0.26,
+    "univ_prom": -0.27,
     "spy_prom": -0.12,
     "semanas_top_gana_univ": 11,
     "semanas_top_gana_spy": 7
    },
    "10": {
     "semanas": 24,
-    "top_prom": -2.41,
-    "univ_prom": -0.37,
+    "top_prom": -2.42,
+    "univ_prom": -0.38,
     "spy_prom": -0.1,
     "semanas_top_gana_univ": 9,
     "semanas_top_gana_spy": 9
@@ -8379,7 +8317,7 @@
    "20": {
     "semanas": 22,
     "top_prom": -4.55,
-    "univ_prom": -0.38,
+    "univ_prom": -0.4,
     "spy_prom": 0.16,
     "semanas_top_gana_univ": 9,
     "semanas_top_gana_spy": 9
