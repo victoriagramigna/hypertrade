@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-17T23:17:55.152917+00:00",
+ "generado_utc": "2026-11-18T05:40:56.396814+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 20,
  "horizontes": [
@@ -7,8 +7,39 @@
   7,
   14
  ],
- "casos_total": 28,
+ "casos_total": 29,
  "resumen_señales": [
+  {
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "casos_total": 12,
+   "horizontes": {
+    "3": {
+     "n": 10,
+     "pendientes": 2,
+     "aciertos": 2,
+     "pct_aciertos": 20,
+     "ret_prom": -2.78,
+     "confiable": false
+    },
+    "7": {
+     "n": 8,
+     "pendientes": 4,
+     "aciertos": 1,
+     "pct_aciertos": 12,
+     "ret_prom": -3.89,
+     "confiable": false
+    },
+    "14": {
+     "n": 6,
+     "pendientes": 6,
+     "aciertos": 0,
+     "pct_aciertos": 0,
+     "ret_prom": -7.51,
+     "confiable": false
+    }
+   }
+  },
   {
    "tipo": "Movimiento fuerte a la baja",
    "direccion": "bajista",
@@ -19,7 +50,7 @@
      "pendientes": 0,
      "aciertos": 8,
      "pct_aciertos": 73,
-     "ret_prom": -2.07,
+     "ret_prom": -2.13,
      "confiable": false
     },
     "7": {
@@ -36,37 +67,6 @@
      "aciertos": 6,
      "pct_aciertos": 100,
      "ret_prom": -6.12,
-     "confiable": false
-    }
-   }
-  },
-  {
-   "tipo": "RSI en sobreventa",
-   "direccion": "alcista",
-   "casos_total": 11,
-   "horizontes": {
-    "3": {
-     "n": 10,
-     "pendientes": 1,
-     "aciertos": 2,
-     "pct_aciertos": 20,
-     "ret_prom": -2.73,
-     "confiable": false
-    },
-    "7": {
-     "n": 8,
-     "pendientes": 3,
-     "aciertos": 1,
-     "pct_aciertos": 12,
-     "ret_prom": -3.89,
-     "confiable": false
-    },
-    "14": {
-     "n": 6,
-     "pendientes": 5,
-     "aciertos": 0,
-     "pct_aciertos": 0,
-     "ret_prom": -7.51,
      "confiable": false
     }
    }
@@ -156,6 +156,19 @@
  ],
  "detalle": [
   {
+   "ticker": "BTC-USD",
+   "nombre": "Bitcoin",
+   "fecha": "2026-11-18",
+   "tipo": "RSI en sobreventa",
+   "direccion": "alcista",
+   "precio_entrada": 64670.51,
+   "score": 35,
+   "dias_transcurridos": 0,
+   "r3": null,
+   "r7": null,
+   "r14": null
+  },
+  {
    "ticker": "ETH-USD",
    "nombre": "Ethereum",
    "fecha": "2026-11-16",
@@ -177,7 +190,7 @@
    "precio_entrada": 67212.01,
    "score": 65,
    "dias_transcurridos": 3,
-   "r3": -3.28,
+   "r3": -3.78,
    "acierto3": false,
    "r7": null,
    "r14": null
@@ -191,7 +204,7 @@
    "precio_entrada": 1742.36,
    "score": 45,
    "dias_transcurridos": 3,
-   "r3": 4.73,
+   "r3": 4.08,
    "acierto3": false,
    "r7": null,
    "r14": null
