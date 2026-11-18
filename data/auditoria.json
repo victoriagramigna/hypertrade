@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-17T21:43:03.649545+00:00",
+ "generado_utc": "2026-11-18T02:54:45.335766+00:00",
  "mis_operaciones": {
   "total": {
    "n": 30,
@@ -560,17 +560,17 @@
   10,
   20
  ],
- "casos_total": 1327,
+ "casos_total": 1330,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 377,
+   "casos_total": 380,
    "horizontes": {
     "5": {
      "n": 348,
-     "pendientes": 29,
+     "pendientes": 32,
      "aciertos": 165,
      "pct_aciertos": 47,
      "tocaron_stop": 64,
@@ -580,7 +580,7 @@
     },
     "10": {
      "n": 301,
-     "pendientes": 76,
+     "pendientes": 79,
      "aciertos": 121,
      "pct_aciertos": 40,
      "tocaron_stop": 101,
@@ -590,7 +590,7 @@
     },
     "20": {
      "n": 235,
-     "pendientes": 142,
+     "pendientes": 145,
      "aciertos": 89,
      "pct_aciertos": 38,
      "tocaron_stop": 120,
@@ -937,7 +937,7 @@
  "por_mes": [
   {
    "mes": "2026-11",
-   "casos": 230,
+   "casos": 233,
    "5": {
     "n": 172,
     "pct_aciertos": 44,
@@ -1059,7 +1059,7 @@
   },
   {
    "franja": "0-39 Desfavorable",
-   "casos": 47,
+   "casos": 50,
    "5": {
     "n": 28,
     "pct_aciertos": 54,
@@ -1099,7 +1099,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 773,
+   "casos": 776,
    "5": {
     "n": 738,
     "pct_aciertos": 49,
@@ -1143,7 +1143,7 @@
   },
   {
    "grupo": "· Debajo de SMA200",
-   "casos": 203,
+   "casos": 205,
    "5": {
     "n": 196,
     "pct_aciertos": 47,
@@ -1187,7 +1187,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 345,
+   "casos": 346,
    "5": {
     "n": 321,
     "pct_aciertos": 49,
@@ -1255,7 +1255,7 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 477,
+   "casos": 479,
    "5": {
     "n": 449,
     "pct_aciertos": 50,
@@ -1299,7 +1299,7 @@
   },
   {
    "grupo": "🔴 En contra (RSI y MACD semanal bajistas)",
-   "casos": 251,
+   "casos": 252,
    "5": {
     "n": 234,
     "pct_aciertos": 55,
@@ -1321,6 +1321,60 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "GRMN",
+   "fecha": "2026-11-18",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 277.32,
+   "radar_score": 45.7,
+   "regimen_score": 26,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "contra",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "PEP",
+   "fecha": "2026-11-18",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 142.02,
+   "radar_score": 47.1,
+   "regimen_score": 26,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "GSK",
+   "fecha": "2026-11-18",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 49.24,
+   "radar_score": 64.7,
+   "regimen_score": 26,
+   "cuidados": [
+    "bajo_sma200"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "SAP",
    "fecha": "2026-11-17",
@@ -7904,80 +7958,6 @@
    "r10": -8.57,
    "spy10": -1.62,
    "vs_spy10": -6.95,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
-  },
-  {
-   "ticker": "AMD",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 569.97,
-   "radar_score": 69.0,
-   "regimen_score": 56,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -14.24,
-   "spy5": -0.71,
-   "vs_spy5": -13.53,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -2.99,
-   "spy10": -1.62,
-   "vs_spy10": -1.37,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
-  },
-  {
-   "ticker": "TSM",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 438.89,
-   "radar_score": 53.1,
-   "regimen_score": 56,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -9.83,
-   "spy5": -0.71,
-   "vs_spy5": -9.12,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -5.82,
-   "spy10": -1.62,
-   "vs_spy10": -4.2,
-   "acierto10": false,
-   "stop10": true,
-   "r20": null
-  },
-  {
-   "ticker": "QCOM",
-   "fecha": "2026-10-28",
-   "señal": "Confirmado",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 183.42,
-   "radar_score": 54.2,
-   "regimen_score": 56,
-   "cuidados": [
-    "techo_avwap"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 14,
-   "r5": -5.58,
-   "spy5": -0.71,
-   "vs_spy5": -4.87,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -3.73,
-   "spy10": -1.62,
-   "vs_spy10": -2.11,
    "acierto10": false,
    "stop10": true,
    "r20": null
