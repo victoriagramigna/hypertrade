@@ -370,11 +370,10 @@
     <div id="tab-inicio" class="tab-content space-y-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <!-- Botón de escaneo manual -->
-            <a href="https://github.com/victoriagramigna/hypertrade/actions/workflows/radar.yml"
-               target="_blank" rel="noopener"
+            <button type="button" onclick="correrWorkflow('radar.yml', {modo:'produccion'}, this)"
                class="flex items-center gap-1.5 border border-accent text-accent hover:bg-accent/15 transition-colors px-2.5 py-1 rounded-sm font-mono text-[10px] font-bold uppercase whitespace-nowrap">
                 🔄 Correr escaneo ahora
-            </a>
+            </button>
             <!-- 6. Calculadora CCL Manual -->
             <div class="bg-surface border border-surface p-3 rounded-sm flex flex-col sm:flex-row items-start sm:items-center gap-4 font-mono text-xs">
                 <div class="flex items-center gap-2">
@@ -399,8 +398,8 @@
             <div class="flex justify-between items-end gap-2 border-b border-surface pb-1 mb-3">
                 <h2 class="text-accent uppercase text-sm font-bold tracking-widest">🌅 Antes de la apertura <span id="preap-count" class="text-gray-500 normal-case"></span></h2>
                 <!-- 26/10: acceso directo a la corrida manual de ESTA lista (Actions -> Run workflow), igual que el botón del radar -->
-                <a href="https://github.com/victoriagramigna/hypertrade/actions/workflows/preapertura.yml" target="_blank" rel="noopener"
-                   title="Correr ahora (abre GitHub Actions)" class="shrink-0 mb-0.5 border border-accent text-accent hover:bg-accent hover:text-base transition-colors px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase whitespace-nowrap">🔄 Correr</a>
+                <button type="button" onclick="correrWorkflow('preapertura.yml', {enviar:'1'}, this)"
+                   title="Correr ahora (dispara el workflow con tu token)" class="shrink-0 mb-0.5 border border-accent text-accent hover:bg-accent hover:text-base transition-colors px-2 py-0.5 rounded-sm font-mono text-[9px] font-bold uppercase whitespace-nowrap">🔄 Correr</button>
             </div>
             <div class="font-mono text-[11px] text-gray-500 mb-3 leading-relaxed">
                 Una lista para MIRAR antes de que abra Wall Street (se arma entre las 8:10 y las 10:10, hora argentina; se actualiza hasta la apertura), no una señal de compra.
@@ -6521,6 +6520,45 @@
 
         function borrarTokenGithub() {
             localStorage.removeItem('gh_token_hypertrade');
+        }
+
+        // 23/11: GitHub dejó de mostrar el botón "Run workflow" en su página de Actions
+        // desde el celular. Estos botones ahora disparan el workflow directo por la API
+        // (necesita el token con permiso "Actions: Read and write"). Si no hay token o
+        // le falta ese permiso, abren la página de GitHub como antes.
+        async function correrWorkflow(archivo, inputs, boton) {
+            const urlPagina = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${archivo}`;
+            const token = cargarTokenGithub();
+            if (!token) {
+                alert('Para correrlo desde acá hace falta conectar el token de GitHub (solapa Cartera → sincronización). Te abro la página de GitHub.');
+                window.open(urlPagina, '_blank', 'noopener');
+                return;
+            }
+            const textoOrig = boton.textContent;
+            boton.disabled = true; boton.textContent = '⏳ Enviando…';
+            try {
+                const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${archivo}/dispatches`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: 'main', inputs })
+                });
+                if (r.status === 204) {
+                    boton.textContent = '✓ Lanzado';
+                    alert('Listo: se lanzó la corrida. Tarda unos 3 a 5 minutos; después refrescá la app.');
+                } else if (r.status === 403 || r.status === 404 || r.status === 401) {
+                    boton.textContent = textoOrig;
+                    alert('GitHub rechazó el pedido (' + r.status + '). Casi seguro al token le falta el permiso "Actions: Read and write" sobre el repo hypertrade. Te abro la página de GitHub.');
+                    window.open(urlPagina, '_blank', 'noopener');
+                } else {
+                    boton.textContent = textoOrig;
+                    alert('GitHub respondió ' + r.status + '. No se lanzó la corrida.');
+                }
+            } catch (e) {
+                boton.textContent = textoOrig;
+                alert('No se pudo conectar con GitHub (' + e.message + '). Probá de nuevo.');
+            } finally {
+                setTimeout(() => { boton.disabled = false; boton.textContent = textoOrig; }, 6000);
+            }
         }
 
         function _posicionesParaExportar(posiciones) {
