@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-20T21:03:39.004467+00:00",
+  "actualizado": "2026-11-23T13:04:01.665714+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -26,21 +26,21 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 137.93,
-      "precio": 144.99,
+      "precio": 145.43,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.14,
-      "desde_alta_pct": 5.12,
-      "dist_confirmacion_pct": -3.18,
-      "dist_invalidacion_pct": -6.78,
-      "rsi": 54.1,
-      "fr": 84.4,
-      "vol_rel": 0.65,
-      "beta": 0.78,
+      "hoy_pct": -2.85,
+      "desde_alta_pct": 5.44,
+      "dist_confirmacion_pct": -3.47,
+      "dist_invalidacion_pct": -7.06,
+      "rsi": 54.6,
+      "fr": 84.3,
+      "vol_rel": 1.14,
+      "beta": 0.77,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
       "estado_cierre": "confirmada",
-      "ultimo_cierre_fecha": "2026-11-19",
-      "cierres_sobre_confirmacion": 12,
+      "ultimo_cierre_fecha": "2026-11-20",
+      "cierres_sobre_confirmacion": 13,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 137.67,
       "max_cierre": 156.88,
@@ -50,27 +50,27 @@
         "tipo": "ruptura",
         "nivel": 140.38,
         "detalle": "Superó su nivel de confirmación (140,38): Cierre sobre 140,38 (piso de la zona de oferta 140,4–142,1) y, para que cuente con respaldo, con volumen de al menos el promedio.",
-        "fecha": "2026-11-19",
-        "precio": 149.69,
-        "vol_rel": 1.1
+        "fecha": "2026-11-20",
+        "precio": 145.43,
+        "vol_rel": 1.14
       },
       "espacio_libre": {
         "nivel": 155.61,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.32,
-        "riesgo_pct": 6.78,
-        "relacion": 1.08,
-        "menor_que_riesgo": false
+        "espacio_pct": 7.0,
+        "riesgo_pct": 7.06,
+        "relacion": 0.99,
+        "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.2% vs SMA200",
+            "valor": "sobre SMA50 y +4.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -84,34 +84,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "54",
+            "valor": "55",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
-            "ok": false,
-            "valor": "-3.1%",
+            "ok": true,
+            "valor": "-2.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "65% del promedio",
+            "ok": true,
+            "valor": "114% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -123,7 +123,7 @@
         }
       ],
       "salida_sugerida": [
-        "Confirmó con 12 cierres seguidos: el escenario se cumplió (pasarlo a Cartera o sacarlo de la lista)."
+        "Confirmó con 13 cierres seguidos: el escenario se cumplió (pasarlo a Cartera o sacarlo de la lista)."
       ]
     },
     {
@@ -151,51 +151,51 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 270.0,
-      "precio": 238.72,
+      "precio": 239.33,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.64,
-      "desde_alta_pct": -11.59,
-      "dist_confirmacion_pct": 16.54,
-      "dist_invalidacion_pct": 5.58,
-      "rsi": 27.5,
-      "fr": 87.3,
-      "vol_rel": 0.95,
-      "beta": 0.3,
+      "hoy_pct": -1.39,
+      "desde_alta_pct": -11.36,
+      "dist_confirmacion_pct": 16.24,
+      "dist_invalidacion_pct": 5.31,
+      "rsi": 27.7,
+      "fr": 88.1,
+      "vol_rel": 1.75,
+      "beta": 0.29,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 2,
-      "min_cierre": 242.71,
+      "cierres_bajo_invalidacion": 3,
+      "min_cierre": 239.33,
       "max_cierre": 282.83,
-      "cierres_bajo_sma50": 9,
+      "cierres_bajo_sma50": 10,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 289.07,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 21.09,
+        "espacio_pct": 20.78,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +16.3% vs SMA200",
+            "valor": "bajo SMA50 y +16.6% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "87",
+            "valor": "88",
             "lectura": "pide 70 o más"
           },
           {
@@ -209,27 +209,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.6%",
+            "valor": "-1.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "95% del promedio",
+            "ok": true,
+            "valor": "175% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 75 días)",
+            "valor": "03/02 (en 72 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 75,
+          "dias": 72,
           "momento": "antes de la apertura"
         }
       },
@@ -241,13 +241,13 @@
         },
         {
           "nombre": "media de 50 ruedas",
-          "piso": 263.98,
-          "techo": 269.32
+          "piso": 263.99,
+          "techo": 269.33
         }
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "9 cierres seguidos bajo la media de 50 ruedas."
+        "10 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -282,18 +282,18 @@
       "dist_confirmacion_pct": 11.4,
       "dist_invalidacion_pct": 3.24,
       "rsi": 35.8,
-      "fr": 78.9,
-      "vol_rel": 1.2,
-      "beta": 0.93,
+      "fr": 78.0,
+      "vol_rel": 1.21,
+      "beta": 0.95,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 2,
-      "min_cierre": 203.72,
+      "cierres_bajo_invalidacion": 3,
+      "min_cierre": 199.54,
       "max_cierre": 219.57,
-      "cierres_bajo_sma50": 4,
+      "cierres_bajo_sma50": 5,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -319,7 +319,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "79",
+            "valor": "78",
             "lectura": "pide 70 o más"
           },
           {
@@ -340,7 +340,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "120% del promedio",
+            "valor": "121% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -362,7 +362,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "4 cierres seguidos bajo la media de 50 ruedas."
+        "5 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -390,51 +390,51 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 340.01,
-      "precio": 254.25,
+      "precio": 254.82,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -5.34,
-      "desde_alta_pct": -25.22,
-      "dist_confirmacion_pct": 38.98,
-      "dist_invalidacion_pct": 18.88,
-      "rsi": 35.1,
-      "fr": 70.5,
-      "vol_rel": 0.9,
-      "beta": 2.07,
+      "hoy_pct": -5.13,
+      "desde_alta_pct": -25.06,
+      "dist_confirmacion_pct": 38.67,
+      "dist_invalidacion_pct": 18.61,
+      "rsi": 35.2,
+      "fr": 71.0,
+      "vol_rel": 1.12,
+      "beta": 2.1,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 12,
-      "min_cierre": 268.59,
+      "cierres_bajo_invalidacion": 13,
+      "min_cierre": 254.82,
       "max_cierre": 339.93,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 356.47,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 40.2,
+        "espacio_pct": 39.89,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +3.5% vs SMA200",
+            "valor": "bajo SMA50 y +3.8% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "70",
+            "valor": "71",
             "lectura": "pide 70 o más"
           },
           {
@@ -448,27 +448,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-5.3%",
+            "valor": "-5.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "90% del promedio",
+            "ok": true,
+            "valor": "112% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/12 (en 12 días)",
+            "valor": "02/12 (en 9 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-02",
-          "dias": 12,
+          "dias": 9,
           "momento": "después del cierre"
         }
       },
@@ -481,7 +481,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas."
+        "14 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -509,31 +509,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 199.87,
-      "precio": 143.6,
+      "precio": 143.49,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -6.56,
-      "desde_alta_pct": -28.15,
-      "dist_confirmacion_pct": 48.29,
-      "dist_invalidacion_pct": 28.45,
-      "rsi": 25.4,
-      "fr": 41.9,
-      "vol_rel": 1.19,
-      "beta": 1.99,
+      "hoy_pct": -6.63,
+      "desde_alta_pct": -28.21,
+      "dist_confirmacion_pct": 48.4,
+      "dist_invalidacion_pct": 28.55,
+      "rsi": 25.3,
+      "fr": 41.4,
+      "vol_rel": 1.46,
+      "beta": 2.03,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
-      "min_cierre": 153.68,
+      "cierres_bajo_invalidacion": 14,
+      "min_cierre": 143.49,
       "max_cierre": 198.73,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 208.9,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 45.47,
+        "espacio_pct": 45.59,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -546,14 +546,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -6.7% vs SMA200",
+            "valor": "bajo SMA50 y -6.8% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "42",
+            "valor": "41",
             "lectura": "pide 70 o más"
           },
           {
@@ -574,20 +574,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "119% del promedio",
+            "valor": "146% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "01/02 (en 73 días)",
+            "valor": "01/02 (en 70 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-01",
-          "dias": 73,
+          "dias": 70,
           "momento": "después del cierre"
         }
       },
@@ -600,8 +600,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 42 (menos de 50)."
+        "13 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 41 (menos de 50)."
       ]
     },
     {
@@ -628,37 +628,37 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 33.83,
-      "precio": 27.94,
+      "precio": 27.96,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.45,
-      "desde_alta_pct": -17.41,
-      "dist_confirmacion_pct": 29.67,
-      "dist_invalidacion_pct": 12.63,
-      "rsi": 46.4,
-      "fr": 68.2,
-      "vol_rel": 0.81,
-      "beta": 0.54,
+      "hoy_pct": 0.5,
+      "desde_alta_pct": -17.35,
+      "dist_confirmacion_pct": 29.58,
+      "dist_invalidacion_pct": 12.55,
+      "rsi": 46.6,
+      "fr": 67.2,
+      "vol_rel": 1.01,
+      "beta": 0.56,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
+      "cierres_bajo_invalidacion": 14,
       "min_cierre": 27.82,
       "max_cierre": 33.58,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 32.95,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 17.93,
+        "espacio_pct": 17.85,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
@@ -672,14 +672,14 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "68",
+            "valor": "67",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "46",
+            "valor": "47",
             "lectura": "pide entre 40 y 68"
           },
           {
@@ -692,21 +692,21 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "81% del promedio",
+            "ok": true,
+            "valor": "101% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "24/11 (en 4 días)",
+            "valor": "24/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 4,
+          "dias": 1,
           "momento": "después del cierre"
         }
       },
@@ -719,7 +719,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas."
+        "13 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -863,33 +863,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 85.51,
-      "precio": 73.9,
+      "precio": 73.91,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -6.05,
-      "desde_alta_pct": -13.58,
-      "dist_confirmacion_pct": 25.58,
-      "dist_invalidacion_pct": 4.36,
+      "hoy_pct": -6.04,
+      "desde_alta_pct": -13.57,
+      "dist_confirmacion_pct": 25.56,
+      "dist_invalidacion_pct": 4.34,
       "rsi": 31.0,
-      "fr": 63.0,
-      "vol_rel": 0.59,
-      "beta": 0.93,
+      "fr": 62.6,
+      "vol_rel": 0.76,
+      "beta": 0.94,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 78.66,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 73.91,
       "max_cierre": 90.03,
-      "cierres_bajo_sma50": 2,
-      "toques": {
-        "zona de demanda": "2026-11-20"
-      },
+      "cierres_bajo_sma50": 3,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 85.17,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 15.25,
+        "espacio_pct": 15.23,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -930,20 +928,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "59% del promedio",
+            "valor": "76% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 74 días)",
+            "valor": "02/02 (en 71 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 74,
+          "dias": 71,
           "momento": "después del cierre"
         }
       },
@@ -955,7 +953,8 @@
         }
       ],
       "salida_sugerida": [
-        "2 cierres seguidos bajo la media de 50 ruedas."
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
+        "3 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -982,31 +981,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 22.51,
-      "precio": 15.97,
+      "precio": 16.01,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.0,
-      "desde_alta_pct": -29.05,
-      "dist_confirmacion_pct": 65.25,
-      "dist_invalidacion_pct": 35.57,
+      "hoy_pct": -1.72,
+      "desde_alta_pct": -28.88,
+      "dist_confirmacion_pct": 64.83,
+      "dist_invalidacion_pct": 35.23,
       "rsi": 9.8,
-      "fr": 29.2,
-      "vol_rel": 0.69,
-      "beta": 0.04,
+      "fr": 29.3,
+      "vol_rel": 0.81,
+      "beta": 0.02,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 12,
-      "min_cierre": 16.29,
+      "cierres_bajo_invalidacion": 13,
+      "min_cierre": 16.01,
       "max_cierre": 22.3,
-      "cierres_bajo_sma50": 11,
+      "cierres_bajo_sma50": 12,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 25.96,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 62.55,
+        "espacio_pct": 62.15,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1019,7 +1018,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -15.9% vs SMA200",
+            "valor": "bajo SMA50 y -15.7% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -1040,27 +1039,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-2.0%",
+            "valor": "-1.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "69% del promedio",
+            "valor": "81% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/03 (en 104 días)",
+            "valor": "04/03 (en 101 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-03-04",
-          "dias": 104,
+          "dias": 101,
           "momento": "después del cierre"
         }
       },
@@ -1073,7 +1072,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "11 cierres seguidos bajo la media de 50 ruedas.",
+        "12 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 29 (menos de 50)."
       ]
     },
@@ -1101,20 +1100,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 345.53,
-      "precio": 342.6,
+      "precio": 342.56,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.89,
-      "desde_alta_pct": -0.85,
-      "dist_confirmacion_pct": 5.32,
-      "dist_invalidacion_pct": -1.16,
-      "rsi": 53.5,
-      "fr": 87.6,
-      "vol_rel": 1.14,
-      "beta": 0.55,
+      "hoy_pct": -1.9,
+      "desde_alta_pct": -0.86,
+      "dist_confirmacion_pct": 5.33,
+      "dist_invalidacion_pct": -1.15,
+      "rsi": 53.4,
+      "fr": 87.0,
+      "vol_rel": 1.62,
+      "beta": 0.56,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 331.9,
@@ -1129,16 +1128,16 @@
         "piso": "zona de demanda",
         "inv": 338.61,
         "detalle": "Llegó a su piso (zona de demanda: 338,61 a 340,74) el 06/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 349.21,
-        "vol_rel": 0.84
+        "fecha": "2026-11-20",
+        "precio": 342.56,
+        "vol_rel": 1.62
       },
       "espacio_libre": {
-        "nivel": 360.83,
-        "tipo": "maximo de 52 semanas",
-        "espacio_pct": 5.32,
-        "riesgo_pct": 1.16,
-        "relacion": 4.57,
+        "nivel": 356.27,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 4.0,
+        "riesgo_pct": 1.15,
+        "relacion": 3.47,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -1149,21 +1148,21 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +13.2% vs SMA200",
+            "valor": "sobre SMA50 y +13.1% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "88",
+            "valor": "87",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "54",
+            "valor": "53",
             "lectura": "pide entre 40 y 68"
           },
           {
@@ -1177,20 +1176,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "114% del promedio",
+            "valor": "162% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 69 días)",
+            "valor": "28/01 (en 66 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 69,
+          "dias": 66,
           "momento": "después del cierre"
         }
       },
@@ -1235,17 +1234,17 @@
       "dist_invalidacion_pct": 7.37,
       "rsi": 43.7,
       "fr": 96.2,
-      "vol_rel": 1.17,
-      "beta": 1.71,
+      "vol_rel": 1.39,
+      "beta": 1.74,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 12,
+      "cierres_bajo_invalidacion": 13,
       "min_cierre": 216.9,
       "max_cierre": 268.02,
-      "cierres_bajo_sma50": 9,
+      "cierres_bajo_sma50": 10,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -1292,20 +1291,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "117% del promedio",
+            "valor": "139% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "01/12 (en 11 días)",
+            "valor": "01/12 (en 8 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-01",
-          "dias": 11,
+          "dias": 8,
           "momento": "después del cierre"
         }
       },
@@ -1318,7 +1317,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "9 cierres seguidos bajo la media de 50 ruedas."
+        "10 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1347,23 +1346,23 @@
       "precio_alta": 6.18,
       "precio": 4.55,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -11.04,
+      "hoy_pct": -11.13,
       "desde_alta_pct": -26.38,
       "dist_confirmacion_pct": 50.55,
       "dist_invalidacion_pct": 29.23,
-      "rsi": 37.6,
-      "fr": 26.6,
-      "vol_rel": 1.09,
-      "beta": 2.49,
+      "rsi": 37.5,
+      "fr": 26.4,
+      "vol_rel": 1.26,
+      "beta": 2.52,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
-      "min_cierre": 4.96,
+      "cierres_bajo_invalidacion": 15,
+      "min_cierre": 4.55,
       "max_cierre": 6.08,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -1382,14 +1381,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -14.1% vs SMA200",
+            "valor": "bajo SMA50 y -14.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "27",
+            "valor": "26",
             "lectura": "pide 70 o más"
           },
           {
@@ -1403,27 +1402,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-11.0%",
+            "valor": "-11.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "109% del promedio",
+            "valor": "126% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 75 días)",
+            "valor": "03/02 (en 72 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 75,
+          "dias": 72,
           "momento": "después del cierre"
         }
       },
@@ -1436,8 +1435,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 27 (menos de 50)."
+        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 26 (menos de 50)."
       ]
     },
     {
@@ -1472,17 +1471,17 @@
       "dist_invalidacion_pct": 6.67,
       "rsi": 47.4,
       "fr": 89.6,
-      "vol_rel": 1.49,
-      "beta": 1.25,
+      "vol_rel": 1.61,
+      "beta": 1.26,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
+      "cierres_bajo_invalidacion": 14,
       "min_cierre": 309.29,
       "max_cierre": 401.7,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -1529,20 +1528,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "149% del promedio",
+            "valor": "161% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "16/02 (en 88 días)",
+            "valor": "16/02 (en 85 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-16",
-          "dias": 88,
+          "dias": 85,
           "momento": "después del cierre"
         }
       },
@@ -1555,7 +1554,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas."
+        "13 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1582,37 +1581,37 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 219.99,
-      "precio": 134.77,
+      "precio": 134.65,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 1.32,
-      "desde_alta_pct": -38.74,
-      "dist_confirmacion_pct": 70.63,
-      "dist_invalidacion_pct": 59.74,
-      "rsi": 14.6,
-      "fr": 62.1,
-      "vol_rel": 0.85,
-      "beta": 0.85,
+      "hoy_pct": 1.23,
+      "desde_alta_pct": -38.79,
+      "dist_confirmacion_pct": 70.78,
+      "dist_invalidacion_pct": 59.88,
+      "rsi": 14.5,
+      "fr": 61.7,
+      "vol_rel": 1.01,
+      "beta": 0.88,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
+      "cierres_bajo_invalidacion": 15,
       "min_cierre": 133.01,
       "max_cierre": 220.12,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 223.16,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 65.59,
+        "espacio_pct": 65.73,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
@@ -1633,34 +1632,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "15",
+            "valor": "14",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.3%",
+            "valor": "+1.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "85% del promedio",
+            "ok": true,
+            "valor": "101% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "después del cierre"
         }
       },
@@ -1673,7 +1672,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas."
+        "13 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1700,31 +1699,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 54.0,
-      "precio": 42.4,
+      "precio": 42.5,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.02,
-      "desde_alta_pct": -21.48,
-      "dist_confirmacion_pct": 33.8,
-      "dist_invalidacion_pct": 24.2,
-      "rsi": 24.2,
-      "fr": 56.6,
-      "vol_rel": 0.78,
+      "hoy_pct": -1.78,
+      "desde_alta_pct": -21.3,
+      "dist_confirmacion_pct": 33.48,
+      "dist_invalidacion_pct": 23.91,
+      "rsi": 24.4,
+      "fr": 56.5,
+      "vol_rel": 0.95,
       "beta": 0.71,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 12,
-      "min_cierre": 43.27,
+      "cierres_bajo_invalidacion": 13,
+      "min_cierre": 42.5,
       "max_cierre": 54.51,
-      "cierres_bajo_sma50": 9,
+      "cierres_bajo_sma50": 10,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 53.71,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 26.67,
+        "espacio_pct": 26.38,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1737,14 +1736,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +4.0% vs SMA200",
+            "valor": "bajo SMA50 y +4.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "57",
+            "valor": "56",
             "lectura": "pide 70 o más"
           },
           {
@@ -1758,27 +1757,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-2.0%",
+            "valor": "-1.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "78% del promedio",
+            "valor": "95% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "05/03 (en 105 días)",
+            "valor": "05/03 (en 102 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-03-05",
-          "dias": 105,
+          "dias": 102,
           "momento": "antes de la apertura"
         }
       },
@@ -1791,7 +1790,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "9 cierres seguidos bajo la media de 50 ruedas."
+        "10 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1818,23 +1817,23 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 27.97,
-      "precio": 26.53,
+      "precio": 26.59,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.75,
-      "desde_alta_pct": -5.15,
-      "dist_confirmacion_pct": 13.31,
-      "dist_invalidacion_pct": -14.59,
-      "rsi": 35.9,
-      "fr": 79.5,
-      "vol_rel": 0.77,
-      "beta": 1.38,
+      "hoy_pct": -3.55,
+      "desde_alta_pct": -4.93,
+      "dist_confirmacion_pct": 13.05,
+      "dist_invalidacion_pct": -14.78,
+      "rsi": 36.1,
+      "fr": 79.4,
+      "vol_rel": 0.94,
+      "beta": 1.4,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 27.57,
+      "min_cierre": 26.59,
       "max_cierre": 30.81,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -1842,9 +1841,9 @@
       "espacio_libre": {
         "nivel": 29.44,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 10.97,
-        "riesgo_pct": 14.59,
-        "relacion": 0.75,
+        "espacio_pct": 10.72,
+        "riesgo_pct": 14.78,
+        "relacion": 0.73,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -1855,14 +1854,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "sobre SMA50 y -0.9% vs SMA200",
+            "valor": "sobre SMA50 y -0.7% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "80",
+            "valor": "79",
             "lectura": "pide 70 o más"
           },
           {
@@ -1876,27 +1875,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-3.8%",
+            "valor": "-3.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "77% del promedio",
+            "valor": "94% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "18/12 (en 28 días)",
+            "valor": "18/12 (en 25 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-12-18",
-          "dias": 28,
+          "dias": 25,
           "momento": "antes de la apertura"
         }
       },
@@ -1933,51 +1932,51 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 242.26,
-      "precio": 180.31,
+      "precio": 180.62,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.64,
-      "desde_alta_pct": -25.57,
-      "dist_confirmacion_pct": 48.52,
-      "dist_invalidacion_pct": 14.29,
-      "rsi": 16.2,
-      "fr": 42.2,
-      "vol_rel": 0.9,
-      "beta": 0.78,
+      "hoy_pct": -1.47,
+      "desde_alta_pct": -25.44,
+      "dist_confirmacion_pct": 48.27,
+      "dist_invalidacion_pct": 14.09,
+      "rsi": 16.3,
+      "fr": 42.6,
+      "vol_rel": 1.2,
+      "beta": 0.79,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 3,
-      "min_cierre": 183.31,
+      "cierres_bajo_invalidacion": 4,
+      "min_cierre": 180.62,
       "max_cierre": 242.28,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 244.6,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 35.66,
+        "espacio_pct": 35.42,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -8.6% vs SMA200",
+            "valor": "bajo SMA50 y -8.4% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "42",
+            "valor": "43",
             "lectura": "pide 70 o más"
           },
           {
@@ -1991,27 +1990,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.6%",
+            "valor": "-1.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "90% del promedio",
+            "ok": true,
+            "valor": "120% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/12 (en 12 días)",
+            "valor": "02/12 (en 9 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-12-02",
-          "dias": 12,
+          "dias": 9,
           "momento": "después del cierre"
         }
       },
@@ -2024,8 +2023,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 42 (menos de 50)."
+        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 43 (menos de 50)."
       ]
     },
     {
@@ -2052,51 +2051,51 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 11.21,
-      "precio": 8.72,
+      "precio": 8.7,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.52,
-      "desde_alta_pct": -22.21,
-      "dist_confirmacion_pct": 38.76,
-      "dist_invalidacion_pct": 24.77,
-      "rsi": 23.9,
-      "fr": 36.7,
-      "vol_rel": 0.93,
-      "beta": 0.0,
+      "hoy_pct": 0.35,
+      "desde_alta_pct": -22.39,
+      "dist_confirmacion_pct": 39.08,
+      "dist_invalidacion_pct": 25.06,
+      "rsi": 23.6,
+      "fr": 36.2,
+      "vol_rel": 1.06,
+      "beta": 0.02,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 12,
+      "cierres_bajo_invalidacion": 13,
       "min_cierre": 8.67,
       "max_cierre": 11.2,
-      "cierres_bajo_sma50": 14,
+      "cierres_bajo_sma50": 15,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 11.84,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 35.78,
+        "espacio_pct": 36.09,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -11.5% vs SMA200",
+            "valor": "bajo SMA50 y -11.7% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "37",
+            "valor": "36",
             "lectura": "pide 70 o más"
           },
           {
@@ -2110,27 +2109,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.5%",
+            "valor": "+0.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "93% del promedio",
+            "ok": true,
+            "valor": "106% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/02 (en 96 días)",
+            "valor": "24/02 (en 93 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-24",
-          "dias": 96,
+          "dias": 93,
           "momento": "después del cierre"
         }
       },
@@ -2143,8 +2142,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "14 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 37 (menos de 50)."
+        "15 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 36 (menos de 50)."
       ]
     },
     {
@@ -2171,25 +2170,25 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 696.55,
-      "precio": 668.16,
+      "precio": 669.54,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.99,
-      "desde_alta_pct": -4.08,
-      "dist_confirmacion_pct": 8.89,
-      "dist_invalidacion_pct": -0.27,
-      "rsi": 45.6,
+      "hoy_pct": -2.79,
+      "desde_alta_pct": -3.88,
+      "dist_confirmacion_pct": 8.67,
+      "dist_invalidacion_pct": -0.47,
+      "rsi": 46.0,
       "fr": 97.7,
-      "vol_rel": 0.92,
+      "vol_rel": 1.21,
       "beta": 0.89,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 682.65,
+      "min_cierre": 669.54,
       "max_cierre": 721.63,
-      "cierres_bajo_sma50": 0,
+      "cierres_bajo_sma50": 1,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
@@ -2197,20 +2196,20 @@
       "espacio_libre": {
         "nivel": 717.71,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.42,
-        "riesgo_pct": 0.27,
-        "relacion": 27.84,
+        "espacio_pct": 7.19,
+        "riesgo_pct": 0.47,
+        "relacion": 15.24,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +19.8% vs SMA200",
+            "valor": "bajo SMA50 y +20.0% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -2231,27 +2230,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-3.0%",
+            "valor": "-2.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "92% del promedio",
+            "ok": true,
+            "valor": "121% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 69 días)",
+            "valor": "28/01 (en 66 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 69,
+          "dias": 66,
           "momento": "antes de la apertura"
         }
       },
@@ -2288,31 +2287,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 532.63,
-      "precio": 484.06,
+      "precio": 484.52,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.86,
-      "desde_alta_pct": -9.12,
-      "dist_confirmacion_pct": 13.86,
-      "dist_invalidacion_pct": 3.07,
-      "rsi": 43.0,
-      "fr": 79.8,
-      "vol_rel": 1.05,
-      "beta": 1.09,
+      "hoy_pct": -2.77,
+      "desde_alta_pct": -9.03,
+      "dist_confirmacion_pct": 13.75,
+      "dist_invalidacion_pct": 2.97,
+      "rsi": 43.1,
+      "fr": 79.1,
+      "vol_rel": 1.57,
+      "beta": 1.11,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 498.3,
+      "cierres_bajo_invalidacion": 2,
+      "min_cierre": 484.52,
       "max_cierre": 545.18,
-      "cierres_bajo_sma50": 4,
+      "cierres_bajo_sma50": 5,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 558.07,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 15.29,
+        "espacio_pct": 15.18,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -2325,14 +2324,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +9.5% vs SMA200",
+            "valor": "bajo SMA50 y +9.6% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "80",
+            "valor": "79",
             "lectura": "pide 70 o más"
           },
           {
@@ -2346,27 +2345,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-2.9%",
+            "valor": "-2.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "105% del promedio",
+            "valor": "157% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 68 días)",
+            "valor": "27/01 (en 65 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 68,
+          "dias": 65,
           "momento": "después del cierre"
         }
       },
@@ -2379,7 +2378,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "4 cierres seguidos bajo la media de 50 ruedas."
+        "5 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -2413,13 +2412,13 @@
       "dist_confirmacion_pct": 6.1,
       "dist_invalidacion_pct": -9.18,
       "rsi": 43.8,
-      "fr": 97.1,
-      "vol_rel": 1.1,
-      "beta": 0.31,
+      "fr": 96.8,
+      "vol_rel": 1.17,
+      "beta": 0.32,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 159.08,
@@ -2471,20 +2470,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "110% del promedio",
+            "valor": "117% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -2521,33 +2520,33 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 199.51,
-      "precio": 195.11,
+      "precio": 195.0,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.12,
-      "desde_alta_pct": -2.21,
-      "dist_confirmacion_pct": 22.78,
-      "dist_invalidacion_pct": -9.35,
+      "hoy_pct": -2.17,
+      "desde_alta_pct": -2.26,
+      "dist_confirmacion_pct": 22.85,
+      "dist_invalidacion_pct": -9.3,
       "rsi": 42.0,
       "fr": 100.0,
-      "vol_rel": 0.79,
-      "beta": 2.3,
+      "vol_rel": 0.9,
+      "beta": 2.36,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 196.79,
+      "min_cierre": 195.0,
       "max_cierre": 269.0,
-      "cierres_bajo_sma50": 2,
+      "cierres_bajo_sma50": 3,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 257.86,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 32.16,
-        "riesgo_pct": 9.35,
-        "relacion": 3.44,
+        "espacio_pct": 32.23,
+        "riesgo_pct": 9.3,
+        "relacion": 3.46,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -2558,7 +2557,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +94.3% vs SMA200",
+            "valor": "bajo SMA50 y +94.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -2579,27 +2578,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-2.1%",
+            "valor": "-2.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "79% del promedio",
+            "valor": "90% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "12/02 (en 84 días)",
+            "valor": "12/02 (en 81 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-12",
-          "dias": 84,
+          "dias": 81,
           "momento": "antes de la apertura"
         }
       },
@@ -2611,7 +2610,7 @@
         }
       ],
       "salida_sugerida": [
-        "2 cierres seguidos bajo la media de 50 ruedas."
+        "3 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -2638,37 +2637,37 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 181.08,
-      "precio": 149.91,
+      "precio": 149.94,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -7.47,
-      "desde_alta_pct": -17.21,
-      "dist_confirmacion_pct": 29.76,
-      "dist_invalidacion_pct": 13.82,
+      "hoy_pct": -7.45,
+      "desde_alta_pct": -17.2,
+      "dist_confirmacion_pct": 29.74,
+      "dist_invalidacion_pct": 13.8,
       "rsi": 42.4,
-      "fr": 33.2,
-      "vol_rel": 0.96,
-      "beta": 2.13,
+      "fr": 33.0,
+      "vol_rel": 1.5,
+      "beta": 2.16,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 4,
-      "min_cierre": 159.81,
+      "cierres_bajo_invalidacion": 5,
+      "min_cierre": 149.94,
       "max_cierre": 185.41,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 180.49,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 20.4,
+        "espacio_pct": 20.37,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
@@ -2702,21 +2701,21 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "96% del promedio",
+            "ok": true,
+            "valor": "150% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 75 días)",
+            "valor": "03/02 (en 72 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 75,
+          "dias": 72,
           "momento": "después del cierre"
         }
       },
@@ -2729,7 +2728,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas.",
+        "13 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 33 (menos de 50)."
       ]
     },
@@ -2764,18 +2763,18 @@
       "dist_confirmacion_pct": 22.19,
       "dist_invalidacion_pct": 11.11,
       "rsi": 31.5,
-      "fr": 45.4,
-      "vol_rel": 1.8,
-      "beta": 2.11,
+      "fr": 45.2,
+      "vol_rel": 1.95,
+      "beta": 2.14,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 4,
-      "min_cierre": 363.56,
+      "cierres_bajo_invalidacion": 5,
+      "min_cierre": 345.92,
       "max_cierre": 433.28,
-      "cierres_bajo_sma50": 4,
+      "cierres_bajo_sma50": 5,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -2822,20 +2821,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "180% del promedio",
+            "valor": "195% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "24/11 (en 4 días)",
+            "valor": "24/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 4,
+          "dias": 1,
           "momento": "antes de la apertura"
         }
       },
@@ -2848,7 +2847,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "4 cierres seguidos bajo la media de 50 ruedas.",
+        "5 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 45 (menos de 50)."
       ]
     },
@@ -2883,18 +2882,18 @@
       "dist_confirmacion_pct": 42.58,
       "dist_invalidacion_pct": 36.61,
       "rsi": 16.5,
-      "fr": 24.0,
-      "vol_rel": 2.06,
-      "beta": 1.5,
+      "fr": 23.8,
+      "vol_rel": 2.1,
+      "beta": 1.52,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
-      "min_cierre": 35.08,
+      "cierres_bajo_invalidacion": 14,
+      "min_cierre": 33.02,
       "max_cierre": 46.14,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -2941,7 +2940,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "206% del promedio",
+            "valor": "210% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2963,7 +2962,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas.",
+        "14 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 24 (menos de 50)."
       ]
     },
@@ -2998,13 +2997,13 @@
       "dist_confirmacion_pct": 1.53,
       "dist_invalidacion_pct": -2.76,
       "rsi": 49.1,
-      "fr": 81.8,
-      "vol_rel": 1.23,
-      "beta": 0.4,
+      "fr": 81.4,
+      "vol_rel": 1.5,
+      "beta": 0.42,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 304.04,
@@ -3019,9 +3018,9 @@
         "piso": "zona de demanda",
         "inv": 298.39,
         "detalle": "Llegó a su piso (zona de demanda: 298,39 a 301,28) el 17/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 306.45,
-        "vol_rel": 0.98
+        "fecha": "2026-11-20",
+        "precio": 306.87,
+        "vol_rel": 1.5
       },
       "espacio_libre": {
         "nivel": 311.24,
@@ -3046,7 +3045,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "82",
+            "valor": "81",
             "lectura": "pide 70 o más"
           },
           {
@@ -3067,20 +3066,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "123% del promedio",
+            "valor": "150% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "después del cierre"
         }
       },
@@ -3117,20 +3116,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 558.11,
-      "precio": 577.51,
+      "precio": 577.03,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.09,
-      "desde_alta_pct": 3.48,
-      "dist_confirmacion_pct": 9.95,
-      "dist_invalidacion_pct": -8.05,
-      "rsi": 44.0,
-      "fr": 83.8,
-      "vol_rel": 0.76,
+      "hoy_pct": -1.17,
+      "desde_alta_pct": 3.39,
+      "dist_confirmacion_pct": 10.05,
+      "dist_invalidacion_pct": -7.98,
+      "rsi": 43.8,
+      "fr": 83.2,
+      "vol_rel": 0.9,
       "beta": 0.03,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 538.33,
@@ -3143,9 +3142,9 @@
       "espacio_libre": {
         "nivel": 614.41,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 6.39,
-        "riesgo_pct": 8.05,
-        "relacion": 0.79,
+        "espacio_pct": 6.48,
+        "riesgo_pct": 7.98,
+        "relacion": 0.81,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -3163,7 +3162,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "84",
+            "valor": "83",
             "lectura": "pide 70 o más"
           },
           {
@@ -3177,27 +3176,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.1%",
+            "valor": "-1.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "76% del promedio",
+            "valor": "90% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -3234,20 +3233,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 73.29,
-      "precio": 74.74,
+      "precio": 74.87,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.08,
-      "desde_alta_pct": 1.98,
-      "dist_confirmacion_pct": 7.0,
-      "dist_invalidacion_pct": -2.1,
-      "rsi": 38.8,
+      "hoy_pct": 0.25,
+      "desde_alta_pct": 2.16,
+      "dist_confirmacion_pct": 6.81,
+      "dist_invalidacion_pct": -2.27,
+      "rsi": 39.5,
       "fr": 86.1,
-      "vol_rel": 0.69,
-      "beta": -0.11,
+      "vol_rel": 1.2,
+      "beta": -0.12,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 72.98,
@@ -3262,27 +3261,27 @@
         "piso": "zona de demanda",
         "inv": 73.17,
         "detalle": "Llegó a su piso (zona de demanda: 73,17 a 74,50) el 19/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 74.68,
-        "vol_rel": 1.01
+        "fecha": "2026-11-20",
+        "precio": 74.87,
+        "vol_rel": 1.2
       },
       "espacio_libre": {
         "nivel": 77.58,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.8,
-        "riesgo_pct": 2.1,
-        "relacion": 1.81,
+        "espacio_pct": 3.62,
+        "riesgo_pct": 2.27,
+        "relacion": 1.59,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +9.1% vs SMA200",
+            "valor": "sobre SMA50 y +9.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3296,34 +3295,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "39",
+            "valor": "40",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.1%",
+            "valor": "+0.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "69% del promedio",
+            "ok": true,
+            "valor": "120% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 69 días)",
+            "valor": "28/01 (en 66 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 69,
+          "dias": 66,
           "momento": "antes de la apertura"
         }
       },
@@ -3360,31 +3359,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 65.21,
-      "precio": 63.78,
+      "precio": 63.82,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.67,
-      "desde_alta_pct": -2.19,
-      "dist_confirmacion_pct": 14.6,
-      "dist_invalidacion_pct": 1.91,
-      "rsi": 41.8,
-      "fr": 81.5,
-      "vol_rel": 1.01,
+      "hoy_pct": 0.73,
+      "desde_alta_pct": -2.13,
+      "dist_confirmacion_pct": 14.53,
+      "dist_invalidacion_pct": 1.85,
+      "rsi": 42.0,
+      "fr": 81.7,
+      "vol_rel": 1.08,
       "beta": -0.15,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 2,
+      "cierres_bajo_invalidacion": 3,
       "min_cierre": 63.36,
       "max_cierre": 66.81,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 66.96,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.98,
+        "espacio_pct": 4.91,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -3425,20 +3424,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "101% del promedio",
+            "valor": "108% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "11/02 (en 83 días)",
+            "valor": "11/02 (en 80 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-11",
-          "dias": 83,
+          "dias": 80,
           "momento": "antes de la apertura"
         }
       },
@@ -3477,31 +3476,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 98.28,
-      "precio": 81.23,
+      "precio": 81.26,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.09,
-      "desde_alta_pct": -17.35,
-      "dist_confirmacion_pct": 26.81,
-      "dist_invalidacion_pct": 9.07,
-      "rsi": 35.6,
-      "fr": 36.1,
-      "vol_rel": 1.05,
-      "beta": 1.53,
+      "hoy_pct": -3.05,
+      "desde_alta_pct": -17.32,
+      "dist_confirmacion_pct": 26.77,
+      "dist_invalidacion_pct": 9.03,
+      "rsi": 35.7,
+      "fr": 35.4,
+      "vol_rel": 1.53,
+      "beta": 1.56,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 83.82,
+      "cierres_bajo_invalidacion": 2,
+      "min_cierre": 81.26,
       "max_cierre": 100.26,
-      "cierres_bajo_sma50": 3,
+      "cierres_bajo_sma50": 4,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 99.44,
+        "nivel": 98.86,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 22.42,
+        "espacio_pct": 21.66,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -3514,14 +3513,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -12.1% vs SMA200",
+            "valor": "bajo SMA50 y -12.0% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "36",
+            "valor": "35",
             "lectura": "pide 70 o más"
           },
           {
@@ -3535,27 +3534,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-3.1%",
+            "valor": "-3.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "105% del promedio",
+            "valor": "153% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "23/11 (en 3 días)",
+            "valor": "23/11 (hoy)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-23",
-          "dias": 3,
+          "dias": 0,
           "momento": "después del cierre"
         }
       },
@@ -3568,8 +3567,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "3 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 36 (menos de 50)."
+        "4 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 35 (menos de 50)."
       ]
     },
     {
@@ -3593,20 +3592,20 @@
       },
       "fecha_alta": "2026-10-30",
       "precio_alta": 96.54,
-      "precio": 99.68,
+      "precio": 99.94,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.93,
-      "desde_alta_pct": 3.25,
-      "dist_confirmacion_pct": 3.2,
-      "dist_invalidacion_pct": -3.97,
-      "rsi": 51.1,
-      "fr": 96.8,
-      "vol_rel": 0.75,
-      "beta": 0.14,
+      "hoy_pct": -0.67,
+      "desde_alta_pct": 3.52,
+      "dist_confirmacion_pct": 2.93,
+      "dist_invalidacion_pct": -4.22,
+      "rsi": 51.9,
+      "fr": 97.1,
+      "vol_rel": 1.22,
+      "beta": 0.12,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 96.54,
@@ -3617,20 +3616,20 @@
       "espacio_libre": {
         "nivel": 104.84,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.18,
-        "riesgo_pct": 3.97,
-        "relacion": 1.3,
+        "espacio_pct": 4.9,
+        "riesgo_pct": 4.22,
+        "relacion": 1.16,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.3% vs SMA200",
+            "valor": "sobre SMA50 y +14.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3644,34 +3643,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "51",
+            "valor": "52",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.9%",
+            "valor": "-0.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "75% del promedio",
+            "ok": true,
+            "valor": "122% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "24/11 (en 4 días)",
+            "valor": "24/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 4,
+          "dias": 1,
           "momento": "antes de la apertura"
         }
       },
@@ -3705,25 +3704,25 @@
       },
       "fecha_alta": "2026-11-02",
       "precio_alta": 58.78,
-      "precio": 53.24,
+      "precio": 53.29,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -5.55,
-      "desde_alta_pct": -9.42,
-      "dist_confirmacion_pct": 14.99,
-      "dist_invalidacion_pct": -11.21,
-      "rsi": 31.6,
-      "fr": 74.9,
-      "vol_rel": 1.28,
+      "hoy_pct": -5.46,
+      "desde_alta_pct": -9.34,
+      "dist_confirmacion_pct": 14.88,
+      "dist_invalidacion_pct": -11.3,
+      "rsi": 31.7,
+      "fr": 75.1,
+      "vol_rel": 1.56,
       "beta": 0.93,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 56.37,
+      "min_cierre": 53.29,
       "max_cierre": 60.05,
-      "cierres_bajo_sma50": 0,
+      "cierres_bajo_sma50": 1,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
@@ -3731,9 +3730,9 @@
       "espacio_libre": {
         "nivel": 59.32,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 11.42,
-        "riesgo_pct": 11.21,
-        "relacion": 1.02,
+        "espacio_pct": 11.32,
+        "riesgo_pct": 11.3,
+        "relacion": 1.0,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -3744,7 +3743,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +5.9% vs SMA200",
+            "valor": "bajo SMA50 y +6.0% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -3772,20 +3771,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "128% del promedio",
+            "valor": "156% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 74 días)",
+            "valor": "02/02 (en 71 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 74,
+          "dias": 71,
           "momento": "antes de la apertura"
         }
       },
@@ -3819,20 +3818,20 @@
       },
       "fecha_alta": "2026-11-03",
       "precio_alta": 395.41,
-      "precio": 392.78,
+      "precio": 393.24,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.56,
-      "desde_alta_pct": -0.67,
-      "dist_confirmacion_pct": 3.84,
-      "dist_invalidacion_pct": -0.72,
-      "rsi": 44.7,
+      "hoy_pct": 0.67,
+      "desde_alta_pct": -0.55,
+      "dist_confirmacion_pct": 3.72,
+      "dist_invalidacion_pct": -0.84,
+      "rsi": 45.1,
       "fr": 92.8,
-      "vol_rel": 0.63,
+      "vol_rel": 0.89,
       "beta": 0.16,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 390.61,
@@ -3845,9 +3844,9 @@
       "espacio_libre": {
         "nivel": 402.89,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 2.57,
-        "riesgo_pct": 0.72,
-        "relacion": 3.56,
+        "espacio_pct": 2.45,
+        "riesgo_pct": 0.84,
+        "relacion": 2.92,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -3858,7 +3857,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +16.5% vs SMA200",
+            "valor": "sobre SMA50 y +16.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3879,27 +3878,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "63% del promedio",
+            "valor": "89% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "20/01 (en 61 días)",
+            "valor": "20/01 (en 58 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-20",
-          "dias": 61,
+          "dias": 58,
           "momento": "antes de la apertura"
         }
       },
@@ -3933,44 +3932,44 @@
       },
       "fecha_alta": "2026-11-03",
       "precio_alta": 230.11,
-      "precio": 220.52,
+      "precio": 220.36,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.09,
-      "desde_alta_pct": -4.17,
-      "dist_confirmacion_pct": 7.99,
-      "dist_invalidacion_pct": -7.74,
-      "rsi": 42.3,
-      "fr": 90.5,
-      "vol_rel": 0.89,
-      "beta": 0.85,
+      "hoy_pct": -3.16,
+      "desde_alta_pct": -4.24,
+      "dist_confirmacion_pct": 8.06,
+      "dist_invalidacion_pct": -7.67,
+      "rsi": 42.1,
+      "fr": 90.4,
+      "vol_rel": 1.19,
+      "beta": 0.86,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 225.77,
+      "min_cierre": 220.36,
       "max_cierre": 236.11,
-      "cierres_bajo_sma50": 0,
+      "cierres_bajo_sma50": 1,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 229.75,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.19,
-        "riesgo_pct": 7.74,
-        "relacion": 0.54,
+        "espacio_pct": 4.26,
+        "riesgo_pct": 7.67,
+        "relacion": 0.56,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +9.9% vs SMA200",
+            "valor": "bajo SMA50 y +9.8% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -3991,27 +3990,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-3.1%",
+            "valor": "-3.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "89% del promedio",
+            "ok": true,
+            "valor": "119% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 68 días)",
+            "valor": "27/01 (en 65 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 68,
+          "dias": 65,
           "momento": "antes de la apertura"
         }
       },
@@ -4045,20 +4044,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 204.82,
-      "precio": 205.9,
+      "precio": 206.22,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.61,
-      "desde_alta_pct": 0.53,
-      "dist_confirmacion_pct": 3.93,
-      "dist_invalidacion_pct": -4.24,
-      "rsi": 50.9,
-      "fr": 94.2,
-      "vol_rel": 0.99,
-      "beta": -0.11,
+      "hoy_pct": 0.76,
+      "desde_alta_pct": 0.68,
+      "dist_confirmacion_pct": 3.77,
+      "dist_invalidacion_pct": -4.39,
+      "rsi": 51.4,
+      "fr": 94.5,
+      "vol_rel": 1.36,
+      "beta": -0.12,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 204.37,
@@ -4069,20 +4068,20 @@
       "espacio_libre": {
         "nivel": 209.43,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.71,
-        "riesgo_pct": 4.24,
-        "relacion": 0.4,
+        "espacio_pct": 1.56,
+        "riesgo_pct": 4.39,
+        "relacion": 0.35,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +16.1% vs SMA200",
+            "valor": "sobre SMA50 y +16.3% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4103,27 +4102,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "99% del promedio",
+            "ok": true,
+            "valor": "136% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 69 días)",
+            "valor": "28/01 (en 66 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 69,
+          "dias": 66,
           "momento": "antes de la apertura"
         }
       },
@@ -4157,20 +4156,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 248.35,
-      "precio": 249.79,
+      "precio": 249.59,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 1.08,
-      "desde_alta_pct": 0.58,
-      "dist_confirmacion_pct": 3.6,
-      "dist_invalidacion_pct": -2.59,
-      "rsi": 50.9,
-      "fr": 94.5,
-      "vol_rel": 0.62,
-      "beta": 0.48,
+      "hoy_pct": 1.0,
+      "desde_alta_pct": 0.5,
+      "dist_confirmacion_pct": 3.68,
+      "dist_invalidacion_pct": -2.51,
+      "rsi": 50.6,
+      "fr": 94.2,
+      "vol_rel": 0.97,
+      "beta": 0.51,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 247.13,
@@ -4185,16 +4184,16 @@
         "piso": "zona de demanda",
         "inv": 243.32,
         "detalle": "Llegó a su piso (zona de demanda: 243,32 a 246,15) el 19/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 247.13,
-        "vol_rel": 1.09
+        "fecha": "2026-11-20",
+        "precio": 249.59,
+        "vol_rel": 0.97
       },
       "espacio_libre": {
         "nivel": 250.36,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.23,
-        "riesgo_pct": 2.59,
-        "relacion": 0.09,
+        "espacio_pct": 0.31,
+        "riesgo_pct": 2.51,
+        "relacion": 0.12,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -4205,7 +4204,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +20.7% vs SMA200",
+            "valor": "sobre SMA50 y +20.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4226,27 +4225,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.1%",
+            "valor": "+1.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "62% del promedio",
+            "valor": "97% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "05/02 (en 77 días)",
+            "valor": "05/02 (en 74 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-05",
-          "dias": 77,
+          "dias": 74,
           "momento": "antes de la apertura"
         }
       },
@@ -4280,20 +4279,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 165.4,
-      "precio": 169.21,
+      "precio": 169.37,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.81,
-      "desde_alta_pct": 2.3,
-      "dist_confirmacion_pct": 0.77,
-      "dist_invalidacion_pct": -3.49,
-      "rsi": 61.4,
-      "fr": 95.7,
-      "vol_rel": 0.77,
+      "hoy_pct": 0.91,
+      "desde_alta_pct": 2.4,
+      "dist_confirmacion_pct": 0.68,
+      "dist_invalidacion_pct": -3.58,
+      "rsi": 61.6,
+      "fr": 95.4,
+      "vol_rel": 1.24,
       "beta": -0.07,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 165.4,
@@ -4308,68 +4307,68 @@
         "piso": "zona de demanda",
         "inv": 163.3,
         "detalle": "Llegó a su piso (zona de demanda: 163,30 a 166,32) el 06/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 167.85,
-        "vol_rel": 0.84
+        "fecha": "2026-11-20",
+        "precio": 169.37,
+        "vol_rel": 1.24
       },
       "espacio_libre": {
         "nivel": 173.59,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 2.59,
-        "riesgo_pct": 3.49,
-        "relacion": 0.74,
+        "espacio_pct": 2.49,
+        "riesgo_pct": 3.58,
+        "relacion": 0.7,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.0% vs SMA200",
+            "valor": "sobre SMA50 y +14.1% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "96",
+            "valor": "95",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "61",
+            "valor": "62",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.8%",
+            "valor": "+0.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "77% del promedio",
+            "ok": true,
+            "valor": "124% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "21/01 (en 62 días)",
+            "valor": "21/01 (en 59 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-21",
-          "dias": 62,
+          "dias": 59,
           "momento": "antes de la apertura"
         }
       },
@@ -4403,20 +4402,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 291.31,
-      "precio": 285.23,
+      "precio": 286.2,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.6,
-      "desde_alta_pct": -2.09,
-      "dist_confirmacion_pct": 6.21,
-      "dist_invalidacion_pct": -5.04,
-      "rsi": 45.4,
-      "fr": 95.1,
-      "vol_rel": 0.93,
-      "beta": 0.18,
+      "hoy_pct": 0.94,
+      "desde_alta_pct": -1.75,
+      "dist_confirmacion_pct": 5.85,
+      "dist_invalidacion_pct": -5.36,
+      "rsi": 46.7,
+      "fr": 95.7,
+      "vol_rel": 1.64,
+      "beta": 0.17,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 283.54,
@@ -4427,61 +4426,61 @@
       "espacio_libre": {
         "nivel": 288.24,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.06,
-        "riesgo_pct": 5.04,
-        "relacion": 0.21,
+        "espacio_pct": 0.71,
+        "riesgo_pct": 5.36,
+        "relacion": 0.13,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +18.9% vs SMA200",
+            "valor": "sobre SMA50 y +19.3% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "95",
+            "valor": "96",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "45",
+            "valor": "47",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "93% del promedio",
+            "ok": true,
+            "valor": "164% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 75 días)",
+            "valor": "03/02 (en 72 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 75,
+          "dias": 72,
           "momento": "antes de la apertura"
         }
       },
@@ -4515,23 +4514,23 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 300.68,
-      "precio": 294.06,
+      "precio": 294.7,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.1,
-      "desde_alta_pct": -2.2,
-      "dist_confirmacion_pct": 8.46,
-      "dist_invalidacion_pct": -0.09,
-      "rsi": 38.2,
-      "fr": 88.4,
-      "vol_rel": 0.7,
+      "hoy_pct": -0.88,
+      "desde_alta_pct": -1.99,
+      "dist_confirmacion_pct": 8.22,
+      "dist_invalidacion_pct": -0.3,
+      "rsi": 38.6,
+      "fr": 89.3,
+      "vol_rel": 1.12,
       "beta": 0.46,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 297.32,
+      "min_cierre": 294.7,
       "max_cierre": 309.27,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -4541,61 +4540,61 @@
       "espacio_libre": {
         "nivel": 305.83,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.0,
-        "riesgo_pct": 0.09,
-        "relacion": 47.08,
+        "espacio_pct": 3.78,
+        "riesgo_pct": 0.3,
+        "relacion": 12.51,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +6.3% vs SMA200",
+            "valor": "sobre SMA50 y +6.5% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "88",
+            "valor": "89",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "38",
+            "valor": "39",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.1%",
+            "valor": "-0.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "70% del promedio",
+            "ok": true,
+            "valor": "112% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -4629,33 +4628,31 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 245.01,
-      "precio": 240.11,
+      "precio": 240.34,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.27,
-      "desde_alta_pct": -2.0,
-      "dist_confirmacion_pct": 5.88,
-      "dist_invalidacion_pct": 1.04,
-      "rsi": 53.4,
+      "hoy_pct": -1.17,
+      "desde_alta_pct": -1.91,
+      "dist_confirmacion_pct": 5.78,
+      "dist_invalidacion_pct": 0.94,
+      "rsi": 53.8,
       "fr": 84.1,
-      "vol_rel": 0.65,
+      "vol_rel": 0.99,
       "beta": 0.17,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 243.19,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 240.34,
       "max_cierre": 247.66,
       "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-10"
-      },
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 241.82,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.71,
+        "espacio_pct": 0.62,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -4668,7 +4665,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +8.5% vs SMA200",
+            "valor": "sobre SMA50 y +8.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4682,34 +4679,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "53",
+            "valor": "54",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.3%",
+            "valor": "-1.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "65% del promedio",
+            "valor": "99% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -4720,7 +4717,9 @@
           "techo": 244.12
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "WMT",
@@ -4743,20 +4742,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 125.52,
-      "precio": 128.12,
+      "precio": 127.95,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 1.65,
-      "desde_alta_pct": 2.07,
-      "dist_confirmacion_pct": 5.25,
-      "dist_invalidacion_pct": -5.0,
-      "rsi": 51.2,
-      "fr": 93.9,
-      "vol_rel": 1.33,
-      "beta": -0.03,
+      "hoy_pct": 1.52,
+      "desde_alta_pct": 1.94,
+      "dist_confirmacion_pct": 5.38,
+      "dist_invalidacion_pct": -4.87,
+      "rsi": 50.7,
+      "fr": 93.6,
+      "vol_rel": 1.8,
+      "beta": -0.02,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 125.52,
@@ -4771,16 +4770,16 @@
         "piso": "zona de demanda",
         "inv": 121.72,
         "detalle": "Llegó a su piso (zona de demanda: 121,72 a 124,10) el 09/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 126.04,
-        "vol_rel": 1.39
+        "fecha": "2026-11-20",
+        "precio": 127.95,
+        "vol_rel": 1.8
       },
       "espacio_libre": {
         "nivel": 131.82,
         "tipo": "techo de zona de oferta (el precio esta dentro)",
-        "espacio_pct": 2.89,
-        "riesgo_pct": 5.0,
-        "relacion": 0.58,
+        "espacio_pct": 3.02,
+        "riesgo_pct": 4.87,
+        "relacion": 0.62,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -4791,7 +4790,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +8.0% vs SMA200",
+            "valor": "sobre SMA50 y +7.8% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4812,27 +4811,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.6%",
+            "valor": "+1.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "133% del promedio",
+            "valor": "180% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "18/02 (en 90 días)",
+            "valor": "18/02 (en 87 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-18",
-          "dias": 90,
+          "dias": 87,
           "momento": "antes de la apertura"
         }
       },
@@ -4866,33 +4865,31 @@
       },
       "fecha_alta": "2026-11-09",
       "precio_alta": 188.63,
-      "precio": 177.93,
+      "precio": 177.99,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.31,
-      "desde_alta_pct": -5.67,
-      "dist_confirmacion_pct": 10.66,
-      "dist_invalidacion_pct": 0.13,
+      "hoy_pct": -0.27,
+      "desde_alta_pct": -5.64,
+      "dist_confirmacion_pct": 10.62,
+      "dist_invalidacion_pct": 0.1,
       "rsi": 50.4,
-      "fr": 87.9,
-      "vol_rel": 1.25,
-      "beta": 0.64,
+      "fr": 87.2,
+      "vol_rel": 1.55,
+      "beta": 0.65,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 178.47,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 177.99,
       "max_cierre": 189.37,
       "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-10"
-      },
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 186.98,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.09,
+        "espacio_pct": 5.05,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -4912,7 +4909,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "88",
+            "valor": "87",
             "lectura": "pide 70 o más"
           },
           {
@@ -4933,20 +4930,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "125% del promedio",
+            "valor": "155% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "19/01 (en 60 días)",
+            "valor": "19/01 (en 57 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-19",
-          "dias": 60,
+          "dias": 57,
           "momento": "antes de la apertura"
         }
       },
@@ -4957,7 +4954,9 @@
           "techo": 187.4
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "URBN",
@@ -4987,13 +4986,13 @@
       "dist_confirmacion_pct": 5.18,
       "dist_invalidacion_pct": -9.09,
       "rsi": 43.4,
-      "fr": 88.7,
-      "vol_rel": 1.23,
-      "beta": 0.87,
+      "fr": 88.4,
+      "vol_rel": 1.25,
+      "beta": 0.9,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 82.54,
@@ -5024,7 +5023,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "89",
+            "valor": "88",
             "lectura": "pide 70 o más"
           },
           {
@@ -5045,20 +5044,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "123% del promedio",
+            "valor": "125% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": false,
-            "valor": "24/11 (en 4 días)",
+            "valor": "24/11 (mañana)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2026-11-24",
-          "dias": 4,
+          "dias": 1,
           "momento": "después del cierre"
         }
       },
@@ -5100,20 +5099,18 @@
       "dist_invalidacion_pct": 0.15,
       "rsi": 41.3,
       "fr": 77.7,
-      "vol_rel": 1.19,
+      "vol_rel": 1.3,
       "beta": 0.35,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 117.22,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 115.59,
       "max_cierre": 123.52,
       "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-17"
-      },
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 123.35,
@@ -5159,20 +5156,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "119% del promedio",
+            "valor": "130% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "24/02 (en 96 días)",
+            "valor": "24/02 (en 93 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-24",
-          "dias": 96,
+          "dias": 93,
           "momento": "después del cierre"
         }
       },
@@ -5183,7 +5180,9 @@
           "techo": 118.43
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "LIN",
@@ -5213,16 +5212,16 @@
       "dist_confirmacion_pct": 6.08,
       "dist_invalidacion_pct": -0.13,
       "rsi": 38.4,
-      "fr": 76.3,
-      "vol_rel": 1.21,
+      "fr": 75.9,
+      "vol_rel": 1.59,
       "beta": 0.2,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 510.21,
+      "min_cierre": 502.83,
       "max_cierre": 526.06,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -5273,20 +5272,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "121% del promedio",
+            "valor": "159% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "antes de la apertura"
         }
       },
@@ -5320,24 +5319,24 @@
       },
       "fecha_alta": "2026-11-13",
       "precio_alta": 26.66,
-      "precio": 27.27,
+      "precio": 27.29,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.28,
-      "desde_alta_pct": 2.29,
-      "dist_confirmacion_pct": -1.54,
-      "dist_invalidacion_pct": -6.34,
-      "rsi": 67.6,
+      "hoy_pct": 0.33,
+      "desde_alta_pct": 2.36,
+      "dist_confirmacion_pct": -1.61,
+      "dist_invalidacion_pct": -6.41,
+      "rsi": 67.7,
       "fr": 94.8,
-      "vol_rel": 1.25,
-      "beta": -0.33,
+      "vol_rel": 1.38,
+      "beta": -0.34,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
       "estado_cierre": "confirmada",
-      "ultimo_cierre_fecha": "2026-11-19",
-      "cierres_sobre_confirmacion": 1,
+      "ultimo_cierre_fecha": "2026-11-20",
+      "cierres_sobre_confirmacion": 2,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 26.67,
-      "max_cierre": 27.2,
+      "max_cierre": 27.29,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-13"
@@ -5346,16 +5345,16 @@
         "tipo": "ruptura",
         "nivel": 26.85,
         "detalle": "Superó su nivel de confirmación (26,85): Cierre sobre 26,85 (resistencia más cercana o máximo de 52 semanas).",
-        "fecha": "2026-11-19",
-        "precio": 27.2,
-        "vol_rel": 1.53
+        "fecha": "2026-11-20",
+        "precio": 27.29,
+        "vol_rel": 1.38
       },
       "espacio_libre": {
         "nivel": 27.54,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.99,
-        "riesgo_pct": 6.34,
-        "relacion": 0.16,
+        "espacio_pct": 0.92,
+        "riesgo_pct": 6.41,
+        "relacion": 0.14,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5394,20 +5393,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "125% del promedio",
+            "valor": "138% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "antes de la apertura"
         }
       },
@@ -5441,33 +5440,31 @@
       },
       "fecha_alta": "2026-11-13",
       "precio_alta": 184.38,
-      "precio": 174.18,
+      "precio": 174.35,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.7,
-      "desde_alta_pct": -5.53,
-      "dist_confirmacion_pct": 7.48,
-      "dist_invalidacion_pct": 0.67,
-      "rsi": 28.4,
-      "fr": 74.3,
-      "vol_rel": 0.6,
+      "hoy_pct": -0.6,
+      "desde_alta_pct": -5.44,
+      "dist_confirmacion_pct": 7.38,
+      "dist_invalidacion_pct": 0.57,
+      "rsi": 28.6,
+      "fr": 74.2,
+      "vol_rel": 0.71,
       "beta": 0.18,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 175.41,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 174.35,
       "max_cierre": 184.45,
       "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-16"
-      },
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 186.85,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.27,
+        "espacio_pct": 7.17,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -5480,7 +5477,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "sobre SMA50 y -3.2% vs SMA200",
+            "valor": "sobre SMA50 y -3.1% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -5494,34 +5491,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "28",
+            "valor": "29",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.7%",
+            "valor": "-0.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "60% del promedio",
+            "valor": "71% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -5532,7 +5529,9 @@
           "techo": 184.52
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "TM",
@@ -5555,23 +5554,23 @@
       },
       "fecha_alta": "2026-11-13",
       "precio_alta": 209.68,
-      "precio": 206.88,
+      "precio": 207.49,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.94,
-      "desde_alta_pct": -1.34,
-      "dist_confirmacion_pct": 6.27,
-      "dist_invalidacion_pct": -5.2,
-      "rsi": 60.3,
-      "fr": 89.9,
-      "vol_rel": 0.93,
-      "beta": -0.26,
+      "hoy_pct": -1.65,
+      "desde_alta_pct": -1.04,
+      "dist_confirmacion_pct": 5.96,
+      "dist_invalidacion_pct": -5.47,
+      "rsi": 61.0,
+      "fr": 90.1,
+      "vol_rel": 1.01,
+      "beta": -0.29,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 210.14,
+      "min_cierre": 207.49,
       "max_cierre": 213.85,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -5581,20 +5580,20 @@
       "espacio_libre": {
         "nivel": 214.07,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.48,
-        "riesgo_pct": 5.2,
-        "relacion": 0.67,
+        "espacio_pct": 3.17,
+        "riesgo_pct": 5.47,
+        "relacion": 0.58,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.8% vs SMA200",
+            "valor": "sobre SMA50 y +5.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5608,34 +5607,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "60",
+            "valor": "61",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.9%",
+            "valor": "-1.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "93% del promedio",
+            "ok": true,
+            "valor": "101% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "antes de la apertura"
         }
       },
@@ -5676,13 +5675,13 @@
       "dist_confirmacion_pct": 5.65,
       "dist_invalidacion_pct": -1.84,
       "rsi": 47.0,
-      "fr": 77.2,
-      "vol_rel": 0.71,
-      "beta": 0.05,
+      "fr": 77.1,
+      "vol_rel": 0.75,
+      "beta": 0.06,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 105.25,
@@ -5736,20 +5735,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "71% del promedio",
+            "valor": "75% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "02/02 (en 74 días)",
+            "valor": "02/02 (en 71 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-02",
-          "dias": 74,
+          "dias": 71,
           "momento": "antes de la apertura"
         }
       },
@@ -5783,20 +5782,20 @@
       },
       "fecha_alta": "2026-11-15",
       "precio_alta": 32.38,
-      "precio": 32.48,
+      "precio": 32.52,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.67,
-      "desde_alta_pct": 0.31,
-      "dist_confirmacion_pct": 7.27,
-      "dist_invalidacion_pct": -3.85,
-      "rsi": 46.7,
+      "hoy_pct": -0.55,
+      "desde_alta_pct": 0.43,
+      "dist_confirmacion_pct": 7.13,
+      "dist_invalidacion_pct": -3.97,
+      "rsi": 46.9,
       "fr": 98.8,
-      "vol_rel": 0.57,
-      "beta": 0.74,
+      "vol_rel": 0.78,
+      "beta": 0.75,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 32.38,
@@ -5805,22 +5804,13 @@
       "toques": {
         "zona de demanda": "2026-11-16"
       },
-      "escenario_entrada": {
-        "tipo": "rebote",
-        "nivel": 32.58,
-        "piso": "zona de demanda",
-        "inv": 31.23,
-        "detalle": "Llegó a su piso (zona de demanda: 31,23 a 32,58) el 16/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-19",
-        "precio": 32.7,
-        "vol_rel": 0.73
-      },
+      "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 32.58,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.31,
-        "riesgo_pct": 3.85,
-        "relacion": 0.08,
+        "espacio_pct": 0.18,
+        "riesgo_pct": 3.97,
+        "relacion": 0.05,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5831,7 +5821,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +31.2% vs SMA200",
+            "valor": "sobre SMA50 y +31.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5852,27 +5842,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.7%",
+            "valor": "-0.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "57% del promedio",
+            "valor": "78% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 82 días)",
+            "valor": "10/02 (en 79 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 82,
+          "dias": 79,
           "momento": "antes de la apertura"
         }
       },
@@ -5913,21 +5903,19 @@
       "dist_confirmacion_pct": 11.97,
       "dist_invalidacion_pct": 2.56,
       "rsi": 50.0,
-      "fr": 72.0,
-      "vol_rel": 1.41,
-      "beta": 1.61,
+      "fr": 71.6,
+      "vol_rel": 1.58,
+      "beta": 1.63,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 354.71,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 332.92,
       "max_cierre": 360.18,
-      "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-20"
-      },
+      "cierres_bajo_sma50": 1,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 374.46,
@@ -5973,20 +5961,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "141% del promedio",
+            "valor": "158% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "25/02 (en 97 días)",
+            "valor": "25/02 (en 94 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-25",
-          "dias": 97,
+          "dias": 94,
           "momento": "antes de la apertura"
         }
       },
@@ -5997,7 +5985,9 @@
           "techo": 354.24
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "RACE",
@@ -6020,25 +6010,25 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 410.91,
-      "precio": 391.8,
+      "precio": 392.47,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.36,
-      "desde_alta_pct": -4.65,
-      "dist_confirmacion_pct": 6.06,
-      "dist_invalidacion_pct": 0.1,
-      "rsi": 44.9,
-      "fr": 83.2,
-      "vol_rel": 0.93,
+      "hoy_pct": -3.2,
+      "desde_alta_pct": -4.49,
+      "dist_confirmacion_pct": 5.88,
+      "dist_invalidacion_pct": -0.07,
+      "rsi": 45.2,
+      "fr": 83.5,
+      "vol_rel": 1.16,
       "beta": 0.7,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 405.44,
+      "min_cierre": 392.47,
       "max_cierre": 410.91,
-      "cierres_bajo_sma50": 0,
+      "cierres_bajo_sma50": 1,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
@@ -6046,27 +6036,27 @@
       "espacio_libre": {
         "nivel": 416.46,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 6.29,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
+        "espacio_pct": 6.11,
+        "riesgo_pct": 0.07,
+        "relacion": 82.72,
+        "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +4.8% vs SMA200",
+            "valor": "bajo SMA50 y +5.0% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "83",
+            "valor": "84",
             "lectura": "pide 70 o más"
           },
           {
@@ -6080,27 +6070,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-3.4%",
+            "valor": "-3.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "93% del promedio",
+            "ok": true,
+            "valor": "116% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -6134,23 +6124,23 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 318.31,
-      "precio": 303.52,
+      "precio": 303.99,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -3.54,
-      "desde_alta_pct": -4.65,
-      "dist_confirmacion_pct": 9.38,
-      "dist_invalidacion_pct": -8.0,
-      "rsi": 41.1,
-      "fr": 66.8,
-      "vol_rel": 0.61,
+      "hoy_pct": -3.38,
+      "desde_alta_pct": -4.5,
+      "dist_confirmacion_pct": 9.21,
+      "dist_invalidacion_pct": -8.15,
+      "rsi": 41.4,
+      "fr": 65.8,
+      "vol_rel": 0.84,
       "beta": 0.65,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 314.64,
+      "min_cierre": 303.99,
       "max_cierre": 318.31,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -6158,9 +6148,9 @@
       "espacio_libre": {
         "nivel": 316.8,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.38,
-        "riesgo_pct": 8.0,
-        "relacion": 0.55,
+        "espacio_pct": 4.21,
+        "riesgo_pct": 8.15,
+        "relacion": 0.52,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -6171,14 +6161,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "sobre SMA50 y -1.3% vs SMA200",
+            "valor": "sobre SMA50 y -1.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "67",
+            "valor": "66",
             "lectura": "pide 70 o más"
           },
           {
@@ -6192,14 +6182,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-3.5%",
+            "valor": "-3.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "61% del promedio",
+            "valor": "84% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6242,46 +6232,55 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 346.6,
-      "precio": 338.88,
+      "precio": 339.74,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.28,
-      "desde_alta_pct": -2.23,
-      "dist_confirmacion_pct": 9.29,
-      "dist_invalidacion_pct": -1.35,
-      "rsi": 43.1,
+      "hoy_pct": -0.03,
+      "desde_alta_pct": -1.98,
+      "dist_confirmacion_pct": 9.02,
+      "dist_invalidacion_pct": -1.6,
+      "rsi": 43.5,
       "fr": 81.2,
-      "vol_rel": 0.67,
-      "beta": 0.59,
-      "estado": "en_zona",
-      "estado_etiqueta": "En zona de demanda",
+      "vol_rel": 1.05,
+      "beta": 0.6,
+      "estado": "esperando",
+      "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 339.83,
+      "min_cierre": 339.74,
       "max_cierre": 346.6,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 339.1461,
+        "piso": "zona de demanda",
+        "inv": 334.3,
+        "detalle": "Llegó a su piso (zona de demanda: 334,30 a 339,15) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-20",
+        "precio": 339.74,
+        "vol_rel": 1.05
+      },
       "espacio_libre": {
         "nivel": 348.22,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 2.75,
-        "riesgo_pct": 1.35,
-        "relacion": 2.04,
+        "espacio_pct": 2.49,
+        "riesgo_pct": 1.6,
+        "relacion": 1.56,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +2.5% vs SMA200",
+            "valor": "sobre SMA50 y +2.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6295,34 +6294,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "43",
+            "valor": "44",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.3%",
+            "valor": "-0.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "67% del promedio",
+            "ok": true,
+            "valor": "105% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "26/01 (en 67 días)",
+            "valor": "26/01 (en 64 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-26",
-          "dias": 67,
+          "dias": 64,
           "momento": "antes de la apertura"
         }
       },
@@ -6356,23 +6355,23 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 9.43,
-      "precio": 9.09,
+      "precio": 9.1,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.94,
-      "desde_alta_pct": -3.61,
-      "dist_confirmacion_pct": 26.84,
-      "dist_invalidacion_pct": -9.46,
-      "rsi": 45.2,
+      "hoy_pct": -1.83,
+      "desde_alta_pct": -3.5,
+      "dist_confirmacion_pct": 26.7,
+      "dist_invalidacion_pct": -9.56,
+      "rsi": 45.5,
       "fr": 85.5,
-      "vol_rel": 0.5,
+      "vol_rel": 0.56,
       "beta": 0.35,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 9.27,
+      "min_cierre": 9.1,
       "max_cierre": 9.43,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -6380,9 +6379,9 @@
       "espacio_libre": {
         "nivel": 9.82,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 8.03,
-        "riesgo_pct": 9.46,
-        "relacion": 0.85,
+        "espacio_pct": 7.91,
+        "riesgo_pct": 9.56,
+        "relacion": 0.83,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -6393,7 +6392,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +0.8% vs SMA200",
+            "valor": "sobre SMA50 y +0.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6407,34 +6406,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "45",
+            "valor": "46",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.9%",
+            "valor": "-1.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "50% del promedio",
+            "valor": "56% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -6468,23 +6467,23 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 1382.75,
-      "precio": 1345.69,
+      "precio": 1347.11,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.4,
-      "desde_alta_pct": -2.68,
-      "dist_confirmacion_pct": 9.63,
-      "dist_invalidacion_pct": -3.55,
-      "rsi": 38.8,
-      "fr": 95.4,
-      "vol_rel": 0.74,
-      "beta": 0.4,
+      "hoy_pct": -0.3,
+      "desde_alta_pct": -2.58,
+      "dist_confirmacion_pct": 9.51,
+      "dist_invalidacion_pct": -3.66,
+      "rsi": 39.0,
+      "fr": 95.1,
+      "vol_rel": 1.12,
+      "beta": 0.41,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 1351.12,
+      "min_cierre": 1347.11,
       "max_cierre": 1382.75,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -6494,20 +6493,20 @@
       "espacio_libre": {
         "nivel": 1475.25,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 9.63,
-        "riesgo_pct": 3.55,
-        "relacion": 2.71,
+        "espacio_pct": 9.51,
+        "riesgo_pct": 3.66,
+        "relacion": 2.6,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +20.7% vs SMA200",
+            "valor": "sobre SMA50 y +20.8% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6528,27 +6527,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.4%",
+            "valor": "-0.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "74% del promedio",
+            "ok": true,
+            "valor": "112% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "03/02 (en 75 días)",
+            "valor": "03/02 (en 72 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-03",
-          "dias": 75,
+          "dias": 72,
           "momento": "antes de la apertura"
         }
       },
@@ -6582,23 +6581,23 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 99.69,
-      "precio": 97.11,
+      "precio": 97.07,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.25,
-      "desde_alta_pct": -2.59,
-      "dist_confirmacion_pct": 5.78,
-      "dist_invalidacion_pct": -1.63,
+      "hoy_pct": -1.28,
+      "desde_alta_pct": -2.63,
+      "dist_confirmacion_pct": 5.82,
+      "dist_invalidacion_pct": -1.59,
       "rsi": 48.7,
-      "fr": 89.0,
-      "vol_rel": 0.83,
-      "beta": -0.12,
+      "fr": 88.7,
+      "vol_rel": 0.88,
+      "beta": -0.13,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 98.33,
+      "min_cierre": 97.07,
       "max_cierre": 99.69,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -6608,9 +6607,9 @@
       "espacio_libre": {
         "nivel": 102.72,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 5.78,
-        "riesgo_pct": 1.63,
-        "relacion": 3.55,
+        "espacio_pct": 5.82,
+        "riesgo_pct": 1.59,
+        "relacion": 3.67,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -6642,27 +6641,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.2%",
+            "valor": "-1.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "83% del promedio",
+            "valor": "88% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "04/02 (en 76 días)",
+            "valor": "04/02 (en 73 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-04",
-          "dias": 76,
+          "dias": 73,
           "momento": "antes de la apertura"
         }
       },
@@ -6696,33 +6695,33 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 300.9,
-      "precio": 286.85,
+      "precio": 287.29,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.3,
-      "desde_alta_pct": -4.67,
-      "dist_confirmacion_pct": 9.65,
-      "dist_invalidacion_pct": -0.72,
-      "rsi": 35.3,
-      "fr": 74.0,
-      "vol_rel": 1.12,
+      "hoy_pct": -1.15,
+      "desde_alta_pct": -4.52,
+      "dist_confirmacion_pct": 9.48,
+      "dist_invalidacion_pct": -0.87,
+      "rsi": 35.6,
+      "fr": 73.3,
+      "vol_rel": 1.46,
       "beta": 0.36,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 290.63,
+      "min_cierre": 287.29,
       "max_cierre": 300.9,
-      "cierres_bajo_sma50": 0,
+      "cierres_bajo_sma50": 1,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 302.92,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.6,
-        "riesgo_pct": 0.72,
-        "relacion": 7.77,
+        "espacio_pct": 5.44,
+        "riesgo_pct": 0.87,
+        "relacion": 6.23,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -6733,48 +6732,48 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +4.8% vs SMA200",
+            "valor": "bajo SMA50 y +4.9% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "74",
+            "valor": "73",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "35",
+            "valor": "36",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.3%",
+            "valor": "-1.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "112% del promedio",
+            "valor": "146% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "26/01 (en 67 días)",
+            "valor": "26/01 (en 64 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-26",
-          "dias": 67,
+          "dias": 64,
           "momento": "antes de la apertura"
         }
       },
@@ -6808,53 +6807,51 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 197.45,
-      "precio": 189.71,
+      "precio": 190.17,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.93,
-      "desde_alta_pct": -3.92,
-      "dist_confirmacion_pct": 6.27,
-      "dist_invalidacion_pct": 1.81,
-      "rsi": 35.6,
-      "fr": 71.7,
-      "vol_rel": 0.53,
-      "beta": 0.33,
+      "hoy_pct": -1.32,
+      "desde_alta_pct": -3.69,
+      "dist_confirmacion_pct": 6.01,
+      "dist_invalidacion_pct": 1.57,
+      "rsi": 36.5,
+      "fr": 73.6,
+      "vol_rel": 1.14,
+      "beta": 0.3,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 193.44,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 190.17,
       "max_cierre": 197.45,
-      "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-19"
-      },
+      "cierres_bajo_sma50": 1,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 202.93,
+        "nivel": 202.16,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 6.97,
+        "espacio_pct": 6.31,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -2.4% vs SMA200",
+            "valor": "bajo SMA50 y -1.8% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "72",
+            "valor": "74",
             "lectura": "pide 70 o más"
           },
           {
@@ -6868,27 +6865,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.9%",
+            "valor": "-1.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "53% del promedio",
+            "ok": true,
+            "valor": "114% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "26/01 (en 67 días)",
+            "valor": "26/01 (en 64 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-26",
-          "dias": 67,
+          "dias": 64,
           "momento": "antes de la apertura"
         }
       },
@@ -6899,7 +6896,9 @@
           "techo": 195.87
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "SPGI",
@@ -6922,23 +6921,23 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 446.38,
-      "precio": 439.0,
+      "precio": 439.57,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.83,
-      "desde_alta_pct": -1.65,
-      "dist_confirmacion_pct": 10.7,
-      "dist_invalidacion_pct": 0.1,
-      "rsi": 30.4,
-      "fr": 83.5,
-      "vol_rel": 0.84,
+      "hoy_pct": -0.7,
+      "desde_alta_pct": -1.53,
+      "dist_confirmacion_pct": 10.56,
+      "dist_invalidacion_pct": -0.03,
+      "rsi": 30.6,
+      "fr": 83.8,
+      "vol_rel": 1.22,
       "beta": 0.4,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 442.66,
+      "min_cierre": 439.57,
       "max_cierre": 446.38,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -6948,20 +6947,20 @@
       "espacio_libre": {
         "nivel": 472.41,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.61,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
+        "espacio_pct": 7.47,
+        "riesgo_pct": 0.03,
+        "relacion": 273.67,
+        "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +6.0% vs SMA200",
+            "valor": "sobre SMA50 y +6.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6975,34 +6974,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "30",
+            "valor": "31",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.8%",
+            "valor": "-0.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "84% del promedio",
+            "ok": true,
+            "valor": "122% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "antes de la apertura"
         }
       },
@@ -7036,23 +7035,23 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 24.84,
-      "precio": 24.82,
+      "precio": 24.81,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.08,
-      "desde_alta_pct": -0.08,
-      "dist_confirmacion_pct": 6.04,
-      "dist_invalidacion_pct": -3.75,
-      "rsi": 55.8,
-      "fr": 80.3,
-      "vol_rel": 0.9,
-      "beta": 0.1,
+      "hoy_pct": -0.12,
+      "desde_alta_pct": -0.12,
+      "dist_confirmacion_pct": 6.09,
+      "dist_invalidacion_pct": -3.71,
+      "rsi": 55.7,
+      "fr": 80.0,
+      "vol_rel": 0.99,
+      "beta": 0.11,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 24.84,
+      "min_cierre": 24.81,
       "max_cierre": 24.84,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -7060,9 +7059,9 @@
       "espacio_libre": {
         "nivel": 25.57,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.03,
-        "riesgo_pct": 3.75,
-        "relacion": 0.81,
+        "espacio_pct": 3.08,
+        "riesgo_pct": 3.71,
+        "relacion": 0.83,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -7073,7 +7072,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +2.1% vs SMA200",
+            "valor": "sobre SMA50 y +2.0% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7101,20 +7100,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "90% del promedio",
+            "valor": "99% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "09/02 (en 81 días)",
+            "valor": "09/02 (en 78 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-09",
-          "dias": 81,
+          "dias": 78,
           "momento": "después del cierre"
         }
       },
@@ -7155,21 +7154,19 @@
       "dist_confirmacion_pct": 9.33,
       "dist_invalidacion_pct": 1.17,
       "rsi": 39.7,
-      "fr": 87.0,
-      "vol_rel": 0.83,
+      "fr": 86.4,
+      "vol_rel": 0.95,
       "beta": 0.1,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "invalidada",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 0,
-      "min_cierre": 33.35,
+      "cierres_bajo_invalidacion": 1,
+      "min_cierre": 32.58,
       "max_cierre": 33.35,
-      "cierres_bajo_sma50": 0,
-      "toques": {
-        "zona de demanda": "2026-11-19"
-      },
+      "cierres_bajo_sma50": 1,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 36.26,
@@ -7194,7 +7191,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "87",
+            "valor": "86",
             "lectura": "pide 70 o más"
           },
           {
@@ -7215,20 +7212,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "83% del promedio",
+            "valor": "95% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 82 días)",
+            "valor": "10/02 (en 79 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 82,
+          "dias": 79,
           "momento": "antes de la apertura"
         }
       },
@@ -7239,7 +7236,9 @@
           "techo": 33.38
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
+      ]
     },
     {
       "ticker": "HD",
@@ -7262,33 +7261,33 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 336.68,
-      "precio": 338.76,
+      "precio": 339.04,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.62,
-      "desde_alta_pct": 0.62,
-      "dist_confirmacion_pct": 2.18,
-      "dist_invalidacion_pct": -2.88,
-      "rsi": 48.3,
+      "hoy_pct": 0.7,
+      "desde_alta_pct": 0.7,
+      "dist_confirmacion_pct": 2.09,
+      "dist_invalidacion_pct": -2.96,
+      "rsi": 48.5,
       "fr": 86.7,
-      "vol_rel": 1.0,
-      "beta": 0.33,
+      "vol_rel": 1.58,
+      "beta": 0.34,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 336.68,
-      "max_cierre": 336.68,
+      "max_cierre": 339.04,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 348.08,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 2.75,
-        "riesgo_pct": 2.88,
-        "relacion": 0.96,
+        "espacio_pct": 2.67,
+        "riesgo_pct": 2.96,
+        "relacion": 0.9,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -7299,7 +7298,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +3.1% vs SMA200",
+            "valor": "sobre SMA50 y +3.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7320,27 +7319,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "100% del promedio",
+            "valor": "158% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "23/02 (en 95 días)",
+            "valor": "23/02 (en 92 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-23",
-          "dias": 95,
+          "dias": 92,
           "momento": "antes de la apertura"
         }
       },
@@ -7374,23 +7373,23 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 572.04,
-      "precio": 567.29,
+      "precio": 570.0,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.83,
-      "desde_alta_pct": -0.83,
-      "dist_confirmacion_pct": 3.75,
-      "dist_invalidacion_pct": -1.36,
-      "rsi": 57.1,
-      "fr": 93.1,
-      "vol_rel": 0.86,
-      "beta": 0.19,
+      "hoy_pct": -0.36,
+      "desde_alta_pct": -0.36,
+      "dist_confirmacion_pct": 3.25,
+      "dist_invalidacion_pct": -1.83,
+      "rsi": 59.1,
+      "fr": 93.3,
+      "vol_rel": 1.26,
+      "beta": 0.16,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 572.04,
+      "min_cierre": 570.0,
       "max_cierre": 572.04,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -7400,20 +7399,20 @@
       "espacio_libre": {
         "nivel": 589.83,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.97,
-        "riesgo_pct": 1.36,
-        "relacion": 2.92,
+        "espacio_pct": 3.48,
+        "riesgo_pct": 1.83,
+        "relacion": 1.9,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +12.9% vs SMA200",
+            "valor": "sobre SMA50 y +13.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7427,34 +7426,34 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "57",
+            "valor": "59",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.8%",
+            "valor": "-0.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "86% del promedio",
+            "ok": true,
+            "valor": "126% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "01/03 (en 101 días)",
+            "valor": "01/03 (en 98 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-03-01",
-          "dias": 101,
+          "dias": 98,
           "momento": "después del cierre"
         }
       },
@@ -7488,23 +7487,23 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 626.5,
-      "precio": 625.16,
+      "precio": 625.59,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.21,
-      "desde_alta_pct": -0.21,
-      "dist_confirmacion_pct": 5.49,
-      "dist_invalidacion_pct": -1.4,
-      "rsi": 36.1,
+      "hoy_pct": -0.15,
+      "desde_alta_pct": -0.15,
+      "dist_confirmacion_pct": 5.42,
+      "dist_invalidacion_pct": -1.47,
+      "rsi": 36.2,
       "fr": 92.2,
-      "vol_rel": 0.82,
-      "beta": 0.38,
+      "vol_rel": 1.12,
+      "beta": 0.39,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 626.5,
+      "min_cierre": 625.59,
       "max_cierre": 626.5,
       "cierres_bajo_sma50": 0,
       "toques": {
@@ -7514,20 +7513,20 @@
       "espacio_libre": {
         "nivel": 655.92,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.92,
-        "riesgo_pct": 1.4,
-        "relacion": 3.52,
+        "espacio_pct": 4.85,
+        "riesgo_pct": 1.47,
+        "relacion": 3.31,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +15.1% vs SMA200",
+            "valor": "sobre SMA50 y +15.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7548,27 +7547,27 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.2%",
+            "valor": "-0.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "82% del promedio",
+            "ok": true,
+            "valor": "112% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "28/01 (en 69 días)",
+            "valor": "28/01 (en 66 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-28",
-          "dias": 69,
+          "dias": 66,
           "momento": "antes de la apertura"
         }
       },
@@ -7602,33 +7601,33 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 89.86,
-      "precio": 90.36,
+      "precio": 90.46,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 0.56,
-      "desde_alta_pct": 0.56,
-      "dist_confirmacion_pct": 3.36,
-      "dist_invalidacion_pct": -2.34,
-      "rsi": 48.2,
+      "hoy_pct": 0.67,
+      "desde_alta_pct": 0.67,
+      "dist_confirmacion_pct": 3.25,
+      "dist_invalidacion_pct": -2.44,
+      "rsi": 48.6,
       "fr": 85.8,
-      "vol_rel": 1.52,
-      "beta": 0.02,
+      "vol_rel": 1.64,
+      "beta": 0.01,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 89.86,
-      "max_cierre": 89.86,
+      "max_cierre": 90.46,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 91.25,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.98,
-        "riesgo_pct": 2.34,
-        "relacion": 0.42,
+        "espacio_pct": 0.87,
+        "riesgo_pct": 2.44,
+        "relacion": 0.36,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -7639,7 +7638,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.2% vs SMA200",
+            "valor": "sobre SMA50 y +7.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7653,21 +7652,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "48",
+            "valor": "49",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "152% del promedio",
+            "valor": "164% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7718,16 +7717,16 @@
       "dist_invalidacion_pct": -0.89,
       "rsi": 53.4,
       "fr": 96.5,
-      "vol_rel": 1.02,
+      "vol_rel": 1.14,
       "beta": -0.15,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 301.19,
-      "max_cierre": 301.19,
+      "max_cierre": 301.71,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-19"
@@ -7777,20 +7776,20 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "102% del promedio",
+            "valor": "114% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "27/01 (en 68 días)",
+            "valor": "27/01 (en 65 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-01-27",
-          "dias": 68,
+          "dias": 65,
           "momento": "antes de la apertura"
         }
       },
@@ -7824,34 +7823,34 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 34.68,
-      "precio": 36.07,
+      "precio": 35.93,
       "fecha_dato": "2026-11-20",
-      "hoy_pct": 4.0,
-      "desde_alta_pct": 4.01,
-      "dist_confirmacion_pct": 6.65,
-      "dist_invalidacion_pct": -6.76,
-      "rsi": 72.1,
-      "fr": 93.4,
-      "vol_rel": 1.95,
-      "beta": -1.0,
+      "hoy_pct": 3.6,
+      "desde_alta_pct": 3.6,
+      "dist_confirmacion_pct": 7.07,
+      "dist_invalidacion_pct": -6.4,
+      "rsi": 71.6,
+      "fr": 93.0,
+      "vol_rel": 2.05,
+      "beta": -0.99,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 34.68,
-      "max_cierre": 34.68,
+      "max_cierre": 35.93,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 38.47,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 6.65,
-        "riesgo_pct": 6.76,
-        "relacion": 0.98,
-        "menor_que_riesgo": true
+        "espacio_pct": 7.07,
+        "riesgo_pct": 6.4,
+        "relacion": 1.1,
+        "menor_que_riesgo": false
       },
       "checklist": {
         "cumple": 4,
@@ -7861,7 +7860,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.7% vs SMA200",
+            "valor": "sobre SMA50 y +7.3% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7882,14 +7881,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+4.0%",
+            "valor": "+3.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "195% del promedio",
+            "valor": "205% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7939,17 +7938,17 @@
       "dist_confirmacion_pct": 1.19,
       "dist_invalidacion_pct": -2.22,
       "rsi": 59.0,
-      "fr": 82.9,
-      "vol_rel": 0.96,
+      "fr": 82.6,
+      "vol_rel": 1.11,
       "beta": 0.06,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-19",
+      "ultimo_cierre_fecha": "2026-11-20",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 92.61,
-      "max_cierre": 92.61,
+      "max_cierre": 92.65,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
@@ -7962,7 +7961,7 @@
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
@@ -7996,21 +7995,21 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "96% del promedio",
+            "ok": true,
+            "valor": "111% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 82 días)",
+            "valor": "10/02 (en 79 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 82,
+          "dias": 79,
           "momento": "después del cierre"
         }
       },
@@ -8028,14 +8027,14 @@
     {
       "ticker": "AIG",
       "subcategoria": "Seguros y holdings",
-      "precio": 79.74,
-      "hoy_pct": 0.3,
-      "ret_5d": -3.77,
-      "fr": 80.9,
-      "rsi": 41.8,
-      "radar_score": 75.6,
-      "dist_max52w": -6.9,
-      "vol_rel": 0.57,
+      "precio": 79.68,
+      "hoy_pct": 0.23,
+      "ret_5d": -3.84,
+      "fr": 80.6,
+      "rsi": 41.6,
+      "radar_score": 82.3,
+      "dist_max52w": -7.0,
+      "vol_rel": 1.25,
       "marcas": [
         "VCP"
       ],
@@ -8043,14 +8042,14 @@
       "invalidacion": 77.73,
       "confirmacion": 82.38,
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.0% vs SMA200",
+            "valor": "sobre SMA50 y +3.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -8071,35 +8070,33 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.3%",
+            "valor": "+0.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "57% del promedio",
+            "ok": true,
+            "valor": "125% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 82 días)",
+            "valor": "10/02 (en 79 días)",
             "lectura": "pide que falten más de 5 días; reporta después del cierre"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 82,
+          "dias": 79,
           "momento": "después del cierre"
         }
       },
-      "fallas": [
-        "volumen"
-      ],
-      "dist_invalidacion_pct": -2.52,
-      "dist_confirmacion_pct": 3.31
+      "fallas": [],
+      "dist_invalidacion_pct": -2.45,
+      "dist_confirmacion_pct": 3.39
     },
     {
       "ticker": "FISV",
@@ -8107,17 +8104,17 @@
       "precio": 55.88,
       "hoy_pct": -1.31,
       "ret_5d": -12.39,
-      "fr": 90.2,
+      "fr": 89.9,
       "rsi": 57.9,
-      "radar_score": 55.2,
+      "radar_score": 55.7,
       "dist_max52w": -20.6,
-      "vol_rel": 1.05,
+      "vol_rel": 1.11,
       "marcas": [
         "Toca zona de demanda"
       ],
       "apto": true,
       "invalidacion": 52.33,
-      "confirmacion": 62.12,
+      "confirmacion": 60.29,
       "checklist": {
         "cumple": 6,
         "total": 6,
@@ -8154,38 +8151,38 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "105% del promedio",
+            "valor": "111% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "10/02 (en 82 días)",
+            "valor": "10/02 (en 79 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-10",
-          "dias": 82,
+          "dias": 79,
           "momento": "antes de la apertura"
         }
       },
       "fallas": [],
       "dist_invalidacion_pct": -6.35,
-      "dist_confirmacion_pct": 11.17
+      "dist_confirmacion_pct": 7.89
     },
     {
       "ticker": "FMX",
       "subcategoria": "Consumo Básico",
-      "precio": 126.02,
-      "hoy_pct": -1.28,
-      "ret_5d": -4.47,
-      "fr": 80.6,
-      "rsi": 46.9,
-      "radar_score": 44.5,
+      "precio": 126.06,
+      "hoy_pct": -1.25,
+      "ret_5d": -4.43,
+      "fr": 80.9,
+      "rsi": 47.0,
+      "radar_score": 45.7,
       "dist_max52w": -9.6,
-      "vol_rel": 0.56,
+      "vol_rel": 0.67,
       "marcas": [
         "Toca zona de demanda"
       ],
@@ -8221,48 +8218,42 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.3%",
+            "valor": "-1.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "56% del promedio",
+            "valor": "67% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
             "id": "resultados",
             "nombre": "Resultados trimestrales",
             "ok": true,
-            "valor": "25/02 (en 97 días)",
+            "valor": "25/02 (en 94 días)",
             "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
           }
         ],
         "resultados": {
           "fecha": "2027-02-25",
-          "dias": 97,
+          "dias": 94,
           "momento": "antes de la apertura"
         }
       },
       "fallas": [
         "volumen"
       ],
-      "dist_invalidacion_pct": -2.15,
-      "dist_confirmacion_pct": 10.61
+      "dist_invalidacion_pct": -2.18,
+      "dist_confirmacion_pct": 10.58
     }
   ],
-  "log_candidatos_fecha": "2026-11-19",
+  "log_candidatos_fecha": "2026-11-20",
   "aptos_ultimo_cierre": [
-    "AMX",
-    "HMC",
-    "HD",
-    "BRK-B",
-    "MA",
-    "XLP",
-    "ADP",
-    "SH",
-    "ORLY"
+    "AIG",
+    "FISV",
+    "FMX"
   ],
   "balances_actualizado": "2026-11-20"
 }
