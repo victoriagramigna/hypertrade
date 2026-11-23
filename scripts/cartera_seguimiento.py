@@ -90,7 +90,15 @@ def _evaluar_posicion(p: dict, ticker_data: dict, fecha_hoy: str, max_precio=Non
 
     # Trailing: el stop solo puede subir -- mismas reglas que el dashboard
     # (SMA50 -2% en cada corrida si protege más, equilibrio desde +20%)
-    if sma50 is not None and not stop_manual:
+    # 23/11: igual que en el dashboard -- el stop por SMA50 solo cuenta si queda POR DEBAJO
+    # del precio actual (antes podía quedar sobre el precio de compra: NVDA, META). Y un stop
+    # por SMA50 que supera el máximo que llegó a tener el precio desde la compra nunca fue
+    # válido: se vuelve al -8% inicial.
+    if not stop_manual and p.get("stopInicial") is not None and str(p.get("origenStop") or "").startswith("SMA50"):
+        max_visto = max([x for x in (max_precio, precio_actual, p.get("precio"), p.get("maxPrecio")) if x is not None] or [0])
+        if p["stopActual"] > max_visto + 0.01 and p["stopActual"] > p["stopInicial"]:
+            p["stopActual"] = p["stopInicial"]
+    if sma50 is not None and not stop_manual and precio_actual is not None and sma50 * 0.98 < precio_actual:
         p["stopActual"] = max(p["stopActual"], sma50 * 0.98)
     if ganancia_pct is not None and ganancia_pct >= GANANCIA_PARCIAL_PCT and not stop_manual:
         p["stopActual"] = max(p["stopActual"], p["precio"])
