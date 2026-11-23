@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-23T13:04:01.665714+00:00",
+  "actualizado": "2026-11-23T13:34:06.993084+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -4608,120 +4608,6 @@
       "salida_sugerida": []
     },
     {
-      "ticker": "WELL",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-06: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 254.24,
-        "texto": "Cierre sobre 254,24 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 242.61,
-        "texto": "Cierre bajo 242,61 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 242.61,
-        "techo": 244.12,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-06",
-      "precio_alta": 245.01,
-      "precio": 240.34,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.17,
-      "desde_alta_pct": -1.91,
-      "dist_confirmacion_pct": 5.78,
-      "dist_invalidacion_pct": 0.94,
-      "rsi": 53.8,
-      "fr": 84.1,
-      "vol_rel": 0.99,
-      "beta": 0.17,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 240.34,
-      "max_cierre": 247.66,
-      "cierres_bajo_sma50": 0,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 241.82,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.62,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 5,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": true,
-            "valor": "sobre SMA50 y +8.6% vs SMA200",
-            "lectura": "precio sobre las medias de 50 y 200 ruedas"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "84",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": true,
-            "valor": "54",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-1.2%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "99% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "09/02 (en 78 días)",
-            "lectura": "pide que falten más de 5 días; reporta después del cierre"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-02-09",
-          "dias": 78,
-          "momento": "después del cierre"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 242.61,
-          "techo": 244.12
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
-    },
-    {
       "ticker": "WMT",
       "auto": true,
       "motivo": "Agregado automáticamente al cierre del 2026-11-06: apto (6 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
@@ -4845,120 +4731,6 @@
       "salida_sugerida": []
     },
     {
-      "ticker": "MMM",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-09: apto (6 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 196.9,
-        "texto": "Cierre sobre 196,90 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 178.17,
-        "texto": "Cierre bajo 178,17 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 178.17,
-        "techo": 187.4,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-09",
-      "precio_alta": 188.63,
-      "precio": 177.99,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.27,
-      "desde_alta_pct": -5.64,
-      "dist_confirmacion_pct": 10.62,
-      "dist_invalidacion_pct": 0.1,
-      "rsi": 50.4,
-      "fr": 87.2,
-      "vol_rel": 1.55,
-      "beta": 0.65,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 177.99,
-      "max_cierre": 189.37,
-      "cierres_bajo_sma50": 0,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 186.98,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.05,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 6,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": true,
-            "valor": "sobre SMA50 y +10.2% vs SMA200",
-            "lectura": "precio sobre las medias de 50 y 200 ruedas"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "87",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": true,
-            "valor": "50",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-0.3%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": true,
-            "valor": "155% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "19/01 (en 57 días)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-01-19",
-          "dias": 57,
-          "momento": "antes de la apertura"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 178.17,
-          "techo": 187.4
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
-    },
-    {
       "ticker": "URBN",
       "auto": true,
       "motivo": "Agregado automáticamente al cierre del 2026-11-09: apto (5 de 6 condiciones) · Squeeze. Niveles calculados por el radar, no definidos a mano.",
@@ -5069,120 +4841,6 @@
         }
       ],
       "salida_sugerida": []
-    },
-    {
-      "ticker": "EBAY",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-09: apto (5 de 6 condiciones) · Squeeze. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 127.74,
-        "texto": "Cierre sobre 127,74 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 115.76,
-        "texto": "Cierre bajo 115,76 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 115.76,
-        "techo": 118.43,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-09",
-      "precio_alta": 120.97,
-      "precio": 115.59,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.39,
-      "desde_alta_pct": -4.45,
-      "dist_confirmacion_pct": 10.51,
-      "dist_invalidacion_pct": 0.15,
-      "rsi": 41.3,
-      "fr": 77.7,
-      "vol_rel": 1.3,
-      "beta": 0.35,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 115.59,
-      "max_cierre": 123.52,
-      "cierres_bajo_sma50": 0,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 123.35,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 6.71,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 6,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": true,
-            "valor": "sobre SMA50 y +9.3% vs SMA200",
-            "lectura": "precio sobre las medias de 50 y 200 ruedas"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "78",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": true,
-            "valor": "41",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-1.4%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": true,
-            "valor": "130% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "24/02 (en 93 días)",
-            "lectura": "pide que falten más de 5 días; reporta después del cierre"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-02-24",
-          "dias": 93,
-          "momento": "después del cierre"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 115.76,
-          "techo": 118.43
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
     },
     {
       "ticker": "LIN",
@@ -5418,120 +5076,6 @@
         }
       ],
       "salida_sugerida": []
-    },
-    {
-      "ticker": "AZN",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-12: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 187.21,
-        "texto": "Cierre sobre 187,21 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 175.35,
-        "texto": "Cierre bajo 175,35 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 175.35,
-        "techo": 184.52,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-13",
-      "precio_alta": 184.38,
-      "precio": 174.35,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -0.6,
-      "desde_alta_pct": -5.44,
-      "dist_confirmacion_pct": 7.38,
-      "dist_invalidacion_pct": 0.57,
-      "rsi": 28.6,
-      "fr": 74.2,
-      "vol_rel": 0.71,
-      "beta": 0.18,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 174.35,
-      "max_cierre": 184.45,
-      "cierres_bajo_sma50": 0,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 186.85,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.17,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 3,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": false,
-            "valor": "sobre SMA50 y -3.1% vs SMA200",
-            "lectura": "no está sobre las dos medias"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "74",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": false,
-            "valor": "29",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-0.6%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "71% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "09/02 (en 78 días)",
-            "lectura": "pide que falten más de 5 días; reporta después del cierre"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-02-09",
-          "dias": 78,
-          "momento": "después del cierre"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 175.35,
-          "techo": 184.52
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
     },
     {
       "ticker": "TM",
@@ -5874,120 +5418,6 @@
         }
       ],
       "salida_sugerida": []
-    },
-    {
-      "ticker": "TLN",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-17: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 372.78,
-        "texto": "Cierre sobre 372,78 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 341.43,
-        "texto": "Cierre bajo 341,43 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 341.43,
-        "techo": 354.24,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-17",
-      "precio_alta": 354.71,
-      "precio": 332.92,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -6.46,
-      "desde_alta_pct": -6.14,
-      "dist_confirmacion_pct": 11.97,
-      "dist_invalidacion_pct": 2.56,
-      "rsi": 50.0,
-      "fr": 71.6,
-      "vol_rel": 1.58,
-      "beta": 1.63,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 332.92,
-      "max_cierre": 360.18,
-      "cierres_bajo_sma50": 1,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 374.46,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 12.48,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 4,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": false,
-            "valor": "bajo SMA50 y -4.7% vs SMA200",
-            "lectura": "no está sobre las dos medias"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "72",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": true,
-            "valor": "50",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": false,
-            "valor": "-6.5%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": true,
-            "valor": "158% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "25/02 (en 94 días)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-02-25",
-          "dias": 94,
-          "momento": "antes de la apertura"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 341.43,
-          "techo": 354.24
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
     },
     {
       "ticker": "RACE",
@@ -6787,120 +6217,6 @@
       "salida_sugerida": []
     },
     {
-      "ticker": "RTX",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-18: apto (5 de 6 condiciones) · Squeeze + Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 201.6,
-        "texto": "Cierre sobre 201,60 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 193.15,
-        "texto": "Cierre bajo 193,15 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 193.15,
-        "techo": 195.87,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-18",
-      "precio_alta": 197.45,
-      "precio": 190.17,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -1.32,
-      "desde_alta_pct": -3.69,
-      "dist_confirmacion_pct": 6.01,
-      "dist_invalidacion_pct": 1.57,
-      "rsi": 36.5,
-      "fr": 73.6,
-      "vol_rel": 1.14,
-      "beta": 0.3,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 190.17,
-      "max_cierre": 197.45,
-      "cierres_bajo_sma50": 1,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 202.16,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 6.31,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 4,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": false,
-            "valor": "bajo SMA50 y -1.8% vs SMA200",
-            "lectura": "no está sobre las dos medias"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "74",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": false,
-            "valor": "36",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-1.3%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": true,
-            "valor": "114% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "26/01 (en 64 días)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-01-26",
-          "dias": 64,
-          "momento": "antes de la apertura"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 193.15,
-          "techo": 195.87
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
-    },
-    {
       "ticker": "SPGI",
       "auto": true,
       "motivo": "Agregado automáticamente al cierre del 2026-11-18: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
@@ -7125,120 +6441,6 @@
         }
       ],
       "salida_sugerida": []
-    },
-    {
-      "ticker": "HMC",
-      "auto": true,
-      "motivo": "Agregado automáticamente al cierre del 2026-11-19: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
-      "vigilar": [],
-      "nota": null,
-      "confirmacion": {
-        "nivel": 35.62,
-        "texto": "Cierre sobre 35,62 (resistencia más cercana o máximo de 52 semanas)."
-      },
-      "invalidacion": {
-        "nivel": 32.96,
-        "texto": "Cierre bajo 32,96 (piso de la zona de demanda)."
-      },
-      "zona": {
-        "piso": 32.96,
-        "techo": 33.38,
-        "tipo": "zona de demanda automática"
-      },
-      "fecha_alta": "2026-11-19",
-      "precio_alta": 33.35,
-      "precio": 32.58,
-      "fecha_dato": "2026-11-20",
-      "hoy_pct": -2.31,
-      "desde_alta_pct": -2.31,
-      "dist_confirmacion_pct": 9.33,
-      "dist_invalidacion_pct": 1.17,
-      "rsi": 39.7,
-      "fr": 86.4,
-      "vol_rel": 0.95,
-      "beta": 0.1,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
-      "min_cierre": 32.58,
-      "max_cierre": 33.35,
-      "cierres_bajo_sma50": 1,
-      "toques": {},
-      "escenario_entrada": null,
-      "espacio_libre": {
-        "nivel": 36.26,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 11.3,
-        "riesgo_pct": null,
-        "relacion": null,
-        "menor_que_riesgo": null
-      },
-      "checklist": {
-        "cumple": 3,
-        "total": 6,
-        "items": [
-          {
-            "id": "tendencia",
-            "nombre": "Tendencia",
-            "ok": false,
-            "valor": "bajo SMA50 y +11.8% vs SMA200",
-            "lectura": "no está sobre las dos medias"
-          },
-          {
-            "id": "fr",
-            "nombre": "Fuerza relativa",
-            "ok": true,
-            "valor": "86",
-            "lectura": "pide 70 o más"
-          },
-          {
-            "id": "rsi",
-            "nombre": "RSI",
-            "ok": false,
-            "valor": "40",
-            "lectura": "pide entre 40 y 68"
-          },
-          {
-            "id": "caida",
-            "nombre": "Sin caída fuerte hoy",
-            "ok": true,
-            "valor": "-2.3%",
-            "lectura": "pide más de -3%"
-          },
-          {
-            "id": "volumen",
-            "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "95% del promedio",
-            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
-          },
-          {
-            "id": "resultados",
-            "nombre": "Resultados trimestrales",
-            "ok": true,
-            "valor": "10/02 (en 79 días)",
-            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
-          }
-        ],
-        "resultados": {
-          "fecha": "2027-02-10",
-          "dias": 79,
-          "momento": "antes de la apertura"
-        }
-      },
-      "pisos": [
-        {
-          "nombre": "zona de demanda",
-          "piso": 32.96,
-          "techo": 33.38
-        }
-      ],
-      "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale."
-      ]
     },
     {
       "ticker": "HD",
@@ -8021,26 +7223,57 @@
         }
       ],
       "salida_sugerida": []
-    }
-  ],
-  "candidatos": [
+    },
     {
       "ticker": "AIG",
-      "subcategoria": "Seguros y holdings",
+      "auto": true,
+      "motivo": "Agregado automáticamente al cierre del 2026-11-20: apto (6 de 6 condiciones) · VCP. Niveles calculados por el radar, no definidos a mano.",
+      "vigilar": [],
+      "nota": null,
+      "confirmacion": {
+        "nivel": 82.38,
+        "texto": "Cierre sobre 82,38 (resistencia más cercana o máximo de 52 semanas)."
+      },
+      "invalidacion": {
+        "nivel": 77.73,
+        "texto": "Cierre bajo 77,73 (piso de la zona de demanda)."
+      },
+      "zona": {
+        "piso": 77.73,
+        "techo": 79.36,
+        "tipo": "zona de demanda automática"
+      },
+      "fecha_alta": "2026-11-23",
+      "precio_alta": 79.68,
       "precio": 79.68,
+      "fecha_dato": "2026-11-20",
       "hoy_pct": 0.23,
-      "ret_5d": -3.84,
-      "fr": 80.6,
+      "desde_alta_pct": 0.0,
+      "dist_confirmacion_pct": 3.39,
+      "dist_invalidacion_pct": -2.45,
       "rsi": 41.6,
-      "radar_score": 82.3,
-      "dist_max52w": -7.0,
+      "fr": 80.6,
       "vol_rel": 1.25,
-      "marcas": [
-        "VCP"
-      ],
-      "apto": true,
-      "invalidacion": 77.73,
-      "confirmacion": 82.38,
+      "beta": 0.12,
+      "estado": "esperando",
+      "estado_etiqueta": "Esperando",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-20",
+      "cierres_sobre_confirmacion": 0,
+      "cierres_bajo_invalidacion": 0,
+      "min_cierre": 79.68,
+      "max_cierre": 79.68,
+      "cierres_bajo_sma50": 0,
+      "toques": {},
+      "escenario_entrada": null,
+      "espacio_libre": {
+        "nivel": 81.92,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 2.81,
+        "riesgo_pct": 2.45,
+        "relacion": 1.15,
+        "menor_que_riesgo": false
+      },
       "checklist": {
         "cumple": 6,
         "total": 6,
@@ -8094,27 +7327,65 @@
           "momento": "después del cierre"
         }
       },
-      "fallas": [],
-      "dist_invalidacion_pct": -2.45,
-      "dist_confirmacion_pct": 3.39
+      "pisos": [
+        {
+          "nombre": "zona de demanda",
+          "piso": 77.73,
+          "techo": 79.36
+        }
+      ],
+      "salida_sugerida": []
     },
     {
       "ticker": "FISV",
-      "subcategoria": "Pagos",
+      "auto": true,
+      "motivo": "Agregado automáticamente al cierre del 2026-11-20: apto (6 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
+      "vigilar": [],
+      "nota": null,
+      "confirmacion": {
+        "nivel": 60.29,
+        "texto": "Cierre sobre 60,29 (resistencia más cercana o máximo de 52 semanas)."
+      },
+      "invalidacion": {
+        "nivel": 52.33,
+        "texto": "Cierre bajo 52,33 (piso de la zona de demanda)."
+      },
+      "zona": {
+        "piso": 52.33,
+        "techo": 59.46,
+        "tipo": "zona de demanda automática"
+      },
+      "fecha_alta": "2026-11-23",
+      "precio_alta": 55.88,
       "precio": 55.88,
+      "fecha_dato": "2026-11-20",
       "hoy_pct": -1.31,
-      "ret_5d": -12.39,
-      "fr": 89.9,
+      "desde_alta_pct": 0.0,
+      "dist_confirmacion_pct": 7.89,
+      "dist_invalidacion_pct": -6.35,
       "rsi": 57.9,
-      "radar_score": 55.7,
-      "dist_max52w": -20.6,
+      "fr": 89.9,
       "vol_rel": 1.11,
-      "marcas": [
-        "Toca zona de demanda"
-      ],
-      "apto": true,
-      "invalidacion": 52.33,
-      "confirmacion": 60.29,
+      "beta": 0.45,
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
+      "cierres_sobre_confirmacion": 0,
+      "cierres_bajo_invalidacion": 0,
+      "min_cierre": 55.88,
+      "max_cierre": 55.88,
+      "cierres_bajo_sma50": 0,
+      "toques": {},
+      "escenario_entrada": null,
+      "espacio_libre": {
+        "nivel": 70.41,
+        "tipo": "maximo de 52 semanas",
+        "espacio_pct": 26.0,
+        "riesgo_pct": 6.35,
+        "relacion": 4.09,
+        "menor_que_riesgo": false
+      },
       "checklist": {
         "cumple": 6,
         "total": 6,
@@ -8168,27 +7439,65 @@
           "momento": "antes de la apertura"
         }
       },
-      "fallas": [],
-      "dist_invalidacion_pct": -6.35,
-      "dist_confirmacion_pct": 7.89
+      "pisos": [
+        {
+          "nombre": "zona de demanda",
+          "piso": 52.33,
+          "techo": 59.46
+        }
+      ],
+      "salida_sugerida": []
     },
     {
       "ticker": "FMX",
-      "subcategoria": "Consumo Básico",
+      "auto": true,
+      "motivo": "Agregado automáticamente al cierre del 2026-11-20: apto (5 de 6 condiciones) · Toca zona de demanda. Niveles calculados por el radar, no definidos a mano.",
+      "vigilar": [],
+      "nota": null,
+      "confirmacion": {
+        "nivel": 139.39,
+        "texto": "Cierre sobre 139,39 (resistencia más cercana o máximo de 52 semanas)."
+      },
+      "invalidacion": {
+        "nivel": 123.31,
+        "texto": "Cierre bajo 123,31 (piso de la zona de demanda)."
+      },
+      "zona": {
+        "piso": 123.31,
+        "techo": 126.34,
+        "tipo": "zona de demanda automática"
+      },
+      "fecha_alta": "2026-11-23",
+      "precio_alta": 126.06,
       "precio": 126.06,
+      "fecha_dato": "2026-11-20",
       "hoy_pct": -1.25,
-      "ret_5d": -4.43,
-      "fr": 80.9,
+      "desde_alta_pct": 0.0,
+      "dist_confirmacion_pct": 10.57,
+      "dist_invalidacion_pct": -2.18,
       "rsi": 47.0,
-      "radar_score": 45.7,
-      "dist_max52w": -9.6,
+      "fr": 80.9,
       "vol_rel": 0.67,
-      "marcas": [
-        "Toca zona de demanda"
-      ],
-      "apto": true,
-      "invalidacion": 123.31,
-      "confirmacion": 139.392,
+      "beta": 0.17,
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-20",
+      "cierres_sobre_confirmacion": 0,
+      "cierres_bajo_invalidacion": 0,
+      "min_cierre": 126.06,
+      "max_cierre": 126.06,
+      "cierres_bajo_sma50": 0,
+      "toques": {},
+      "escenario_entrada": null,
+      "espacio_libre": {
+        "nivel": 130.72,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 3.7,
+        "riesgo_pct": 2.18,
+        "relacion": 1.69,
+        "menor_que_riesgo": false
+      },
       "checklist": {
         "cumple": 5,
         "total": 6,
@@ -8242,11 +7551,167 @@
           "momento": "antes de la apertura"
         }
       },
+      "pisos": [
+        {
+          "nombre": "zona de demanda",
+          "piso": 123.31,
+          "techo": 126.34
+        }
+      ],
+      "salida_sugerida": []
+    }
+  ],
+  "candidatos": [
+    {
+      "ticker": "WELL",
+      "subcategoria": "Real Estate",
+      "precio": 240.34,
+      "hoy_pct": -1.17,
+      "ret_5d": -1.69,
+      "fr": 84.1,
+      "rsi": 53.8,
+      "radar_score": 81.2,
+      "dist_max52w": -5.1,
+      "vol_rel": 0.99,
+      "marcas": [
+        "VCP",
+        "Toca zona de demanda"
+      ],
+      "apto": true,
+      "invalidacion": 238.3381,
+      "confirmacion": 253.3665,
+      "checklist": {
+        "cumple": 5,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +8.6% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "84",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "54",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-1.2%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": false,
+            "valor": "99% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "09/02 (en 78 días)",
+            "lectura": "pide que falten más de 5 días; reporta después del cierre"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-02-09",
+          "dias": 78,
+          "momento": "después del cierre"
+        }
+      },
       "fallas": [
         "volumen"
       ],
-      "dist_invalidacion_pct": -2.18,
-      "dist_confirmacion_pct": 10.58
+      "dist_invalidacion_pct": -0.83,
+      "dist_confirmacion_pct": 5.42
+    },
+    {
+      "ticker": "MMM",
+      "subcategoria": "Industriales",
+      "precio": 177.99,
+      "hoy_pct": -0.27,
+      "ret_5d": -3.09,
+      "fr": 87.2,
+      "rsi": 50.4,
+      "radar_score": 52.7,
+      "dist_max52w": -9.2,
+      "vol_rel": 1.55,
+      "marcas": [
+        "Toca zona de demanda"
+      ],
+      "apto": true,
+      "invalidacion": 177.4238,
+      "confirmacion": 196.0753,
+      "checklist": {
+        "cumple": 6,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +10.2% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "87",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "50",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "-0.3%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "155% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "19/01 (en 57 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-01-19",
+          "dias": 57,
+          "momento": "antes de la apertura"
+        }
+      },
+      "fallas": [],
+      "dist_invalidacion_pct": -0.32,
+      "dist_confirmacion_pct": 10.16
     }
   ],
   "log_candidatos_fecha": "2026-11-20",
