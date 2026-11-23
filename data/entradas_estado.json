@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-11-23T20:34:16.145759+00:00",
+  "actualizado": "2026-11-23T22:08:07.901883+00:00",
   "items": [
     {
       "ticker": "DD",
@@ -26,21 +26,21 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 137.93,
-      "precio": 150.84,
+      "precio": 151.25,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.72,
-      "desde_alta_pct": 9.36,
-      "dist_confirmacion_pct": -6.93,
-      "dist_invalidacion_pct": -10.4,
-      "rsi": 46.5,
-      "fr": 89.3,
-      "vol_rel": 0.5,
-      "beta": 0.76,
+      "hoy_pct": 4.0,
+      "desde_alta_pct": 9.66,
+      "dist_confirmacion_pct": -7.19,
+      "dist_invalidacion_pct": -10.64,
+      "rsi": 47.1,
+      "fr": 89.6,
+      "vol_rel": 1.08,
+      "beta": 0.78,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
       "estado_cierre": "confirmada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 13,
+      "ultimo_cierre_fecha": "2026-11-23",
+      "cierres_sobre_confirmacion": 14,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 137.67,
       "max_cierre": 156.88,
@@ -50,55 +50,55 @@
         "tipo": "ruptura",
         "nivel": 140.38,
         "detalle": "Superó su nivel de confirmación (140,38): Cierre sobre 140,38 (piso de la zona de oferta 140,4–142,1) y, para que cuente con respaldo, con volumen de al menos el promedio.",
-        "fecha": "2026-11-20",
-        "precio": 145.43,
-        "vol_rel": 1.14
+        "fecha": "2026-11-23",
+        "precio": 151.25,
+        "vol_rel": 1.08
       },
       "espacio_libre": {
         "nivel": 155.61,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.16,
-        "riesgo_pct": 10.4,
-        "relacion": 0.3,
+        "espacio_pct": 2.88,
+        "riesgo_pct": 10.64,
+        "relacion": 0.27,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +8.4% vs SMA200",
+            "valor": "sobre SMA50 y +8.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "89",
+            "valor": "90",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "46",
+            "valor": "47",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.7%",
+            "valor": "+4.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "50% del promedio",
+            "ok": true,
+            "valor": "108% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -123,7 +123,7 @@
         }
       ],
       "salida_sugerida": [
-        "Confirmó con 13 cierres seguidos: el escenario se cumplió (pasarlo a Cartera o sacarlo de la lista)."
+        "Confirmó con 14 cierres seguidos: el escenario se cumplió (pasarlo a Cartera o sacarlo de la lista)."
       ]
     },
     {
@@ -151,31 +151,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 270.0,
-      "precio": 236.99,
+      "precio": 237.22,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -0.98,
-      "desde_alta_pct": -12.23,
-      "dist_confirmacion_pct": 17.39,
-      "dist_invalidacion_pct": 6.35,
-      "rsi": 28.0,
-      "fr": 78.6,
-      "vol_rel": 0.42,
-      "beta": 0.17,
+      "hoy_pct": -0.88,
+      "desde_alta_pct": -12.14,
+      "dist_confirmacion_pct": 17.28,
+      "dist_invalidacion_pct": 6.25,
+      "rsi": 28.1,
+      "fr": 78.9,
+      "vol_rel": 0.92,
+      "beta": 0.19,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 3,
-      "min_cierre": 239.33,
+      "cierres_bajo_invalidacion": 4,
+      "min_cierre": 237.22,
       "max_cierre": 282.83,
-      "cierres_bajo_sma50": 10,
+      "cierres_bajo_sma50": 11,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 289.07,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 21.97,
+        "espacio_pct": 21.86,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -188,7 +188,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +15.3% vs SMA200",
+            "valor": "bajo SMA50 y +15.4% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -209,14 +209,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.0%",
+            "valor": "-0.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "42% del promedio",
+            "valor": "92% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -241,13 +241,13 @@
         },
         {
           "nombre": "media de 50 ruedas",
-          "piso": 263.62,
-          "techo": 268.94
+          "piso": 263.63,
+          "techo": 268.95
         }
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "10 cierres seguidos bajo la media de 50 ruedas."
+        "11 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -275,25 +275,25 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 210.93,
-      "precio": 208.6,
+      "precio": 208.7,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 4.54,
-      "desde_alta_pct": -1.1,
-      "dist_confirmacion_pct": 6.56,
-      "dist_invalidacion_pct": -1.25,
-      "rsi": 44.0,
-      "fr": 84.4,
-      "vol_rel": 0.61,
-      "beta": 0.93,
+      "hoy_pct": 4.59,
+      "desde_alta_pct": -1.06,
+      "dist_confirmacion_pct": 6.51,
+      "dist_invalidacion_pct": -1.29,
+      "rsi": 44.1,
+      "fr": 85.0,
+      "vol_rel": 0.89,
+      "beta": 0.94,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 3,
+      "cierres_bajo_invalidacion": 0,
       "min_cierre": 199.54,
       "max_cierre": 219.57,
-      "cierres_bajo_sma50": 5,
+      "cierres_bajo_sma50": 6,
       "toques": {
         "zona de demanda": "2026-11-23"
       },
@@ -301,9 +301,9 @@
       "espacio_libre": {
         "nivel": 217.61,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.32,
-        "riesgo_pct": 1.25,
-        "relacion": 3.47,
+        "espacio_pct": 4.27,
+        "riesgo_pct": 1.29,
+        "relacion": 3.3,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -314,14 +314,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +11.1% vs SMA200",
+            "valor": "bajo SMA50 y +11.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "84",
+            "valor": "85",
             "lectura": "pide 70 o más"
           },
           {
@@ -335,14 +335,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+4.5%",
+            "valor": "+4.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "61% del promedio",
+            "valor": "89% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -363,8 +363,7 @@
         }
       ],
       "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "5 cierres seguidos bajo la media de 50 ruedas."
+        "6 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -392,31 +391,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 340.01,
-      "precio": 272.67,
+      "precio": 271.27,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 7.0,
-      "desde_alta_pct": -19.81,
-      "dist_confirmacion_pct": 29.59,
-      "dist_invalidacion_pct": 10.84,
-      "rsi": 41.7,
-      "fr": 81.5,
-      "vol_rel": 0.68,
-      "beta": 1.93,
+      "hoy_pct": 6.46,
+      "desde_alta_pct": -20.22,
+      "dist_confirmacion_pct": 30.26,
+      "dist_invalidacion_pct": 11.42,
+      "rsi": 41.1,
+      "fr": 80.9,
+      "vol_rel": 0.97,
+      "beta": 1.94,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
+      "cierres_bajo_invalidacion": 14,
       "min_cierre": 254.82,
       "max_cierre": 339.93,
-      "cierres_bajo_sma50": 14,
+      "cierres_bajo_sma50": 15,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 356.47,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 30.73,
+        "espacio_pct": 31.41,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -429,35 +428,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +10.8% vs SMA200",
+            "valor": "bajo SMA50 y +10.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "82",
+            "valor": "81",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "42",
+            "valor": "41",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+7.0%",
+            "valor": "+6.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "68% del promedio",
+            "valor": "97% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -483,7 +482,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "14 cierres seguidos bajo la media de 50 ruedas."
+        "15 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -511,37 +510,37 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 199.87,
-      "precio": 159.25,
+      "precio": 159.36,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 10.98,
-      "desde_alta_pct": -20.32,
-      "dist_confirmacion_pct": 33.71,
-      "dist_invalidacion_pct": 15.82,
-      "rsi": 40.3,
-      "fr": 52.9,
-      "vol_rel": 0.83,
-      "beta": 2.08,
+      "hoy_pct": 11.06,
+      "desde_alta_pct": -20.27,
+      "dist_confirmacion_pct": 33.62,
+      "dist_invalidacion_pct": 15.74,
+      "rsi": 40.4,
+      "fr": 53.2,
+      "vol_rel": 1.24,
+      "beta": 2.11,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
+      "cierres_bajo_invalidacion": 15,
       "min_cierre": 143.49,
       "max_cierre": 198.73,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 208.9,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 31.18,
+        "espacio_pct": 31.09,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
@@ -569,14 +568,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+11.0%",
+            "valor": "+11.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "83% del promedio",
+            "ok": true,
+            "valor": "124% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -602,7 +601,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas."
+        "14 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -629,37 +628,37 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 33.83,
-      "precio": 28.92,
+      "precio": 28.9,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.42,
-      "desde_alta_pct": -14.51,
-      "dist_confirmacion_pct": 25.28,
-      "dist_invalidacion_pct": 8.82,
-      "rsi": 54.2,
+      "hoy_pct": 3.36,
+      "desde_alta_pct": -14.57,
+      "dist_confirmacion_pct": 25.36,
+      "dist_invalidacion_pct": 8.89,
+      "rsi": 54.1,
       "fr": 60.7,
-      "vol_rel": 0.61,
-      "beta": 0.57,
+      "vol_rel": 1.02,
+      "beta": 0.58,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
+      "cierres_bajo_invalidacion": 15,
       "min_cierre": 27.82,
       "max_cierre": 33.58,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 32.95,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 13.93,
+        "espacio_pct": 14.01,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 2,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
@@ -693,8 +692,8 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "61% del promedio",
+            "ok": true,
+            "valor": "102% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -720,7 +719,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas."
+        "14 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -864,25 +863,25 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 85.51,
-      "precio": 76.76,
+      "precio": 77.12,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.86,
-      "desde_alta_pct": -10.23,
-      "dist_confirmacion_pct": 20.9,
-      "dist_invalidacion_pct": 0.47,
-      "rsi": 36.6,
-      "fr": 72.0,
-      "vol_rel": 0.32,
-      "beta": 0.88,
-      "estado": "bajo_invalidacion",
-      "estado_etiqueta": "Bajo la invalidación (intradía)",
-      "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "hoy_pct": 4.34,
+      "desde_alta_pct": -9.81,
+      "dist_confirmacion_pct": 20.33,
+      "dist_invalidacion_pct": 0.0,
+      "rsi": 37.3,
+      "fr": 73.4,
+      "vol_rel": 0.58,
+      "beta": 0.92,
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 1,
+      "cierres_bajo_invalidacion": 0,
       "min_cierre": 73.91,
       "max_cierre": 90.03,
-      "cierres_bajo_sma50": 3,
+      "cierres_bajo_sma50": 4,
       "toques": {
         "zona de demanda": "2026-11-23"
       },
@@ -890,7 +889,7 @@
       "espacio_libre": {
         "nivel": 85.17,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 10.96,
+        "espacio_pct": 10.44,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -903,14 +902,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +10.6% vs SMA200",
+            "valor": "bajo SMA50 y +11.1% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "72",
+            "valor": "73",
             "lectura": "pide 70 o más"
           },
           {
@@ -924,14 +923,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.9%",
+            "valor": "+4.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "32% del promedio",
+            "valor": "58% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -956,8 +955,7 @@
         }
       ],
       "salida_sugerida": [
-        "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "3 cierres seguidos bajo la media de 50 ruedas."
+        "4 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -986,23 +984,23 @@
       "precio_alta": 22.51,
       "precio": 15.81,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -1.22,
+      "hoy_pct": -1.25,
       "desde_alta_pct": -29.76,
       "dist_confirmacion_pct": 66.92,
       "dist_invalidacion_pct": 36.94,
-      "rsi": 9.7,
+      "rsi": 9.6,
       "fr": 25.1,
-      "vol_rel": 0.55,
+      "vol_rel": 0.83,
       "beta": -0.04,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
-      "min_cierre": 16.01,
+      "cierres_bajo_invalidacion": 14,
+      "min_cierre": 15.81,
       "max_cierre": 22.3,
-      "cierres_bajo_sma50": 12,
+      "cierres_bajo_sma50": 13,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
@@ -1049,7 +1047,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "83% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1075,7 +1073,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "12 cierres seguidos bajo la media de 50 ruedas.",
+        "13 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 25 (menos de 50)."
       ]
     },
@@ -1103,20 +1101,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 345.53,
-      "precio": 351.01,
+      "precio": 349.08,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.47,
-      "desde_alta_pct": 1.59,
-      "dist_confirmacion_pct": 2.8,
-      "dist_invalidacion_pct": -3.53,
-      "rsi": 64.4,
+      "hoy_pct": 1.9,
+      "desde_alta_pct": 1.03,
+      "dist_confirmacion_pct": 3.37,
+      "dist_invalidacion_pct": -3.0,
+      "rsi": 63.3,
       "fr": 88.2,
-      "vol_rel": 0.66,
-      "beta": 0.53,
+      "vol_rel": 1.13,
+      "beta": 0.51,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 331.9,
@@ -1125,33 +1123,24 @@
       "toques": {
         "zona de demanda": "2026-11-06"
       },
-      "escenario_entrada": {
-        "tipo": "rebote",
-        "nivel": 340.74,
-        "piso": "zona de demanda",
-        "inv": 338.61,
-        "detalle": "Llegó a su piso (zona de demanda: 338,61 a 340,74) el 06/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 342.56,
-        "vol_rel": 1.62
-      },
+      "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 356.27,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.5,
-        "riesgo_pct": 3.53,
-        "relacion": 0.42,
+        "espacio_pct": 2.06,
+        "riesgo_pct": 3.0,
+        "relacion": 0.69,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +15.8% vs SMA200",
+            "valor": "sobre SMA50 y +15.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -1165,21 +1154,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "64",
+            "valor": "63",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.5%",
+            "valor": "+1.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "66% del promedio",
+            "ok": true,
+            "valor": "113% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1229,31 +1218,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 268.47,
-      "precio": 207.28,
+      "precio": 208.97,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -9.66,
-      "desde_alta_pct": -22.79,
-      "dist_confirmacion_pct": 38.46,
-      "dist_invalidacion_pct": 18.85,
-      "rsi": 34.0,
-      "fr": 77.7,
-      "vol_rel": 3.33,
-      "beta": 0.77,
+      "hoy_pct": -8.92,
+      "desde_alta_pct": -22.16,
+      "dist_confirmacion_pct": 37.34,
+      "dist_invalidacion_pct": 17.89,
+      "rsi": 34.5,
+      "fr": 79.5,
+      "vol_rel": 3.87,
+      "beta": 0.85,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
-      "min_cierre": 216.9,
+      "cierres_bajo_invalidacion": 14,
+      "min_cierre": 208.97,
       "max_cierre": 268.02,
-      "cierres_bajo_sma50": 10,
+      "cierres_bajo_sma50": 11,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 266.66,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 28.65,
+        "espacio_pct": 27.61,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1266,14 +1255,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +17.3% vs SMA200",
+            "valor": "bajo SMA50 y +18.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "78",
+            "valor": "80",
             "lectura": "pide 70 o más"
           },
           {
@@ -1287,14 +1276,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-9.7%",
+            "valor": "-8.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "333% del promedio",
+            "valor": "387% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1320,7 +1309,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "10 cierres seguidos bajo la media de 50 ruedas."
+        "11 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1347,31 +1336,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 6.18,
-      "precio": 4.95,
+      "precio": 4.92,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 8.9,
-      "desde_alta_pct": -19.9,
-      "dist_confirmacion_pct": 38.38,
-      "dist_invalidacion_pct": 18.79,
-      "rsi": 41.8,
-      "fr": 29.2,
-      "vol_rel": 0.6,
+      "hoy_pct": 8.13,
+      "desde_alta_pct": -20.39,
+      "dist_confirmacion_pct": 39.23,
+      "dist_invalidacion_pct": 19.51,
+      "rsi": 41.3,
+      "fr": 28.9,
+      "vol_rel": 0.9,
       "beta": 2.3,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 15,
+      "cierres_bajo_invalidacion": 16,
       "min_cierre": 4.55,
       "max_cierre": 6.08,
-      "cierres_bajo_sma50": 14,
+      "cierres_bajo_sma50": 15,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 6.48,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 30.91,
+        "espacio_pct": 31.71,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1384,7 +1373,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -6.5% vs SMA200",
+            "valor": "bajo SMA50 y -7.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -1398,21 +1387,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "42",
+            "valor": "41",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+8.9%",
+            "valor": "+8.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "60% del promedio",
+            "valor": "90% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1438,7 +1427,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "15 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 29 (menos de 50)."
       ]
     },
@@ -1466,44 +1455,44 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 403.05,
-      "precio": 355.49,
+      "precio": 353.43,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.55,
-      "desde_alta_pct": -11.8,
-      "dist_confirmacion_pct": 21.62,
-      "dist_invalidacion_pct": 3.02,
-      "rsi": 51.5,
-      "fr": 91.3,
-      "vol_rel": 0.87,
+      "hoy_pct": 2.94,
+      "desde_alta_pct": -12.31,
+      "dist_confirmacion_pct": 22.32,
+      "dist_invalidacion_pct": 3.62,
+      "rsi": 50.9,
+      "fr": 90.8,
+      "vol_rel": 1.26,
       "beta": 1.12,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
+      "cierres_bajo_invalidacion": 15,
       "min_cierre": 309.29,
       "max_cierre": 401.7,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 394.49,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 10.97,
+        "espacio_pct": 11.62,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +25.9% vs SMA200",
+            "valor": "bajo SMA50 y +25.2% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -1517,21 +1506,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "52",
+            "valor": "51",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.5%",
+            "valor": "+2.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "87% del promedio",
+            "ok": true,
+            "valor": "126% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1557,7 +1546,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas."
+        "14 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1584,31 +1573,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 219.99,
-      "precio": 139.02,
+      "precio": 139.58,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.25,
-      "desde_alta_pct": -36.81,
-      "dist_confirmacion_pct": 65.42,
-      "dist_invalidacion_pct": 54.86,
-      "rsi": 14.9,
-      "fr": 58.1,
-      "vol_rel": 0.54,
-      "beta": 0.84,
+      "hoy_pct": 3.66,
+      "desde_alta_pct": -36.55,
+      "dist_confirmacion_pct": 64.75,
+      "dist_invalidacion_pct": 54.23,
+      "rsi": 15.6,
+      "fr": 60.1,
+      "vol_rel": 0.75,
+      "beta": 0.88,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 15,
+      "cierres_bajo_invalidacion": 16,
       "min_cierre": 133.01,
       "max_cierre": 220.12,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 223.16,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 60.52,
+        "espacio_pct": 59.88,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1621,35 +1610,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +15.2% vs SMA200",
+            "valor": "bajo SMA50 y +15.6% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "58",
+            "valor": "60",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "15",
+            "valor": "16",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.2%",
+            "valor": "+3.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "54% del promedio",
+            "valor": "75% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1675,7 +1664,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas."
+        "14 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1702,31 +1691,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 54.0,
-      "precio": 44.28,
+      "precio": 44.17,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 4.19,
-      "desde_alta_pct": -18.0,
-      "dist_confirmacion_pct": 28.12,
-      "dist_invalidacion_pct": 18.93,
-      "rsi": 33.7,
-      "fr": 65.3,
-      "vol_rel": 0.69,
+      "hoy_pct": 3.93,
+      "desde_alta_pct": -18.2,
+      "dist_confirmacion_pct": 28.44,
+      "dist_invalidacion_pct": 19.22,
+      "rsi": 33.2,
+      "fr": 65.6,
+      "vol_rel": 0.98,
       "beta": 0.74,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
+      "cierres_bajo_invalidacion": 14,
       "min_cierre": 42.5,
       "max_cierre": 54.51,
-      "cierres_bajo_sma50": 10,
+      "cierres_bajo_sma50": 11,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 53.71,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 21.3,
+        "espacio_pct": 21.6,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1739,35 +1728,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +8.3% vs SMA200",
+            "valor": "bajo SMA50 y +8.1% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "65",
+            "valor": "66",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "34",
+            "valor": "33",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+4.2%",
+            "valor": "+3.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "69% del promedio",
+            "valor": "98% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1793,7 +1782,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "10 cierres seguidos bajo la media de 50 ruedas."
+        "11 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -1820,20 +1809,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 27.97,
-      "precio": 27.99,
+      "precio": 27.91,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 5.27,
-      "desde_alta_pct": 0.07,
-      "dist_confirmacion_pct": 7.4,
-      "dist_invalidacion_pct": -19.04,
-      "rsi": 45.7,
-      "fr": 81.8,
-      "vol_rel": 0.65,
-      "beta": 1.29,
+      "hoy_pct": 4.96,
+      "desde_alta_pct": -0.21,
+      "dist_confirmacion_pct": 7.7,
+      "dist_invalidacion_pct": -18.81,
+      "rsi": 45.4,
+      "fr": 81.2,
+      "vol_rel": 0.86,
+      "beta": 1.3,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 26.59,
@@ -1844,9 +1833,9 @@
       "espacio_libre": {
         "nivel": 29.44,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.18,
-        "riesgo_pct": 19.04,
-        "relacion": 0.27,
+        "espacio_pct": 5.48,
+        "riesgo_pct": 18.81,
+        "relacion": 0.29,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -1857,35 +1846,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.7% vs SMA200",
+            "valor": "sobre SMA50 y +4.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "82",
+            "valor": "81",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "46",
+            "valor": "45",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+5.3%",
+            "valor": "+5.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "65% del promedio",
+            "valor": "86% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -1935,31 +1924,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 242.26,
-      "precio": 185.34,
+      "precio": 185.46,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.61,
-      "desde_alta_pct": -23.5,
-      "dist_confirmacion_pct": 44.49,
-      "dist_invalidacion_pct": 11.19,
-      "rsi": 23.0,
-      "fr": 39.6,
-      "vol_rel": 0.51,
-      "beta": 0.73,
+      "hoy_pct": 2.68,
+      "desde_alta_pct": -23.45,
+      "dist_confirmacion_pct": 44.4,
+      "dist_invalidacion_pct": 11.12,
+      "rsi": 23.2,
+      "fr": 40.2,
+      "vol_rel": 0.83,
+      "beta": 0.75,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 4,
+      "cierres_bajo_invalidacion": 5,
       "min_cierre": 180.62,
       "max_cierre": 242.28,
-      "cierres_bajo_sma50": 14,
+      "cierres_bajo_sma50": 15,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 244.6,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 31.97,
+        "espacio_pct": 31.89,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -1972,7 +1961,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -6.0% vs SMA200",
+            "valor": "bajo SMA50 y -5.9% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -1993,14 +1982,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.6%",
+            "valor": "+2.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "51% del promedio",
+            "valor": "83% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2026,7 +2015,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "15 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 40 (menos de 50)."
       ]
     },
@@ -2054,31 +2043,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 11.21,
-      "precio": 8.86,
+      "precio": 8.83,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.84,
-      "desde_alta_pct": -20.96,
-      "dist_confirmacion_pct": 36.57,
-      "dist_invalidacion_pct": 22.8,
-      "rsi": 27.7,
+      "hoy_pct": 1.49,
+      "desde_alta_pct": -21.23,
+      "dist_confirmacion_pct": 37.03,
+      "dist_invalidacion_pct": 23.22,
+      "rsi": 27.0,
       "fr": 34.7,
-      "vol_rel": 0.64,
-      "beta": 0.12,
+      "vol_rel": 0.94,
+      "beta": 0.1,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 13,
+      "cierres_bajo_invalidacion": 14,
       "min_cierre": 8.67,
       "max_cierre": 11.2,
-      "cierres_bajo_sma50": 15,
+      "cierres_bajo_sma50": 16,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 11.84,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 33.63,
+        "espacio_pct": 34.09,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -2091,7 +2080,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -10.1% vs SMA200",
+            "valor": "bajo SMA50 y -10.4% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
@@ -2105,21 +2094,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "28",
+            "valor": "27",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.8%",
+            "valor": "+1.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "64% del promedio",
+            "valor": "94% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2145,7 +2134,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "15 cierres seguidos bajo la media de 50 ruedas.",
+        "16 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 35 (menos de 50)."
       ]
     },
@@ -2173,35 +2162,44 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 696.55,
-      "precio": 689.63,
+      "precio": 688.08,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.0,
-      "desde_alta_pct": -0.99,
-      "dist_confirmacion_pct": 5.5,
-      "dist_invalidacion_pct": -3.37,
-      "rsi": 47.4,
+      "hoy_pct": 2.77,
+      "desde_alta_pct": -1.22,
+      "dist_confirmacion_pct": 5.74,
+      "dist_invalidacion_pct": -3.15,
+      "rsi": 46.9,
       "fr": 98.3,
-      "vol_rel": 0.5,
+      "vol_rel": 0.87,
       "beta": 0.81,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 669.54,
       "max_cierre": 721.63,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 671.47,
+        "piso": "zona de demanda",
+        "inv": 666.38,
+        "detalle": "Llegó a su piso (zona de demanda: 666,38 a 671,47) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 688.08,
+        "vol_rel": 0.87
+      },
       "espacio_libre": {
         "nivel": 717.71,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.07,
-        "riesgo_pct": 3.37,
-        "relacion": 1.21,
+        "espacio_pct": 4.31,
+        "riesgo_pct": 3.15,
+        "relacion": 1.37,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -2212,7 +2210,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +23.5% vs SMA200",
+            "valor": "sobre SMA50 y +23.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -2233,14 +2231,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.0%",
+            "valor": "+2.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "50% del promedio",
+            "valor": "87% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2290,33 +2288,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 532.63,
-      "precio": 497.08,
+      "precio": 492.5,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.59,
-      "desde_alta_pct": -6.67,
-      "dist_confirmacion_pct": 10.88,
-      "dist_invalidacion_pct": 0.37,
-      "rsi": 42.7,
-      "fr": 79.5,
-      "vol_rel": 0.6,
-      "beta": 0.95,
+      "hoy_pct": 1.65,
+      "desde_alta_pct": -7.53,
+      "dist_confirmacion_pct": 11.91,
+      "dist_invalidacion_pct": 1.3,
+      "rsi": 40.9,
+      "fr": 76.9,
+      "vol_rel": 0.98,
+      "beta": 0.92,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 2,
+      "cierres_bajo_invalidacion": 3,
       "min_cierre": 484.52,
       "max_cierre": 545.18,
-      "cierres_bajo_sma50": 5,
-      "toques": {
-        "zona de demanda": "2026-11-23"
-      },
+      "cierres_bajo_sma50": 6,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 542.65,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 9.17,
+        "espacio_pct": 10.18,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -2329,35 +2325,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +12.3% vs SMA200",
+            "valor": "bajo SMA50 y +11.3% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "80",
+            "valor": "77",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "43",
+            "valor": "41",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.6%",
+            "valor": "+1.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "60% del promedio",
+            "valor": "98% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2383,7 +2379,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "5 cierres seguidos bajo la media de 50 ruedas."
+        "6 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -2410,20 +2406,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 158.14,
-      "precio": 170.6,
+      "precio": 170.59,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.51,
-      "desde_alta_pct": 7.88,
+      "hoy_pct": 2.5,
+      "desde_alta_pct": 7.87,
       "dist_confirmacion_pct": 3.51,
-      "dist_invalidacion_pct": -11.4,
+      "dist_invalidacion_pct": -11.39,
       "rsi": 54.8,
-      "fr": 97.1,
-      "vol_rel": 0.57,
+      "fr": 97.7,
+      "vol_rel": 1.03,
       "beta": 0.35,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 159.08,
@@ -2435,12 +2431,12 @@
         "nivel": 176.58,
         "tipo": "maximo de 52 semanas",
         "espacio_pct": 3.51,
-        "riesgo_pct": 11.4,
+        "riesgo_pct": 11.39,
         "relacion": 0.31,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
@@ -2454,7 +2450,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "97",
+            "valor": "98",
             "lectura": "pide 70 o más"
           },
           {
@@ -2474,8 +2470,8 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "57% del promedio",
+            "ok": true,
+            "valor": "103% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2525,33 +2521,33 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 199.51,
-      "precio": 211.72,
+      "precio": 212.08,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 8.57,
-      "desde_alta_pct": 6.12,
-      "dist_confirmacion_pct": 13.14,
-      "dist_invalidacion_pct": -16.47,
-      "rsi": 45.1,
+      "hoy_pct": 8.76,
+      "desde_alta_pct": 6.3,
+      "dist_confirmacion_pct": 12.95,
+      "dist_invalidacion_pct": -16.61,
+      "rsi": 45.2,
       "fr": 100.0,
-      "vol_rel": 0.58,
-      "beta": 2.09,
+      "vol_rel": 0.8,
+      "beta": 2.14,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 195.0,
       "max_cierre": 269.0,
-      "cierres_bajo_sma50": 3,
+      "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 257.86,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 21.79,
-        "riesgo_pct": 16.47,
-        "relacion": 1.32,
+        "espacio_pct": 21.58,
+        "riesgo_pct": 16.61,
+        "relacion": 1.3,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -2562,7 +2558,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +109.1% vs SMA200",
+            "valor": "sobre SMA50 y +109.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -2583,14 +2579,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+8.6%",
+            "valor": "+8.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "58% del promedio",
+            "valor": "80% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2614,9 +2610,7 @@
           "techo": 181.3
         }
       ],
-      "salida_sugerida": [
-        "3 cierres seguidos bajo la media de 50 ruedas."
-      ]
+      "salida_sugerida": []
     },
     {
       "ticker": "QCOM",
@@ -2642,51 +2636,51 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 181.08,
-      "precio": 164.66,
+      "precio": 165.38,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 9.82,
-      "desde_alta_pct": -9.07,
-      "dist_confirmacion_pct": 18.14,
-      "dist_invalidacion_pct": 3.63,
-      "rsi": 50.1,
-      "fr": 39.3,
-      "vol_rel": 0.6,
-      "beta": 2.1,
+      "hoy_pct": 10.3,
+      "desde_alta_pct": -8.67,
+      "dist_confirmacion_pct": 17.63,
+      "dist_invalidacion_pct": 3.17,
+      "rsi": 50.5,
+      "fr": 41.0,
+      "vol_rel": 1.32,
+      "beta": 2.15,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 5,
+      "cierres_bajo_invalidacion": 6,
       "min_cierre": 149.94,
       "max_cierre": 185.41,
-      "cierres_bajo_sma50": 13,
+      "cierres_bajo_sma50": 14,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 180.49,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 9.61,
+        "espacio_pct": 9.14,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -3.0% vs SMA200",
+            "valor": "bajo SMA50 y -2.6% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "39",
+            "valor": "41",
             "lectura": "pide 70 o más"
           },
           {
@@ -2700,14 +2694,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+9.8%",
+            "valor": "+10.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "60% del promedio",
+            "ok": true,
+            "valor": "132% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2733,8 +2727,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "13 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 39 (menos de 50)."
+        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 41 (menos de 50)."
       ]
     },
     {
@@ -2761,74 +2755,72 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 420.14,
-      "precio": 376.38,
+      "precio": 378.75,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 8.81,
-      "desde_alta_pct": -10.42,
-      "dist_confirmacion_pct": 12.3,
-      "dist_invalidacion_pct": 2.11,
-      "rsi": 39.4,
-      "fr": 52.3,
-      "vol_rel": 0.71,
-      "beta": 2.03,
+      "hoy_pct": 9.49,
+      "desde_alta_pct": -9.85,
+      "dist_confirmacion_pct": 11.6,
+      "dist_invalidacion_pct": 1.48,
+      "rsi": 40.1,
+      "fr": 54.6,
+      "vol_rel": 1.62,
+      "beta": 2.1,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 5,
+      "cierres_bajo_invalidacion": 6,
       "min_cierre": 345.92,
       "max_cierre": 433.28,
-      "cierres_bajo_sma50": 5,
-      "toques": {
-        "zona de demanda": "2026-11-23"
-      },
+      "cierres_bajo_sma50": 6,
+      "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 412.85,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 9.69,
+        "espacio_pct": 9.0,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
       },
       "checklist": {
-        "cumple": 1,
+        "cumple": 3,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -0.2% vs SMA200",
+            "valor": "bajo SMA50 y +0.4% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "52",
+            "valor": "55",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
-            "ok": false,
-            "valor": "39",
+            "ok": true,
+            "valor": "40",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+8.8%",
+            "valor": "+9.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "71% del promedio",
+            "ok": true,
+            "valor": "162% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2854,7 +2846,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "5 cierres seguidos bajo la media de 50 ruedas."
+        "6 cierres seguidos bajo la media de 50 ruedas."
       ]
     },
     {
@@ -2881,31 +2873,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 45.65,
-      "precio": 34.64,
+      "precio": 34.62,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 4.91,
-      "desde_alta_pct": -24.12,
-      "dist_confirmacion_pct": 35.91,
-      "dist_invalidacion_pct": 30.23,
-      "rsi": 21.2,
-      "fr": 23.1,
-      "vol_rel": 1.26,
-      "beta": 1.39,
+      "hoy_pct": 4.85,
+      "desde_alta_pct": -24.16,
+      "dist_confirmacion_pct": 35.99,
+      "dist_invalidacion_pct": 30.3,
+      "rsi": 21.1,
+      "fr": 23.4,
+      "vol_rel": 1.41,
+      "beta": 1.42,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 14,
+      "cierres_bajo_invalidacion": 15,
       "min_cierre": 33.02,
       "max_cierre": 46.14,
-      "cierres_bajo_sma50": 14,
+      "cierres_bajo_sma50": 15,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 47.35,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 36.69,
+        "espacio_pct": 36.77,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -2939,14 +2931,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+4.9%",
+            "valor": "+4.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "126% del promedio",
+            "valor": "141% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -2968,7 +2960,7 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "14 cierres seguidos bajo la media de 50 ruedas.",
+        "15 cierres seguidos bajo la media de 50 ruedas.",
         "La fuerza relativa cayó a 23 (menos de 50)."
       ]
     },
@@ -2996,21 +2988,21 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 302.45,
-      "precio": 314.74,
+      "precio": 313.95,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.57,
-      "desde_alta_pct": 4.06,
-      "dist_confirmacion_pct": -1.01,
-      "dist_invalidacion_pct": -5.19,
-      "rsi": 51.9,
-      "fr": 82.4,
-      "vol_rel": 0.49,
-      "beta": 0.43,
+      "hoy_pct": 2.31,
+      "desde_alta_pct": 3.8,
+      "dist_confirmacion_pct": -0.76,
+      "dist_invalidacion_pct": -4.96,
+      "rsi": 51.0,
+      "fr": 81.8,
+      "vol_rel": 0.78,
+      "beta": 0.42,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 0,
+      "estado_cierre": "confirmada",
+      "ultimo_cierre_fecha": "2026-11-23",
+      "cierres_sobre_confirmacion": 1,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 304.04,
       "max_cierre": 314.09,
@@ -3019,21 +3011,19 @@
         "zona de demanda": "2026-11-17"
       },
       "escenario_entrada": {
-        "tipo": "rebote",
-        "nivel": 301.28,
-        "piso": "zona de demanda",
-        "inv": 298.39,
-        "detalle": "Llegó a su piso (zona de demanda: 298,39 a 301,28) el 17/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 306.87,
-        "vol_rel": 1.5
+        "tipo": "ruptura",
+        "nivel": 311.57,
+        "detalle": "Superó su nivel de confirmación (311,57): Cierre sobre 311,57 (techo de la zona de oferta 305,02–311,57).",
+        "fecha": "2026-11-23",
+        "precio": 313.95,
+        "vol_rel": 0.78
       },
       "espacio_libre": {
         "nivel": 323.78,
         "tipo": "techo de zona de oferta (el precio esta dentro)",
-        "espacio_pct": 2.87,
-        "riesgo_pct": 5.19,
-        "relacion": 0.55,
+        "espacio_pct": 3.13,
+        "riesgo_pct": 4.96,
+        "relacion": 0.63,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -3044,7 +3034,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.3% vs SMA200",
+            "valor": "sobre SMA50 y +14.1% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3058,21 +3048,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "52",
+            "valor": "51",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.6%",
+            "valor": "+2.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "49% del promedio",
+            "valor": "78% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3122,20 +3112,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 558.11,
-      "precio": 586.28,
+      "precio": 585.74,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.6,
-      "desde_alta_pct": 5.05,
-      "dist_confirmacion_pct": 8.31,
-      "dist_invalidacion_pct": -9.43,
-      "rsi": 45.1,
+      "hoy_pct": 1.51,
+      "desde_alta_pct": 4.95,
+      "dist_confirmacion_pct": 8.41,
+      "dist_invalidacion_pct": -9.35,
+      "rsi": 44.9,
       "fr": 86.4,
-      "vol_rel": 0.76,
-      "beta": 0.09,
+      "vol_rel": 1.0,
+      "beta": 0.08,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 538.33,
@@ -3148,20 +3138,20 @@
       "espacio_libre": {
         "nivel": 614.41,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.8,
-        "riesgo_pct": 9.43,
-        "relacion": 0.51,
+        "espacio_pct": 4.89,
+        "riesgo_pct": 9.35,
+        "relacion": 0.52,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +15.8% vs SMA200",
+            "valor": "sobre SMA50 y +15.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3182,14 +3172,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.6%",
+            "valor": "+1.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "76% del promedio",
+            "ok": true,
+            "valor": "100% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3239,20 +3229,20 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 73.29,
-      "precio": 74.01,
+      "precio": 73.8,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -1.15,
-      "desde_alta_pct": 0.98,
-      "dist_confirmacion_pct": 8.05,
-      "dist_invalidacion_pct": -1.13,
-      "rsi": 37.4,
-      "fr": 80.3,
-      "vol_rel": 0.66,
-      "beta": -0.16,
+      "hoy_pct": -1.43,
+      "desde_alta_pct": 0.7,
+      "dist_confirmacion_pct": 8.36,
+      "dist_invalidacion_pct": -0.85,
+      "rsi": 36.7,
+      "fr": 80.6,
+      "vol_rel": 1.16,
+      "beta": -0.17,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
-      "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "en_zona",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 72.98,
@@ -3261,40 +3251,31 @@
       "toques": {
         "zona de demanda": "2026-11-19"
       },
-      "escenario_entrada": {
-        "tipo": "rebote",
-        "nivel": 74.5,
-        "piso": "zona de demanda",
-        "inv": 73.17,
-        "detalle": "Llegó a su piso (zona de demanda: 73,17 a 74,50) el 19/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 74.87,
-        "vol_rel": 1.2
-      },
+      "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 77.58,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.82,
-        "riesgo_pct": 1.13,
-        "relacion": 4.25,
+        "espacio_pct": 5.12,
+        "riesgo_pct": 0.85,
+        "relacion": 6.0,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.9% vs SMA200",
+            "valor": "sobre SMA50 y +7.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "80",
+            "valor": "81",
             "lectura": "pide 70 o más"
           },
           {
@@ -3308,14 +3289,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-1.1%",
+            "valor": "-1.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "66% del promedio",
+            "ok": true,
+            "valor": "116% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3365,22 +3346,22 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 65.21,
-      "precio": 63.79,
+      "precio": 63.77,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -0.04,
-      "desde_alta_pct": -2.18,
-      "dist_confirmacion_pct": 14.58,
-      "dist_invalidacion_pct": 1.9,
-      "rsi": 47.8,
+      "hoy_pct": -0.08,
+      "desde_alta_pct": -2.21,
+      "dist_confirmacion_pct": 14.62,
+      "dist_invalidacion_pct": 1.93,
+      "rsi": 47.7,
       "fr": 75.7,
-      "vol_rel": 0.75,
-      "beta": -0.11,
+      "vol_rel": 0.9,
+      "beta": -0.12,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 3,
+      "cierres_bajo_invalidacion": 4,
       "min_cierre": 63.36,
       "max_cierre": 66.81,
       "cierres_bajo_sma50": 0,
@@ -3389,7 +3370,7 @@
       "espacio_libre": {
         "nivel": 66.96,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.96,
+        "espacio_pct": 5.0,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -3423,14 +3404,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.0%",
+            "valor": "-0.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "75% del promedio",
+            "valor": "90% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3482,31 +3463,31 @@
       },
       "fecha_alta": "2026-10-27",
       "precio_alta": 98.28,
-      "precio": 86.98,
+      "precio": 86.03,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 7.04,
-      "desde_alta_pct": -11.5,
-      "dist_confirmacion_pct": 18.43,
-      "dist_invalidacion_pct": 1.86,
-      "rsi": 44.3,
-      "fr": 41.9,
-      "vol_rel": 1.28,
-      "beta": 1.55,
+      "hoy_pct": 5.87,
+      "desde_alta_pct": -12.46,
+      "dist_confirmacion_pct": 19.74,
+      "dist_invalidacion_pct": 2.99,
+      "rsi": 43.1,
+      "fr": 39.6,
+      "vol_rel": 2.0,
+      "beta": 1.51,
       "estado": "bajo_invalidacion",
       "estado_etiqueta": "Bajo la invalidación (intradía)",
       "estado_cierre": "invalidada",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
-      "cierres_bajo_invalidacion": 2,
+      "cierres_bajo_invalidacion": 3,
       "min_cierre": 81.26,
       "max_cierre": 100.26,
-      "cierres_bajo_sma50": 4,
+      "cierres_bajo_sma50": 5,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 98.86,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 13.66,
+        "espacio_pct": 14.91,
         "riesgo_pct": null,
         "relacion": null,
         "menor_que_riesgo": null
@@ -3519,35 +3500,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y -5.8% vs SMA200",
+            "valor": "bajo SMA50 y -6.8% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": false,
-            "valor": "42",
+            "valor": "40",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "44",
+            "valor": "43",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+7.0%",
+            "valor": "+5.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "128% del promedio",
+            "valor": "200% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3573,8 +3554,8 @@
       ],
       "salida_sugerida": [
         "Cerró bajo el nivel de invalidación: la idea de apoyo ya no vale.",
-        "4 cierres seguidos bajo la media de 50 ruedas.",
-        "La fuerza relativa cayó a 42 (menos de 50)."
+        "5 cierres seguidos bajo la media de 50 ruedas.",
+        "La fuerza relativa cayó a 40 (menos de 50)."
       ]
     },
     {
@@ -3598,20 +3579,20 @@
       },
       "fecha_alta": "2026-10-30",
       "precio_alta": 96.54,
-      "precio": 101.0,
+      "precio": 100.72,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.06,
-      "desde_alta_pct": 4.62,
-      "dist_confirmacion_pct": 1.85,
-      "dist_invalidacion_pct": -5.23,
-      "rsi": 55.9,
-      "fr": 96.8,
-      "vol_rel": 0.76,
-      "beta": 0.15,
+      "hoy_pct": 0.78,
+      "desde_alta_pct": 4.33,
+      "dist_confirmacion_pct": 2.13,
+      "dist_invalidacion_pct": -4.96,
+      "rsi": 55.2,
+      "fr": 97.1,
+      "vol_rel": 1.26,
+      "beta": 0.13,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 96.54,
@@ -3622,20 +3603,20 @@
       "espacio_libre": {
         "nivel": 104.84,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.8,
-        "riesgo_pct": 5.23,
-        "relacion": 0.73,
+        "espacio_pct": 4.09,
+        "riesgo_pct": 4.96,
+        "relacion": 0.82,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +15.8% vs SMA200",
+            "valor": "sobre SMA50 y +15.5% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3649,21 +3630,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "56",
+            "valor": "55",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.1%",
+            "valor": "+0.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "76% del promedio",
+            "ok": true,
+            "valor": "126% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3710,35 +3691,44 @@
       },
       "fecha_alta": "2026-11-02",
       "precio_alta": 58.78,
-      "precio": 55.19,
+      "precio": 55.24,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.57,
-      "desde_alta_pct": -6.11,
-      "dist_confirmacion_pct": 10.93,
-      "dist_invalidacion_pct": -14.35,
-      "rsi": 40.8,
-      "fr": 81.2,
-      "vol_rel": 0.53,
-      "beta": 0.87,
+      "hoy_pct": 3.66,
+      "desde_alta_pct": -6.02,
+      "dist_confirmacion_pct": 10.83,
+      "dist_invalidacion_pct": -14.43,
+      "rsi": 40.9,
+      "fr": 82.1,
+      "vol_rel": 0.92,
+      "beta": 0.89,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 53.29,
       "max_cierre": 60.05,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 2,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 55.1438,
+        "piso": "zona de demanda",
+        "inv": 47.27,
+        "detalle": "Llegó a su piso (zona de demanda: 47,27 a 55,14) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 55.24,
+        "vol_rel": 0.92
+      },
       "espacio_libre": {
         "nivel": 59.32,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 7.48,
-        "riesgo_pct": 14.35,
-        "relacion": 0.52,
+        "espacio_pct": 7.39,
+        "riesgo_pct": 14.43,
+        "relacion": 0.51,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -3749,14 +3739,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": false,
-            "valor": "bajo SMA50 y +9.6% vs SMA200",
+            "valor": "bajo SMA50 y +9.7% vs SMA200",
             "lectura": "no está sobre las dos medias"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "81",
+            "valor": "82",
             "lectura": "pide 70 o más"
           },
           {
@@ -3770,14 +3760,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.6%",
+            "valor": "+3.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "53% del promedio",
+            "valor": "92% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3801,7 +3791,9 @@
           "techo": 55.1438
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "2 cierres seguidos bajo la media de 50 ruedas."
+      ]
     },
     {
       "ticker": "TRV",
@@ -3824,20 +3816,20 @@
       },
       "fecha_alta": "2026-11-03",
       "precio_alta": 395.41,
-      "precio": 395.61,
+      "precio": 394.71,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.6,
-      "desde_alta_pct": 0.05,
-      "dist_confirmacion_pct": 3.1,
-      "dist_invalidacion_pct": -1.43,
-      "rsi": 50.2,
-      "fr": 92.5,
-      "vol_rel": 0.46,
+      "hoy_pct": 0.37,
+      "desde_alta_pct": -0.18,
+      "dist_confirmacion_pct": 3.33,
+      "dist_invalidacion_pct": -1.21,
+      "rsi": 49.4,
+      "fr": 92.2,
+      "vol_rel": 0.95,
       "beta": 0.14,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 390.61,
@@ -3846,13 +3838,22 @@
       "toques": {
         "zona de demanda": "2026-11-09"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 394.16,
+        "piso": "zona de demanda",
+        "inv": 389.94,
+        "detalle": "Llegó a su piso (zona de demanda: 389,94 a 394,16) el 09/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 394.71,
+        "vol_rel": 0.95
+      },
       "espacio_libre": {
         "nivel": 402.89,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.84,
-        "riesgo_pct": 1.43,
-        "relacion": 1.28,
+        "espacio_pct": 2.07,
+        "riesgo_pct": 1.21,
+        "relacion": 1.71,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -3863,7 +3864,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +17.2% vs SMA200",
+            "valor": "sobre SMA50 y +16.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3877,21 +3878,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "50",
+            "valor": "49",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "46% del promedio",
+            "valor": "95% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -3938,44 +3939,44 @@
       },
       "fecha_alta": "2026-11-03",
       "precio_alta": 230.11,
-      "precio": 226.48,
+      "precio": 225.66,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.78,
-      "desde_alta_pct": -1.58,
-      "dist_confirmacion_pct": 5.14,
-      "dist_invalidacion_pct": -10.17,
-      "rsi": 46.5,
-      "fr": 90.5,
-      "vol_rel": 0.73,
+      "hoy_pct": 2.41,
+      "desde_alta_pct": -1.93,
+      "dist_confirmacion_pct": 5.53,
+      "dist_invalidacion_pct": -9.84,
+      "rsi": 45.7,
+      "fr": 89.9,
+      "vol_rel": 1.16,
       "beta": 0.77,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 220.36,
       "max_cierre": 236.11,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 229.75,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.44,
-        "riesgo_pct": 10.17,
-        "relacion": 0.14,
+        "espacio_pct": 1.81,
+        "riesgo_pct": 9.84,
+        "relacion": 0.18,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +12.8% vs SMA200",
+            "valor": "sobre SMA50 y +12.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -3996,14 +3997,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.8%",
+            "valor": "+2.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "73% del promedio",
+            "ok": true,
+            "valor": "116% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4050,20 +4051,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 204.82,
-      "precio": 207.52,
+      "precio": 207.1,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.63,
-      "desde_alta_pct": 1.32,
-      "dist_confirmacion_pct": 3.12,
-      "dist_invalidacion_pct": -4.99,
-      "rsi": 56.5,
+      "hoy_pct": 0.43,
+      "desde_alta_pct": 1.11,
+      "dist_confirmacion_pct": 3.33,
+      "dist_invalidacion_pct": -4.79,
+      "rsi": 55.9,
       "fr": 94.8,
-      "vol_rel": 0.72,
-      "beta": -0.06,
+      "vol_rel": 1.19,
+      "beta": -0.07,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 204.37,
@@ -4074,20 +4075,20 @@
       "espacio_libre": {
         "nivel": 209.43,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.92,
-        "riesgo_pct": 4.99,
-        "relacion": 0.18,
+        "espacio_pct": 1.13,
+        "riesgo_pct": 4.79,
+        "relacion": 0.23,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +17.0% vs SMA200",
+            "valor": "sobre SMA50 y +16.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4108,14 +4109,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "72% del promedio",
+            "ok": true,
+            "valor": "119% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4162,24 +4163,24 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 248.35,
-      "precio": 257.46,
+      "precio": 256.71,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.15,
-      "desde_alta_pct": 3.67,
-      "dist_confirmacion_pct": 0.51,
-      "dist_invalidacion_pct": -5.49,
-      "rsi": 58.1,
+      "hoy_pct": 2.85,
+      "desde_alta_pct": 3.37,
+      "dist_confirmacion_pct": 0.81,
+      "dist_invalidacion_pct": -5.22,
+      "rsi": 57.5,
       "fr": 95.7,
-      "vol_rel": 0.69,
-      "beta": 0.52,
+      "vol_rel": 1.1,
+      "beta": 0.51,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 247.13,
-      "max_cierre": 254.87,
+      "max_cierre": 256.71,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-19"
@@ -4190,27 +4191,27 @@
         "piso": "zona de demanda",
         "inv": 243.32,
         "detalle": "Llegó a su piso (zona de demanda: 243,32 a 246,15) el 19/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 249.59,
-        "vol_rel": 0.97
+        "fecha": "2026-11-23",
+        "precio": 256.71,
+        "vol_rel": 1.1
       },
       "espacio_libre": {
         "nivel": 258.78,
         "tipo": "techo de zona de oferta (el precio esta dentro)",
-        "espacio_pct": 0.51,
-        "riesgo_pct": 5.49,
-        "relacion": 0.09,
+        "espacio_pct": 0.81,
+        "riesgo_pct": 5.22,
+        "relacion": 0.15,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +24.3% vs SMA200",
+            "valor": "sobre SMA50 y +23.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4231,14 +4232,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.1%",
+            "valor": "+2.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "69% del promedio",
+            "ok": true,
+            "valor": "110% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4285,20 +4286,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 165.4,
-      "precio": 170.12,
+      "precio": 169.6,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.44,
-      "desde_alta_pct": 2.85,
-      "dist_confirmacion_pct": 0.24,
-      "dist_invalidacion_pct": -4.01,
-      "rsi": 66.6,
-      "fr": 94.2,
-      "vol_rel": 0.58,
-      "beta": -0.04,
+      "hoy_pct": 0.14,
+      "desde_alta_pct": 2.54,
+      "dist_confirmacion_pct": 0.54,
+      "dist_invalidacion_pct": -3.71,
+      "rsi": 65.9,
+      "fr": 93.9,
+      "vol_rel": 1.05,
+      "beta": -0.05,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 165.4,
@@ -4307,33 +4308,24 @@
       "toques": {
         "zona de demanda": "2026-11-06"
       },
-      "escenario_entrada": {
-        "tipo": "rebote",
-        "nivel": 166.32,
-        "piso": "zona de demanda",
-        "inv": 163.3,
-        "detalle": "Llegó a su piso (zona de demanda: 163,30 a 166,32) el 06/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 169.37,
-        "vol_rel": 1.24
-      },
+      "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 173.59,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 2.04,
-        "riesgo_pct": 4.01,
-        "relacion": 0.51,
+        "espacio_pct": 2.35,
+        "riesgo_pct": 3.71,
+        "relacion": 0.63,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.5% vs SMA200",
+            "valor": "sobre SMA50 y +14.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4347,21 +4339,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "67",
+            "valor": "66",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.4%",
+            "valor": "+0.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "58% del promedio",
+            "ok": true,
+            "valor": "105% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4408,20 +4400,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 291.31,
-      "precio": 288.94,
+      "precio": 288.45,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.96,
-      "desde_alta_pct": -0.81,
-      "dist_confirmacion_pct": 4.84,
-      "dist_invalidacion_pct": -6.26,
-      "rsi": 53.7,
+      "hoy_pct": 0.79,
+      "desde_alta_pct": -0.98,
+      "dist_confirmacion_pct": 5.02,
+      "dist_invalidacion_pct": -6.1,
+      "rsi": 53.1,
       "fr": 95.1,
-      "vol_rel": 0.71,
-      "beta": 0.17,
+      "vol_rel": 1.22,
+      "beta": 0.16,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 283.54,
@@ -4432,20 +4424,20 @@
       "espacio_libre": {
         "nivel": 302.93,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 4.84,
-        "riesgo_pct": 6.26,
-        "relacion": 0.77,
+        "espacio_pct": 5.02,
+        "riesgo_pct": 6.1,
+        "relacion": 0.82,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +20.2% vs SMA200",
+            "valor": "sobre SMA50 y +20.0% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4459,21 +4451,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "54",
+            "valor": "53",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.0%",
+            "valor": "+0.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "71% del promedio",
+            "ok": true,
+            "valor": "122% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4520,20 +4512,20 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 300.68,
-      "precio": 305.19,
+      "precio": 305.91,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 3.56,
-      "desde_alta_pct": 1.5,
-      "dist_confirmacion_pct": 4.5,
-      "dist_invalidacion_pct": -3.73,
-      "rsi": 50.4,
+      "hoy_pct": 3.8,
+      "desde_alta_pct": 1.74,
+      "dist_confirmacion_pct": 4.26,
+      "dist_invalidacion_pct": -3.96,
+      "rsi": 50.9,
       "fr": 89.0,
-      "vol_rel": 0.5,
-      "beta": 0.51,
+      "vol_rel": 1.0,
+      "beta": 0.53,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 294.7,
@@ -4542,24 +4534,33 @@
       "toques": {
         "zona de demanda": "2026-11-23"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 300.71,
+        "piso": "zona de demanda",
+        "inv": 293.81,
+        "detalle": "Llegó a su piso (zona de demanda: 293,81 a 300,71) el 23/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 305.91,
+        "vol_rel": 1.0
+      },
       "espacio_libre": {
-        "nivel": 305.83,
-        "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.21,
-        "riesgo_pct": 3.73,
-        "relacion": 0.06,
-        "menor_que_riesgo": true
+        "nivel": 318.93,
+        "tipo": "maximo de 52 semanas",
+        "espacio_pct": 4.26,
+        "riesgo_pct": 3.96,
+        "relacion": 1.08,
+        "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +10.3% vs SMA200",
+            "valor": "sobre SMA50 y +10.5% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4573,21 +4574,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "50",
+            "valor": "51",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.6%",
+            "valor": "+3.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "50% del promedio",
+            "ok": true,
+            "valor": "100% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4634,24 +4635,24 @@
       },
       "fecha_alta": "2026-11-06",
       "precio_alta": 125.52,
-      "precio": 129.37,
+      "precio": 129.58,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.11,
-      "desde_alta_pct": 3.07,
-      "dist_confirmacion_pct": 4.23,
-      "dist_invalidacion_pct": -5.91,
-      "rsi": 63.4,
-      "fr": 93.9,
-      "vol_rel": 0.62,
+      "hoy_pct": 1.27,
+      "desde_alta_pct": 3.23,
+      "dist_confirmacion_pct": 4.06,
+      "dist_invalidacion_pct": -6.07,
+      "rsi": 63.9,
+      "fr": 94.5,
+      "vol_rel": 1.02,
       "beta": 0.04,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 125.52,
-      "max_cierre": 128.41,
+      "max_cierre": 129.58,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-09"
@@ -4662,27 +4663,27 @@
         "piso": "zona de demanda",
         "inv": 121.72,
         "detalle": "Llegó a su piso (zona de demanda: 121,72 a 124,10) el 09/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 127.95,
-        "vol_rel": 1.8
+        "fecha": "2026-11-23",
+        "precio": 129.58,
+        "vol_rel": 1.02
       },
       "espacio_libre": {
         "nivel": 131.82,
         "tipo": "techo de zona de oferta (el precio esta dentro)",
-        "espacio_pct": 1.89,
-        "riesgo_pct": 5.91,
-        "relacion": 0.32,
+        "espacio_pct": 1.73,
+        "riesgo_pct": 6.07,
+        "relacion": 0.28,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +9.0% vs SMA200",
+            "valor": "sobre SMA50 y +9.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -4696,21 +4697,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "63",
+            "valor": "64",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.1%",
+            "valor": "+1.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "62% del promedio",
+            "ok": true,
+            "valor": "102% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4757,20 +4758,20 @@
       },
       "fecha_alta": "2026-11-09",
       "precio_alta": 88.27,
-      "precio": 86.07,
+      "precio": 85.29,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.76,
-      "desde_alta_pct": -2.49,
-      "dist_confirmacion_pct": 3.36,
-      "dist_invalidacion_pct": -10.67,
-      "rsi": 49.0,
-      "fr": 78.3,
-      "vol_rel": 0.73,
-      "beta": 0.74,
+      "hoy_pct": 0.84,
+      "desde_alta_pct": -3.38,
+      "dist_confirmacion_pct": 4.3,
+      "dist_invalidacion_pct": -9.85,
+      "rsi": 47.7,
+      "fr": 76.0,
+      "vol_rel": 1.53,
+      "beta": 0.71,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 82.54,
@@ -4781,48 +4782,48 @@
       "espacio_libre": {
         "nivel": 90.72,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.4,
-        "riesgo_pct": 10.67,
-        "relacion": 0.51,
+        "espacio_pct": 6.37,
+        "riesgo_pct": 9.85,
+        "relacion": 0.65,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +15.8% vs SMA200",
+            "valor": "sobre SMA50 y +14.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "78",
+            "valor": "76",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "49",
+            "valor": "48",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.8%",
+            "valor": "+0.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "73% del promedio",
+            "ok": true,
+            "valor": "153% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4869,20 +4870,20 @@
       },
       "fecha_alta": "2026-11-13",
       "precio_alta": 522.49,
-      "precio": 515.14,
+      "precio": 517.0,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.45,
-      "desde_alta_pct": -1.41,
-      "dist_confirmacion_pct": 3.54,
-      "dist_invalidacion_pct": -2.52,
-      "rsi": 52.3,
-      "fr": 77.2,
-      "vol_rel": 0.6,
-      "beta": 0.27,
+      "hoy_pct": 2.82,
+      "desde_alta_pct": -1.05,
+      "dist_confirmacion_pct": 3.17,
+      "dist_invalidacion_pct": -2.87,
+      "rsi": 53.4,
+      "fr": 77.7,
+      "vol_rel": 1.09,
+      "beta": 0.29,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 502.83,
@@ -4891,52 +4892,61 @@
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 505.29,
+        "piso": "zona de demanda",
+        "inv": 502.18,
+        "detalle": "Llegó a su piso (zona de demanda: 502,18 a 505,29) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 517.0,
+        "vol_rel": 1.09
+      },
       "espacio_libre": {
         "nivel": 521.23,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.18,
-        "riesgo_pct": 2.52,
-        "relacion": 0.47,
+        "espacio_pct": 0.82,
+        "riesgo_pct": 2.87,
+        "relacion": 0.29,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +3.8% vs SMA200",
+            "valor": "sobre SMA50 y +4.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "77",
+            "valor": "78",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "52",
+            "valor": "53",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.5%",
+            "valor": "+2.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "60% del promedio",
+            "ok": true,
+            "valor": "109% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -4990,17 +5000,17 @@
       "dist_confirmacion_pct": -3.59,
       "dist_invalidacion_pct": -8.29,
       "rsi": 72.4,
-      "fr": 96.5,
-      "vol_rel": 0.78,
-      "beta": -0.15,
+      "fr": 96.8,
+      "vol_rel": 1.04,
+      "beta": -0.16,
       "estado": "sobre_confirmacion",
       "estado_etiqueta": "Sobre la confirmación (intradía)",
       "estado_cierre": "confirmada",
-      "ultimo_cierre_fecha": "2026-11-20",
-      "cierres_sobre_confirmacion": 2,
+      "ultimo_cierre_fecha": "2026-11-23",
+      "cierres_sobre_confirmacion": 3,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 26.67,
-      "max_cierre": 27.29,
+      "max_cierre": 27.85,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-13"
@@ -5009,9 +5019,9 @@
         "tipo": "ruptura",
         "nivel": 26.85,
         "detalle": "Superó su nivel de confirmación (26,85): Cierre sobre 26,85 (resistencia más cercana o máximo de 52 semanas).",
-        "fecha": "2026-11-20",
-        "precio": 27.29,
-        "vol_rel": 1.38
+        "fecha": "2026-11-23",
+        "precio": 27.85,
+        "vol_rel": 1.04
       },
       "espacio_libre": {
         "nivel": 28.3,
@@ -5022,7 +5032,7 @@
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
@@ -5036,7 +5046,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "96",
+            "valor": "97",
             "lectura": "pide 70 o más"
           },
           {
@@ -5056,8 +5066,8 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "78% del promedio",
+            "ok": true,
+            "valor": "104% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5081,7 +5091,9 @@
           "techo": 27.34
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "Confirmó con 3 cierres seguidos: el escenario se cumplió (pasarlo a Cartera o sacarlo de la lista)."
+      ]
     },
     {
       "ticker": "TM",
@@ -5104,20 +5116,20 @@
       },
       "fecha_alta": "2026-11-13",
       "precio_alta": 209.68,
-      "precio": 212.45,
+      "precio": 212.17,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.39,
-      "desde_alta_pct": 1.32,
-      "dist_confirmacion_pct": 3.48,
-      "dist_invalidacion_pct": -7.68,
-      "rsi": 67.6,
-      "fr": 89.9,
-      "vol_rel": 0.48,
-      "beta": -0.09,
+      "hoy_pct": 2.26,
+      "desde_alta_pct": 1.19,
+      "dist_confirmacion_pct": 3.62,
+      "dist_invalidacion_pct": -7.56,
+      "rsi": 67.4,
+      "fr": 90.2,
+      "vol_rel": 0.79,
+      "beta": -0.11,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 207.49,
@@ -5130,9 +5142,9 @@
       "espacio_libre": {
         "nivel": 214.07,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.76,
-        "riesgo_pct": 7.68,
-        "relacion": 0.1,
+        "espacio_pct": 0.9,
+        "riesgo_pct": 7.56,
+        "relacion": 0.12,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5143,7 +5155,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.8% vs SMA200",
+            "valor": "sobre SMA50 y +7.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5157,21 +5169,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "68",
+            "valor": "67",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.4%",
+            "valor": "+2.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "48% del promedio",
+            "valor": "79% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5218,20 +5230,20 @@
       },
       "fecha_alta": "2026-11-15",
       "precio_alta": 109.43,
-      "precio": 107.51,
+      "precio": 107.72,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.06,
-      "desde_alta_pct": -1.75,
-      "dist_confirmacion_pct": 4.54,
-      "dist_invalidacion_pct": -2.87,
-      "rsi": 55.3,
-      "fr": 74.9,
-      "vol_rel": 0.33,
-      "beta": 0.1,
+      "hoy_pct": 1.26,
+      "desde_alta_pct": -1.56,
+      "dist_confirmacion_pct": 4.34,
+      "dist_invalidacion_pct": -3.06,
+      "rsi": 55.6,
+      "fr": 75.1,
+      "vol_rel": 0.76,
+      "beta": 0.11,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 105.25,
@@ -5244,9 +5256,9 @@
       "espacio_libre": {
         "nivel": 107.89,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.35,
-        "riesgo_pct": 2.87,
-        "relacion": 0.12,
+        "espacio_pct": 0.16,
+        "riesgo_pct": 3.06,
+        "relacion": 0.05,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5257,7 +5269,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +5.4% vs SMA200",
+            "valor": "sobre SMA50 y +5.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5271,21 +5283,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "55",
+            "valor": "56",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.1%",
+            "valor": "+1.3%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "33% del promedio",
+            "valor": "76% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5332,35 +5344,44 @@
       },
       "fecha_alta": "2026-11-15",
       "precio_alta": 32.38,
-      "precio": 33.45,
+      "precio": 33.71,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.86,
-      "desde_alta_pct": 3.3,
-      "dist_confirmacion_pct": 4.16,
-      "dist_invalidacion_pct": -6.64,
-      "rsi": 50.7,
+      "hoy_pct": 3.66,
+      "desde_alta_pct": 4.11,
+      "dist_confirmacion_pct": 3.35,
+      "dist_invalidacion_pct": -7.36,
+      "rsi": 52.0,
       "fr": 99.7,
-      "vol_rel": 0.39,
-      "beta": 0.7,
+      "vol_rel": 0.66,
+      "beta": 0.75,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 32.38,
-      "max_cierre": 33.34,
+      "max_cierre": 33.71,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-16"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 32.58,
+        "piso": "zona de demanda",
+        "inv": 31.23,
+        "detalle": "Llegó a su piso (zona de demanda: 31,23 a 32,58) el 16/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 33.71,
+        "vol_rel": 0.66
+      },
       "espacio_libre": {
         "nivel": 34.84,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 4.16,
-        "riesgo_pct": 6.64,
-        "relacion": 0.63,
+        "espacio_pct": 3.35,
+        "riesgo_pct": 7.36,
+        "relacion": 0.46,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5371,7 +5392,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +34.8% vs SMA200",
+            "valor": "sobre SMA50 y +35.8% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5385,21 +5406,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "51",
+            "valor": "52",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.9%",
+            "valor": "+3.7%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "39% del promedio",
+            "valor": "66% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5446,39 +5467,48 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 410.91,
-      "precio": 399.24,
+      "precio": 399.25,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.72,
+      "hoy_pct": 1.73,
       "desde_alta_pct": -2.84,
       "dist_confirmacion_pct": 4.09,
       "dist_invalidacion_pct": -1.77,
       "rsi": 42.6,
       "fr": 83.2,
-      "vol_rel": 0.99,
-      "beta": 0.61,
+      "vol_rel": 1.39,
+      "beta": 0.62,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 392.47,
       "max_cierre": 410.91,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 2,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 393.97,
+        "piso": "zona de demanda",
+        "inv": 392.18,
+        "detalle": "Llegó a su piso (zona de demanda: 392,18 a 393,97) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 399.25,
+        "vol_rel": 1.39
+      },
       "espacio_libre": {
         "nivel": 416.46,
         "tipo": "piso de zona de oferta",
         "espacio_pct": 4.31,
         "riesgo_pct": 1.77,
-        "relacion": 2.44,
+        "relacion": 2.43,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 6,
         "items": [
           {
@@ -5512,8 +5542,8 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "99% del promedio",
+            "ok": true,
+            "valor": "139% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5537,7 +5567,9 @@
           "techo": 393.97
         }
       ],
-      "salida_sugerida": []
+      "salida_sugerida": [
+        "2 cierres seguidos bajo la media de 50 ruedas."
+      ]
     },
     {
       "ticker": "FDX",
@@ -5560,20 +5592,20 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 318.31,
-      "precio": 311.09,
+      "precio": 310.67,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.34,
-      "desde_alta_pct": -2.27,
-      "dist_confirmacion_pct": 6.72,
-      "dist_invalidacion_pct": -10.24,
-      "rsi": 46.1,
+      "hoy_pct": 2.2,
+      "desde_alta_pct": -2.4,
+      "dist_confirmacion_pct": 6.87,
+      "dist_invalidacion_pct": -10.12,
+      "rsi": 45.9,
       "fr": 61.0,
-      "vol_rel": 0.42,
-      "beta": 0.6,
+      "vol_rel": 0.74,
+      "beta": 0.61,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 303.99,
@@ -5584,9 +5616,9 @@
       "espacio_libre": {
         "nivel": 316.8,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.84,
-        "riesgo_pct": 10.24,
-        "relacion": 0.18,
+        "espacio_pct": 1.97,
+        "riesgo_pct": 10.12,
+        "relacion": 0.19,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5597,7 +5629,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +1.1% vs SMA200",
+            "valor": "sobre SMA50 y +1.0% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5618,14 +5650,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.3%",
+            "valor": "+2.2%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "42% del promedio",
+            "valor": "74% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5668,24 +5700,24 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 346.6,
-      "precio": 348.27,
+      "precio": 349.47,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.51,
-      "desde_alta_pct": 0.48,
-      "dist_confirmacion_pct": 6.35,
-      "dist_invalidacion_pct": -4.01,
-      "rsi": 54.6,
-      "fr": 82.9,
-      "vol_rel": 0.47,
-      "beta": 0.57,
+      "hoy_pct": 2.86,
+      "desde_alta_pct": 0.83,
+      "dist_confirmacion_pct": 5.98,
+      "dist_invalidacion_pct": -4.34,
+      "rsi": 55.2,
+      "fr": 84.7,
+      "vol_rel": 0.84,
+      "beta": 0.59,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 339.74,
-      "max_cierre": 346.6,
+      "max_cierre": 349.47,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-20"
@@ -5696,17 +5728,17 @@
         "piso": "zona de demanda",
         "inv": 334.3,
         "detalle": "Llegó a su piso (zona de demanda: 334,30 a 339,15) el 20/11 y la rueda cerró por encima.",
-        "fecha": "2026-11-20",
-        "precio": 339.74,
-        "vol_rel": 1.05
+        "fecha": "2026-11-23",
+        "precio": 349.47,
+        "vol_rel": 0.84
       },
       "espacio_libre": {
         "nivel": 363.74,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.44,
-        "riesgo_pct": 4.01,
-        "relacion": 1.11,
-        "menor_que_riesgo": false
+        "espacio_pct": 4.08,
+        "riesgo_pct": 4.34,
+        "relacion": 0.94,
+        "menor_que_riesgo": true
       },
       "checklist": {
         "cumple": 5,
@@ -5716,14 +5748,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +5.3% vs SMA200",
+            "valor": "sobre SMA50 y +5.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "83",
+            "valor": "85",
             "lectura": "pide 70 o más"
           },
           {
@@ -5737,14 +5769,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.5%",
+            "valor": "+2.9%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "47% del promedio",
+            "valor": "84% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5791,20 +5823,20 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 9.43,
-      "precio": 9.29,
+      "precio": 9.25,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.09,
-      "desde_alta_pct": -1.48,
-      "dist_confirmacion_pct": 24.11,
-      "dist_invalidacion_pct": -11.41,
-      "rsi": 51.1,
-      "fr": 85.8,
-      "vol_rel": 1.15,
-      "beta": 0.36,
+      "hoy_pct": 1.65,
+      "desde_alta_pct": -1.91,
+      "dist_confirmacion_pct": 24.65,
+      "dist_invalidacion_pct": -11.03,
+      "rsi": 50.0,
+      "fr": 85.5,
+      "vol_rel": 1.32,
+      "beta": 0.35,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 9.1,
@@ -5815,9 +5847,9 @@
       "espacio_libre": {
         "nivel": 9.82,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 5.71,
-        "riesgo_pct": 11.41,
-        "relacion": 0.5,
+        "espacio_pct": 6.16,
+        "riesgo_pct": 11.03,
+        "relacion": 0.56,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -5828,7 +5860,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +3.0% vs SMA200",
+            "valor": "sobre SMA50 y +2.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -5842,21 +5874,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "51",
+            "valor": "50",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.1%",
+            "valor": "+1.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": true,
-            "valor": "115% del promedio",
+            "valor": "132% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -5903,20 +5935,20 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 1382.75,
-      "precio": 1364.64,
+      "precio": 1364.6,
       "fecha_dato": "2026-11-23",
       "hoy_pct": 1.3,
       "desde_alta_pct": -1.31,
       "dist_confirmacion_pct": 8.11,
       "dist_invalidacion_pct": -4.89,
       "rsi": 42.8,
-      "fr": 96.0,
-      "vol_rel": 0.58,
+      "fr": 96.2,
+      "vol_rel": 0.91,
       "beta": 0.37,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 1347.11,
@@ -5927,11 +5959,11 @@
       },
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 1475.25,
-        "tipo": "maximo de 52 semanas",
-        "espacio_pct": 8.11,
+        "nivel": 1431.67,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 4.91,
         "riesgo_pct": 4.89,
-        "relacion": 1.66,
+        "relacion": 1.0,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -5970,7 +6002,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "58% del promedio",
+            "valor": "91% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6017,20 +6049,20 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 99.69,
-      "precio": 97.65,
+      "precio": 97.57,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.6,
-      "desde_alta_pct": -2.05,
-      "dist_confirmacion_pct": 5.19,
-      "dist_invalidacion_pct": -2.17,
-      "rsi": 60.1,
+      "hoy_pct": 0.52,
+      "desde_alta_pct": -2.13,
+      "dist_confirmacion_pct": 5.28,
+      "dist_invalidacion_pct": -2.09,
+      "rsi": 59.9,
       "fr": 86.7,
-      "vol_rel": 0.9,
-      "beta": -0.06,
+      "vol_rel": 1.07,
+      "beta": -0.07,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 97.07,
@@ -6041,22 +6073,22 @@
       },
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 102.72,
-        "tipo": "maximo de 52 semanas",
-        "espacio_pct": 5.19,
-        "riesgo_pct": 2.17,
-        "relacion": 2.39,
+        "nivel": 102.16,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 4.7,
+        "riesgo_pct": 2.09,
+        "relacion": 2.25,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.5% vs SMA200",
+            "valor": "sobre SMA50 y +14.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6077,14 +6109,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.6%",
+            "valor": "+0.5%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "90% del promedio",
+            "ok": true,
+            "valor": "107% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6131,44 +6163,44 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 300.9,
-      "precio": 289.35,
+      "precio": 288.89,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.72,
-      "desde_alta_pct": -3.84,
-      "dist_confirmacion_pct": 8.7,
-      "dist_invalidacion_pct": -1.58,
-      "rsi": 39.5,
-      "fr": 64.2,
-      "vol_rel": 0.67,
+      "hoy_pct": 0.56,
+      "desde_alta_pct": -3.99,
+      "dist_confirmacion_pct": 8.88,
+      "dist_invalidacion_pct": -1.42,
+      "rsi": 39.0,
+      "fr": 63.9,
+      "vol_rel": 1.21,
       "beta": 0.31,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 287.29,
       "max_cierre": 300.9,
-      "cierres_bajo_sma50": 1,
+      "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 302.92,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.69,
-        "riesgo_pct": 1.58,
-        "relacion": 2.97,
+        "espacio_pct": 4.86,
+        "riesgo_pct": 1.42,
+        "relacion": 3.41,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +5.6% vs SMA200",
+            "valor": "sobre SMA50 y +5.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6182,21 +6214,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": false,
-            "valor": "40",
+            "valor": "39",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.7%",
+            "valor": "+0.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "67% del promedio",
+            "ok": true,
+            "valor": "121% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6243,35 +6275,44 @@
       },
       "fecha_alta": "2026-11-18",
       "precio_alta": 446.38,
-      "precio": 452.19,
+      "precio": 451.96,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.87,
-      "desde_alta_pct": 1.3,
-      "dist_confirmacion_pct": 7.47,
-      "dist_invalidacion_pct": -2.82,
-      "rsi": 42.7,
-      "fr": 84.1,
-      "vol_rel": 0.55,
+      "hoy_pct": 2.82,
+      "desde_alta_pct": 1.25,
+      "dist_confirmacion_pct": 7.53,
+      "dist_invalidacion_pct": -2.77,
+      "rsi": 42.6,
+      "fr": 83.8,
+      "vol_rel": 0.97,
       "beta": 0.44,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 439.57,
-      "max_cierre": 446.38,
+      "max_cierre": 451.96,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-19"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 444.65,
+        "piso": "zona de demanda",
+        "inv": 439.45,
+        "detalle": "Llegó a su piso (zona de demanda: 439,45 a 444,65) el 19/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 451.96,
+        "vol_rel": 0.97
+      },
       "espacio_libre": {
         "nivel": 472.41,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 4.47,
-        "riesgo_pct": 2.82,
-        "relacion": 1.59,
+        "espacio_pct": 4.52,
+        "riesgo_pct": 2.77,
+        "relacion": 1.63,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -6303,14 +6344,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.9%",
+            "valor": "+2.8%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "97% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6357,23 +6398,23 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 24.84,
-      "precio": 24.79,
+      "precio": 24.78,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -0.08,
-      "desde_alta_pct": -0.2,
-      "dist_confirmacion_pct": 6.17,
-      "dist_invalidacion_pct": -3.63,
-      "rsi": 55.1,
-      "fr": 76.0,
-      "vol_rel": 0.47,
+      "hoy_pct": -0.12,
+      "desde_alta_pct": -0.24,
+      "dist_confirmacion_pct": 6.21,
+      "dist_invalidacion_pct": -3.59,
+      "rsi": 55.0,
+      "fr": 76.3,
+      "vol_rel": 0.73,
       "beta": 0.07,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 24.81,
+      "min_cierre": 24.78,
       "max_cierre": 24.84,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -6381,9 +6422,9 @@
       "espacio_libre": {
         "nivel": 25.57,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.16,
-        "riesgo_pct": 3.63,
-        "relacion": 0.87,
+        "espacio_pct": 3.2,
+        "riesgo_pct": 3.59,
+        "relacion": 0.89,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -6422,7 +6463,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "47% del promedio",
+            "valor": "73% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6469,44 +6510,44 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 336.68,
-      "precio": 346.86,
+      "precio": 346.06,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.31,
-      "desde_alta_pct": 3.02,
-      "dist_confirmacion_pct": -0.21,
-      "dist_invalidacion_pct": -5.15,
-      "rsi": 59.2,
-      "fr": 87.9,
-      "vol_rel": 0.5,
+      "hoy_pct": 2.07,
+      "desde_alta_pct": 2.79,
+      "dist_confirmacion_pct": 0.02,
+      "dist_invalidacion_pct": -4.93,
+      "rsi": 58.7,
+      "fr": 87.6,
+      "vol_rel": 1.13,
       "beta": 0.36,
-      "estado": "sobre_confirmacion",
-      "estado_etiqueta": "Sobre la confirmación (intradía)",
+      "estado": "esperando",
+      "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 336.68,
-      "max_cierre": 339.04,
+      "max_cierre": 346.06,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 348.08,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.35,
-        "riesgo_pct": 5.15,
-        "relacion": 0.07,
+        "espacio_pct": 0.59,
+        "riesgo_pct": 4.93,
+        "relacion": 0.12,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +5.6% vs SMA200",
+            "valor": "sobre SMA50 y +5.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6527,14 +6568,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.3%",
+            "valor": "+2.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "50% del promedio",
+            "ok": true,
+            "valor": "113% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6581,35 +6622,44 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 572.04,
-      "precio": 574.24,
+      "precio": 572.36,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.74,
-      "desde_alta_pct": 0.38,
-      "dist_confirmacion_pct": 2.49,
-      "dist_invalidacion_pct": -2.55,
-      "rsi": 60.8,
-      "fr": 93.1,
-      "vol_rel": 0.55,
-      "beta": 0.15,
+      "hoy_pct": 0.41,
+      "desde_alta_pct": 0.06,
+      "dist_confirmacion_pct": 2.83,
+      "dist_invalidacion_pct": -2.23,
+      "rsi": 59.9,
+      "fr": 92.8,
+      "vol_rel": 0.9,
+      "beta": 0.14,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 570.0,
-      "max_cierre": 572.04,
+      "max_cierre": 572.36,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-20"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 571.1,
+        "piso": "zona de demanda",
+        "inv": 559.58,
+        "detalle": "Llegó a su piso (zona de demanda: 559,58 a 571,10) el 20/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 572.36,
+        "vol_rel": 0.9
+      },
       "espacio_libre": {
         "nivel": 589.83,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 2.71,
-        "riesgo_pct": 2.55,
-        "relacion": 1.06,
+        "espacio_pct": 3.05,
+        "riesgo_pct": 2.23,
+        "relacion": 1.37,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -6620,7 +6670,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +14.2% vs SMA200",
+            "valor": "sobre SMA50 y +13.8% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6634,21 +6684,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "61",
+            "valor": "60",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.7%",
+            "valor": "+0.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "90% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6695,74 +6745,83 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 626.5,
-      "precio": 637.24,
+      "precio": 635.48,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.86,
-      "desde_alta_pct": 1.71,
-      "dist_confirmacion_pct": 3.49,
-      "dist_invalidacion_pct": -3.27,
-      "rsi": 45.8,
-      "fr": 93.4,
-      "vol_rel": 0.65,
-      "beta": 0.38,
+      "hoy_pct": 1.58,
+      "desde_alta_pct": 1.43,
+      "dist_confirmacion_pct": 3.78,
+      "dist_invalidacion_pct": -3.0,
+      "rsi": 45.0,
+      "fr": 93.6,
+      "vol_rel": 1.09,
+      "beta": 0.37,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
-      "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "estado_cierre": "esperando",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 625.59,
-      "max_cierre": 626.5,
+      "max_cierre": 635.48,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-19"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 633.34,
+        "piso": "zona de demanda",
+        "inv": 616.42,
+        "detalle": "Llegó a su piso (zona de demanda: 616,42 a 633,34) el 19/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 635.48,
+        "vol_rel": 1.09
+      },
       "espacio_libre": {
         "nivel": 655.92,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 2.93,
-        "riesgo_pct": 3.27,
-        "relacion": 0.9,
-        "menor_que_riesgo": true
+        "espacio_pct": 3.22,
+        "riesgo_pct": 3.0,
+        "relacion": 1.07,
+        "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +17.2% vs SMA200",
+            "valor": "sobre SMA50 y +16.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "93",
+            "valor": "94",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "46",
+            "valor": "45",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.9%",
+            "valor": "+1.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "65% del promedio",
+            "ok": true,
+            "valor": "109% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6809,20 +6868,20 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 89.86,
-      "precio": 90.45,
+      "precio": 90.38,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -0.01,
-      "desde_alta_pct": 0.66,
-      "dist_confirmacion_pct": 3.26,
-      "dist_invalidacion_pct": -2.43,
-      "rsi": 56.5,
-      "fr": 82.1,
-      "vol_rel": 0.99,
+      "hoy_pct": -0.09,
+      "desde_alta_pct": 0.58,
+      "dist_confirmacion_pct": 3.34,
+      "dist_invalidacion_pct": -2.36,
+      "rsi": 56.2,
+      "fr": 82.4,
+      "vol_rel": 1.17,
       "beta": 0.01,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 89.86,
@@ -6831,24 +6890,33 @@
       "toques": {
         "zona de demanda": "2026-11-23"
       },
-      "escenario_entrada": null,
+      "escenario_entrada": {
+        "tipo": "rebote",
+        "nivel": 89.74,
+        "piso": "zona de demanda",
+        "inv": 88.25,
+        "detalle": "Llegó a su piso (zona de demanda: 88,25 a 89,74) el 23/11 y la rueda cerró por encima.",
+        "fecha": "2026-11-23",
+        "precio": 90.38,
+        "vol_rel": 1.17
+      },
       "espacio_libre": {
         "nivel": 91.25,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 0.88,
-        "riesgo_pct": 2.43,
-        "relacion": 0.36,
+        "espacio_pct": 0.96,
+        "riesgo_pct": 2.36,
+        "relacion": 0.41,
         "menor_que_riesgo": true
       },
       "checklist": {
-        "cumple": 4,
+        "cumple": 5,
         "total": 5,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.3% vs SMA200",
+            "valor": "sobre SMA50 y +7.2% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -6869,14 +6937,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "-0.0%",
+            "valor": "-0.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "99% del promedio",
+            "ok": true,
+            "valor": "117% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -6926,28 +6994,28 @@
       "dist_confirmacion_pct": 3.27,
       "dist_invalidacion_pct": -1.02,
       "rsi": 57.5,
-      "fr": 95.4,
-      "vol_rel": 0.39,
+      "fr": 96.0,
+      "vol_rel": 0.75,
       "beta": -0.11,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 301.19,
-      "max_cierre": 301.71,
+      "max_cierre": 302.11,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-19"
       },
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 316.14,
-        "tipo": "maximo de 52 semanas",
-        "espacio_pct": 4.64,
+        "nivel": 313.43,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 3.75,
         "riesgo_pct": 1.02,
-        "relacion": 4.54,
+        "relacion": 3.66,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -6965,7 +7033,7 @@
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "95",
+            "valor": "96",
             "lectura": "pide 70 o más"
           },
           {
@@ -6986,7 +7054,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "39% del promedio",
+            "valor": "75% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7033,23 +7101,23 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 34.68,
-      "precio": 34.18,
+      "precio": 34.27,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": -4.87,
-      "desde_alta_pct": -1.44,
-      "dist_confirmacion_pct": 12.55,
-      "dist_invalidacion_pct": -1.61,
-      "rsi": 57.4,
-      "fr": 83.5,
-      "vol_rel": 0.97,
+      "hoy_pct": -4.62,
+      "desde_alta_pct": -1.18,
+      "dist_confirmacion_pct": 12.26,
+      "dist_invalidacion_pct": -1.87,
+      "rsi": 58.0,
+      "fr": 84.4,
+      "vol_rel": 1.18,
       "beta": -0.99,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 34.68,
+      "min_cierre": 34.27,
       "max_cierre": 35.93,
       "cierres_bajo_sma50": 0,
       "toques": {},
@@ -7057,20 +7125,20 @@
       "espacio_libre": {
         "nivel": 38.47,
         "tipo": "maximo de 52 semanas",
-        "espacio_pct": 12.55,
-        "riesgo_pct": 1.61,
-        "relacion": 7.8,
+        "espacio_pct": 12.26,
+        "riesgo_pct": 1.87,
+        "relacion": 6.56,
         "menor_que_riesgo": false
       },
       "checklist": {
-        "cumple": 3,
+        "cumple": 4,
         "total": 5,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +2.1% vs SMA200",
+            "valor": "sobre SMA50 y +2.4% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7084,21 +7152,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "57",
+            "valor": "58",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": false,
-            "valor": "-4.9%",
+            "valor": "-4.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "97% del promedio",
+            "ok": true,
+            "valor": "118% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7141,33 +7209,33 @@
       },
       "fecha_alta": "2026-11-19",
       "precio_alta": 92.61,
-      "precio": 93.69,
+      "precio": 93.62,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 1.12,
-      "desde_alta_pct": 1.17,
-      "dist_confirmacion_pct": 0.06,
-      "dist_invalidacion_pct": -3.31,
-      "rsi": 66.6,
+      "hoy_pct": 1.05,
+      "desde_alta_pct": 1.09,
+      "dist_confirmacion_pct": 0.14,
+      "dist_invalidacion_pct": -3.24,
+      "rsi": 66.4,
       "fr": 79.8,
-      "vol_rel": 0.44,
+      "vol_rel": 0.8,
       "beta": 0.1,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 92.61,
-      "max_cierre": 92.65,
+      "max_cierre": 93.62,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 93.75,
         "tipo": "techo de zona de oferta (el precio esta dentro)",
-        "espacio_pct": 0.06,
-        "riesgo_pct": 3.31,
-        "relacion": 0.02,
+        "espacio_pct": 0.14,
+        "riesgo_pct": 3.24,
+        "relacion": 0.04,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -7178,7 +7246,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.0% vs SMA200",
+            "valor": "sobre SMA50 y +3.9% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7192,7 +7260,7 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "67",
+            "valor": "66",
             "lectura": "pide entre 40 y 68"
           },
           {
@@ -7206,7 +7274,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "44% del promedio",
+            "valor": "80% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7253,33 +7321,33 @@
       },
       "fecha_alta": "2026-11-23",
       "precio_alta": 79.68,
-      "precio": 80.46,
+      "precio": 80.56,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.98,
-      "desde_alta_pct": 0.98,
-      "dist_confirmacion_pct": 2.39,
-      "dist_invalidacion_pct": -3.39,
-      "rsi": 49.8,
+      "hoy_pct": 1.1,
+      "desde_alta_pct": 1.1,
+      "dist_confirmacion_pct": 2.26,
+      "dist_invalidacion_pct": -3.51,
+      "rsi": 50.1,
       "fr": 79.2,
-      "vol_rel": 0.43,
-      "beta": 0.14,
+      "vol_rel": 0.8,
+      "beta": 0.15,
       "estado": "esperando",
       "estado_etiqueta": "Esperando",
       "estado_cierre": "esperando",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 79.68,
-      "max_cierre": 79.68,
+      "max_cierre": 80.56,
       "cierres_bajo_sma50": 0,
       "toques": {},
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 81.92,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 1.81,
-        "riesgo_pct": 3.39,
-        "relacion": 0.53,
+        "espacio_pct": 1.69,
+        "riesgo_pct": 3.51,
+        "relacion": 0.48,
         "menor_que_riesgo": true
       },
       "checklist": {
@@ -7290,7 +7358,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.9% vs SMA200",
+            "valor": "sobre SMA50 y +5.0% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7311,14 +7379,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+1.0%",
+            "valor": "+1.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "43% del promedio",
+            "valor": "80% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7365,35 +7433,35 @@
       },
       "fecha_alta": "2026-11-23",
       "precio_alta": 55.88,
-      "precio": 57.1,
+      "precio": 57.02,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 2.17,
-      "desde_alta_pct": 2.18,
-      "dist_confirmacion_pct": 5.59,
-      "dist_invalidacion_pct": -8.35,
-      "rsi": 46.7,
-      "fr": 91.0,
-      "vol_rel": 0.3,
+      "hoy_pct": 2.04,
+      "desde_alta_pct": 2.04,
+      "dist_confirmacion_pct": 5.73,
+      "dist_invalidacion_pct": -8.23,
+      "rsi": 46.5,
+      "fr": 91.3,
+      "vol_rel": 0.48,
       "beta": 0.44,
       "estado": "en_zona",
       "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
       "min_cierre": 55.88,
-      "max_cierre": 55.88,
+      "max_cierre": 57.02,
       "cierres_bajo_sma50": 0,
       "toques": {
         "zona de demanda": "2026-11-23"
       },
       "escenario_entrada": null,
       "espacio_libre": {
-        "nivel": 70.41,
-        "tipo": "maximo de 52 semanas",
-        "espacio_pct": 23.31,
-        "riesgo_pct": 8.35,
-        "relacion": 2.79,
+        "nivel": 63.32,
+        "tipo": "piso de zona de oferta",
+        "espacio_pct": 11.05,
+        "riesgo_pct": 8.23,
+        "relacion": 1.34,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -7404,7 +7472,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +4.9% vs SMA200",
+            "valor": "sobre SMA50 y +4.7% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7418,21 +7486,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "47",
+            "valor": "46",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.2%",
+            "valor": "+2.0%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "30% del promedio",
+            "valor": "48% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7479,33 +7547,35 @@
       },
       "fecha_alta": "2026-11-23",
       "precio_alta": 126.06,
-      "precio": 126.54,
+      "precio": 125.97,
       "fecha_dato": "2026-11-23",
-      "hoy_pct": 0.38,
-      "desde_alta_pct": 0.38,
-      "dist_confirmacion_pct": 10.15,
-      "dist_invalidacion_pct": -2.55,
-      "rsi": 48.7,
-      "fr": 78.9,
-      "vol_rel": 0.52,
-      "beta": 0.13,
-      "estado": "esperando",
-      "estado_etiqueta": "Esperando",
+      "hoy_pct": -0.07,
+      "desde_alta_pct": -0.07,
+      "dist_confirmacion_pct": 10.65,
+      "dist_invalidacion_pct": -2.11,
+      "rsi": 47.2,
+      "fr": 78.0,
+      "vol_rel": 0.75,
+      "beta": 0.11,
+      "estado": "en_zona",
+      "estado_etiqueta": "En zona de demanda",
       "estado_cierre": "en_zona",
-      "ultimo_cierre_fecha": "2026-11-20",
+      "ultimo_cierre_fecha": "2026-11-23",
       "cierres_sobre_confirmacion": 0,
       "cierres_bajo_invalidacion": 0,
-      "min_cierre": 126.06,
+      "min_cierre": 125.97,
       "max_cierre": 126.06,
       "cierres_bajo_sma50": 0,
-      "toques": {},
+      "toques": {
+        "zona de demanda": "2026-11-23"
+      },
       "escenario_entrada": null,
       "espacio_libre": {
         "nivel": 130.72,
         "tipo": "piso de zona de oferta",
-        "espacio_pct": 3.3,
-        "riesgo_pct": 2.55,
-        "relacion": 1.29,
+        "espacio_pct": 3.77,
+        "riesgo_pct": 2.11,
+        "relacion": 1.79,
         "menor_que_riesgo": false
       },
       "checklist": {
@@ -7516,35 +7586,35 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +7.6% vs SMA200",
+            "valor": "sobre SMA50 y +7.1% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "79",
+            "valor": "78",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "49",
+            "valor": "47",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+0.4%",
+            "valor": "-0.1%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "52% del promedio",
+            "valor": "75% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7575,14 +7645,14 @@
     {
       "ticker": "WELL",
       "subcategoria": "Real Estate",
-      "precio": 240.79,
-      "hoy_pct": 0.19,
-      "ret_5d": -1.58,
+      "precio": 240.93,
+      "hoy_pct": 0.25,
+      "ret_5d": -1.52,
       "fr": 80.1,
-      "rsi": 50.8,
-      "radar_score": 75.5,
-      "dist_max52w": -5.0,
-      "vol_rel": 0.52,
+      "rsi": 51.1,
+      "radar_score": 80.5,
+      "dist_max52w": -4.9,
+      "vol_rel": 1.01,
       "marcas": [
         "VCP",
         "Toca zona de demanda"
@@ -7591,7 +7661,7 @@
       "invalidacion": 238.3381,
       "confirmacion": 253.3665,
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
@@ -7625,8 +7695,8 @@
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "52% del promedio",
+            "ok": true,
+            "valor": "101% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7643,23 +7713,21 @@
           "momento": "después del cierre"
         }
       },
-      "fallas": [
-        "volumen"
-      ],
-      "dist_invalidacion_pct": -1.02,
-      "dist_confirmacion_pct": 5.22
+      "fallas": [],
+      "dist_invalidacion_pct": -1.08,
+      "dist_confirmacion_pct": 5.16
     },
     {
       "ticker": "RTX",
       "subcategoria": "Aviación/Defensa",
-      "precio": 194.29,
-      "hoy_pct": 2.17,
-      "ret_5d": 0.07,
-      "fr": 71.1,
-      "rsi": 40.7,
-      "radar_score": 68.0,
-      "dist_max52w": -13.9,
-      "vol_rel": 0.39,
+      "precio": 194.77,
+      "hoy_pct": 2.42,
+      "ret_5d": 0.32,
+      "fr": 72.3,
+      "rsi": 41.3,
+      "radar_score": 73.2,
+      "dist_max52w": -13.6,
+      "vol_rel": 0.87,
       "marcas": [
         "VCP",
         "Squeeze"
@@ -7675,14 +7743,14 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +0.3% vs SMA200",
+            "valor": "sobre SMA50 y +0.6% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "71",
+            "valor": "72",
             "lectura": "pide 70 o más"
           },
           {
@@ -7696,14 +7764,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+2.2%",
+            "valor": "+2.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "39% del promedio",
+            "valor": "87% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7723,20 +7791,20 @@
       "fallas": [
         "volumen"
       ],
-      "dist_invalidacion_pct": -3.75,
-      "dist_confirmacion_pct": 3.37
+      "dist_invalidacion_pct": -3.99,
+      "dist_confirmacion_pct": 3.12
     },
     {
       "ticker": "RBLX",
       "subcategoria": "Internet/Medios",
-      "precio": 51.74,
-      "hoy_pct": 10.73,
-      "ret_5d": 12.17,
-      "fr": 94.5,
-      "rsi": 60.6,
-      "radar_score": 67.6,
+      "precio": 51.65,
+      "hoy_pct": 10.55,
+      "ret_5d": 11.99,
+      "fr": 94.2,
+      "rsi": 60.5,
+      "radar_score": 70.5,
       "dist_max52w": -48.3,
-      "vol_rel": 0.8,
+      "vol_rel": 1.1,
       "marcas": [
         "VCP"
       ],
@@ -7744,14 +7812,14 @@
       "invalidacion": 41.362,
       "confirmacion": 56.08,
       "checklist": {
-        "cumple": 5,
+        "cumple": 6,
         "total": 6,
         "items": [
           {
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +2.7% vs SMA200",
+            "valor": "sobre SMA50 y +2.5% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -7765,21 +7833,21 @@
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "61",
+            "valor": "60",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+10.7%",
+            "valor": "+10.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
-            "ok": false,
-            "valor": "80% del promedio",
+            "ok": true,
+            "valor": "110% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7796,23 +7864,21 @@
           "momento": "después del cierre"
         }
       },
-      "fallas": [
-        "volumen"
-      ],
-      "dist_invalidacion_pct": -20.06,
-      "dist_confirmacion_pct": 8.39
+      "fallas": [],
+      "dist_invalidacion_pct": -19.92,
+      "dist_confirmacion_pct": 8.58
     },
     {
       "ticker": "MMM",
       "subcategoria": "Industriales",
-      "precio": 184.57,
-      "hoy_pct": 3.7,
-      "ret_5d": 1.59,
-      "fr": 90.2,
-      "rsi": 58.7,
-      "radar_score": 59.6,
+      "precio": 184.44,
+      "hoy_pct": 3.62,
+      "ret_5d": 1.52,
+      "fr": 90.5,
+      "rsi": 58.6,
+      "radar_score": 64.2,
       "dist_max52w": -5.9,
-      "vol_rel": 0.5,
+      "vol_rel": 0.95,
       "marcas": [
         "Toca zona de demanda"
       ],
@@ -7848,14 +7914,14 @@
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.7%",
+            "valor": "+3.6%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "50% del promedio",
+            "valor": "95% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7875,26 +7941,26 @@
       "fallas": [
         "volumen"
       ],
-      "dist_invalidacion_pct": -3.87,
-      "dist_confirmacion_pct": 6.23
+      "dist_invalidacion_pct": -3.8,
+      "dist_confirmacion_pct": 6.31
     },
     {
-      "ticker": "AMGN",
-      "subcategoria": "Biotecnología",
-      "precio": 450.79,
-      "hoy_pct": 3.48,
-      "ret_5d": -1.93,
-      "fr": 93.6,
-      "rsi": 45.6,
-      "radar_score": 53.8,
-      "dist_max52w": -6.3,
-      "vol_rel": 0.55,
+      "ticker": "TGT",
+      "subcategoria": "Retail y marcas",
+      "precio": 168.19,
+      "hoy_pct": 1.42,
+      "ret_5d": 4.91,
+      "fr": 97.4,
+      "rsi": 67.8,
+      "radar_score": 60.1,
+      "dist_max52w": -2.2,
+      "vol_rel": 0.95,
       "marcas": [
-        "Squeeze"
+        "Toca zona de demanda"
       ],
       "apto": true,
-      "invalidacion": 417.9361,
-      "confirmacion": 459.0685,
+      "invalidacion": 161.27,
+      "confirmacion": 169.5561,
       "checklist": {
         "cumple": 5,
         "total": 6,
@@ -7903,35 +7969,111 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +18.9% vs SMA200",
+            "valor": "sobre SMA50 y +23.3% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
             "id": "fr",
             "nombre": "Fuerza relativa",
             "ok": true,
-            "valor": "94",
+            "valor": "97",
             "lectura": "pide 70 o más"
           },
           {
             "id": "rsi",
             "nombre": "RSI",
             "ok": true,
-            "valor": "46",
+            "valor": "68",
             "lectura": "pide entre 40 y 68"
           },
           {
             "id": "caida",
             "nombre": "Sin caída fuerte hoy",
             "ok": true,
-            "valor": "+3.5%",
+            "valor": "+1.4%",
             "lectura": "pide más de -3%"
           },
           {
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "95% del promedio",
+            "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
+          },
+          {
+            "id": "resultados",
+            "nombre": "Resultados trimestrales",
+            "ok": true,
+            "valor": "03/03 (en 100 días)",
+            "lectura": "pide que falten más de 5 días; reporta antes de la apertura"
+          }
+        ],
+        "resultados": {
+          "fecha": "2027-03-03",
+          "dias": 100,
+          "momento": "antes de la apertura"
+        }
+      },
+      "fallas": [
+        "volumen"
+      ],
+      "dist_invalidacion_pct": -4.11,
+      "dist_confirmacion_pct": 0.81
+    },
+    {
+      "ticker": "AMGN",
+      "subcategoria": "Biotecnología",
+      "precio": 449.04,
+      "hoy_pct": 3.08,
+      "ret_5d": -2.31,
+      "fr": 93.4,
+      "rsi": 44.4,
+      "radar_score": 55.1,
+      "dist_max52w": -6.7,
+      "vol_rel": 1.2,
+      "marcas": [
+        "Squeeze"
+      ],
+      "apto": true,
+      "invalidacion": 417.9361,
+      "confirmacion": 450.4284,
+      "checklist": {
+        "cumple": 6,
+        "total": 6,
+        "items": [
+          {
+            "id": "tendencia",
+            "nombre": "Tendencia",
+            "ok": true,
+            "valor": "sobre SMA50 y +18.4% vs SMA200",
+            "lectura": "precio sobre las medias de 50 y 200 ruedas"
+          },
+          {
+            "id": "fr",
+            "nombre": "Fuerza relativa",
+            "ok": true,
+            "valor": "93",
+            "lectura": "pide 70 o más"
+          },
+          {
+            "id": "rsi",
+            "nombre": "RSI",
+            "ok": true,
+            "valor": "44",
+            "lectura": "pide entre 40 y 68"
+          },
+          {
+            "id": "caida",
+            "nombre": "Sin caída fuerte hoy",
+            "ok": true,
+            "valor": "+3.1%",
+            "lectura": "pide más de -3%"
+          },
+          {
+            "id": "volumen",
+            "nombre": "Volumen del día",
+            "ok": true,
+            "valor": "120% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -7948,23 +8090,21 @@
           "momento": "después del cierre"
         }
       },
-      "fallas": [
-        "volumen"
-      ],
-      "dist_invalidacion_pct": -7.29,
-      "dist_confirmacion_pct": 1.84
+      "fallas": [],
+      "dist_invalidacion_pct": -6.93,
+      "dist_confirmacion_pct": 0.31
     },
     {
       "ticker": "VZ",
       "subcategoria": "Telecomunicaciones",
-      "precio": 46.42,
-      "hoy_pct": -0.12,
-      "ret_5d": 0.18,
-      "fr": 72.8,
-      "rsi": 63.5,
-      "radar_score": 39.8,
-      "dist_max52w": -8.8,
-      "vol_rel": 0.55,
+      "precio": 46.45,
+      "hoy_pct": -0.06,
+      "ret_5d": 0.24,
+      "fr": 73.1,
+      "rsi": 63.9,
+      "radar_score": 43.7,
+      "dist_max52w": -8.7,
+      "vol_rel": 0.93,
       "marcas": [
         "Squeeze",
         "Toca zona de demanda"
@@ -7980,7 +8120,7 @@
             "id": "tendencia",
             "nombre": "Tendencia",
             "ok": true,
-            "valor": "sobre SMA50 y +0.9% vs SMA200",
+            "valor": "sobre SMA50 y +1.0% vs SMA200",
             "lectura": "precio sobre las medias de 50 y 200 ruedas"
           },
           {
@@ -8008,7 +8148,7 @@
             "id": "volumen",
             "nombre": "Volumen del día",
             "ok": false,
-            "valor": "55% del promedio",
+            "valor": "93% del promedio",
             "lectura": "pide el promedio o más (con la rueda abierta es parcial)"
           },
           {
@@ -8028,15 +8168,19 @@
       "fallas": [
         "volumen"
       ],
-      "dist_invalidacion_pct": -2.52,
-      "dist_confirmacion_pct": 0.89
+      "dist_invalidacion_pct": -2.58,
+      "dist_confirmacion_pct": 0.83
     }
   ],
-  "log_candidatos_fecha": "2026-11-20",
+  "log_candidatos_fecha": "2026-11-23",
   "aptos_ultimo_cierre": [
-    "AIG",
-    "FISV",
-    "FMX"
+    "WELL",
+    "RTX",
+    "RBLX",
+    "MMM",
+    "TGT",
+    "AMGN",
+    "VZ"
   ],
   "balances_actualizado": "2026-11-20"
 }
