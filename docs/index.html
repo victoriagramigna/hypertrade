@@ -7142,9 +7142,21 @@
                 // Piso estructural: se revisa en cada corrida (no solo al
                 // llegar a +35%), así el stop puede subir apenas la SMA50
                 // suba lo suficiente como para proteger más que el -8%.
+                // 23/11: el stop por SMA50 solo cuenta si queda POR DEBAJO del precio actual.
+                // Antes se aplicaba aunque el precio estuviera bajo la SMA50 y el stop
+                // quedaba por encima del precio de compra (NVDA 213,61 con compra a 176,77;
+                // META 666,52 con compra a 640,48): "tocaba el stop" desde el primer día.
+                // Además, un stop guardado por SMA50 que supera el máximo que llegó a tener
+                // el precio desde la compra nunca pudo ser válido: se vuelve al -8% inicial.
+                const maxVistoPrevio = Math.max(p.maxPrecio ?? 0, maxServidorDe(p) ?? 0, precioActual ?? 0, p.precio ?? 0);
+                if (!stopManual && String(origenStop).startsWith('SMA50') && p.stopInicial != null
+                    && stopSugerido > maxVistoPrevio + 0.01 && stopSugerido > p.stopInicial) {
+                    stopSugerido = p.stopInicial;
+                    origenStop = 'techo -8% desde la compra';
+                }
                 if (!stopManual && tickerData?.SMA50 != null) {
                     const candidatoSMA50 = tickerData.SMA50 * 0.98;
-                    if (candidatoSMA50 > stopSugerido) {
+                    if (candidatoSMA50 > stopSugerido && precioActual != null && candidatoSMA50 < precioActual) {
                         stopSugerido = candidatoSMA50;
                         origenStop = 'SMA50 -- más ajustado que el -8%';
                     }
