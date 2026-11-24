@@ -1,32 +1,32 @@
 {
- "generado_utc": "2026-11-24T15:01:26.349421+00:00",
+ "generado_utc": "2026-11-24T15:31:17.120592+00:00",
  "muestra_minima": 5,
  "muestra_confiable": 15,
  "horizontes": [
   10,
   20
  ],
- "casos_total": 104,
+ "casos_total": 110,
  "resumen_tipos": [
   {
    "tipo": "Golden Cross",
    "direccion": "alcista",
-   "casos_total": 26,
+   "casos_total": 29,
    "horizontes": {
     "10": {
      "n": 23,
-     "pendientes": 3,
+     "pendientes": 6,
      "aciertos": 9,
      "pct_aciertos": 39,
-     "vs_spy_prom": -7.04,
+     "vs_spy_prom": -7.03,
      "confiable": true
     },
     "20": {
      "n": 21,
-     "pendientes": 5,
-     "aciertos": 7,
-     "pct_aciertos": 33,
-     "vs_spy_prom": -11.62,
+     "pendientes": 8,
+     "aciertos": 6,
+     "pct_aciertos": 29,
+     "vs_spy_prom": -11.84,
      "confiable": true
     }
    }
@@ -34,11 +34,11 @@
   {
    "tipo": "Death Cross",
    "direccion": "bajista",
-   "casos_total": 78,
+   "casos_total": 81,
    "horizontes": {
     "10": {
      "n": 57,
-     "pendientes": 21,
+     "pendientes": 24,
      "aciertos": 24,
      "pct_aciertos": 42,
      "vs_spy_prom": 0.81,
@@ -46,16 +46,82 @@
     },
     "20": {
      "n": 30,
-     "pendientes": 48,
-     "aciertos": 11,
-     "pct_aciertos": 37,
-     "vs_spy_prom": 0.39,
+     "pendientes": 51,
+     "aciertos": 12,
+     "pct_aciertos": 40,
+     "vs_spy_prom": 0.17,
      "confiable": true
     }
    }
   }
  ],
  "detalle": [
+  {
+   "ticker": "TM",
+   "sector": "Automotriz",
+   "fecha": "2026-11-24",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 197.09,
+   "sma200": 197.0,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "LIN",
+   "sector": "Materiales",
+   "fecha": "2026-11-24",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 496.8,
+   "sma200": 496.62,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "SBUX",
+   "sector": "Consumo",
+   "fecha": "2026-11-24",
+   "tipo": "Golden Cross",
+   "direccion": "alcista",
+   "sma50": 99.77,
+   "sma200": 99.72,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "HSBC",
+   "sector": "Bancos",
+   "fecha": "2026-11-24",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 92.02,
+   "sma200": 92.23,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "IBKR",
+   "sector": "Fintech",
+   "fecha": "2026-11-24",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 83.0,
+   "sma200": 83.08,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "NTES",
+   "sector": "Tecnología",
+   "fecha": "2026-11-24",
+   "tipo": "Death Cross",
+   "direccion": "bajista",
+   "sma50": 119.04,
+   "sma200": 119.28,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "EWZ",
    "sector": "ETF",
@@ -328,8 +394,8 @@
    "direccion": "alcista",
    "sma50": 119.91,
    "sma200": 119.83,
-   "r10": -20.99,
-   "vs_spy10": -16.9,
+   "r10": -21.08,
+   "vs_spy10": -16.65,
    "acierto10": false,
    "r20": null
   },
@@ -341,8 +407,8 @@
    "direccion": "bajista",
    "sma50": 79.51,
    "sma200": 79.57,
-   "r10": 2.78,
-   "vs_spy10": 6.87,
+   "r10": 2.49,
+   "vs_spy10": 6.93,
    "acierto10": false,
    "r20": null
   },
@@ -354,8 +420,8 @@
    "direccion": "bajista",
    "sma50": 1790.86,
    "sma200": 1795.29,
-   "r10": -4.0,
-   "vs_spy10": 0.09,
+   "r10": -4.15,
+   "vs_spy10": 0.29,
    "acierto10": false,
    "r20": null
   },
@@ -708,8 +774,8 @@
    "r10": 3.72,
    "vs_spy10": 6.28,
    "acierto10": false,
-   "r20": -60.04,
-   "vs_spy20": -53.49,
+   "r20": -62.08,
+   "vs_spy20": -55.2,
    "acierto20": true
   },
   {
@@ -723,8 +789,8 @@
    "r10": 13.52,
    "vs_spy10": 16.09,
    "acierto10": false,
-   "r20": 7.03,
-   "vs_spy20": 13.58,
+   "r20": 5.83,
+   "vs_spy20": 12.71,
    "acierto20": false
   },
   {
@@ -739,7 +805,7 @@
    "vs_spy10": 4.63,
    "acierto10": false,
    "r20": -1.76,
-   "vs_spy20": 4.79,
+   "vs_spy20": 5.13,
    "acierto20": false
   },
   {
@@ -753,8 +819,8 @@
    "r10": 4.78,
    "vs_spy10": 7.34,
    "acierto10": false,
-   "r20": 8.55,
-   "vs_spy20": 15.1,
+   "r20": 8.98,
+   "vs_spy20": 15.86,
    "acierto20": false
   },
   {
@@ -768,8 +834,8 @@
    "r10": -0.44,
    "vs_spy10": 2.13,
    "acierto10": false,
-   "r20": -11.44,
-   "vs_spy20": -4.9,
+   "r20": -13.14,
+   "vs_spy20": -6.25,
    "acierto20": true
   },
   {
@@ -783,9 +849,9 @@
    "r10": -7.92,
    "vs_spy10": -5.36,
    "acierto10": true,
-   "r20": -5.61,
-   "vs_spy20": 0.93,
-   "acierto20": false
+   "r20": -9.65,
+   "vs_spy20": -2.76,
+   "acierto20": true
   },
   {
    "ticker": "COIN",
@@ -798,8 +864,8 @@
    "r10": -17.98,
    "vs_spy10": -15.41,
    "acierto10": false,
-   "r20": -34.3,
-   "vs_spy20": -27.75,
+   "r20": -35.55,
+   "vs_spy20": -28.67,
    "acierto20": false
   },
   {
@@ -813,9 +879,9 @@
    "r10": -7.92,
    "vs_spy10": -5.36,
    "acierto10": false,
-   "r20": -5.61,
-   "vs_spy20": 0.93,
-   "acierto20": true
+   "r20": -9.65,
+   "vs_spy20": -2.76,
+   "acierto20": false
   },
   {
    "ticker": "XLRE",
