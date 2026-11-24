@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-23T22:05:26.519904+00:00",
+ "generado_utc": "2026-11-24T00:45:03.205816+00:00",
  "mis_operaciones": {
   "total": {
    "n": 30,
@@ -560,17 +560,17 @@
   10,
   20
  ],
- "casos_total": 1406,
+ "casos_total": 1408,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
    "señal": "Confluencia Alcista",
    "direccion": "alcista",
-   "casos_total": 406,
+   "casos_total": 408,
    "horizontes": {
     "5": {
      "n": 370,
-     "pendientes": 36,
+     "pendientes": 38,
      "aciertos": 167,
      "pct_aciertos": 45,
      "tocaron_stop": 70,
@@ -580,7 +580,7 @@
     },
     "10": {
      "n": 342,
-     "pendientes": 64,
+     "pendientes": 66,
      "aciertos": 127,
      "pct_aciertos": 37,
      "tocaron_stop": 114,
@@ -590,7 +590,7 @@
     },
     "20": {
      "n": 267,
-     "pendientes": 139,
+     "pendientes": 141,
      "aciertos": 96,
      "pct_aciertos": 36,
      "tocaron_stop": 139,
@@ -937,7 +937,7 @@
  "por_mes": [
   {
    "mes": "2026-11",
-   "casos": 309,
+   "casos": 311,
    "5": {
     "n": 215,
     "pct_aciertos": 37,
@@ -1059,7 +1059,7 @@
   },
   {
    "franja": "0-39 Desfavorable",
-   "casos": 110,
+   "casos": 112,
    "5": {
     "n": 34,
     "pct_aciertos": 47,
@@ -1080,7 +1080,7 @@
  "por_cuidados": [
   {
    "grupo": "Sin puntos de cuidado",
-   "casos": 393,
+   "casos": 394,
    "5": {
     "n": 351,
     "pct_aciertos": 47,
@@ -1102,7 +1102,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 817,
+   "casos": 818,
    "5": {
     "n": 765,
     "pct_aciertos": 47,
@@ -1190,7 +1190,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 370,
+   "casos": 371,
    "5": {
     "n": 339,
     "pct_aciertos": 46,
@@ -1258,7 +1258,7 @@
  "por_tendencia_semanal": [
   {
    "grupo": "🟢 A favor (RSI y MACD semanal alcistas)",
-   "casos": 503,
+   "casos": 505,
    "5": {
     "n": 469,
     "pct_aciertos": 48,
@@ -1324,6 +1324,40 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "HOG",
+   "fecha": "2026-11-24",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 33.71,
+   "radar_score": 87.5,
+   "regimen_score": 15,
+   "cuidados": [],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
+  {
+   "ticker": "LLY",
+   "fecha": "2026-11-24",
+   "señal": "Confluencia Alcista",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 1364.6,
+   "radar_score": 52.6,
+   "regimen_score": 15,
+   "cuidados": [
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "favor",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "RBLX",
    "fecha": "2026-11-23",
@@ -7986,57 +8020,6 @@
    "vs_spy10": 6.73,
    "acierto10": true,
    "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "TCOM",
-   "fecha": "2026-11-02",
-   "señal": "Recién cruzó, sin confirmar",
-   "direccion": "alcista",
-   "recomendacion": "MANTENER",
-   "precio_entrada": 40.98,
-   "radar_score": 26.6,
-   "regimen_score": 50,
-   "cuidados": [
-    "sma50_bajando",
-    "bajo_sma200"
-   ],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 15,
-   "r5": 7.47,
-   "spy5": 0.08,
-   "vs_spy5": 7.39,
-   "acierto5": true,
-   "stop5": false,
-   "r10": 8.03,
-   "spy10": -1.62,
-   "vs_spy10": 9.65,
-   "acierto10": true,
-   "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "CRWD",
-   "fecha": "2026-11-02",
-   "señal": "Confluencia Alcista",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 243.27,
-   "radar_score": 70.5,
-   "regimen_score": 50,
-   "cuidados": [],
-   "tendencia_semanal": "mixta",
-   "ruedas_transcurridas": 15,
-   "r5": -6.04,
-   "spy5": 0.08,
-   "vs_spy5": -6.12,
-   "acierto5": false,
-   "stop5": true,
-   "r10": -8.25,
-   "spy10": -1.62,
-   "vs_spy10": -6.63,
-   "acierto10": false,
-   "stop10": true,
    "r20": null
   }
  ],
