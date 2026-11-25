@@ -232,6 +232,8 @@ TICKERS = {
     "DAL": "Transporte",    # Delta Air Lines
     "FDX": "Transporte",    # FedEx
     "DD": "Materiales",     # DuPont de Nemours
+    "IFF": "Materiales",    # International Flavors & Fragrances (sumado 24/11; CEDEAR 12:1)
+    "ANT": "Tecnología",    # Anthropic PBC (sumado 24/11; en el bróker es acción en dólares ANT.U, sin CEDEAR)
     "STLA": "Automotriz",   # Stellantis (Chrysler/Fiat/Peugeot)
     "FCX": "Materiales",    # Freeport-McMoRan, cobre
     "BG": "Agro",           # Bunge, agronegocios -- antes figuraba como "BNG" (código de BYMA):
@@ -401,7 +403,7 @@ SUBCATEGORIAS = {
     "AVY": "Químicos/Otros", "B": "Químicos/Otros", "BAK": "Químicos/Otros",
     "DOW": "Químicos/Otros", "ECL": "Químicos/Otros", "IP": "Químicos/Otros",
     "LIN": "Químicos/Otros", "NUE": "Químicos/Otros", "SHW": "Químicos/Otros",
-    "TX": "Químicos/Otros", "DD": "Químicos/Otros",
+    "TX": "Químicos/Otros", "DD": "Químicos/Otros", "IFF": "Químicos/Otros",
     "FCX": "Minería/Metales",
 
     # --- Salud --- (sumado 1/10, a pedido de Victoria)
@@ -499,6 +501,7 @@ SUBCATEGORIAS.update({
     "PLTR": "IA y datos",
     "AI": "IA y datos",
     "SNOW": "IA y datos",
+    "ANT": "IA y datos",
     "ACN": "Consultoras de IT",
     "GLOB": "Consultoras de IT",
     "INFY": "Consultoras de IT",
@@ -644,6 +647,7 @@ RATIOS_CEDEAR = {
     "ARM": 27, "AVGO": 39, "IREN": 12, "TXN": 5, "AMAT": 5, "SNDK": 170,
     "KLAC": 34, "SKHY": 25, "DELL": 74, "WDC": 92, "GEV": 180, "TLN": 63,
     "MS": 41, "IBKR": 17, "SPCX": 50, "WELL": 48, "PLD": 29, "LIN": 102, "SHW": 69,
+    "IFF": 12,  # 24/11: deducido del precio del bróker (CEDEAR ARS 12.520 vs IFF.U USD 84,06 x CCL 1.790 = 12,0). Confirmar contra BYMA.
     # --- Tanda 1 del listado completo (ratios oficiales BYMA, PDF actualizado 3/2/2026,
     # salvo CRWD que se sumó a BYMA después de esa fecha -- ratio de fuentes cruzadas) ---
     "BP": 5, "CAT": 20, "CL": 3, "COST": 48, "CRM": 18, "CRWD": 79, "DE": 40,
