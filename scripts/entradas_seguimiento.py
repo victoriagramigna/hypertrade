@@ -266,6 +266,41 @@ def calcular_espacio(precio, inv, fila, zona_fila):
             "menor_que_riesgo": (rel < 1) if rel is not None else None}
 
 
+_LOG_INICIOS = None
+
+
+def _inicios_log():
+    """24/11: ultimo evento "escenario_entrada" de cada (ticker, tipo) en el log: fecha y precio en que EMPEZO el OK vigente.
+    Solo lee el log (nunca lo modifica). Sirve para dar la fecha del OK a los escenarios que ya estaban abiertos."""
+    global _LOG_INICIOS
+    if _LOG_INICIOS is None:
+        _LOG_INICIOS = {}
+        try:
+            with open(RUTA_LOG, "r", encoding="utf-8") as f:
+                for linea in f:
+                    try:
+                        e = json.loads(linea)
+                    except ValueError:
+                        continue
+                    if e.get("evento") == "escenario_entrada" and e.get("ticker") and e.get("tipo"):
+                        _LOG_INICIOS[(e["ticker"], e["tipo"])] = (e.get("fecha"), e.get("precio"))
+        except OSError:
+            pass
+    return _LOG_INICIOS
+
+
+def _marcar_inicio(ticker, nuevo, previo):
+    """24/11: "desde" = rueda en que empezo el OK (se conserva mientras siga el mismo tipo); "precio_ok" = cierre de ese dia.
+    "fecha" y "precio" siguen siendo los del ultimo cierre, como antes."""
+    if previo and previo.get("tipo") == nuevo["tipo"]:
+        desde, pok = previo.get("desde"), previo.get("precio_ok")
+        if not desde:
+            desde, pok = _inicios_log().get((ticker, nuevo["tipo"]), (previo.get("fecha"), previo.get("precio")))
+        nuevo["desde"], nuevo["precio_ok"] = desde or nuevo["fecha"], pok if pok is not None else nuevo["precio"]
+    else:
+        nuevo["desde"], nuevo["precio_ok"] = nuevo["fecha"], nuevo["precio"]
+
+
 def _dias(desde, hasta):
     try:
         return (datetime.strptime(hasta, "%Y-%m-%d") - datetime.strptime(desde, "%Y-%m-%d")).days
@@ -469,6 +504,7 @@ def _recuperar_cierres(antes, t, conf, inv, zt, cierres_dia, fecha_dato, ts, eve
                     break
         if nuevo_esc:
             nuevo_esc.update({"fecha": d, "precio": round(p, 2), "vol_rel": None, "recuperado": True})
+            _marcar_inicio(t, nuevo_esc, escenario)
             if not (escenario and escenario.get("tipo") == nuevo_esc["tipo"]):
                 eventos.append({"ts": ts, "fecha": d, "ticker": t, "evento": "escenario_entrada", "tipo": nuevo_esc["tipo"],
                                 "precio": round(p, 2), "nivel": nuevo_esc["nivel"], "recuperado": True})
@@ -613,6 +649,7 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
                         break
             if nuevo_esc:
                 nuevo_esc.update({"fecha": fecha_dato, "precio": round(precio, 2), "vol_rel": vol})
+                _marcar_inicio(t, nuevo_esc, escenario)
                 if not (escenario and escenario.get("tipo") == nuevo_esc["tipo"]):
                     mensajes.append(_msg_escenario(t, nuevo_esc["tipo"], precio, nuevo_esc["nivel"], nuevo_esc.get("inv") or (inv if inv is not None else nuevo_esc["nivel"]), vol, nuevo_esc["detalle"],
                                                  calcular_riesgo(precio, nuevo_esc.get("inv") or inv, conf, r, bw_p33, bw_p67),
@@ -627,6 +664,10 @@ def procesar_entradas(modo, token=None, chat_id=None, ahora=None, ultimo=None, e
                 if inv is not None and precio < inv:
                     toques = {}      # invalidado: se borran los toques; hay que volver a tocar el piso
 
+        # 24/11: escenarios que ya estaban abiertos antes de este cambio: se les agrega la fecha del OK (desde el log)
+        if escenario and not escenario.get("desde"):
+            escenario = dict(escenario)
+            _marcar_inicio(t, escenario, escenario)
         # estado que se muestra: el vivo (con el precio de la última corrida). Los cierres se cuentan aparte.
         mostrado = estado_vivo
         _riesgo_i = calcular_riesgo(precio, inv, conf, r, bw_p33, bw_p67)
