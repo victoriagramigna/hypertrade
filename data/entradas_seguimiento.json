@@ -76,79 +76,6 @@
    ]
   },
   {
-   "ticker": "SNOW",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 340.01,
-   "motivo": "Fuerza relativa 98, VCP válido, +6,4% en 5 ruedas. Cotiza en el techo de su zona de demanda.",
-   "zona": {
-    "piso": 302.24,
-    "techo": 339.81,
-    "tipo": "Bloque de demanda desde 16/10"
-   },
-   "confirmacion": {
-    "nivel": 353.36,
-    "texto": "Cierre sobre 353,36 (techo de la zona de oferta bajista 336,4–353,4)."
-   },
-   "invalidacion": {
-    "nivel": 302.24,
-    "texto": "Cierre bajo 302,24 (piso de la zona): está a -11%, la invalidación queda lejos."
-   },
-   "vigilar": [
-    "Volatilidad muy alta (beta 2,9).",
-    "Zona de oferta fuerte 356,5–384,6.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "PLTR",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 199.87,
-   "motivo": "Fuerza relativa 97, squeeze (volatilidad comprimida), está dentro de su zona de demanda y por encima de sus medias de 50 y 200.",
-   "zona": {
-    "piso": 184.45,
-    "techo": 201.79,
-    "tipo": "Bloque de demanda desde 16/10"
-   },
-   "confirmacion": {
-    "campo": "Max_52w",
-    "nivel": 212.94,
-    "texto": "Cierre sobre el máximo de 52 semanas (212,94, se actualiza solo)."
-   },
-   "invalidacion": {
-    "nivel": 184.45,
-    "texto": "Cierre bajo 184,45 (piso de la zona de demanda, a -7,7%)."
-   },
-   "vigilar": [
-    "Volatilidad extrema (beta 3,7).",
-    "Zonas de oferta 200,9–206,0 y 208,9–212,9 en el camino.",
-    "Verificar fecha de resultados trimestrales: puede romper cualquier zona."
-   ]
-  },
-  {
-   "ticker": "HPQ",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 33.83,
-   "motivo": "Candidato del filtro del radar (27/10): FR 97, RSI 58, Radar Score 81; cumple VCP. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 31.47,
-    "techo": 32.84,
-    "tipo": "FVG alcista desde 21/10"
-   },
-   "confirmacion": {
-    "nivel": 36.23,
-    "texto": "Cierre sobre el máximo de 52 semanas (36,23, se actualiza solo).",
-    "campo": "Max_52w"
-   },
-   "invalidacion": {
-    "nivel": 31.47,
-    "texto": "Cierre bajo 31,47 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 0.4: poco sensible al mercado.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
    "ticker": "ROKU",
    "fecha_alta": "2026-10-27",
    "precio_alta": 156.32,
@@ -196,30 +123,6 @@
    ]
   },
   {
-   "ticker": "PBR",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 22.51,
-   "motivo": "Candidato del filtro del radar (27/10): FR 80, RSI 41, Radar Score 76; cumple VCP, Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 21.65,
-    "techo": 23.72,
-    "tipo": "FVG alcista desde 02/10"
-   },
-   "confirmacion": {
-    "nivel": 26.39,
-    "texto": "Cierre sobre el máximo de 52 semanas (26,39, se actualiza solo).",
-    "campo": "Max_52w"
-   },
-   "invalidacion": {
-    "nivel": 21.65,
-    "texto": "Cierre bajo 21,65 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta -0.8: poco sensible al mercado.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
    "ticker": "AAPL",
    "fecha_alta": "2026-10-27",
    "precio_alta": 345.53,
@@ -240,123 +143,6 @@
    },
    "vigilar": [
     "Beta -0.1: poco sensible al mercado.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "CRWD",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 268.47,
-   "motivo": "Candidato del filtro del radar (27/10): FR 99, RSI 51, Radar Score 72; cumple VCP. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 246.36,
-    "techo": 254.06,
-    "tipo": "FVG alcista desde 22/10"
-   },
-   "confirmacion": {
-    "nivel": 286.99,
-    "texto": "Cierre sobre 286,99 (techo de la zona de oferta 278,00–286,99)."
-   },
-   "invalidacion": {
-    "nivel": 246.36,
-    "texto": "Cierre bajo 246,36 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 2.3: volátil.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "SNAP",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 6.18,
-   "motivo": "Candidato del filtro del radar (27/10): FR 88, RSI 58, Radar Score 70; cumple VCP, Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 5.88,
-    "techo": 6.27,
-    "tipo": "FVG alcista desde 08/10"
-   },
-   "confirmacion": {
-    "nivel": 6.85,
-    "texto": "Cierre sobre 6,85 (techo de la zona de oferta 6,48–6,85)."
-   },
-   "invalidacion": {
-    "nivel": 5.88,
-    "texto": "Cierre bajo 5,88 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 2.6: volátil.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "PANW",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 403.05,
-   "motivo": "Candidato del filtro del radar (27/10): FR 98, RSI 49, Radar Score 69; cumple VCP. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 366.23,
-    "techo": 379.48,
-    "tipo": "FVG alcista desde 22/10"
-   },
-   "confirmacion": {
-    "nivel": 432.33,
-    "texto": "Cierre sobre 432,33 (techo de la zona de oferta 412,80–432,33)."
-   },
-   "invalidacion": {
-    "nivel": 366.23,
-    "texto": "Cierre bajo 366,23 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 1.5: poco sensible al mercado.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "TEAM",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 219.99,
-   "motivo": "Candidato del filtro del radar (27/10): FR 100, RSI 67, Radar Score 62; cumple Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 215.28,
-    "techo": 219.755,
-    "tipo": "FVG alcista desde 19/10"
-   },
-   "confirmacion": {
-    "nivel": 229.96,
-    "texto": "Cierre sobre el máximo de 52 semanas (229,96, se actualiza solo).",
-    "campo": "Max_52w"
-   },
-   "invalidacion": {
-    "nivel": 215.28,
-    "texto": "Cierre bajo 215,28 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 1.9: volátil.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "TEN",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 54.0,
-   "motivo": "Candidato del filtro del radar (27/10): FR 95, RSI 60, Radar Score 62; cumple Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 52.66,
-    "techo": 54.74,
-    "tipo": "FVG alcista desde 22/10"
-   },
-   "confirmacion": {
-    "nivel": 56.73,
-    "texto": "Cierre sobre el máximo de 52 semanas (56,73, se actualiza solo).",
-    "campo": "Max_52w"
-   },
-   "invalidacion": {
-    "nivel": 52.66,
-    "texto": "Cierre bajo 52,66 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 0.2: poco sensible al mercado.",
     "Verificar fecha de resultados trimestrales."
    ]
   },
@@ -403,29 +189,6 @@
    },
    "vigilar": [
     "Beta 0.7: poco sensible al mercado.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "GPRK",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 11.21,
-   "motivo": "Candidato del filtro del radar (27/10): FR 83, RSI 52, Radar Score 56; cumple Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 10.88,
-    "techo": 11.21,
-    "tipo": "FVG alcista desde 02/10"
-   },
-   "confirmacion": {
-    "nivel": 12.1,
-    "texto": "Cierre sobre 12,10 (techo de la zona de oferta 11,84–12,10)."
-   },
-   "invalidacion": {
-    "nivel": 10.88,
-    "texto": "Cierre bajo 10,88 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta -0.3: poco sensible al mercado.",
     "Verificar fecha de resultados trimestrales."
    ]
   },
@@ -566,29 +329,6 @@
    },
    "vigilar": [
     "Beta 1.8: volátil.",
-    "Verificar fecha de resultados trimestrales."
-   ]
-  },
-  {
-   "ticker": "IBIT",
-   "fecha_alta": "2026-10-27",
-   "precio_alta": 45.65,
-   "motivo": "Candidato del filtro del radar (27/10): FR 72, RSI 41, Radar Score 45; cumple Squeeze, Toca zona de demanda. Sobre las medias de 50 y 200 ruedas.",
-   "zona": {
-    "piso": 45.11,
-    "techo": 46.59,
-    "tipo": "OB demanda desde 15/10"
-   },
-   "confirmacion": {
-    "nivel": 47.08,
-    "texto": "Cierre sobre 47,08 (techo de la zona de oferta 46,41–47,08)."
-   },
-   "invalidacion": {
-    "nivel": 45.11,
-    "texto": "Cierre bajo 45,11 (piso de la zona de demanda)."
-   },
-   "vigilar": [
-    "Beta 1.3: poco sensible al mercado.",
     "Verificar fecha de resultados trimestrales."
    ]
   },
