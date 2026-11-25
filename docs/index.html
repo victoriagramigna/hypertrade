@@ -6997,6 +6997,10 @@
             el.classList.add('ring-2', 'ring-accent');
             setTimeout(() => el.classList.remove('ring-2', 'ring-accent'), 1600);
         }
+        // 25/11: "Agrupar por activo": junta las compras del mismo ticker en una sola fila (PPC ponderado, PNL combinado).
+        // Solo cambia la presentacion de esta tabla; las compras, los stops y las tarjetas siguen siendo una por compra.
+        let _resumenAgrupar = true;
+        function resumenToggleAgrupar() { _resumenAgrupar = !_resumenAgrupar; renderResumenCartera(); }
         function renderResumenCartera() {
             const cont = document.getElementById('cartera-resumen');
             if (!cont) return;
@@ -7007,8 +7011,8 @@
             const pc = (x) => (x > 0 ? '+' : '') + f2(x) + '%';
             const cls = (x) => x > RESUMEN_NEUTRAL_PCT ? 'text-pos' : x < -RESUMEN_NEUTRAL_PCT ? 'text-neg' : 'text-gray-300';
             const bg = (x) => x > RESUMEN_NEUTRAL_PCT ? 'rgba(111,207,151,0.14)' : x < -RESUMEN_NEUTRAL_PCT ? 'rgba(217,105,79,0.16)' : 'transparent';
-            const filas = [], criticos = [], observ = [];
-            let pos = 0, neu = 0, neg = 0, bajo50 = 0, bajo200 = 0, cercaStop = 0, sinPrecio = 0;
+            const filas = [];
+            let sinPrecio = 0;
             const ordenadas = posiciones.slice().sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
             for (const p of ordenadas) {
                 const t = ranking.find(r => r?.Ticker?.toUpperCase() === String(p.ticker).toUpperCase());
@@ -7018,23 +7022,23 @@
                 const br = calcularBalanceReal(p);
                 const pnl = br ? br.rendimientoArsPct : usdPct;          // en pesos reales si hay dato; si no, en dólares
                 const hoy = (typeof t['Var_dia_%'] === 'number' && isFinite(t['Var_dia_%'])) ? t['Var_dia_%'] : null;
-                if (pnl > RESUMEN_NEUTRAL_PCT) pos++; else if (pnl < -RESUMEN_NEUTRAL_PCT) neg++; else neu++;
-                filas.push({ p, px, pnl, enArs: !!br, hoy });
-                const etq = (txt) => `<div class="py-0.5"><span class="text-white font-bold">${_esc(p.ticker)}</span> <span class="text-gray-400">${txt}</span></div>`;
-                let enObs = false, enCrit = false;
+                // avisos de esta compra: 'stop' son propios de cada compra; 'tk' son del activo (se repetirían por compra)
+                const crit = [], obs = [];
+                let b50 = false, b200 = false, cerca = false;
                 const stop = p.stopActual ?? p.stopInicial;
                 if (stop != null) {
                     const d = (px - stop) / stop * 100;
-                    if (d <= 0) { criticos.push(etq('tocó el stop (' + f2(stop) + ')')); enCrit = true; }
-                    else if (d <= RESUMEN_CERCA_STOP_PCT) { observ.push(etq('a ' + f2(d) + '% del stop (' + f2(stop) + ')')); cercaStop++; enObs = true; }
+                    if (d <= 0) crit.push({ k: 'stop', txt: 'tocó el stop (' + f2(stop) + ')' });
+                    else if (d <= RESUMEN_CERCA_STOP_PCT) { obs.push({ k: 'stop', txt: 'a ' + f2(d) + '% del stop (' + f2(stop) + ')' }); cerca = true; }
                 }
                 const d200 = t['Dist_SMA200_%'], d50 = t['Dist_SMA50_%'];
-                if (d200 != null && d200 < 0) { criticos.push(etq('bajo su SMA200 (' + pc(d200) + ')')); bajo200++; }
-                else if (d50 != null && d50 < -SMA50_TOLERANCIA_PCT) { observ.push(etq('perdió su SMA50 (' + pc(d50) + ')')); bajo50++; }
-                if (d200 != null && d200 < 0 && d50 != null && d50 < -SMA50_TOLERANCIA_PCT) bajo50++;
-                if (t.RSI != null && t.RSI >= RESUMEN_RSI_ALTO) observ.push(etq('RSI ' + Number(t.RSI).toFixed(0) + ' (alto)'));
-                if (usdPct >= CARTERA_GANANCIA_PARCIAL_PCT) observ.push(etq('pasó el objetivo parcial (+' + CARTERA_GANANCIA_PARCIAL_PCT + '% en US$)'));
-                if (t.Radar_Score != null && p.radarScoreCompra != null && (p.radarScoreCompra - t.Radar_Score) >= CARTERA_CAIDA_RADAR_SCORE) observ.push(etq('Radar Score bajó de ' + p.radarScoreCompra.toFixed(0) + ' a ' + t.Radar_Score.toFixed(0)));
+                if (d200 != null && d200 < 0) { crit.push({ k: 'tk', txt: 'bajo su SMA200 (' + pc(d200) + ')' }); b200 = true; }
+                else if (d50 != null && d50 < -SMA50_TOLERANCIA_PCT) { obs.push({ k: 'tk', txt: 'perdió su SMA50 (' + pc(d50) + ')' }); b50 = true; }
+                if (d200 != null && d200 < 0 && d50 != null && d50 < -SMA50_TOLERANCIA_PCT) b50 = true;
+                if (t.RSI != null && t.RSI >= RESUMEN_RSI_ALTO) obs.push({ k: 'tk', txt: 'RSI ' + Number(t.RSI).toFixed(0) + ' (alto)' });
+                if (usdPct >= CARTERA_GANANCIA_PARCIAL_PCT) obs.push({ k: 'stop', txt: 'pasó el objetivo parcial (+' + CARTERA_GANANCIA_PARCIAL_PCT + '% en US$)' });
+                if (t.Radar_Score != null && p.radarScoreCompra != null && (p.radarScoreCompra - t.Radar_Score) >= CARTERA_CAIDA_RADAR_SCORE) obs.push({ k: 'stop', txt: 'Radar Score bajó de ' + p.radarScoreCompra.toFixed(0) + ' a ' + t.Radar_Score.toFixed(0) });
+                filas.push({ p, px, pnl, enArs: !!br, hoy, crit, obs, b50, b200, cerca });
             }
             const ddmm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
             const filaHtml = (r) => {
@@ -7049,18 +7053,92 @@
                     <td class="${r.hoy == null ? 'text-gray-600' : cls(r.hoy)} text-right pl-1">${r.hoy == null ? '—' : pc(r.hoy)}</td>
                 </tr>`;
             };
-            const n = posiciones.length;
+            // --- filas agrupadas por ticker (solo si hay 2+ compras del mismo activo y todas son del mismo tipo de carga) ---
+            const grupos = {};
+            filas.forEach(r => { (grupos[String(r.p.ticker).toUpperCase()] ||= []).push(r); });
+            const filasAgr = [];
+            const vistos = new Set();
+            for (const r of filas) {
+                const k = String(r.p.ticker).toUpperCase();
+                if (vistos.has(k)) continue;
+                vistos.add(k);
+                const g = grupos[k];
+                const comparable = g.length > 1 && g.every(x => x.px != null) && g.every(x => !!x.p.origenArs === !!g[0].p.origenArs);
+                if (!comparable) { g.forEach(x => filasAgr.push({ simple: x })); continue; }
+                const peso = (x) => { const c = parseFloat(x.p.cantidad) || 0; return x.p.origenArs ? c / (x.p.origenArs.ratio || 1) : c; };
+                const W = g.reduce((a, x) => a + peso(x), 0);
+                if (!(W > 0)) { g.forEach(x => filasAgr.push({ simple: x })); continue; }
+                const ppc = g.reduce((a, x) => a + peso(x) * x.p.precio, 0) / W;
+                const px = g[0].px;
+                let pnl, enArs = false;
+                const brs = g.map(x => calcularBalanceReal(x.p));
+                if (brs.every(b => b)) {
+                    const costo = g.reduce((a, x) => a + x.p.origenArs.precioArs * (parseFloat(x.p.cantidad) || 0), 0);
+                    const res = brs.reduce((a, b) => a + b.resultadoArs, 0);
+                    pnl = costo > 0 ? res / costo * 100 : (px / ppc - 1) * 100; enArs = costo > 0;
+                } else pnl = (px / ppc - 1) * 100;
+                const stops = g.map(x => x.p.stopActual).filter(v => v > 0);
+                const hoy = g[0].hoy;
+                const orden = g.map(x => x.p.fecha).sort();
+                filasAgr.push({ grupo: g, ppc, px, pnl, enArs, hoy, stops, desde: orden[0], hasta: orden[orden.length - 1] });
+            }
+            const hayGrupos = filasAgr.some(f => f.grupo);
+            const grupoHtml = (f) => {
+                const g = f.grupo, tk = g[0].p.ticker;
+                const toc = f.stops.some(sv => f.px <= sv);
+                const detalleStops = g.map(x => ddmm(x.p.fecha) + ': ' + (x.p.stopActual > 0 ? f2(x.p.stopActual) : '—')).join(' · ');
+                const stopTxt = f.stops.length ? (new Set(f.stops.map(v => v.toFixed(2))).size === 1 ? f2(f.stops[0]) : 'varios') : '—';
+                return `<tr class="border-t border-base">
+                    <td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(g[0].p, posiciones)} <span class="text-[9px] text-gray-500 font-normal">×${g.length}</span></td>
+                    <td class="text-gray-500 pr-1" title="Primera compra ${ddmm(f.desde)}, última ${ddmm(f.hasta)}">${ddmm(f.desde)}</td>
+                    <td class="text-gray-300 pr-1 text-right" title="PPC ponderado de ${g.length} compras, en dólares del subyacente">${f2(f.ppc)}</td>
+                    <td class="text-gray-200 pr-1 text-right">${f2(f.px)}</td>
+                    <td class="${toc ? 'text-neg font-bold' : 'text-gray-400'} pr-1 text-right" title="Stops por compra — ${_esc(detalleStops)}">${stopTxt}</td>
+                    <td class="${cls(f.pnl)} font-bold text-right px-1" style="background:${bg(f.pnl)}" title="${f.enArs ? 'Resultado combinado en pesos reales (CEDEAR), sobre el total invertido' : 'Combinado en dólares del subyacente'}">${pc(f.pnl)}${f.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
+                    <td class="${f.hoy == null ? 'text-gray-600' : cls(f.hoy)} text-right pl-1">${f.hoy == null ? '—' : pc(f.hoy)}</td>
+                </tr>`;
+            };
+            const cuerpoTabla = (_resumenAgrupar && hayGrupos) ? filasAgr.map(f => f.grupo ? grupoHtml(f) : filaHtml(f.simple)).join('') : filas.map(filaHtml).join('');
+            const btnAgr = hayGrupos ? `<button onclick="resumenToggleAgrupar()" class="text-[9px] uppercase tracking-widest border border-surface px-2 py-0.5 ${_resumenAgrupar ? 'text-accent' : 'text-gray-400'} hover:text-accent">${_resumenAgrupar ? 'Agrupado por activo ✓' : 'Ver agrupado por activo'}</button>` : '';
+            // --- contadores y avisos: por compra, o por activo si la tabla está agrupada ---
+            const agrupado = _resumenAgrupar && hayGrupos;
+            const unidades = [];   // cada unidad = una compra (detalle) o un activo (agrupado)
+            if (agrupado) {
+                for (const f of filasAgr) {
+                    if (f.grupo) unidades.push({ lots: f.grupo, pnl: f.pnl, multi: true });
+                    else unidades.push({ lots: [f.simple], pnl: f.simple.pnl, multi: false });
+                }
+            } else filas.forEach(r => unidades.push({ lots: [r], pnl: r.pnl, multi: false }));
+            let pos = 0, neu = 0, neg = 0, bajo50 = 0, bajo200 = 0, cercaStop = 0;
+            const criticos = [], observ = [];
+            const ddm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
+            for (const u of unidades) {
+                const con = u.lots.filter(r => r.px != null);
+                if (!con.length) continue;
+                if (u.pnl > RESUMEN_NEUTRAL_PCT) pos++; else if (u.pnl < -RESUMEN_NEUTRAL_PCT) neg++; else neu++;
+                if (con.some(r => r.b50)) bajo50++;
+                if (con.some(r => r.b200)) bajo200++;
+                if (con.some(r => r.cerca)) cercaStop++;
+                const tk = con[0].p.ticker, vistosTk = new Set();
+                const etq = (txt) => `<div class="py-0.5"><span class="text-white font-bold">${_esc(tk)}</span> <span class="text-gray-400">${txt}</span></div>`;
+                const empuja = (arr, kind) => { for (const r of con) for (const e of (kind === 'c' ? r.crit : r.obs)) {
+                    if (e.k === 'tk') { if (vistosTk.has(e.txt)) continue; vistosTk.add(e.txt); arr.push(etq(e.txt)); }
+                    else arr.push(etq(u.multi ? e.txt + ' · compra ' + ddm(r.p.fecha) : e.txt));
+                } };
+                empuja(criticos, 'c'); empuja(observ, 'o');
+            }
+            const n = unidades.length;
             const caja = (titulo, items, vacio) => `<div class="flex-1 min-w-0"><div class="bg-base text-center text-[10px] uppercase tracking-widest font-bold text-gray-300 py-1 border border-surface">${titulo}</div><div class="border border-t-0 border-surface p-2 text-[11px] min-h-[3rem]">${items.length ? items.join('') : `<span class="text-gray-600">${vacio}</span>`}</div></div>`;
             const cont4 = (etq, v, c) => `<div class="text-center"><div class="text-[9px] uppercase text-gray-500">${etq}</div><div class="${c} text-lg font-bold">${v}</div></div>`;
             cont.innerHTML = `
                 <div class="bg-surface p-3 rounded-sm border border-surface font-mono">
-                    <div class="text-accent text-[10px] uppercase tracking-widest font-bold mb-2">Resumen de un vistazo</div>
+                    <div class="flex items-center justify-between mb-2"><div class="text-accent text-[10px] uppercase tracking-widest font-bold">Resumen de un vistazo</div>${btnAgr}</div>
                     <table class="w-full text-[10px]">
                         <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right pr-1">Stop $</th><th class="font-normal text-right">PNL</th><th class="font-normal text-right">Hoy %</th></tr></thead>
-                        <tbody>${filas.map(filaHtml).join('')}</tbody>
+                        <tbody>${cuerpoTabla}</tbody>
                     </table>
                     <div class="grid grid-cols-4 gap-1 mt-3 pt-3 border-t border-base">
-                        ${cont4('Operaciones', n, 'text-gray-200')}${cont4('Positivas', pos, 'text-pos')}${cont4('Neutrales', neu, 'text-gray-300')}${cont4('Negativas', neg, 'text-neg')}
+                        ${cont4(agrupado ? 'Activos' : 'Operaciones', n, 'text-gray-200')}${cont4('Positivas', pos, 'text-pos')}${cont4('Neutrales', neu, 'text-gray-300')}${cont4('Negativas', neg, 'text-neg')}
                     </div>
                     <div class="grid grid-cols-3 gap-1 mt-2 text-center">
                         ${cont4('Bajo SMA50', bajo50, bajo50 ? 'text-accent' : 'text-gray-500')}${cont4('Bajo SMA200', bajo200, bajo200 ? 'text-neg' : 'text-gray-500')}${cont4('Cerca del stop', cercaStop, cercaStop ? 'text-accent' : 'text-gray-500')}
@@ -7070,7 +7148,7 @@
                     </div>
                     <details class="expl mt-2">
                         <summary class="cursor-pointer text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto</summary>
-                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Una fila por compra. <span class="text-gray-300">PPC</span> es tu precio de compra; <span class="text-gray-300">Hoy $</span>, el precio de hoy en dólares del subyacente. El <span class="text-gray-300">PNL</span> va en pesos reales (CEDEAR) cuando la compra se cargó en pesos; si no, en dólares y con la marca US$. Positiva/negativa: más de +1% / menos de −1%; el resto es neutral. <span class="text-gray-300">Estado crítico:</span> el precio tocó el stop o está bajo su SMA200. <span class="text-gray-300">En observación:</span> a ${RESUMEN_CERCA_STOP_PCT}% o menos del stop, perdió la SMA50, RSI desde ${RESUMEN_RSI_ALTO}, pasó el objetivo parcial o bajó el Radar Score. Describe el estado actual con datos del radar; no es una recomendación ni una orden.</div>
+                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Una fila por compra, o una por activo si activás “Agrupado por activo” (PPC ponderado, PNL combinado sobre el total invertido y, si los stops difieren, “varios”: tocá el valor para ver cada uno). Los contadores y las cajas de abajo también se agrupan por activo; en detalle, cuentan cada compra. <span class="text-gray-300">PPC</span> es tu precio de compra; <span class="text-gray-300">Hoy $</span>, el precio de hoy en dólares del subyacente. El <span class="text-gray-300">PNL</span> va en pesos reales (CEDEAR) cuando la compra se cargó en pesos; si no, en dólares y con la marca US$. Positiva/negativa: más de +1% / menos de −1%; el resto es neutral. <span class="text-gray-300">Estado crítico:</span> el precio tocó el stop o está bajo su SMA200. <span class="text-gray-300">En observación:</span> a ${RESUMEN_CERCA_STOP_PCT}% o menos del stop, perdió la SMA50, RSI desde ${RESUMEN_RSI_ALTO}, pasó el objetivo parcial o bajó el Radar Score. Describe el estado actual con datos del radar; no es una recomendación ni una orden.</div>
                     </details>
                     ${sinPrecio ? `<div class="text-[10px] text-gray-600 mt-2">${sinPrecio} posición(es) sin precio actual en esta corrida.</div>` : ''}
                 </div>`;
