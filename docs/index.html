@@ -528,6 +528,7 @@
                 <span class="text-gray-500">Ver como:</span>
                 <button type="button" id="entradas-v-tabla" onclick="entradasVista('tabla')" class="border border-accent text-accent px-2 py-0.5 rounded-sm">Tabla de un vistazo</button>
                 <button type="button" id="entradas-v-tarjetas" onclick="entradasVista('tarjetas')" class="border border-gray-700 text-gray-400 px-2 py-0.5 rounded-sm">Tarjetas</button>
+                <button type="button" id="entradas-v-inv" onclick="entradasToggleInv()" class="border border-gray-700 text-gray-400 px-2 py-0.5 rounded-sm ml-auto"></button>
             </div>
             <div id="entradas-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             <div id="entradas-candidatos"></div>
@@ -2373,29 +2374,44 @@
 
         // ---- Seguimiento de entradas: data/entradas_estado.json (lo escribe el radar en cada corrida) ----
         const ENTRADAS_URL = 'https://raw.githubusercontent.com/victoriagramigna/hypertrade/main/data/entradas_estado.json';
-        let entradasEstado = null, _entradasVista = 'tabla', _entradasOrden = { col: 'estado', asc: true };
+        let entradasEstado = null, _entradasVista = 'tabla', _entradasOrden = { col: 'estado', asc: true }, _entradasMostrarInv = false;
+        function entradasToggleInv() { _entradasMostrarInv = !_entradasMostrarInv; renderEntradas(); }
         function entradasVista(v) { _entradasVista = v; renderEntradas(); }
         // 15/11: la lista se agrupa segun el motivo de salida que ya calcula el radar (no cambia nada del seguimiento ni de la Auditoria)
         const GRUPOS_ENTRADA = [
-            { t: 'Siguen vigentes', d: 'Sin motivo de salida.' },
+            { t: 'Con OK de entrada', d: 'El escenario se dio con el cierre de una rueda. "OK desde" es la rueda en que empezó (más recientes primero).' },
+            { t: 'Vigentes, esperando', d: 'Todavía sin OK y sin motivo de salida.' },
             { t: 'Bajo la media de 50 ruedas', d: 'Sin invalidar, pero con varios cierres seguidos bajo la media de 50 (o fuerza relativa baja).' },
-            { t: 'Ya se cumplió el escenario', d: 'Confirmó con 3 o más cierres seguidos sobre su nivel de confirmación.' },
-            { t: 'Invalidados', d: 'Cerraron bajo su nivel de invalidación: la idea de apoyo ya no vale.' },
+            { t: 'Invalidadas', d: 'Cerraron bajo su nivel de invalidación: la idea de apoyo ya no vale.' },
         ];
+        // 25/11: 0 = con OK (escenario de entrada), 1 = vigentes esperando, 2 = bajo la media de 50, 3 = invalidadas (ocultas por defecto)
         function grupoEntrada(i) {
-            if (!(i.salida_sugerida ?? []).length) return 0;
+            if (i.escenario_entrada) return 0;
             if (i.cierres_bajo_invalidacion > 0) return 3;
-            if (i.cierres_sobre_confirmacion > 0) return 2;
+            if ((i.salida_sugerida ?? []).length) return 2;
             return 1;
+        }
+        function okDesde(i) { const e = i.escenario_entrada; return e ? (e.desde || null) : null; }
+        // Texto "24/11 · hoy / hace 3 ruedas" y variación del precio desde el OK
+        function okTexto(i) {
+            const d = okDesde(i);
+            if (!d) return i.escenario_entrada ? '—' : '';
+            const n = ruedasDesde(d, i.fecha_dato);
+            const cuando = n == null ? '' : n <= 1 ? 'hoy' : `hace ${n - 1} rueda${n - 1 === 1 ? '' : 's'}`;
+            return `${d.slice(8, 10)}/${d.slice(5, 7)} · ${cuando}`;
+        }
+        function okVarPct(i) {
+            const e = i.escenario_entrada;
+            if (!e || e.precio_ok == null || !e.precio_ok || i.precio == null) return null;
+            return (i.precio / e.precio_ok - 1) * 100;
         }
         function hdrGrupoEntrada(arr, ix, modo) {
             const g = (x) => grupoEntrada(modo === 'tabla' ? x.i : x);
-            if (!arr.some(x => g(x) > 0)) return '';
             const gi = g(arr[ix]);
             if (ix > 0 && g(arr[ix - 1]) === gi) return '';
             const n = arr.filter(x => g(x) === gi).length;
             const G = GRUPOS_ENTRADA[gi];
-            const cuerpo = `<span class="font-bold ${gi === 0 ? 'text-pos' : gi === 3 ? 'text-neg' : 'text-accent'}">${G.t} (${n})</span> <span class="text-gray-500">· ${G.d}</span>`;
+            const cuerpo = `<span class="font-bold ${gi === 0 ? 'text-pos' : gi === 3 ? 'text-neg' : gi === 2 ? 'text-accent' : 'text-gray-200'}">${G.t} (${n})</span> <span class="text-gray-500">· ${G.d}</span>`;
             return modo === 'tabla'
                 ? `<tr><td colspan="20" class="py-1.5 px-1 pt-3 font-mono text-[10px] border-t border-gray-700" style="position:sticky;left:0">${cuerpo}</td></tr>`
                 : `<div class="col-span-full font-mono text-[10px] pt-2 border-t border-gray-700">${cuerpo}</div>`;
@@ -2471,12 +2487,16 @@
                 _bk.className = 'px-2 py-0.5 rounded-sm border ' + (_entradasVista === 'tarjetas' ? 'border-accent text-accent' : 'border-gray-700 text-gray-400');
             }
             const cnt = document.getElementById('entradas-count');
-            const items = Array.isArray(entradasEstado?.items) ? entradasEstado.items : [];
+            const itemsTodos = Array.isArray(entradasEstado?.items) ? entradasEstado.items : [];
+            const nInv = itemsTodos.filter(i => grupoEntrada(i) === 3).length;
+            const items = _entradasMostrarInv ? itemsTodos : itemsTodos.filter(i => grupoEntrada(i) !== 3);
+            const _bi = document.getElementById('entradas-v-inv');
+            if (_bi) { _bi.style.display = nInv ? '' : 'none'; _bi.textContent = _entradasMostrarInv ? `Ocultar invalidadas (${nInv})` : `Mostrar invalidadas (${nInv})`; }
             const enEsc = items.filter(i => i.escenario_entrada);
-            if (cnt) cnt.textContent = items.length ? `(${items.length})` : '';
+            if (cnt) cnt.textContent = itemsTodos.length ? `(${items.length}${!_entradasMostrarInv && nInv ? ` · ${nInv} invalidadas ocultas` : ''})` : '';
             const resEl = document.getElementById('entradas-resumen');
             if (resEl) resEl.innerHTML = items.length ? (enEsc.length
-                ? `<div class="font-mono text-xs border border-pos rounded-sm p-2 mb-3 text-pos leading-relaxed"><span class="font-bold">🟢 Hoy en escenario de entrada (${enEsc.length}):</span> ${enEsc.map(i => `<span class="cursor-pointer underline text-white" onclick="abrirFicha('${i.ticker}')">${i.ticker}</span>`).join(', ')}. <span class="text-gray-400">El escenario se confirma con el cierre de la rueda; mirá el detalle de cada uno abajo.</span></div>`
+                ? `<div class="font-mono text-xs border border-pos rounded-sm p-2 mb-3 text-pos leading-relaxed"><span class="font-bold">🟢 Hoy en escenario de entrada (${enEsc.length}):</span> ${[...enEsc].sort((a, b) => String(okDesde(b) ?? '').localeCompare(String(okDesde(a) ?? ''))).map(i => `<span class="cursor-pointer underline text-white" onclick="abrirFicha('${i.ticker}')">${i.ticker}</span><span class="text-gray-400 text-[10px]"> ${okDesde(i) ? okDesde(i).slice(8, 10) + '/' + okDesde(i).slice(5, 7) : ''}</span>`).join(', ')}. <span class="text-gray-400">El escenario se confirma con el cierre de la rueda; mirá el detalle de cada uno abajo.</span></div>`
                 : `<div class="font-mono text-[11px] text-gray-500 mb-3">Hoy ningún activo de la lista está en escenario de entrada.</div>`) : '';
             if (!items.length) {
                 cont.innerHTML = '<div class="text-gray-500 font-mono text-xs p-4 border border-dashed border-surface rounded-sm sm:col-span-2">Todavía no hay datos de seguimiento. Aparecen después de la próxima corrida del radar que incluya esta función.</div>';
@@ -2489,7 +2509,8 @@
                 const filas = items.map(i => ({ i, ruedas: ruedasDesde(i.fecha_alta, i.fecha_dato) }));
                 const val = { ticker: x => x.i.ticker, ruedas: x => x.ruedas ?? -1, 
                               cierre: x => x.i.precio ?? 0, hoy: x => x.i.hoy_pct ?? -999, fr: x => x.i.fr ?? -1, rsi: x => x.i.rsi ?? -1, cumple: x => x.i.checklist ? x.i.checklist.cumple : -1, result: x => x.i.checklist?.resultados?.dias ?? 9999, zona: x => dZonaDe(x.i) ?? 999, conf: x => dNivelDe(x.i, 'confirmacion') ?? 999, inv: x => -Math.abs(dNivelDe(x.i, 'invalidacion') ?? 999), espacio: x => x.i.espacio_libre?.espacio_pct ?? -1,
-                              estado: x => (x.i.escenario_entrada ? 0 : 1) * 100 - (x.i.checklist?.cumple ?? 0) };
+                              ok: x => String(okDesde(x.i) ?? ''), okvar: x => okVarPct(x.i) ?? -999,
+                              estado: x => x.i.escenario_entrada ? -Number(String(okDesde(x.i) ?? '0').replace(/-/g, '')) : 100000000 - (x.i.checklist?.cumple ?? 0) };
                 const g = val[_entradasOrden.col] ?? val.estado;
                 filas.sort((a, b) => { const A = g(a), B = g(b); const r = (A < B ? -1 : A > B ? 1 : 0); return _entradasOrden.asc ? r : -r; });
                 filas.sort((a, b) => grupoEntrada(a.i) - grupoEntrada(b.i));   // 15/11: primero los vigentes, luego los que tienen motivo de salida
@@ -2500,9 +2521,11 @@
                 // 29/10: scroll vertical propio (los títulos quedan fijos arriba al bajar por la tabla)
                 cont.style.overflowY = 'auto'; cont.style.maxHeight = 'calc(100vh - 190px)';
                 cont.innerHTML = `<div class="font-mono text-[10px] text-gray-600 mb-1">↔ Deslizá hacia los costados para ver todas las columnas · ↕ al bajar, los títulos quedan fijos.</div><table class="w-full font-mono text-[11px] border-collapse whitespace-nowrap"><thead><tr class="text-gray-500 text-left border-b border-gray-700">
-                    <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;top:0;background:#121722;z-index:7;box-shadow:0 1px 0 #374151" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('fr', 'FR', 'text-right')}${th('rsi', 'RSI', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('espacio', 'Espacio libre', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}<th class="py-1 px-1 font-normal text-right" style="position:sticky;top:0;background:#121722;z-index:4;box-shadow:0 1px 0 #374151">Gráfico</th></tr></thead><tbody>
+                    <th class="py-1 px-1 font-normal cursor-pointer select-none" style="position:sticky;left:0;top:0;background:#121722;z-index:7;box-shadow:0 1px 0 #374151" onclick="entradasOrdenar('ticker')">Ticker${_entradasOrden.col === 'ticker' ? (_entradasOrden.asc ? ' ▲' : ' ▼') : ''}</th>${th('ok', 'OK desde', 'text-left')}${th('okvar', 'Desde el OK', 'text-right')}${th('cierre', 'Cierre', 'text-right')}${th('hoy', 'Hoy', 'text-right')}${th('fr', 'FR', 'text-right')}${th('rsi', 'RSI', 'text-right')}${th('zona', 'A la zona', 'text-right')}${th('conf', 'A confirmar', 'text-right')}${th('inv', 'A invalidar', 'text-right')}${th('espacio', 'Espacio libre', 'text-right')}${th('cumple', 'Cumple', 'text-center')}${th('result', 'Resultados', 'text-right')}${th('estado', 'Estado')}<th class="py-1 px-1 font-normal text-right" style="position:sticky;top:0;background:#121722;z-index:4;box-shadow:0 1px 0 #374151">Gráfico</th></tr></thead><tbody>
                     ${filas.map(({ i, ruedas }, _ix) => `${hdrGrupoEntrada(filas, _ix, 'tabla')}<tr class="border-t border-gray-800 cursor-pointer hover:bg-surface" onclick="abrirFicha('${esc(i.ticker)}')">
                         <td class="py-1 px-1 text-white font-bold" style="position:sticky;left:0;background:#121722;z-index:5">${esc(i.ticker)}${i.auto ? ' <span class="text-[8px] font-normal border border-accent text-accent rounded-sm px-1" title="Lo sumó el radar solo (apto al cierre). Niveles calculados automáticamente.">AUTO</span>' : ''}${tipoActivoHtml(i.ticker)}</td>
+                        <td class="py-1 px-1 ${i.escenario_entrada ? 'text-pos' : 'text-gray-600'}">${i.escenario_entrada ? esc(okTexto(i)) : '—'}</td>
+                        <td class="py-1 px-1 text-right">${(() => { const v = okVarPct(i); return v == null ? '<span class="text-gray-600">—</span>' : pc(v); })()}</td>
                         <td class="py-1 px-1 text-right text-white">${f(i.precio)}</td>
                         <td class="py-1 px-1 text-right">${pc(i.hoy_pct)}</td>
                         <td class="py-1 px-1 text-right ${i.fr != null && i.fr >= 70 ? 'text-gray-200' : 'text-neg'}">${f(i.fr, 0)}</td>
@@ -2527,7 +2550,7 @@
                 sobre_confirmacion: ['Sobre confirmación', 'text-pos border-pos'],
                 bajo_invalidacion: ['Bajo invalidación', 'text-neg border-neg'],
             };
-            const _itemsG = [...items].sort((a, b) => grupoEntrada(a) - grupoEntrada(b));   // 15/11: agrupadas por motivo de salida
+            const _itemsG = [...items].sort((a, b) => grupoEntrada(a) - grupoEntrada(b) || (grupoEntrada(a) === 0 ? String(okDesde(b) ?? '').localeCompare(String(okDesde(a) ?? '')) : 0));   // 15/11: agrupadas por motivo de salida
             cont.innerHTML = _itemsG.map((i, _ix) => {
                 const [etq, cls] = estilo[i.estado] ?? [i.estado, 'text-gray-300 border-gray-600'];
                 const inv = i.invalidacion?.nivel, conf = i.confirmacion?.nivel;
@@ -2542,7 +2565,7 @@
                     : i.cierres_bajo_invalidacion > 0 ? `<span class="text-neg">${i.cierres_bajo_invalidacion} cierre(s) seguido(s) bajo la invalidación</span>`
                     : '<span class="text-gray-500">sin cierres de confirmación ni de invalidación</span>';
                 const esc_ = i.escenario_entrada;
-                const escHtml = esc_ ? `<div class="mt-1.5 text-[10px] border border-pos rounded-sm p-1.5 text-pos leading-relaxed"><span class="font-bold">🟢 ESCENARIO DE ENTRADA (${esc_.tipo === 'rebote' ? 'rebote en el piso' : 'ruptura confirmada'}) desde el ${esc(String(esc_.fecha).slice(8, 10))}/${esc(String(esc_.fecha).slice(5, 7))}.</span> ${esc(esc_.detalle)} Se invalida con un cierre bajo ${f(esc_.inv ?? inv)}.</div>` : '';
+                const escHtml = esc_ ? `<div class="mt-1.5 text-[10px] border border-pos rounded-sm p-1.5 text-pos leading-relaxed"><span class="font-bold">🟢 ESCENARIO DE ENTRADA (${esc_.tipo === 'rebote' ? 'rebote en el piso' : 'ruptura confirmada'}) ${esc_.desde ? `desde el ${esc(String(esc_.desde).slice(8, 10))}/${esc(String(esc_.desde).slice(5, 7))} (${esc(okTexto(i).split(' · ')[1] ?? '')}${okVarPct(i) != null ? ' · ' + pct(okVarPct(i)) + ' desde el OK' : ''})` : `con el cierre del ${esc(String(esc_.fecha).slice(8, 10))}/${esc(String(esc_.fecha).slice(5, 7))}`}.</span> ${esc(esc_.detalle)} Se invalida con un cierre bajo ${f(esc_.inv ?? inv)}.</div>` : '';
                 const pisosTxt = (i.pisos ?? []).map(x => `${esc(x.nombre)} ${f(x.piso)}–${f(x.techo)}`).join(' · ');
                 const vigilar = (i.vigilar ?? []).map(v => `<li>${esc(v)}</li>`).join('');
                 const z = i.zona ? `${f(i.zona.piso)} a ${f(i.zona.techo)}${i.zona.tipo ? ' · ' + esc(i.zona.tipo) : ''}` : '—';
