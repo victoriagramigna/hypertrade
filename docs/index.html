@@ -7038,11 +7038,11 @@
                 if (t.RSI != null && t.RSI >= RESUMEN_RSI_ALTO) obs.push({ k: 'tk', txt: 'RSI ' + Number(t.RSI).toFixed(0) + ' (alto)' });
                 if (usdPct >= CARTERA_GANANCIA_PARCIAL_PCT) obs.push({ k: 'stop', txt: 'pasó el objetivo parcial (+' + CARTERA_GANANCIA_PARCIAL_PCT + '% en US$)' });
                 if (t.Radar_Score != null && p.radarScoreCompra != null && (p.radarScoreCompra - t.Radar_Score) >= CARTERA_CAIDA_RADAR_SCORE) obs.push({ k: 'stop', txt: 'Radar Score bajó de ' + p.radarScoreCompra.toFixed(0) + ' a ' + t.Radar_Score.toFixed(0) });
-                filas.push({ p, px, pnl, enArs: !!br, hoy, crit, obs, b50, b200, cerca });
+                filas.push({ p, px, pnl, usd: usdPct, enArs: !!br, hoy, crit, obs, b50, b200, cerca });
             }
             const ddmm = (f) => { const m = String(f ?? '').match(/^\d{4}-(\d{2})-(\d{2})/); return m ? m[2] + '/' + m[1] : '—'; };
             const filaHtml = (r) => {
-                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td><td class="text-gray-500 pr-1">${ddmm(r.p.fecha)}</td><td colspan="5" class="text-gray-600 text-right">sin precio actual</td></tr>`;
+                if (r.px == null) return `<tr class="border-t border-base"><td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td><td class="text-gray-500 pr-1">${ddmm(r.p.fecha)}</td><td colspan="6" class="text-gray-600 text-right">sin precio actual</td></tr>`;
                 return `<tr class="border-t border-base">
                     <td class="py-1.5 pr-1 text-white font-bold">${tickerLinkTarjeta(r.p, posiciones)}</td>
                     <td class="text-gray-500 pr-1">${ddmm(r.p.fecha)}</td>
@@ -7050,6 +7050,7 @@
                     <td class="text-gray-200 pr-1 text-right">${f2(r.px)}</td>
                     ${(() => { const sl = r.p.stopActual; if (!(sl > 0)) return '<td class="text-gray-600 pr-1 text-right">—</td>'; const d = (r.px / sl - 1) * 100; const toc = r.px <= sl; return `<td class="${toc ? 'text-neg font-bold' : 'text-gray-400'} pr-1 text-right" title="Stop en dólares (${_esc(r.p.origenStop ?? '')}). El precio de hoy está ${d >= 0 ? d.toFixed(1) + '% por encima' : Math.abs(d).toFixed(1) + '% por debajo'} del stop.">${f2(sl)}</td>`; })()}
                     <td class="${cls(r.pnl)} font-bold text-right px-1" style="background:${bg(r.pnl)}" title="${r.enArs ? 'En pesos reales (CEDEAR), como en tu bróker' : 'En dólares del subyacente (la compra no se cargó en pesos)'}">${pc(r.pnl)}${r.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
+                    <td class="${cls(r.usd)} text-right px-1" title="Resultado en dólares: precio de hoy contra tu PPC en dólares, sin el efecto del CCL">${pc(r.usd)}</td>
                     <td class="${r.hoy == null ? 'text-gray-600' : cls(r.hoy)} text-right pl-1">${r.hoy == null ? '—' : pc(r.hoy)}</td>
                 </tr>`;
             };
@@ -7080,7 +7081,7 @@
                 const stops = g.map(x => x.p.stopActual).filter(v => v > 0);
                 const hoy = g[0].hoy;
                 const orden = g.map(x => x.p.fecha).sort();
-                filasAgr.push({ grupo: g, ppc, px, pnl, enArs, hoy, stops, desde: orden[0], hasta: orden[orden.length - 1] });
+                filasAgr.push({ grupo: g, ppc, px, pnl, usd: (px / ppc - 1) * 100, enArs, hoy, stops, desde: orden[0], hasta: orden[orden.length - 1] });
             }
             const hayGrupos = filasAgr.some(f => f.grupo);
             const grupoHtml = (f) => {
@@ -7095,6 +7096,7 @@
                     <td class="text-gray-200 pr-1 text-right">${f2(f.px)}</td>
                     <td class="${toc ? 'text-neg font-bold' : 'text-gray-400'} pr-1 text-right" title="Stops por compra — ${_esc(detalleStops)}">${stopTxt}</td>
                     <td class="${cls(f.pnl)} font-bold text-right px-1" style="background:${bg(f.pnl)}" title="${f.enArs ? 'Resultado combinado en pesos reales (CEDEAR), sobre el total invertido' : 'Combinado en dólares del subyacente'}">${pc(f.pnl)}${f.enArs ? '' : '<span class="text-[8px] text-gray-500"> US$</span>'}</td>
+                    <td class="${cls(f.usd)} text-right px-1" title="Resultado en dólares: precio de hoy contra el PPC ponderado en dólares, sin el efecto del CCL">${pc(f.usd)}</td>
                     <td class="${f.hoy == null ? 'text-gray-600' : cls(f.hoy)} text-right pl-1">${f.hoy == null ? '—' : pc(f.hoy)}</td>
                 </tr>`;
             };
@@ -7134,7 +7136,7 @@
                 <div class="bg-surface p-3 rounded-sm border border-surface font-mono">
                     <div class="flex items-center justify-between mb-2"><div class="text-accent text-[10px] uppercase tracking-widest font-bold">Resumen de un vistazo</div>${btnAgr}</div>
                     <table class="w-full text-[10px]">
-                        <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right pr-1">Stop $</th><th class="font-normal text-right">PNL</th><th class="font-normal text-right">Hoy %</th></tr></thead>
+                        <thead><tr class="text-[9px] uppercase text-gray-500 text-left"><th class="font-normal">Ticker</th><th class="font-normal">Inicio</th><th class="font-normal text-right">PPC</th><th class="font-normal text-right">Hoy $</th><th class="font-normal text-right pr-1">Stop $</th><th class="font-normal text-right">PNL ARS</th><th class="font-normal text-right">PNL USD</th><th class="font-normal text-right">Hoy %</th></tr></thead>
                         <tbody>${cuerpoTabla}</tbody>
                     </table>
                     <div class="grid grid-cols-4 gap-1 mt-3 pt-3 border-t border-base">
@@ -7148,7 +7150,7 @@
                     </div>
                     <details class="expl mt-2">
                         <summary class="cursor-pointer text-[10px] uppercase tracking-widest text-gray-500 hover:text-accent">ⓘ Qué es esto</summary>
-                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Una fila por compra, o una por activo si activás “Agrupado por activo” (PPC ponderado, PNL combinado sobre el total invertido y, si los stops difieren, “varios”: tocá el valor para ver cada uno). Los contadores y las cajas de abajo también se agrupan por activo; en detalle, cuentan cada compra. <span class="text-gray-300">PPC</span> es tu precio de compra; <span class="text-gray-300">Hoy $</span>, el precio de hoy en dólares del subyacente. El <span class="text-gray-300">PNL</span> va en pesos reales (CEDEAR) cuando la compra se cargó en pesos; si no, en dólares y con la marca US$. Positiva/negativa: más de +1% / menos de −1%; el resto es neutral. <span class="text-gray-300">Estado crítico:</span> el precio tocó el stop o está bajo su SMA200. <span class="text-gray-300">En observación:</span> a ${RESUMEN_CERCA_STOP_PCT}% o menos del stop, perdió la SMA50, RSI desde ${RESUMEN_RSI_ALTO}, pasó el objetivo parcial o bajó el Radar Score. Describe el estado actual con datos del radar; no es una recomendación ni una orden.</div>
+                        <div class="mt-1.5 text-[11px] text-gray-500 leading-relaxed">Una fila por compra, o una por activo si activás “Agrupado por activo” (PPC ponderado, PNL combinado sobre el total invertido y, si los stops difieren, “varios”: tocá el valor para ver cada uno). Los contadores y las cajas de abajo también se agrupan por activo; en detalle, cuentan cada compra. <span class="text-gray-300">PPC</span> es tu precio de compra; <span class="text-gray-300">Hoy $</span>, el precio de hoy en dólares del subyacente. <span class="text-gray-300">PNL ARS</span> va en pesos reales (CEDEAR) cuando la compra se cargó en pesos; si no, en dólares y con la marca US$. <span class="text-gray-300">PNL USD</span> es el resultado en dólares de la acción (precio de hoy contra tu PPC), sin el efecto del CCL: por eso pueden tener distinto signo. Positiva/negativa: más de +1% / menos de −1%; el resto es neutral. <span class="text-gray-300">Estado crítico:</span> el precio tocó el stop o está bajo su SMA200. <span class="text-gray-300">En observación:</span> a ${RESUMEN_CERCA_STOP_PCT}% o menos del stop, perdió la SMA50, RSI desde ${RESUMEN_RSI_ALTO}, pasó el objetivo parcial o bajó el Radar Score. Describe el estado actual con datos del radar; no es una recomendación ni una orden.</div>
                     </details>
                     ${sinPrecio ? `<div class="text-[10px] text-gray-600 mt-2">${sinPrecio} posición(es) sin precio actual en esta corrida.</div>` : ''}
                 </div>`;
