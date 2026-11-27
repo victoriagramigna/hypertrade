@@ -1,5 +1,5 @@
 {
- "generado_utc": "2026-11-26T22:15:16.693385+00:00",
+ "generado_utc": "2026-11-27T03:38:46.899364+00:00",
  "mis_operaciones": {
   "total": {
    "n": 39,
@@ -704,7 +704,7 @@
   10,
   20
  ],
- "casos_total": 1451,
+ "casos_total": 1452,
  "casos_excluidos_sospechosos": 39,
  "resumen_señales": [
   {
@@ -747,11 +747,11 @@
   {
    "señal": "Recién cruzó, sin confirmar",
    "direccion": "alcista",
-   "casos_total": 339,
+   "casos_total": 340,
    "horizontes": {
     "5": {
      "n": 316,
-     "pendientes": 23,
+     "pendientes": 24,
      "aciertos": 159,
      "pct_aciertos": 50,
      "tocaron_stop": 43,
@@ -761,7 +761,7 @@
     },
     "10": {
      "n": 307,
-     "pendientes": 32,
+     "pendientes": 33,
      "aciertos": 138,
      "pct_aciertos": 45,
      "tocaron_stop": 70,
@@ -771,7 +771,7 @@
     },
     "20": {
      "n": 246,
-     "pendientes": 93,
+     "pendientes": 94,
      "aciertos": 123,
      "pct_aciertos": 50,
      "tocaron_stop": 99,
@@ -1103,7 +1103,7 @@
  "por_mes": [
   {
    "mes": "2026-11",
-   "casos": 355,
+   "casos": 356,
    "5": {
     "n": 250,
     "pct_aciertos": 39,
@@ -1225,7 +1225,7 @@
   },
   {
    "franja": "0-39 Desfavorable",
-   "casos": 151,
+   "casos": 152,
    "5": {
     "n": 65,
     "pct_aciertos": 52,
@@ -1268,7 +1268,7 @@
   },
   {
    "grupo": "Con 1 o más",
-   "casos": 841,
+   "casos": 842,
    "5": {
     "n": 789,
     "pct_aciertos": 47,
@@ -1290,7 +1290,7 @@
   },
   {
    "grupo": "· SMA50 bajando",
-   "casos": 443,
+   "casos": 444,
    "5": {
     "n": 422,
     "pct_aciertos": 53,
@@ -1356,7 +1356,7 @@
   },
   {
    "grupo": "· Techo AVWAP",
-   "casos": 387,
+   "casos": 388,
    "5": {
     "n": 353,
     "pct_aciertos": 46,
@@ -1468,7 +1468,7 @@
   },
   {
    "grupo": "🔴 En contra (RSI y MACD semanal bajistas)",
-   "casos": 279,
+   "casos": 280,
    "5": {
     "n": 255,
     "pct_aciertos": 52,
@@ -1490,6 +1490,25 @@
   }
  ],
  "detalle": [
+  {
+   "ticker": "BNY",
+   "fecha": "2026-11-27",
+   "señal": "Recién cruzó, sin confirmar",
+   "direccion": "alcista",
+   "recomendacion": "MANTENER",
+   "precio_entrada": 147.16,
+   "radar_score": 71.2,
+   "regimen_score": 25,
+   "cuidados": [
+    "sma50_bajando",
+    "techo_avwap"
+   ],
+   "tendencia_semanal": "contra",
+   "ruedas_transcurridas": 0,
+   "r5": null,
+   "r10": null,
+   "r20": null
+  },
   {
    "ticker": "DOCU",
    "fecha": "2026-11-25",
@@ -7998,30 +8017,6 @@
    "vs_spy10": 2.82,
    "acierto10": false,
    "stop10": false,
-   "r20": null
-  },
-  {
-   "ticker": "SAP",
-   "fecha": "2026-11-04",
-   "señal": "Gap alcista con macrotendencia",
-   "direccion": "alcista",
-   "recomendacion": "COMPRA",
-   "precio_entrada": 240.88,
-   "radar_score": 45.9,
-   "regimen_score": 58,
-   "cuidados": [],
-   "tendencia_semanal": "favor",
-   "ruedas_transcurridas": 15,
-   "r5": -2.81,
-   "spy5": -0.91,
-   "vs_spy5": -1.9,
-   "acierto5": false,
-   "stop5": false,
-   "r10": -12.5,
-   "spy10": -4.77,
-   "vs_spy10": -7.73,
-   "acierto10": false,
-   "stop10": true,
    "r20": null
   }
  ],
